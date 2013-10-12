@@ -2,17 +2,19 @@
 #define BASE_PROPERTIES_H
 
 // Стандартные компоненты, такие как значение NULL
-#include <cstddef>
+//#include <cstddef>
 // Включаем все функции, необходимые для работы с HGE
 #include <hge.h>
 #include <hgesprite.h>
 #include <hgefont.h>
 #include <hgeparticle.h>
 // В дальнейшем нам понадобится функция sprintf()
-#include <stdio.h>
+//#include <stdio.h>
 
 #include "States.h"
 #include "Processes.h"
+#include "Vector.h"
+#include "Hero.h"
 
 #include <iostream>
 
