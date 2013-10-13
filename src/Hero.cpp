@@ -3,6 +3,7 @@
 
 Hero::Hero(void)
 {
+	Location = Vector2D(0.0f, 0.0f);
 }
 
 
@@ -10,12 +11,12 @@ Hero::~Hero(void)
 {
 }
 
-void Hero::SetLocation(Vector location)
+void Hero::SetLocation(Vector2D location)
 {
 	Location = location;
 }
 
-void Hero::MoveTo(Vector newLocation)
+void Hero::MoveTo(Vector2D newLocation)
 {
 	NextLocation = newLocation;
 }

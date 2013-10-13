@@ -1,15 +1,15 @@
 #ifndef HERO_H
 #define HERO_H
 
-#include "BaseProperties.h"
+#include "..\src\BaseProperties.h"
 
 class Hero
 {
 private:
 	/** Положение игрока в мировом пространстве" */
-	Vector Location;
+	Vector2D Location;
 	/** Точка к которой движется герой */
-	Vector NextLocation;
+	Vector2D NextLocation;
 	/** Скорость перемещения героя в юнитах */
 	float Speed;
 public:
@@ -20,11 +20,11 @@ public:
 	void Process(int deltatime);
 
 	/** Установить новое положение героя в мировом пространстве */
-	void SetLocation(Vector location);
+	void SetLocation(Vector2D location);
 	/** Получить положение героя */
-	Vector GetLocation();
+	Vector2D GetLocation();
 	/** Заставить героя перемещаться к новой позиции */
-	void MoveTo(Vector newLocation);
+	void MoveTo(Vector2D newLocation);
 };
 
 #endif

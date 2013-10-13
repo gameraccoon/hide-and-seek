@@ -13,8 +13,8 @@
 
 #include "States.h"
 #include "Processes.h"
-#include "Vector.h"
-#include "Hero.h"
+#include "Vector2D.h"
+//#include "Hero.h"
 
 #include <iostream>
 

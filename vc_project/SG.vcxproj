@@ -12,20 +12,19 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\BaseProperties.cpp" />
-    <ClCompile Include="..\src\Hero.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\Processes.cpp" />
     <ClCompile Include="..\src\States.cpp" />
-    <ClCompile Include="..\src\Vector.cpp" />
+    <ClCompile Include="..\src\Vector2D.cpp" />
     <ClCompile Include="..\tests\testProcesses.cpp" />
     <ClCompile Include="..\tests\testStates.cpp" />
+    <ClCompile Include="..\tests\testVector2D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\BaseProperties.h" />
-    <ClInclude Include="..\src\Hero.h" />
     <ClInclude Include="..\src\Processes.h" />
     <ClInclude Include="..\src\States.h" />
-    <ClInclude Include="..\src\Vector.h" />
+    <ClInclude Include="..\src\Vector2D.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <SccProjectName />
@@ -91,7 +90,6 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
-      <OutputFile>..\build\SG.exe</OutputFile>
       <AdditionalDependencies>hge.lib;hgehelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
