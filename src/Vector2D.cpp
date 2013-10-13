@@ -1,6 +1,6 @@
 #include "../src/Vector2D.h"
 
-const float VECTOR_ERROR = 0.0001;
+const float VECTOR_ERROR = 0.0001f;
 
 Vector2D::Vector2D(float x, float y)
 {
@@ -23,10 +23,13 @@ float Vector2D::Size(void)
 	return sqrt(X*X + Y*Y);
 }
 
-/*Vector2D Vector2D::Ort(void)
+Vector2D Vector2D::Ort(void)
 {
-	return this / this.Size();
-}*/
+	if (X == 0.0f && Y == 0.0f)
+		return Vector2D(0.0f, 0.0f);
+
+	return *this / Size();
+}
 
 Vector2D operator-(const Vector2D& vect)
 {

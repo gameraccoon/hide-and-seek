@@ -3,86 +3,153 @@
 HGE *hge=0;
 
 // Pointers to the HGE objects we will use
-hgeSprite*			spr;
-hgeSprite*			spt;
-hgeFont*			fnt;
-hgeParticleSystem*	par;
+hgeSprite*	Crosshair;
+hgeFont*	Font;
 
 // Handles for HGE resourcces
-HTEXTURE			tex;
-HEFFECT				snd;
+HEFFECT		snd;
+HTEXTURE	tex;
 
-// Some "gameplay" variables
-float x=100.0f, y=100.0f;
-float dx=0.0f, dy=0.0f;
+Vector2D MousePos(0.0f, 0.0f);
 
-const float speed=90;
-const float friction=0.98f;
+class Hero
+{
+public:
+	Vector2D Location;
+	Vector2D CurrentSpeed;
+	float Speed;
+
+	Hero(Vector2D location) : Location(location), CurrentSpeed(0.0f, 0.0f), NewLocation(location)
+	{
+		Speed = 1200.0f;
+
+		Texture = hge->Texture_Load("particles.png");
+
+		WARN_IF(!Texture, "Texture 'particles.png' not found!");
+		
+		HeroSprite = new hgeSprite(Texture, 96, 64, 32, 32);
+		HeroSprite->SetColor(0xFFFFA000);
+		HeroSprite->SetHotSpot(16, 16);
+	}
+
+	~Hero()
+	{
+		delete HeroSprite;
+		hge->Texture_Free(Texture);
+	}
+
+	void Move(Vector2D step)
+	{
+		Location += step;
+	}
+
+	void Update(float deltaTime)
+	{
+	}
+
+	void Render()
+	{
+		HeroSprite->Render(Location.X, Location.Y);
+	}
+
+private:
+	Vector2D NewLocation;
+	hgeSprite* HeroSprite;
+	HTEXTURE Texture;
+};
+
+// Initialze Hero
+Hero *OurHero;
 
 // Play sound effect
-void boom() {
-	int pan=int((x-400)/4);
-	float pitch=(dx*dx+dy*dy)*0.00005f+0.2f;
-	hge->Effect_PlayEx(snd,100,pan,pitch);
+void boom(float dt) {
+	int pan = int((OurHero->Location.X - 400) / 4);
+	float pitch = OurHero->CurrentSpeed.Size() * dt * 0.005f + 0.2f;
+	float power = OurHero->CurrentSpeed.Size() * dt * 3.0f + 30.0f;
+	hge->Effect_PlayEx(snd, power, pan, pitch);
 }
 
 bool FrameFunc()
 {
-	float dt=hge->Timer_GetDelta();
+	float dt = hge->Timer_GetDelta();
 
 	// Process keys
 	if (hge->Input_GetKeyState(HGEK_ESCAPE)) return true;
-	if (hge->Input_GetKeyState(HGEK_LEFT)) dx-=speed*dt;
-	if (hge->Input_GetKeyState(HGEK_RIGHT)) dx+=speed*dt;
-	if (hge->Input_GetKeyState(HGEK_UP)) dy-=speed*dt;
-	if (hge->Input_GetKeyState(HGEK_DOWN)) dy+=speed*dt;
 
-	// Do some movement calculations and collision detection	
-	dx*=friction; dy*=friction; x+=dx; y+=dy;
-	if(x>784) {x=784-(x-784);dx=-dx;boom();}
-	if(x<16) {x=16+16-x;dx=-dx;boom();}
-	if(y>584) {y=584-(y-584);dy=-dy;boom();}
-	if(y<16) {y=16+16-y;dy=-dy;boom();}
+	Vector2D Direction(0.0f, 0.0f);
+	if (hge->Input_GetKeyState(HGEK_A))	Direction += LeftDirection;
+	if (hge->Input_GetKeyState(HGEK_D))	Direction += RightDirection;
+	if (hge->Input_GetKeyState(HGEK_W))	Direction += UpDirection;
+	if (hge->Input_GetKeyState(HGEK_S))	Direction += DownDirection;
 
-	// Update particle system
-	par->info.nEmission= 100 +(int)(dx*dx+dy*dy)*5;
-	par->MoveTo(x,y);
-	par->Update(dt);
+	OurHero->Move(Direction.Ort() * 5); // constant speed
+	
+	hge->Input_GetMousePos(&MousePos.X, &MousePos.Y);
+
+	// Do some movement calculations	
+	OurHero->Update(dt);
+
+	// Collision detection
+	if (OurHero->Location.X > 784)
+	{
+		OurHero->Location.X = 784 - (OurHero->Location.X - 784);
+		OurHero->CurrentSpeed.X = -OurHero->CurrentSpeed.X;
+		boom(dt);
+	}
+	
+	if (OurHero->Location.X < 16)
+	{
+		OurHero->Location.X = 16 + 16 - OurHero->Location.X;
+		OurHero->CurrentSpeed.X = -OurHero->CurrentSpeed.X;
+		boom(dt);
+	}
+
+	if (OurHero->Location.Y > 584)
+	{
+		OurHero->Location.Y = 584 - (OurHero->Location.Y - 584);
+		OurHero->CurrentSpeed.Y = -OurHero->CurrentSpeed.Y;
+		boom(dt);
+	}
+
+	if (OurHero->Location.Y < 16)
+	{
+		OurHero->Location.Y = 16 + 16 - OurHero->Location.Y;
+		OurHero->CurrentSpeed.Y = -OurHero->CurrentSpeed.Y;
+		boom(dt);
+	}
 
 	return false;
 }
-
 
 bool RenderFunc()
 {
 	// Render graphics
 	hge->Gfx_BeginScene();
 	hge->Gfx_Clear(0);
-	par->Render();
-	spr->Render(x, y);
-	fnt->printf(5, 5, HGETEXT_LEFT, "dt:%.3f\nFPS:%d (constant)", hge->Timer_GetDelta(), hge->Timer_GetFPS());
+	Crosshair->Render(MousePos.X, MousePos.Y);
+	OurHero->Render();
+	Font->printf(5, 5, HGETEXT_LEFT, "dt:%.3f\nFPS:%d (constant)", hge->Timer_GetDelta(), hge->Timer_GetFPS());
 	hge->Gfx_EndScene();
 
 	return false;
 }
 
-
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
 	hge = hgeCreate(HGE_VERSION);
 
-	hge->System_SetState(HGE_LOGFILE, "hge_tut03.log");
+	hge->System_SetState(HGE_LOGFILE, "SG.log");
 	hge->System_SetState(HGE_FRAMEFUNC, FrameFunc);
 	hge->System_SetState(HGE_RENDERFUNC, RenderFunc);
-	hge->System_SetState(HGE_TITLE, "HGE Tutorial 03 - Using helper classes");
+	hge->System_SetState(HGE_TITLE, "Stealth game - alpha1");
 	hge->System_SetState(HGE_FPS, 100);
 	hge->System_SetState(HGE_WINDOWED, true);
 	hge->System_SetState(HGE_SCREENWIDTH, 800);
 	hge->System_SetState(HGE_SCREENHEIGHT, 600);
 	hge->System_SetState(HGE_SCREENBPP, 32);
 
-	if(hge->System_Initiate()) {
-
+	if(hge->System_Initiate())
+	{
 		// Load sound and texture
 		snd=hge->Effect_Load("menu.wav");
 		tex=hge->Texture_Load("particles.png");
@@ -90,36 +157,29 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		{
 			// If one of the data files is not found, display
 			// an error message and shutdown.
-			MessageBox(NULL, "Can't load one of the following files:\nMENU.WAV, PARTICLES.PNG, FONT1.FNT, FONT1.PNG, TRAIL.PSI", "Error", MB_OK | MB_ICONERROR | MB_APPLMODAL);
+			MessageBox(NULL, "Can't load one of the following files:\nMENU.WAV, FONT1.FNT, FONT1.PNG, PARTICLES.PNG, TRAIL.PSI", "Error", MB_OK | MB_ICONERROR | MB_APPLMODAL);
 			hge->System_Shutdown();
 			hge->Release();
 			return 0;
 		}
 
-		// Create and set up a sprite
-		spr=new hgeSprite(tex, 96, 64, 32, 32);
-		spr->SetColor(0xFFFFA000);
-		spr->SetHotSpot(16,16);
-
 		// Load a font
-		fnt=new hgeFont("font1.fnt");
+		Font = new hgeFont("font1.fnt");
 
 		// Create and set up a particle system
-		spt=new hgeSprite(tex, 64, 96, 32, 32);
-		spr->SetColor(0xFFFFA000);
-		spt->SetBlendMode(BLEND_COLORMUL | BLEND_ALPHAADD | BLEND_NOZWRITE);
-		spt->SetHotSpot(16,16);
-		par=new hgeParticleSystem("trail.psi",spt);
-		par->Fire();
+		Crosshair = new hgeSprite(tex, 64, 96, 32, 32);
+		Crosshair->SetBlendMode(BLEND_COLORMUL | BLEND_ALPHAADD | BLEND_NOZWRITE);
+		Crosshair->SetHotSpot(16,16);
+
+		OurHero = new Hero(Vector2D(100.0f, 100.0f));
 
 		// Let's rock now!
 		hge->System_Start();
 
 		// Delete created objects and free loaded resources
-		delete par;
-		delete fnt;
-		delete spt;
-		delete spr;
+		delete Font;
+		delete Crosshair;
+		delete OurHero;
 		hge->Texture_Free(tex);
 		hge->Effect_Free(snd);
 	}

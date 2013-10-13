@@ -114,6 +114,19 @@ public:
 		CFIXCC_ASSERT_EQUALS(testVectorB, Vector2D(0.9972f, -0.07476377f));
 		CFIXCC_ASSERT_EQUALS(testVectorB.Size(), 1.0f);				// ort size is only 1.0
 	}
+
+	void testVectorOrt()
+	{
+		Vector2D testVectorA(5.2f, -0.39f);
+
+		testVectorA = testVectorA.Ort();
+		
+		CFIXCC_ASSERT_EQUALS(testVectorA, Vector2D(0.9972f, -0.07476377f));
+		CFIXCC_ASSERT_EQUALS(testVectorA.Size(), 1.0f);				// ort size is only 1.0
+
+		testVectorA = Vector2D(0.0f, 0.0f);
+		CFIXCC_ASSERT_EQUALS(testVectorA.Ort(), Vector2D(0.0f, 0.0f));
+	}
 };
 
 CFIXCC_BEGIN_CLASS(testVector)
@@ -126,5 +139,6 @@ CFIXCC_BEGIN_CLASS(testVector)
 	CFIXCC_METHOD(testVectorSubstraction)
 	CFIXCC_METHOD(testVectorMultiplication)
 	CFIXCC_METHOD(testVectorDivision)
+	CFIXCC_METHOD(testVectorOrt)
 CFIXCC_END_CLASS()
 

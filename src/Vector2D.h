@@ -42,4 +42,9 @@ public:
 	//friend Vector2D DotProfuct(const Vector2D& left, const Vector2D& right);
 };
 
+const Vector2D LeftDirection(-1.0f, 0.0f);
+const Vector2D RightDirection(1.0f, 0.0f);
+const Vector2D UpDirection(0.0f, -1.0f);
+const Vector2D DownDirection(0.0f, 1.0f);
+
 #endif

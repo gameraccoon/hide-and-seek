@@ -16,6 +16,9 @@
 #include "Vector2D.h"
 //#include "Hero.h"
 
+/** Допустимая погрешность в положении объектов на экране */
+const float PIXEL_ERROR = 0.9f;
+
 #include <iostream>
 
 using namespace std;
