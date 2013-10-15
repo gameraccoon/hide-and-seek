@@ -4,8 +4,9 @@
 #include "../src/Globals.h"
 #include "../src/Vector2D.h"
 #include "../src/DirectionArrow.h"
+#include "../src/Actor.h"
 
-class Hero
+class Hero:public Actor
 {
 public:
 	/** Initialization of a new Hero standing at a given point */
@@ -13,30 +14,17 @@ public:
 
 	~Hero();
 
-	/** Set new location of the hero on the screen */
-	void SetLocation(Vector2D newLocations);
-
 	/** Say that we want to move the Hero on this step */
 	void Move(Vector2D step);
-
-	/**  */
-	Vector2D GetLocation();
 
 	/** Process moving and other actions of the Hero */
 	void Update(float deltaTime);
 
-	/** Render Hero in his current position on the screen */
-	void Render();
-
 private:
-	/** Current Hero location on the screen */
-	Vector2D Location;
 	/** Hero moving speed in Px/s */
 	float Speed;
 	/** Delta between needless position and current position */
 	Vector2D Step;
-	/** Sprite of our Hero */
-	hgeSprite* HeroSprite;
 	/** Texture of all Hero sprites */
 	HTEXTURE HeroTexture;
 };
