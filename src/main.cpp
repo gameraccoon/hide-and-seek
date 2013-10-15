@@ -1,5 +1,6 @@
 #include "../src/Globals.h"
 #include "../src/Hero.h"
+#include "../src/DirectionArrow.h"
 
 // Pointers to the HGE objects we will use
 hgeSprite*	Crosshair;
@@ -12,6 +13,8 @@ Vector2D MousePos = ZeroVector;
 
 // Initialze Hero
 Hero *OurHero;
+
+DirectionArrow *Arrow;
 
 bool FrameFunc()
 {
@@ -33,6 +36,9 @@ bool FrameFunc()
 	// Do some movement calculations for Hero
 	OurHero->Update(dt);
 
+	Arrow->SetCenter(OurHero->GetLocation());
+	Arrow->SetVDirection(Direction);
+
 	return false;
 }
 
@@ -43,6 +49,7 @@ bool RenderFunc()
 	//-- Here renders graphics
 	Crosshair->Render(MousePos.X, MousePos.Y);
 	OurHero->Render();
+	Arrow->Render();
 	Font->printf(5, 5, HGETEXT_LEFT, "dt:%.3f\nFPS:%d (constant)", Hge->Timer_GetDelta(), Hge->Timer_GetFPS());
 	//-- end of render graphics
 	Hge->Gfx_EndScene();
@@ -88,12 +95,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		OurHero = new Hero(Vector2D(100.0f, 100.0f));
 
+		Arrow = new DirectionArrow();
+
 		// Let's rock now!
 		Hge->System_Start();
 
 		// Delete created objects and free loaded resources
 		delete Font;
 		delete Crosshair;
+		delete Arrow;
 		delete OurHero;
 		Hge->Texture_Free(Texture);
 	}

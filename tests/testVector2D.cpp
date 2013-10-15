@@ -25,7 +25,7 @@ public:
 
 		CFIXCC_ASSERT_EQUALS(testVectorA, Vector2D(1.0, 0.0));
 
-		angle = 90.0f;
+		angle = PI/2;
 		testVectorA = Vector2D(angle);
 
 		CFIXCC_ASSERT_EQUALS(testVectorA, Vector2D(0.0, 1.0));
@@ -144,6 +144,21 @@ public:
 		testVectorA = Vector2D(0.0f, 0.0f);
 		CFIXCC_ASSERT_EQUALS(testVectorA.Ort(), Vector2D(0.0f, 0.0f));
 	}
+
+	void testVectorGetRotation()
+	{
+		Vector2D testVectorA(1.0f, 0.0f);
+		Vector2D testVectorB(-1.0f, 0.0f);
+		Vector2D testVectorC(0.0f, 1.0f);
+		Vector2D testVectorD(0.0f, -1.0f);
+		Vector2D testVectorE(0.0f, 0.0f);
+		
+		CFIXCC_ASSERT_EQUALS(testVectorA.GetRotation(), 0.0f);
+		CFIXCC_ASSERT_EQUALS(testVectorB.GetRotation(), PI);
+		CFIXCC_ASSERT_EQUALS(testVectorC.GetRotation(), PI/2);
+		CFIXCC_ASSERT_EQUALS(testVectorD.GetRotation(), -PI/2);
+		CFIXCC_ASSERT_EQUALS(testVectorE.GetRotation(), 0.0f);		//Invalid parameter should not cause errors
+	}
 };
 
 CFIXCC_BEGIN_CLASS(testVector)
@@ -158,5 +173,6 @@ CFIXCC_BEGIN_CLASS(testVector)
 	CFIXCC_METHOD(testVectorMultiplication)
 	CFIXCC_METHOD(testVectorDivision)
 	CFIXCC_METHOD(testVectorOrt)
+	CFIXCC_METHOD(testVectorGetRotation)
 CFIXCC_END_CLASS()
 

@@ -2,6 +2,7 @@
 #define VECTOR_H
 
 #include <math.h>
+
 #include "../src/Rotator.h"
 
 // dummy for debugging methods
@@ -26,6 +27,9 @@ public:
 
 	/** Получить орт вектора (единичный вектор, направленный в ту же сторону что и данный) */
 	Vector2D Ort(void);
+
+	/** get angle between vector and OX axis */
+	Rotator GetRotation(void);
 
 	friend Vector2D operator-(const Vector2D& vect);
 

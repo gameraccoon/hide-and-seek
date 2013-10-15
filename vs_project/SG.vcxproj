@@ -16,6 +16,7 @@
     <ClCompile Include="..\src\Hero.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\Processes.cpp" />
+    <ClCompile Include="..\src\Rotator.cpp" />
     <ClCompile Include="..\src\States.cpp" />
     <ClCompile Include="..\src\Vector2D.cpp" />
     <ClCompile Include="..\tests\testProcesses.cpp" />

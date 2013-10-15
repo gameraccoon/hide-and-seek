@@ -37,6 +37,11 @@ Vector2D Vector2D::Ort(void)
 	return *this / Size();
 }
 
+Rotator Vector2D::GetRotation(void)
+{
+	return atan2(Y, X);
+}
+
 Vector2D operator-(const Vector2D& vect)
 {
 	Vector2D newVect(vect);

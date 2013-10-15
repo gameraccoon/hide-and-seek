@@ -17,16 +17,17 @@ public:
 	DirectionArrow(void);
 	~DirectionArrow(void);
 	void SetCenter(Vector2D newCenter);
-//	void SetDirection(Rotator newDirection);
+	void SetDirection(Rotator newDirection);
+	void SetVDirection(Vector2D vectDirection);
 	void Render();
 private:
 	Vector2D CenterLocation;
 	/** Direction with length */
-//	Rotator Direction;
+	Rotator Direction;
+	bool bDrawable;
 	hgeSprite* ArrowSprite;
 	/** Texture includes all the sprites DirectionArrow */
 	HTEXTURE ArrowTexture;
-	
 };
 
 #endif
