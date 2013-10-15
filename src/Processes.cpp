@@ -1,4 +1,3 @@
-#include "BaseProperties.h"
 #include "Processes.h"
 
 Process::Process(int id)

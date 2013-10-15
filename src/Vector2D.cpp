@@ -1,4 +1,4 @@
-#include "../src/Vector2D.h"
+#include "Vector2D.h"
 
 const float VECTOR_ERROR = 0.0001f;
 
@@ -14,6 +14,12 @@ Vector2D::Vector2D(const Vector2D& vect)
 	Y = vect.Y;
 }
 
+Vector2D::Vector2D(const Rotator& rot)
+{
+	X = cos(rot);
+	Y = sin(rot);
+}
+
 Vector2D::~Vector2D(void)
 {
 }
@@ -26,7 +32,7 @@ float Vector2D::Size(void)
 Vector2D Vector2D::Ort(void)
 {
 	if (X == 0.0f && Y == 0.0f)
-		return Vector2D(0.0f, 0.0f);
+		return ZeroVector;
 
 	return *this / Size();
 }
@@ -124,3 +130,9 @@ Vector2D operator/=(Vector2D& vect, float scalar)
 
 	return Vector2D(vect);
 }
+
+const Vector2D LeftDirection(-1.0f, 0.0f);
+const Vector2D RightDirection(1.0f, 0.0f);
+const Vector2D UpDirection(0.0f, -1.0f);
+const Vector2D DownDirection(0.0f, 1.0f);
+const Vector2D ZeroVector(0.0f, 0.0f);

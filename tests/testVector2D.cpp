@@ -18,6 +18,19 @@ public:
 				&& testVectorB.Y == -0.39f);
 	}
 
+	void testVectorInitializationFromAngle()
+	{
+		Rotator angle = 0.0f;
+		Vector2D testVectorA(angle);
+
+		CFIXCC_ASSERT_EQUALS(testVectorA, Vector2D(1.0, 0.0));
+
+		angle = 90.0f;
+		testVectorA = Vector2D(angle);
+
+		CFIXCC_ASSERT_EQUALS(testVectorA, Vector2D(0.0, 1.0));
+	}
+
 	void testVectorComparison()
 	{
 		Vector2D testVectorA(5.2f, -0.39f);
@@ -37,6 +50,7 @@ public:
 
 		Vector2D testVectorB = testVectorA;
 		testVectorB.X = 30.0f;
+
 		CFIXCC_ASSERT_EQUALS(testVectorB.X, 30.0f);
 		CFIXCC_ASSERT_EQUALS(testVectorA.X, 5.2f);
 	}
@@ -46,6 +60,7 @@ public:
 		Vector2D testVectorA(5.2f, -0.39f);
 
 		float testVectorSize = testVectorA.Size();
+
 		CFIXCC_ASSERT_EQUALS(testVectorSize, 5.2146f);
 	}
 
@@ -54,9 +69,11 @@ public:
 		Vector2D testVectorA(5.2f, -0.39f);
 
 		Vector2D testVectorB = -testVectorA;
+
 		CFIXCC_ASSERT_EQUALS(testVectorB, Vector2D(-5.2f, 0.39f));
 
 		testVectorB.Y = 70.0f;
+
 		CFIXCC_ASSERT_EQUALS(testVectorA, Vector2D(5.2f, -0.39f));
 		CFIXCC_ASSERT_EQUALS(testVectorA.X, 5.2f);
 	}
@@ -131,6 +148,7 @@ public:
 
 CFIXCC_BEGIN_CLASS(testVector)
 	CFIXCC_METHOD(testVectorCreation)
+	CFIXCC_METHOD(testVectorInitializationFromAngle)
 	CFIXCC_METHOD(testVectorComparison)
 	CFIXCC_METHOD(testVectorProtection)
 	CFIXCC_METHOD(testVectorSize)

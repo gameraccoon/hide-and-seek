@@ -1,14 +1,24 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
-#include "../src/BaseProperties.h"
+#include <math.h>
+#include "../src/Rotator.h"
+
+// dummy for debugging methods
+#if (!defined DEBUG) && (!defined RELEASE)
+	#define RELEASE
+	#define WARN(message)
+	#define WARN_IF(condition, message)
+#endif
 
 class Vector2D
 {
 public:
 	Vector2D(float x, float y);
 	Vector2D(const Vector2D& vect);
+	Vector2D(const Rotator& rot);
 	virtual ~Vector2D(void);
+
 	float X, Y;
 
 	/** Длина вектора в юнитах */
@@ -42,9 +52,10 @@ public:
 	//friend Vector2D DotProfuct(const Vector2D& left, const Vector2D& right);
 };
 
-const Vector2D LeftDirection(-1.0f, 0.0f);
-const Vector2D RightDirection(1.0f, 0.0f);
-const Vector2D UpDirection(0.0f, -1.0f);
-const Vector2D DownDirection(0.0f, 1.0f);
+extern const Vector2D LeftDirection;
+extern const Vector2D RightDirection;
+extern const Vector2D UpDirection;
+extern const Vector2D DownDirection;
+extern const Vector2D ZeroVector;
 
 #endif

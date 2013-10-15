@@ -1,28 +1,46 @@
 #include "Hero.h"
 
-
-Hero::Hero(void)
+Hero::Hero(Vector2D location) : Location(location), Step(ZeroVector)
 {
-	Location = Vector2D(0.0f, 0.0f);
-}
+	Speed = 1200.0f;
 
+	HeroTexture = Hge->Texture_Load("particles.png");
+
+	WARN_IF(!HeroTexture, "Texture 'particles.png' not found!");
+		
+	HeroSprite = new hgeSprite(HeroTexture, 96, 64, 32, 32);
+	HeroSprite->SetColor(0xFFFFA000);
+	HeroSprite->SetHotSpot(16, 16);
+}
 
 Hero::~Hero(void)
 {
+	delete HeroSprite;
+	Hge->Texture_Free(HeroTexture);
 }
 
-void Hero::SetLocation(Vector2D location)
+void Hero::SetLocation(Vector2D newLocation)
 {
-	Location = location;
+	Location = newLocation;
 }
 
-void Hero::MoveTo(Vector2D newLocation)
+Vector2D Hero::GetLocation()
 {
-	NextLocation = newLocation;
+	return Location;
 }
 
-void Hero::Process(int deltatime)
+void Hero::Move(Vector2D step)
 {
-//	Vector deltaLocation = NextLocation - Location;
-//	Location.Add(Speed * deltatime * deltaLocation / deltaLocation.Size());
+	Step = step;
+}
+
+void Hero::Update(float deltaTime)
+{
+	Location += Step * deltaTime;
+	Step = ZeroVector;
+}
+
+void Hero::Render()
+{
+	HeroSprite->Render(Location.X, Location.Y);
 }

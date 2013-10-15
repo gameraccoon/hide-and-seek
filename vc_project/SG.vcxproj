@@ -11,7 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\BaseProperties.cpp" />
+    <ClCompile Include="..\src\DirectionArrow.cpp" />
+    <ClCompile Include="..\src\Globals.cpp" />
+    <ClCompile Include="..\src\Hero.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\Processes.cpp" />
     <ClCompile Include="..\src\States.cpp" />
@@ -21,8 +23,11 @@
     <ClCompile Include="..\tests\testVector2D.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\BaseProperties.h" />
+    <ClInclude Include="..\src\DirectionArrow.h" />
+    <ClInclude Include="..\src\Globals.h" />
+    <ClInclude Include="..\src\Hero.h" />
     <ClInclude Include="..\src\Processes.h" />
+    <ClInclude Include="..\src\Rotator.h" />
     <ClInclude Include="..\src\States.h" />
     <ClInclude Include="..\src\Vector2D.h" />
   </ItemGroup>
