@@ -3,7 +3,7 @@
 #include "../src/DirectionArrow.h"
 #include "../src/World.h"
 #include "../src/Wall.h"
-#include "../src/Camera.h"
+#include "../src/FloatingCamera.h"
 
 // Pointers to the HGE objects we will use
 hgeSprite*	Crosshair;
@@ -12,7 +12,12 @@ hgeFont*	Font;
 // Handles for HGE resourcces
 HTEXTURE	Texture;
 
+const int SCREEN_WIDTH = 800;
+const int SCREEN_HEIGHT = 600;
+
 Vector2D MousePos = ZeroVector;
+
+const Vector2D SCREEN_CENTER(SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
 
 // Our Hero whom we control
 Hero *OurHero;
@@ -24,7 +29,7 @@ World *GameWorld;
 Wall *TestWall;
 
 //
-Camera *MainCamera;
+FloatingCamera *MainCamera;
 
 // test arrow for show directions on screen
 DirectionArrow *Arrow;
@@ -46,12 +51,16 @@ bool FrameFunc()
 	
 	Hge->Input_GetMousePos(&MousePos.X, &MousePos.Y);
 
+
+	Vector2D CameraShift((MousePos - SCREEN_CENTER)/2);
 	MainCamera->SetLocation(OurHero->GetLocation());
+	MainCamera->SetCenterShift(CameraShift);
 
 	// Do some movement calculations for actors in World
 	GameWorld->Update(dt);
 
 	Arrow->SetVDirection(Direction);
+	Arrow->SetCenter(SCREEN_CENTER - CameraShift);
 
 	return false;
 }
@@ -81,8 +90,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	Hge->System_SetState(HGE_TITLE, "Stealth game - alpha1");
 	Hge->System_SetState(HGE_FPS, 100);
 	Hge->System_SetState(HGE_WINDOWED, true);
-	Hge->System_SetState(HGE_SCREENWIDTH, 800);
-	Hge->System_SetState(HGE_SCREENHEIGHT, 600);
+	Hge->System_SetState(HGE_SCREENWIDTH, SCREEN_WIDTH);
+	Hge->System_SetState(HGE_SCREENHEIGHT, SCREEN_HEIGHT);
 	Hge->System_SetState(HGE_SCREENBPP, 32);
 
 	if(Hge->System_Initiate())
@@ -109,8 +118,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		GameWorld = new World();
 
-		MainCamera = new Camera(GameWorld, Vector2D(0.0f, 0.0f));
-		MainCamera->SetResolution(Vector2D(800.0f, 600.0f));
+		MainCamera = new FloatingCamera(GameWorld, Vector2D(0.0f, 0.0f));
+		MainCamera->SetResolution(SCREEN_CENTER * 2);
 
 		TestWall = new Wall(Vector2D(300.0f, 200.0f), Vector2D(100, 20));
 
@@ -120,7 +129,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		GameWorld->Spawn(TestWall);
 
 		Arrow = new DirectionArrow();
-		Arrow->SetCenter(Vector2D(400.0f, 300.0f));
+		Arrow->SetCenter(SCREEN_CENTER);
 
 		// Let's rock now!
 		Hge->System_Start();
@@ -131,6 +140,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		delete Arrow;
 		delete TestWall;
 		delete OurHero;
+		delete MainCamera;
 		delete GameWorld;
 		Hge->Texture_Free(Texture);
 	}

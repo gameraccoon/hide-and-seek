@@ -14,7 +14,7 @@ public:
 	void SetLocation(Vector2D newLocation);
 	void SetResolution(Vector2D newResolution);
 	Vector2D GetResolution();
-private:
+protected:
 	World* BrowsableWorld;
 	Vector2D Location;
 	/** Screen resolution */
