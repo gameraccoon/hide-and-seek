@@ -1,4 +1,3 @@
-#include "BaseProperties.h"
 #include "States.h"
 
 #include <cstdlib>
@@ -7,10 +6,10 @@ void State::Process()
 {
 	WARN("Function 'Process' not redefined in some state");
 }
+
 State::~State()
 {
 }
-
 
 /**
  * Итератор состояния для стека состояний

@@ -1,131 +1,161 @@
-#include "BaseProperties.h"
-
-HGE *hge=0;
+#include "../src/Globals.h"
+#include "../src/Hero.h"
+#include "../src/DirectionArrow.h"
+#include "../src/World.h"
+#include "../src/Wall.h"
+#include "../src/FloatingCamera.h"
 
 // Pointers to the HGE objects we will use
-hgeSprite*			spr;
-hgeSprite*			spt;
-hgeFont*			fnt;
-hgeParticleSystem*	par;
+hgeSprite*	Crosshair;
+hgeFont*	Font;
 
 // Handles for HGE resourcces
-HTEXTURE			tex;
-HEFFECT				snd;
+HTEXTURE	Texture;
 
-// Some "gameplay" variables
-float x=100.0f, y=100.0f;
-float dx=0.0f, dy=0.0f;
+const int SCREEN_WIDTH = 800;
+const int SCREEN_HEIGHT = 600;
 
-const float speed=90;
-const float friction=0.98f;
+Vector2D MousePos = ZeroVector;
 
-// Play sound effect
-void boom() {
-	int pan=int((x-400)/4);
-	float pitch=(dx*dx+dy*dy)*0.00005f+0.2f;
-	hge->Effect_PlayEx(snd,100,pan,pitch);
-}
+const Vector2D SCREEN_CENTER(SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
+
+float CameraAngle = 0.0f;
+
+// Our Hero whom we control
+Hero *OurHero;
+
+// Our big World =)
+World *GameWorld;
+
+// testWall
+Wall *TestWall;
+
+//
+FloatingCamera *MainCamera;
+
+// test arrow for show directions on screen
+DirectionArrow *Arrow;
 
 bool FrameFunc()
 {
-	float dt=hge->Timer_GetDelta();
+	float dt = Hge->Timer_GetDelta();
 
 	// Process keys
-	if (hge->Input_GetKeyState(HGEK_ESCAPE)) return true;
-	if (hge->Input_GetKeyState(HGEK_LEFT)) dx-=speed*dt;
-	if (hge->Input_GetKeyState(HGEK_RIGHT)) dx+=speed*dt;
-	if (hge->Input_GetKeyState(HGEK_UP)) dy-=speed*dt;
-	if (hge->Input_GetKeyState(HGEK_DOWN)) dy+=speed*dt;
+	if (Hge->Input_GetKeyState(HGEK_ESCAPE)) return true;
 
-	// Do some movement calculations and collision detection	
-	dx*=friction; dy*=friction; x+=dx; y+=dy;
-	if(x>784) {x=784-(x-784);dx=-dx;boom();}
-	if(x<16) {x=16+16-x;dx=-dx;boom();}
-	if(y>584) {y=584-(y-584);dy=-dy;boom();}
-	if(y<16) {y=16+16-y;dy=-dy;boom();}
+	Vector2D Direction = ZeroVector;
+	if (Hge->Input_GetKeyState(HGEK_A))	Direction += LeftDirection;
+	if (Hge->Input_GetKeyState(HGEK_D))	Direction += RightDirection;
+	if (Hge->Input_GetKeyState(HGEK_W))	Direction += UpDirection;
+	if (Hge->Input_GetKeyState(HGEK_S))	Direction += DownDirection;
 
-	// Update particle system
-	par->info.nEmission= 100 +(int)(dx*dx+dy*dy)*5;
-	par->MoveTo(x,y);
-	par->Update(dt);
+	if (Hge->Input_GetKeyState(HGEK_LEFT))	CameraAngle += 0.01;
+	if (Hge->Input_GetKeyState(HGEK_RIGHT))	CameraAngle -= 0.01;
+
+	OurHero->Move(Vector2D(Direction.GetRotation() - CameraAngle) * Direction.Ort().Size() * 100); // constant speed
+	
+	Hge->Input_GetMousePos(&MousePos.X, &MousePos.Y);
+
+	Vector2D CameraShift((MousePos - SCREEN_CENTER)/2);
+	MainCamera->SetLocation(OurHero->GetLocation());
+	MainCamera->SetRotation(CameraAngle);
+	MainCamera->SetCenterShift(CameraShift);
+
+	// Do some movement calculations for actors in World
+	GameWorld->Update(dt);
+
+	Arrow->SetVDirection(Direction);
+	Arrow->SetCenter(SCREEN_CENTER - CameraShift);
 
 	return false;
 }
-
 
 bool RenderFunc()
 {
-	// Render graphics
-	hge->Gfx_BeginScene();
-	hge->Gfx_Clear(0);
-	par->Render();
-	spr->Render(x, y);
-	fnt->printf(5, 5, HGETEXT_LEFT, "dt:%.3f\nFPS:%d (constant)", hge->Timer_GetDelta(), hge->Timer_GetFPS());
-	hge->Gfx_EndScene();
+	Hge->Gfx_BeginScene();
+	Hge->Gfx_Clear(0);
+	//-- Here renders graphics
+	MainCamera->Render();
+	Crosshair->Render(MousePos.X, MousePos.Y);
+	Arrow->Render();
+	Font->printf(5, 5, HGETEXT_LEFT, "dt:%.3f\nFPS:%d (constant)", Hge->Timer_GetDelta(), Hge->Timer_GetFPS());
+	//-- end of render graphics
+	Hge->Gfx_EndScene();
 
 	return false;
 }
 
-
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
-	hge = hgeCreate(HGE_VERSION);
+	Hge = hgeCreate(HGE_VERSION);
 
-	hge->System_SetState(HGE_LOGFILE, "hge_tut03.log");
-	hge->System_SetState(HGE_FRAMEFUNC, FrameFunc);
-	hge->System_SetState(HGE_RENDERFUNC, RenderFunc);
-	hge->System_SetState(HGE_TITLE, "HGE Tutorial 03 - Using helper classes");
-	hge->System_SetState(HGE_FPS, 100);
-	hge->System_SetState(HGE_WINDOWED, true);
-	hge->System_SetState(HGE_SCREENWIDTH, 800);
-	hge->System_SetState(HGE_SCREENHEIGHT, 600);
-	hge->System_SetState(HGE_SCREENBPP, 32);
+	Hge->System_SetState(HGE_LOGFILE, "SG.log");
+	Hge->System_SetState(HGE_FRAMEFUNC, FrameFunc);
+	Hge->System_SetState(HGE_RENDERFUNC, RenderFunc);
+	Hge->System_SetState(HGE_TITLE, "Stealth game - alpha1");
+	Hge->System_SetState(HGE_FPS, 100);
+	Hge->System_SetState(HGE_WINDOWED, true);
+	Hge->System_SetState(HGE_SCREENWIDTH, SCREEN_WIDTH);
+	Hge->System_SetState(HGE_SCREENHEIGHT, SCREEN_HEIGHT);
+	Hge->System_SetState(HGE_SCREENBPP, 32);
 
-	if(hge->System_Initiate()) {
-
+	if(Hge->System_Initiate())
+	{
 		// Load sound and texture
-		snd=hge->Effect_Load("menu.wav");
-		tex=hge->Texture_Load("particles.png");
-		if(!snd || !tex)
+		Texture = Hge->Texture_Load("particles.png");
+		if(!Texture)
 		{
 			// If one of the data files is not found, display
 			// an error message and shutdown.
-			MessageBox(NULL, "Can't load one of the following files:\nMENU.WAV, PARTICLES.PNG, FONT1.FNT, FONT1.PNG, TRAIL.PSI", "Error", MB_OK | MB_ICONERROR | MB_APPLMODAL);
-			hge->System_Shutdown();
-			hge->Release();
+			MessageBox(NULL, "Can't load one of the following files:\nFONT1.FNT, FONT1.PNG, PARTICLES.PNG", "Error", MB_OK | MB_ICONERROR | MB_APPLMODAL);
+			Hge->System_Shutdown();
+			Hge->Release();
 			return 0;
 		}
 
-		// Create and set up a sprite
-		spr=new hgeSprite(tex, 96, 64, 32, 32);
-		spr->SetColor(0xFFFFA000);
-		spr->SetHotSpot(16,16);
-
 		// Load a font
-		fnt=new hgeFont("font1.fnt");
+		Font = new hgeFont("font1.fnt");
 
 		// Create and set up a particle system
-		spt=new hgeSprite(tex, 64, 96, 32, 32);
-		spr->SetColor(0xFFFFA000);
-		spt->SetBlendMode(BLEND_COLORMUL | BLEND_ALPHAADD | BLEND_NOZWRITE);
-		spt->SetHotSpot(16,16);
-		par=new hgeParticleSystem("trail.psi",spt);
-		par->Fire();
+		Crosshair = new hgeSprite(Texture, 64, 96, 32, 32);
+		Crosshair->SetBlendMode(BLEND_COLORMUL | BLEND_ALPHAADD | BLEND_NOZWRITE);
+		Crosshair->SetHotSpot(16, 16);
+
+		GameWorld = new World();
+
+		MainCamera = new FloatingCamera(GameWorld, Vector2D(0.0f, 0.0f));
+		MainCamera->SetResolution(SCREEN_CENTER * 2);
+
+		TestWall = new Wall(Vector2D(300.0f, 200.0f), Vector2D(100, 20));
+
+		OurHero = new Hero(Vector2D(100.0f, 100.0f));
+
+		GameWorld->Spawn(OurHero);
+		GameWorld->Spawn(TestWall);
+
+		Arrow = new DirectionArrow();
+		Arrow->SetCenter(SCREEN_CENTER);
 
 		// Let's rock now!
-		hge->System_Start();
+		Hge->System_Start();
 
 		// Delete created objects and free loaded resources
-		delete par;
-		delete fnt;
-		delete spt;
-		delete spr;
-		hge->Texture_Free(tex);
-		hge->Effect_Free(snd);
+		delete Font;
+		delete Crosshair;
+		delete Arrow;
+		delete TestWall;
+		delete OurHero;
+		delete MainCamera;
+		delete GameWorld;
+		Hge->Texture_Free(Texture);
+	}
+	else
+	{
+		MessageBox(NULL, "System failed to initialize", "Error", MB_OK | MB_ICONERROR | MB_APPLMODAL);
 	}
 
 	// Clean up and shutdown
-	hge->System_Shutdown();
-	hge->Release();
+	Hge->System_Shutdown();
+	Hge->Release();
 	return 0;
 }

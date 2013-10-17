@@ -1,6 +1,13 @@
 #ifndef STATES_H
 #define STATES_H
 
+// dummy for debugging methods
+#if (!defined DEBUG) && (!defined RELEASE)
+	#define RELEASE
+	#define WARN(message)
+	#define WARN_IF(condition, message)
+#endif
+
 /**
  * Абстрактный интерфейс состояния
  */

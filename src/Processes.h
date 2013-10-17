@@ -1,14 +1,23 @@
 #ifndef PROCESSES_H
 #define PROCESSES_H
 
+#include "../src/Globals.h"
+
+// dummy for debugging methods
+#if (!defined DEBUG) && (!defined RELEASE)
+	#define RELEASE
+	#define WARN(message)
+	#define WARN_IF(condition, message)
+#endif
+
 /**
- * Абстрактный класс для некого процесса
+ * Abstract class for some process
  */
 class Process
 {
 public:
 	/**
-	 * Инициировать процесс с некоторым ID
+	 * Initialize the process with some ID
 	 */
     Process(int id);
 
@@ -17,28 +26,28 @@ public:
     /**
      * Функция, вызываемая при необходимости обработать процесс
      *
-     * Должна быть переопределена в производных классах
+     * It should be overridden in the the child class.
      */
 	virtual void Run() = 0;
 
 	/**
-	 * Получить ID процесса
+	 * Get the process ID
 	 */
     int GetId();
 private:
-	/** ID этого процесса. Назначается при создании экземпляра. */
+	/** ID of the process */
 	int ProcessID;
 };
 
 /**
- * Контейнер для хранения процесса
+ * Container for the process
  *
- * Нужен для скрытия деталей реализации менеджера процессов
+ * Need to hide the implementation details of PracessManager.
  */
 class ProcessContainer;
 
 /**
- * Менеджер процессов
+ * Process manager
  *
  * Последовательно выполняет группу процессов.
  * Для корректной работы необходимо, чтобы процессы не влияли друг на друга.
