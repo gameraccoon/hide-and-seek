@@ -1,3 +1,3 @@
 #include "Globals.h"
 
-HGE *Hge = 0;
+HGE *Hge = NULL;

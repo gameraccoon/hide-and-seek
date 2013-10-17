@@ -6,6 +6,8 @@
 
 /**
  * The base class for all actors which may be placed in the World.
+ *
+ * Abstract
  */
 class Actor
 {
@@ -18,7 +20,7 @@ public:
 	/** Get actor's world location */
 	Vector2D GetLocation();
 	/** Process moving and other actions of the Actor */
-	void Update(float deltaTime);
+	virtual void Update(float deltaTime) = 0;
 	/** Render the actor in the current location */
 	void Render();
 protected:

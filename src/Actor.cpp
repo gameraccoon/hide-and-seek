@@ -21,5 +21,8 @@ void Actor::SetLocation(Vector2D newLocation)
 
 void Actor::Render()
 {
-	Sprite->RenderEx(Location.X, Location.Y, Direction);
+	if (Sprite != NULL)
+	{
+		Sprite->RenderEx(Location.X, Location.Y, Direction);
+	}
 }

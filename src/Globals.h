@@ -24,12 +24,12 @@
 		std::cout << message << std::endl;	\
 	}
 
-	#define WARN_IF(condition, message)	\
-	{									\
-		if (condition)					\
-		{								\
-			WARN(message);				\
-		}								\
+	#define WARN_IF(condition, message)		\
+	{										\
+		if (condition)						\
+		{									\
+			WARN(message);					\
+		}									\
 	}
 #endif
 

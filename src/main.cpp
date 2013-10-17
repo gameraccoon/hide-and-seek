@@ -1,6 +1,7 @@
 #include "../src/Globals.h"
 #include "../src/Hero.h"
 #include "../src/DirectionArrow.h"
+#include "../src/World.h"
 
 // Pointers to the HGE objects we will use
 hgeSprite*	Crosshair;
@@ -11,9 +12,13 @@ HTEXTURE	Texture;
 
 Vector2D MousePos = ZeroVector;
 
-// Initialze Hero
+// Our Hero whom we control
 Hero *OurHero;
 
+// Our big World =)
+World *GameWorld;
+
+// test arrow for show directions on screen
 DirectionArrow *Arrow;
 
 bool FrameFunc()
@@ -34,7 +39,7 @@ bool FrameFunc()
 	Hge->Input_GetMousePos(&MousePos.X, &MousePos.Y);
 
 	// Do some movement calculations for Hero
-	OurHero->Update(dt);
+	GameWorld->Update(dt);
 
 	Arrow->SetCenter(OurHero->GetLocation());
 	Arrow->SetVDirection(Direction);
@@ -48,7 +53,7 @@ bool RenderFunc()
 	Hge->Gfx_Clear(0);
 	//-- Here renders graphics
 	Crosshair->Render(MousePos.X, MousePos.Y);
-	OurHero->Render();
+	GameWorld->RenderAll();
 	Arrow->Render();
 	Font->printf(5, 5, HGETEXT_LEFT, "dt:%.3f\nFPS:%d (constant)", Hge->Timer_GetDelta(), Hge->Timer_GetFPS());
 	//-- end of render graphics
@@ -79,7 +84,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		{
 			// If one of the data files is not found, display
 			// an error message and shutdown.
-			MessageBox(NULL, "Can't load one of the following files:\nFONT1.FNT, FONT1.PNG, PARTICLES.PNG, TRAIL.PSI", "Error", MB_OK | MB_ICONERROR | MB_APPLMODAL);
+			MessageBox(NULL, "Can't load one of the following files:\nFONT1.FNT, FONT1.PNG, PARTICLES.PNG", "Error", MB_OK | MB_ICONERROR | MB_APPLMODAL);
 			Hge->System_Shutdown();
 			Hge->Release();
 			return 0;
@@ -91,9 +96,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		// Create and set up a particle system
 		Crosshair = new hgeSprite(Texture, 64, 96, 32, 32);
 		Crosshair->SetBlendMode(BLEND_COLORMUL | BLEND_ALPHAADD | BLEND_NOZWRITE);
-		Crosshair->SetHotSpot(16,16);
+		Crosshair->SetHotSpot(16, 16);
+
+		GameWorld = new World();
 
 		OurHero = new Hero(Vector2D(100.0f, 100.0f));
+
+		GameWorld->Spawn(OurHero);
 
 		Arrow = new DirectionArrow();
 
@@ -105,7 +114,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		delete Crosshair;
 		delete Arrow;
 		delete OurHero;
+		delete GameWorld;
 		Hge->Texture_Free(Texture);
+	}
+	else
+	{
+		MessageBox(NULL, "System failed to initialize", "Error", MB_OK | MB_ICONERROR | MB_APPLMODAL);
 	}
 
 	// Clean up and shutdown
