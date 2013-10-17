@@ -19,10 +19,10 @@ void Actor::SetLocation(Vector2D newLocation)
 	Location = newLocation;
 }
 
-void Actor::Render()
-{
-	if (Sprite != NULL)
-	{
-		Sprite->RenderEx(Location.X, Location.Y, Direction);
-	}
-}
+//void Actor::Render()
+//{
+//	if (Sprite != NULL)
+//	{
+//		Sprite->RenderEx(Location.X, Location.Y, Direction);
+//	}
+//}

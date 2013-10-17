@@ -20,6 +20,7 @@
     <ClCompile Include="..\src\Rotator.cpp" />
     <ClCompile Include="..\src\States.cpp" />
     <ClCompile Include="..\src\Vector2D.cpp" />
+    <ClCompile Include="..\src\Wall.cpp" />
     <ClCompile Include="..\src\World.cpp" />
     <ClCompile Include="..\tests\testProcesses.cpp" />
     <ClCompile Include="..\tests\testStates.cpp" />
@@ -34,6 +35,7 @@
     <ClInclude Include="..\src\Rotator.h" />
     <ClInclude Include="..\src\States.h" />
     <ClInclude Include="..\src\Vector2D.h" />
+    <ClInclude Include="..\src\Wall.h" />
     <ClInclude Include="..\src\World.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

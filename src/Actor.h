@@ -22,11 +22,11 @@ public:
 	/** Process moving and other actions of the Actor */
 	virtual void Update(float deltaTime) = 0;
 	/** Render the actor in the current location */
-	void Render();
+	virtual void Render() = 0;
 protected:
 	/** Location of the actor in the world */
 	Vector2D Location;
-	/** Angle between world's OX axis and actor's OX axis */
+	/** Angle between world's x-axis and actor's x-axis */
 	Rotator Direction;
 	/** Sprite of the actor */
 	hgeSprite *Sprite;

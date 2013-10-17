@@ -2,7 +2,7 @@
 
 Hero::Hero(Vector2D location) : Actor(location), Step(ZeroVector)
 {
-	Speed = 1200.0f;
+	Speed = 12.0f;
 
 	HeroTexture = Hge->Texture_Load("particles.png");
 
@@ -28,4 +28,12 @@ void Hero::Update(float deltaTime)
 {
 	Location += Step * deltaTime;
 	Step = ZeroVector;
+}
+
+void Hero::Render()
+{
+	if (Sprite != NULL)
+	{
+		Sprite->RenderEx(Location.X, Location.Y, Direction);
+	}
 }

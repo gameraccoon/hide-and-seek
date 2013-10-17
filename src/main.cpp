@@ -2,6 +2,7 @@
 #include "../src/Hero.h"
 #include "../src/DirectionArrow.h"
 #include "../src/World.h"
+#include "../src/Wall.h"
 
 // Pointers to the HGE objects we will use
 hgeSprite*	Crosshair;
@@ -17,6 +18,9 @@ Hero *OurHero;
 
 // Our big World =)
 World *GameWorld;
+
+// testWall
+Wall *TestWall;
 
 // test arrow for show directions on screen
 DirectionArrow *Arrow;
@@ -34,11 +38,11 @@ bool FrameFunc()
 	if (Hge->Input_GetKeyState(HGEK_W))	Direction += UpDirection;
 	if (Hge->Input_GetKeyState(HGEK_S))	Direction += DownDirection;
 
-	OurHero->Move(Direction.Ort() * 500); // constant speed
+	OurHero->Move(Direction.Ort() * 100); // constant speed
 	
 	Hge->Input_GetMousePos(&MousePos.X, &MousePos.Y);
 
-	// Do some movement calculations for Hero
+	// Do some movement calculations for actors in World
 	GameWorld->Update(dt);
 
 	Arrow->SetCenter(OurHero->GetLocation());
@@ -52,8 +56,8 @@ bool RenderFunc()
 	Hge->Gfx_BeginScene();
 	Hge->Gfx_Clear(0);
 	//-- Here renders graphics
-	Crosshair->Render(MousePos.X, MousePos.Y);
 	GameWorld->RenderAll();
+	Crosshair->Render(MousePos.X, MousePos.Y);
 	Arrow->Render();
 	Font->printf(5, 5, HGETEXT_LEFT, "dt:%.3f\nFPS:%d (constant)", Hge->Timer_GetDelta(), Hge->Timer_GetFPS());
 	//-- end of render graphics
@@ -100,9 +104,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		GameWorld = new World();
 
+		TestWall = new Wall(Vector2D(300.0f, 200.0f), Vector2D(100, 20));
+
 		OurHero = new Hero(Vector2D(100.0f, 100.0f));
 
 		GameWorld->Spawn(OurHero);
+		GameWorld->Spawn(TestWall);
 
 		Arrow = new DirectionArrow();
 
@@ -113,6 +120,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		delete Font;
 		delete Crosshair;
 		delete Arrow;
+		delete TestWall;
 		delete OurHero;
 		delete GameWorld;
 		Hge->Texture_Free(Texture);
