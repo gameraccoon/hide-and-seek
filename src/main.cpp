@@ -3,6 +3,7 @@
 #include "../src/DirectionArrow.h"
 #include "../src/World.h"
 #include "../src/Wall.h"
+#include "../src/Camera.h"
 
 // Pointers to the HGE objects we will use
 hgeSprite*	Crosshair;
@@ -21,6 +22,9 @@ World *GameWorld;
 
 // testWall
 Wall *TestWall;
+
+//
+Camera *MainCamera;
 
 // test arrow for show directions on screen
 DirectionArrow *Arrow;
@@ -42,10 +46,11 @@ bool FrameFunc()
 	
 	Hge->Input_GetMousePos(&MousePos.X, &MousePos.Y);
 
+	MainCamera->SetLocation(OurHero->GetLocation());
+
 	// Do some movement calculations for actors in World
 	GameWorld->Update(dt);
 
-	Arrow->SetCenter(OurHero->GetLocation());
 	Arrow->SetVDirection(Direction);
 
 	return false;
@@ -56,7 +61,7 @@ bool RenderFunc()
 	Hge->Gfx_BeginScene();
 	Hge->Gfx_Clear(0);
 	//-- Here renders graphics
-	GameWorld->RenderAll();
+	MainCamera->Render();
 	Crosshair->Render(MousePos.X, MousePos.Y);
 	Arrow->Render();
 	Font->printf(5, 5, HGETEXT_LEFT, "dt:%.3f\nFPS:%d (constant)", Hge->Timer_GetDelta(), Hge->Timer_GetFPS());
@@ -104,6 +109,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		GameWorld = new World();
 
+		MainCamera = new Camera(GameWorld, Vector2D(0.0f, 0.0f));
+		MainCamera->SetResolution(Vector2D(800.0f, 600.0f));
+
 		TestWall = new Wall(Vector2D(300.0f, 200.0f), Vector2D(100, 20));
 
 		OurHero = new Hero(Vector2D(100.0f, 100.0f));
@@ -112,6 +120,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		GameWorld->Spawn(TestWall);
 
 		Arrow = new DirectionArrow();
+		Arrow->SetCenter(Vector2D(400.0f, 300.0f));
 
 		// Let's rock now!
 		Hge->System_Start();

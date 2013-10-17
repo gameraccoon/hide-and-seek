@@ -10,7 +10,7 @@ public:
 	~Wall(void);
 	void Update(float deltaTime);
 	/** Render the actor in the current location */
-	void Render();
+	void Render(Vector2D shift);
 private:
 	/** Wall lenght */
 	float Lenght;

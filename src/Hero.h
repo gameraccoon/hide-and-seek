@@ -20,7 +20,7 @@ public:
 	/** Process moving and other actions of the Hero */
 	void Update(float deltaTime);
 	/** Render the actor in the current location */
-	void Render();
+	void Render(Vector2D shift);
 
 private:
 	/** Hero moving speed in Px/s */

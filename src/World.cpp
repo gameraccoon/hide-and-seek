@@ -20,14 +20,6 @@ void World::Delete(Actor* actor)
 	AllActors.erase(actor);
 }
 
-void World::RenderAll()
-{
-	for (std::set<Actor*>::iterator it = AllActors.begin(); it != AllActors.end(); it++)
-	{
-		(*it)->Render();
-	}
-}
-
 void World::Update(float deltaTime)
 {
 	for (std::set<Actor*>::iterator it = AllActors.begin(); it != AllActors.end(); it++)

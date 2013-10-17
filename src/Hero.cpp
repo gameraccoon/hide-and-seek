@@ -30,10 +30,10 @@ void Hero::Update(float deltaTime)
 	Step = ZeroVector;
 }
 
-void Hero::Render()
+void Hero::Render(Vector2D shift)
 {
 	if (Sprite != NULL)
 	{
-		Sprite->RenderEx(Location.X, Location.Y, Direction);
+		Sprite->RenderEx(Location.X - shift.X, Location.Y - shift.Y, Direction);
 	}
 }

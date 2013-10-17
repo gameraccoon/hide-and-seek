@@ -24,10 +24,10 @@ void Wall::Update(float deltaTime)
 {
 }
 
-void Wall::Render()
+void Wall::Render(Vector2D shift)
 {
 	if (Sprite != NULL)
 	{
-		Sprite->RenderEx(Location.X, Location.Y, Direction, Lenght/126.0, Weight/126.0);
+		Sprite->RenderEx(Location.X - shift.X, Location.Y - shift.Y, Direction, Lenght/126.0, Weight/126.0);
 	}
 }

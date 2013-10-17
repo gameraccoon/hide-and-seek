@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Actor.cpp" />
+    <ClCompile Include="..\src\Camera.cpp" />
     <ClCompile Include="..\src\DirectionArrow.cpp" />
     <ClCompile Include="..\src\Globals.cpp" />
     <ClCompile Include="..\src\Hero.cpp" />
@@ -28,6 +29,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Actor.h" />
+    <ClInclude Include="..\src\Camera.h" />
     <ClInclude Include="..\src\DirectionArrow.h" />
     <ClInclude Include="..\src\Globals.h" />
     <ClInclude Include="..\src\Hero.h" />
