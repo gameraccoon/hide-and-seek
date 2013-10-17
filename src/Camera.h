@@ -14,13 +14,16 @@ public:
 	void SetLocation(Vector2D newLocation);
 	void SetResolution(Vector2D newResolution);
 	Vector2D GetResolution();
+	void SetRotation(Rotator angle);
 protected:
 	World* BrowsableWorld;
 	Vector2D Location;
 	/** Screen resolution */
 	Vector2D Resolution;
-	/** World cocation of camera center */
+	/** World location of camera center */
 	Vector2D CenterPos;
+	/** Rotation */
+	float Angle;
 };
 
 #endif

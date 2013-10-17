@@ -13,17 +13,17 @@ FloatingCamera::~FloatingCamera(void)
 void FloatingCamera::SetLocation(Vector2D newLocation)
 {
 	Location = newLocation;
-	CenterPos = Location + Shift - Resolution/2;
+	CenterPos = Resolution/2 - Shift;
 }
 
 void FloatingCamera::SetResolution(Vector2D newResolution)
 {
 	Resolution = newResolution;
-	CenterPos = Location + Shift - Resolution/2;
+	CenterPos = Resolution/2 - Shift;
 }
 
 void FloatingCamera::SetCenterShift(Vector2D shift)
 {
 	Shift = shift;
-	CenterPos = Location + Shift - Resolution/2;
+	CenterPos = Resolution/2 - Shift;
 }

@@ -22,7 +22,7 @@ public:
 	/** Process moving and other actions of the Actor */
 	virtual void Update(float deltaTime) = 0;
 	/** Render the actor in the current location */
-	virtual void Render(Vector2D shift) = 0;
+	virtual void Render(Vector2D shift, Rotator angle) = 0;
 protected:
 	/** Location of the actor in the world */
 	Vector2D Location;

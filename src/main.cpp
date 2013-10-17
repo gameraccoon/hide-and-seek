@@ -19,6 +19,8 @@ Vector2D MousePos = ZeroVector;
 
 const Vector2D SCREEN_CENTER(SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
 
+float CameraAngle = 0.0f;
+
 // Our Hero whom we control
 Hero *OurHero;
 
@@ -47,13 +49,16 @@ bool FrameFunc()
 	if (Hge->Input_GetKeyState(HGEK_W))	Direction += UpDirection;
 	if (Hge->Input_GetKeyState(HGEK_S))	Direction += DownDirection;
 
-	OurHero->Move(Direction.Ort() * 100); // constant speed
+	if (Hge->Input_GetKeyState(HGEK_LEFT))	CameraAngle += 0.01;
+	if (Hge->Input_GetKeyState(HGEK_RIGHT))	CameraAngle -= 0.01;
+
+	OurHero->Move(Vector2D(Direction.GetRotation() - CameraAngle) * Direction.Ort().Size() * 100); // constant speed
 	
 	Hge->Input_GetMousePos(&MousePos.X, &MousePos.Y);
 
-
 	Vector2D CameraShift((MousePos - SCREEN_CENTER)/2);
 	MainCamera->SetLocation(OurHero->GetLocation());
+	MainCamera->SetRotation(CameraAngle);
 	MainCamera->SetCenterShift(CameraShift);
 
 	// Do some movement calculations for actors in World
