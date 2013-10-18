@@ -5,6 +5,9 @@
 #include "../src/Wall.h"
 #include "../src/FloatingCamera.h"
 
+// Hge subsystem
+HGE *Hge = NULL;
+
 // Pointers to the HGE objects we will use
 hgeSprite*	Crosshair;
 hgeFont*	Font;
@@ -49,8 +52,8 @@ bool FrameFunc()
 	if (Hge->Input_GetKeyState(HGEK_W))	Direction += UpDirection;
 	if (Hge->Input_GetKeyState(HGEK_S))	Direction += DownDirection;
 
-	if (Hge->Input_GetKeyState(HGEK_LEFT))	CameraAngle += 0.01;
-	if (Hge->Input_GetKeyState(HGEK_RIGHT))	CameraAngle -= 0.01;
+	if (Hge->Input_GetKeyState(HGEK_LEFT))	CameraAngle += 0.01f;
+	if (Hge->Input_GetKeyState(HGEK_RIGHT))	CameraAngle -= 0.01f;
 
 	OurHero->Move(Vector2D(Direction.GetRotation() - CameraAngle) * Direction.Ort().Size() * 100); // constant speed
 	
@@ -126,14 +129,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		MainCamera = new FloatingCamera(GameWorld, Vector2D(0.0f, 0.0f));
 		MainCamera->SetResolution(SCREEN_CENTER * 2);
 
-		TestWall = new Wall(Vector2D(300.0f, 200.0f), Vector2D(100, 20));
+		TestWall = new Wall(Hge, Vector2D(300.0f, 200.0f), Vector2D(100, 20));
 
-		OurHero = new Hero(Vector2D(100.0f, 100.0f));
+		OurHero = new Hero(Hge, Vector2D(100.0f, 100.0f));
 
 		GameWorld->Spawn(OurHero);
 		GameWorld->Spawn(TestWall);
 
-		Arrow = new DirectionArrow();
+		Arrow = new DirectionArrow(Hge);
 		Arrow->SetCenter(SCREEN_CENTER);
 
 		// Let's rock now!

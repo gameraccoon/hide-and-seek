@@ -6,7 +6,7 @@
 class Wall : public Actor
 {
 public:
-	Wall(Vector2D location, Vector2D size);
+	Wall(HGE *hge, Vector2D location, Vector2D size);
 	~Wall(void);
 	void Update(float deltaTime);
 	/** Render the actor in the current location */

@@ -12,7 +12,7 @@
 class Actor
 {
 public:
-	Actor(Vector2D location);
+	Actor(HGE *hge, Vector2D location);
 	~Actor(void);
 	
 	/** Set new location of the actor in the World */
@@ -24,12 +24,15 @@ public:
 	/** Render the actor in the current location */
 	virtual void Render(Vector2D shift, Rotator angle) = 0;
 protected:
+	/** Pointer to the HGE subsystem */
+	HGE *Hge;
 	/** Location of the actor in the world */
 	Vector2D Location;
 	/** Angle between world's x-axis and actor's x-axis */
 	Rotator Direction;
 	/** Sprite of the actor */
 	hgeSprite *Sprite;
+	/** Pointer to Hge subsystem */
 };
 
 #endif

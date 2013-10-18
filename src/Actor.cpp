@@ -1,8 +1,9 @@
 #include "Actor.h"
 
 
-Actor::Actor(Vector2D location) : Location(location)
+Actor::Actor(HGE *hge, Vector2D location) : Location(location)
 {
+	Hge = hge;
 }
 
 Actor::~Actor(void)

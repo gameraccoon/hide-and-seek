@@ -1,7 +1,9 @@
 #include "DirectionArrow.h"
 
-DirectionArrow::DirectionArrow(void) : CenterLocation(ZeroVector)
+DirectionArrow::DirectionArrow(HGE *hge) : CenterLocation(ZeroVector)
 {
+	Hge = hge;
+
 	ArrowTexture = Hge->Texture_Load("arrow.png");
 
 	WARN_IF(!ArrowTexture, "Texture 'arrow.png' not found!");

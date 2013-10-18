@@ -1,7 +1,7 @@
 #include "Wall.h"
 
 
-Wall::Wall(Vector2D location, Vector2D size) : Actor(location)
+Wall::Wall(HGE *hge, Vector2D location, Vector2D size) : Actor(hge, location)
 {
 	Lenght = size.X;
 	Weight = size.Y;
@@ -28,6 +28,6 @@ void Wall::Render(Vector2D shift, Rotator angle)
 {
 	if (Sprite != NULL)
 	{
-		Sprite->RenderEx(shift.X, shift.Y, Direction + angle, Lenght/126.0, Weight/126.0);
+		Sprite->RenderEx(shift.X, shift.Y, Direction + angle, Lenght/126.0f, Weight/126.0f);
 	}
 }

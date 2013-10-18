@@ -10,7 +10,7 @@ class Hero:public Actor
 {
 public:
 	/** Initialization of a new Hero standing at a given point */
-	Hero(Vector2D location);
+	Hero(HGE *hge, Vector2D location);
 
 	~Hero();
 

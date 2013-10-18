@@ -14,7 +14,7 @@
 class DirectionArrow
 {
 public:
-	DirectionArrow(void);
+	DirectionArrow(HGE *hge);
 	~DirectionArrow(void);
 	void SetCenter(Vector2D newCenter);
 	void SetDirection(Rotator newDirection);
@@ -24,6 +24,8 @@ private:
 	Vector2D CenterLocation;
 	/** Direction with length */
 	Rotator Direction;
+	// Pointer to the HGE subsystem
+	HGE *Hge;
 	bool bDrawable;
 	hgeSprite* ArrowSprite;
 	/** Texture includes all the sprites DirectionArrow */

@@ -1,6 +1,6 @@
 #include "Hero.h"
 
-Hero::Hero(Vector2D location) : Actor(location), Step(ZeroVector)
+Hero::Hero(HGE *hge, Vector2D location) : Actor(hge, location), Step(ZeroVector)
 {
 	Speed = 12.0f;
 

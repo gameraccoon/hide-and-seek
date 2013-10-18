@@ -14,7 +14,7 @@
 #include <iostream>
 
 // comment this definition in release
-#define DEBUG
+//#define DEBUG
 
 // Debugging methods
 #if defined(DEBUG)
@@ -38,18 +38,15 @@
  * WARN or WARN_IF it's necessary to include next
  * instructions
  */
-  //// dummy for debugging methods
-  //#if (!defined DEBUG) && (!defined RELEASE)
- 	//#define RELEASE
-  //	#define WARN(message)
-  //	#define WARN_IF(condition, message)
-  //#endif
+  // dummy for debugging methods
+  #if (!defined DEBUG) && (!defined RELEASE)
+ 	#define RELEASE
+  	#define WARN(message)
+  	#define WARN_IF(condition, message)
+  #endif
 /*
  * It will provide reusability of these classes in
  * other programs.
  */
-
-/** HGE subsystem */
-extern HGE *Hge;
 
 #endif
