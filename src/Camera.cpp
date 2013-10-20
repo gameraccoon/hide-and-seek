@@ -18,6 +18,8 @@ Camera::Camera(HGE *hge, World* world, Vector2D location) : Location(location),
 	Sprite->SetColor(0xFF00FF00);
 	Sprite->SetHotSpot(0, 0);
 
+	ShownSize = 500.f;
+
 	bShowCollizion = false;
 }
 
@@ -32,8 +34,12 @@ void Camera::Render()
 	for (std::set<IActor*>::iterator it = BrowsableWorld->AllActors.begin(); it != BrowsableWorld->AllActors.end(); it++)
 	{
 		Vector2D screenLoc((*it)->GetLocation() - Location);
-		Vector2D newScreenLoc(Vector2D(screenLoc.GetRotation() + Angle) * screenLoc.Size());
-		(*it)->Render(CenterPos + newScreenLoc, Angle);
+		float distanceFromCamera = screenLoc.Size();
+		if (distanceFromCamera < ShownSize)
+		{
+			Vector2D newScreenLoc(Vector2D(screenLoc.GetRotation() + Angle) * distanceFromCamera);
+			(*it)->Render(CenterPos + newScreenLoc, Angle);
+		}
 	}
 
 	if (bShowCollizion)RenderCollisionBoxes();

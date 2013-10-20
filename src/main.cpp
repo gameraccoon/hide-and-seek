@@ -4,6 +4,7 @@
 #include "../src/World.h"
 #include "../src/Wall.h"
 #include "../src/FloatingCamera.h"
+#include <vector>
 
 // Hge subsystem
 HGE *Hge = NULL;
@@ -11,6 +12,28 @@ HGE *Hge = NULL;
 // Pointers to the HGE objects we will use
 hgeSprite*	Crosshair;
 hgeFont*	Font;
+
+// Class helper needed to desctruct many objects at once
+class StaticGroup
+{
+public:
+	void DestructAll()
+	{
+		for (std::vector<Actor*>::iterator it = Actors.begin(); it != Actors.end(); it++)
+		{
+			delete (*it);
+			(*it) = NULL;
+		}
+	}
+
+	void Insert(Actor *actor)
+	{
+		Actors.insert(Actors.begin(), actor);
+	}
+
+private:
+	std::vector<Actor*> Actors;
+};
 
 // Handles for HGE resourcces
 HTEXTURE	Texture;
@@ -20,6 +43,7 @@ bool bBtnCPressed = false;
 
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
+const bool bWINDOWED = true;
 
 Vector2D MousePos = ZeroVector;
 
@@ -34,9 +58,6 @@ Hero *OurHero;
 
 // Our big World =)
 World *GameWorld;
-
-// Test wall
-Wall *TestWall;
 
 //
 FloatingCamera *MainCamera;
@@ -85,7 +106,7 @@ bool FrameFunc()
 		bBtnCPressed = false;
 	}
 
-	// Do some movement calculations for actors in World
+	// Do World update
 	GameWorld->Update(dt);
 
 	Arrow->SetVDirection(Direction);
@@ -118,7 +139,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	Hge->System_SetState(HGE_RENDERFUNC, RenderFunc);
 	Hge->System_SetState(HGE_TITLE, "Stealth game - alpha1");
 	Hge->System_SetState(HGE_FPS, 100);
-	Hge->System_SetState(HGE_WINDOWED, true);
+	Hge->System_SetState(HGE_WINDOWED, bWINDOWED);
 	Hge->System_SetState(HGE_SCREENWIDTH, SCREEN_WIDTH);
 	Hge->System_SetState(HGE_SCREENHEIGHT, SCREEN_HEIGHT);
 	Hge->System_SetState(HGE_SCREENBPP, 32);
@@ -150,10 +171,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		MainCamera = new FloatingCamera(Hge, GameWorld, Vector2D(0.0f, 0.0f));
 		MainCamera->SetResolution(SCREEN_CENTER * 2);
 
-		TestWall = new Wall(GameWorld, Hge, Vector2D(300.0f, 200.0f), Vector2D(700, 20));
-		OurHero = new Hero(GameWorld, Hge, Vector2D(100.0f, 100.0f));
+		StaticGroup Group = StaticGroup();
+		
+		Group.Insert(new Wall(GameWorld, Hge, Vector2D(250.0f, 300.0f), Vector2D(80, 20)));
+		Group.Insert(new Wall(GameWorld, Hge, Vector2D(250.0f, 200.0f), Vector2D(80, 20)));
+		Group.Insert(new Wall(GameWorld, Hge, Vector2D(200.0f, 250.0f), Vector2D(20, 80)));
+		Group.Insert(new Wall(GameWorld, Hge, Vector2D(300.0f, 250.0f), Vector2D(20, 80)));
+
+		OurHero = new Hero(GameWorld, Hge, Vector2D(0.0f, 0.0f));
+		Group.Insert(OurHero);
+
 		Arrow = new DirectionArrow(Hge);
 		Arrow->SetCenter(SCREEN_CENTER);
+
 		// Let's rock now!
 		Hge->System_Start();
 
@@ -161,8 +191,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		delete Font;
 		delete Crosshair;
 		delete Arrow;
-		delete TestWall;
-		delete OurHero;
+		Group.DestructAll();
 		delete MainCamera;
 		delete GameWorld;
 		Hge->Texture_Free(Texture);

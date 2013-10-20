@@ -31,23 +31,25 @@ void Hero::Move(Vector2D step)
 void Hero::Update(float deltaTime)
 {
 	Vector2D newLocation = Location + Step * deltaTime;
-	
+	bool bFree = true;
+
 	for (std::set<IActor*>::iterator it = OwnerWorld->AllActors.begin(); it != OwnerWorld->AllActors.end(); it++)
 	{
-		if ((*it) != this)
+		if ((*it) != this && (*it)->GetType() == AT_Static)
 		{
 			BoundingBox box = (*it)->GetBoundingBox();
 			if ((box.MinX < newLocation.X + Size.X/2 && newLocation.X - Size.X/2 < box.MaxX)
 				&&
 				(box.MinY < newLocation.Y + Size.Y/2 && newLocation.Y - Size.Y/2 < box.MaxY))
 			{
-				// mirror?
-			}
-			else
-			{
-				Location = newLocation;
+				bFree = false;
 			}
 		}
+	}
+
+	if (bFree)
+	{
+		Location = newLocation;
 	}
 	
 	UpdateCollision();

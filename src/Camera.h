@@ -35,6 +35,8 @@ protected:
 	HTEXTURE CamTexture;
 	/** is shows collizion */
 	bool bShowCollizion;
+	/** maximum distans of renderable objects from camera */
+	float ShownSize;
 };
 
 #endif
