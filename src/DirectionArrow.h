@@ -24,7 +24,7 @@ private:
 	Vector2D CenterLocation;
 	/** Direction with length */
 	Rotator Direction;
-	// Pointer to the HGE subsystem
+	// Pointer of the HGE subsystem
 	HGE *Hge;
 	bool bDrawable;
 	hgeSprite* ArrowSprite;

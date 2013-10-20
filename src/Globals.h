@@ -10,11 +10,8 @@
 
 // Standart structures e.g. NULL
 #include <stdio.h>
-// More structures e.g. counnt and endl 
+// More structures e.g. count and endl 
 #include <iostream>
-
-// comment this definition in release
-//#define DEBUG
 
 // Debugging methods
 #if defined(DEBUG)

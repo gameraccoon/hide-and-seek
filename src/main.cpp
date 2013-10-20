@@ -15,6 +15,9 @@ hgeFont*	Font;
 // Handles for HGE resourcces
 HTEXTURE	Texture;
 
+bool bShowCollizion = false;
+bool bBtnCPressed = false;
+
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
 
@@ -22,21 +25,23 @@ Vector2D MousePos = ZeroVector;
 
 const Vector2D SCREEN_CENTER(SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
 
+const float MAX_CAMERA_RANGE = min(SCREEN_HEIGHT, SCREEN_WIDTH) / 4.0f;
+
 float CameraAngle = 0.0f;
 
-// Our Hero whom we control
+// The Hero whom we control
 Hero *OurHero;
 
 // Our big World =)
 World *GameWorld;
 
-// testWall
+// Test wall
 Wall *TestWall;
 
 //
 FloatingCamera *MainCamera;
 
-// test arrow for show directions on screen
+// Test arrow for show directions on screen
 DirectionArrow *Arrow;
 
 bool FrameFunc()
@@ -60,9 +65,25 @@ bool FrameFunc()
 	Hge->Input_GetMousePos(&MousePos.X, &MousePos.Y);
 
 	Vector2D CameraShift((MousePos - SCREEN_CENTER)/2);
+	CameraShift = CameraShift.Ort() * min(CameraShift.Size(), MAX_CAMERA_RANGE);
 	MainCamera->SetLocation(OurHero->GetLocation());
 	MainCamera->SetRotation(CameraAngle);
 	MainCamera->SetCenterShift(CameraShift);
+	
+	// Switch on/off showing collizion boxes
+	if (Hge->Input_GetKeyState(HGEK_C))
+	{
+		if (!bBtnCPressed)
+		{
+			bBtnCPressed = true;
+			bShowCollizion = !bShowCollizion;
+			MainCamera->ShowCollizion(bShowCollizion);
+		}
+	}
+	else
+	{
+		bBtnCPressed = false;
+	}
 
 	// Do some movement calculations for actors in World
 	GameWorld->Update(dt);
@@ -126,19 +147,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		GameWorld = new World();
 
-		MainCamera = new FloatingCamera(GameWorld, Vector2D(0.0f, 0.0f));
+		MainCamera = new FloatingCamera(Hge, GameWorld, Vector2D(0.0f, 0.0f));
 		MainCamera->SetResolution(SCREEN_CENTER * 2);
 
-		TestWall = new Wall(Hge, Vector2D(300.0f, 200.0f), Vector2D(100, 20));
-
-		OurHero = new Hero(Hge, Vector2D(100.0f, 100.0f));
-
-		GameWorld->Spawn(OurHero);
-		GameWorld->Spawn(TestWall);
-
+		TestWall = new Wall(GameWorld, Hge, Vector2D(300.0f, 200.0f), Vector2D(700, 20));
+		OurHero = new Hero(GameWorld, Hge, Vector2D(100.0f, 100.0f));
 		Arrow = new DirectionArrow(Hge);
 		Arrow->SetCenter(SCREEN_CENTER);
-
 		// Let's rock now!
 		Hge->System_Start();
 

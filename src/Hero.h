@@ -10,7 +10,7 @@ class Hero:public Actor
 {
 public:
 	/** Initialization of a new Hero standing at a given point */
-	Hero(HGE *hge, Vector2D location);
+	Hero(World *ownerWorld, HGE *hge, Vector2D location);
 
 	~Hero();
 
@@ -23,10 +23,14 @@ public:
 	void Render(Vector2D shift, Rotator angle);
 
 private:
+	/** */
+	void UpdateCollision();
 	/** Hero moving speed in Px/s */
 	float Speed;
 	/** Delta between needless position and current position */
 	Vector2D Step;
+	/** */
+	Vector2D Size;
 	/** Texture of all Hero sprites */
 	HTEXTURE HeroTexture;
 };

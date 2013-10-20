@@ -3,16 +3,18 @@
 
 #include "../src/Globals.h"
 #include "../src/Vector2D.h"
+#include "../src/IActor.h"
+#include "../src/World.h"
 
 /**
  * The base class for all actors which may be placed in the World.
  *
  * Abstract
  */
-class Actor
+class Actor : public IActor
 {
 public:
-	Actor(HGE *hge, Vector2D location);
+	Actor(World *ownerWorld, HGE *hge, Vector2D location);
 	~Actor(void);
 	
 	/** Set new location of the actor in the World */
@@ -23,16 +25,28 @@ public:
 	virtual void Update(float deltaTime) = 0;
 	/** Render the actor in the current location */
 	virtual void Render(Vector2D shift, Rotator angle) = 0;
+	/** Get actor type */
+	EActorType GetType();
+	/** Get bounding box */
+	BoundingBox GetBoundingBox();
+
 protected:
-	/** Pointer to the HGE subsystem */
+	/** */
+	virtual void UpdateCollision() = 0;
+	/** Pointer of the HGE subsystem */
 	HGE *Hge;
+	/** Pointer to the owner World */
+	World* OwnerWorld;
+	/** Type of the actor */
+	EActorType Type;
 	/** Location of the actor in the world */
 	Vector2D Location;
 	/** Angle between world's x-axis and actor's x-axis */
 	Rotator Direction;
 	/** Sprite of the actor */
 	hgeSprite *Sprite;
-	/** Pointer to Hge subsystem */
+	/** Bounding box */
+	BoundingBox ColideBox;
 };
 
 #endif

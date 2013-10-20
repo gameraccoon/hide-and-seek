@@ -29,6 +29,11 @@ float Vector2D::Size(void)
 	return sqrt(X*X + Y*Y);
 }
 
+float Vector2D::QSize(void)
+{
+	return X*X + Y*Y;
+}
+
 Vector2D Vector2D::Ort(void)
 {
 	if (X == 0.0f && Y == 0.0f)
@@ -134,6 +139,26 @@ Vector2D operator/=(Vector2D& vect, float scalar)
 	vect.Y /= scalar;
 
 	return Vector2D(vect);
+}
+
+float DotProduct(const Vector2D& left, const Vector2D& right)
+{
+	return left.X*right.X + left.Y*right.Y;
+}
+
+Vector2D Project(Vector2D base, Vector2D vect)
+{
+	float qSize = base.QSize();
+	Vector2D result(ZeroVector);
+
+	if (qSize != 0.0f)
+	{
+		
+		float dProduct = DotProduct(base, vect);
+		result = base * dProduct / qSize;
+	}
+
+	return result;
 }
 
 const Vector2D LeftDirection(-1.0f, 0.0f);

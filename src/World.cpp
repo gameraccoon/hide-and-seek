@@ -2,7 +2,7 @@
 
 World::World(void)
 {
-	std::set<Actor*> AllActors;
+	std::set<IActor*> AllActors;
 }
 
 World::~World(void)
@@ -10,19 +10,19 @@ World::~World(void)
 	AllActors.clear();
 }
 
-void World::Spawn(Actor* actor)
+void World::Spawn(IActor* actor)
 {
 	AllActors.insert(actor);
 }
 
-void World::Delete(Actor* actor)
+void World::Delete(IActor* actor)
 {
 	AllActors.erase(actor);
 }
 
 void World::Update(float deltaTime)
 {
-	for (std::set<Actor*>::iterator it = AllActors.begin(); it != AllActors.end(); it++)
+	for (std::set<IActor*>::iterator it = AllActors.begin(); it != AllActors.end(); it++)
 	{
 		(*it)->Update(deltaTime);
 	}

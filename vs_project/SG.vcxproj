@@ -12,11 +12,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Actor.cpp" />
+    <ClCompile Include="..\src\BoundingBox.cpp" />
     <ClCompile Include="..\src\Camera.cpp" />
     <ClCompile Include="..\src\DirectionArrow.cpp" />
     <ClCompile Include="..\src\FloatingCamera.cpp" />
     <ClCompile Include="..\src\Globals.cpp" />
     <ClCompile Include="..\src\Hero.cpp" />
+    <ClCompile Include="..\src\IActor.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\Processes.cpp" />
     <ClCompile Include="..\src\Rotator.cpp" />
@@ -30,11 +32,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Actor.h" />
+    <ClInclude Include="..\src\BoundingBox.h" />
     <ClInclude Include="..\src\Camera.h" />
     <ClInclude Include="..\src\DirectionArrow.h" />
     <ClInclude Include="..\src\FloatingCamera.h" />
     <ClInclude Include="..\src\Globals.h" />
     <ClInclude Include="..\src\Hero.h" />
+    <ClInclude Include="..\src\IActor.h" />
     <ClInclude Include="..\src\Processes.h" />
     <ClInclude Include="..\src\Rotator.h" />
     <ClInclude Include="..\src\States.h" />

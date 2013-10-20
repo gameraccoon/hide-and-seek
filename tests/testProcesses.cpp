@@ -81,7 +81,7 @@ public:
 		CFIXCC_ASSERT_EQUALS(TestProcessValue1, 1666);
 	}
 
-	void testProcessManageRemoving()
+	void testProcessManagerRemoving()
 	{
 		ProcessManager procMan;
 
@@ -161,7 +161,7 @@ CFIXCC_BEGIN_CLASS(testProcesses)
 	CFIXCC_METHOD(testProcessID)
 	CFIXCC_METHOD(testProcessManagerAddition)
 	CFIXCC_METHOD(testProcessManagerRunEmpty)
-	CFIXCC_METHOD(testProcessManageRemoving)
+	CFIXCC_METHOD(testProcessManagerRemoving)
 	CFIXCC_METHOD(testProcessManagerDuplication)
 CFIXCC_END_CLASS()
 

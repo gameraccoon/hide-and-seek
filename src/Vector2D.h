@@ -22,13 +22,16 @@ public:
 
 	float X, Y;
 
-	/** Длина вектора в юнитах */
+	/** Get vector length in units */
 	float Size(void);
 
-	/** Получить орт вектора (единичный вектор, направленный в ту же сторону что и данный) */
+	/** Get quarter of vector length (faster than Size()) */
+	float QSize(void);
+
+	/** Normalize vector */
 	Vector2D Ort(void);
 
-	/** get angle between vector and OX axis */
+	/** Get angle between vector and OX axis */
 	Rotator GetRotation(void);
 
 	friend Vector2D operator-(const Vector2D& vect);
@@ -53,7 +56,10 @@ public:
 
     friend Vector2D operator/=(Vector2D& vect, float scalar);
 
-	//friend Vector2D DotProfuct(const Vector2D& left, const Vector2D& right);
+	friend float DotProduct(const Vector2D& left, const Vector2D& right);
+
+	/** Project vector "vect" on line that parallel with the vector "base" */
+	friend Vector2D Project(Vector2D base, Vector2D vect);
 };
 
 extern const Vector2D LeftDirection;
