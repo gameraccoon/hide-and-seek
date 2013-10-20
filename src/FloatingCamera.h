@@ -9,6 +9,7 @@ public:
 	void SetResolution(Vector2D newResolution);
 	void SetCenterShift(Vector2D shift);
 protected:
+	void RenderFog();
 	Vector2D Shift;
 };
 

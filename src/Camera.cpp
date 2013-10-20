@@ -10,23 +10,34 @@ Camera::Camera(HGE *hge, World* world, Vector2D location) : Location(location),
 
 	Hge = hge;
 
-	CamTexture = Hge->Texture_Load("colizion.png");
+	FogWidth = 512;
+	FogScale = 1.5f / (FogWidth / 2.0f);
 
-	WARN_IF(!CamTexture, "Texture 'colizion.png' not found!");
-		
-	Sprite = new hgeSprite(CamTexture, 0, 0, 64, 64);
-	Sprite->SetColor(0xFF00FF00);
-	Sprite->SetHotSpot(0, 0);
+	CamTexture = Hge->Texture_Load("colision.png");
+	FogTexture = Hge->Texture_Load("fog.png");
+
+	WARN_IF(!CamTexture || !FogTexture, "Texture 'colision.png' or 'for.png' not found!");
+
+	CollisionSprite = new hgeSprite(CamTexture, 0, 0, 64, 64);
+	CollisionSprite->SetColor(0xFF00FF00);
+	CollisionSprite->SetHotSpot(0, 0);
+
+	FogSprite = new hgeSprite(FogTexture, 0.0f, 0.0f, FogWidth, FogWidth);
+	FogSprite->SetColor(0xFF000000);
+	FogSprite->SetHotSpot(FogWidth/2, FogWidth/2);
 
 	ShownSize = 500.f;
 
-	bShowCollizion = false;
+	bShowCollision = false;
+	bRenderFog = true;
 }
 
 Camera::~Camera(void)
 {
-	delete Sprite;
+	delete CollisionSprite;
+	delete FogSprite;
 	Hge->Texture_Free(CamTexture);
+	Hge->Texture_Free(FogTexture);
 }
 
 void Camera::Render()
@@ -42,7 +53,10 @@ void Camera::Render()
 		}
 	}
 
-	if (bShowCollizion)RenderCollisionBoxes();
+	if (bShowCollision)
+		RenderCollisionBoxes();
+	if (bRenderFog)
+		RenderFog();
 }
 
 void Camera::RenderCollisionBoxes()
@@ -55,8 +69,13 @@ void Camera::RenderCollisionBoxes()
 		Vector2D screenLoc(min - Location);
 		Vector2D newScreenLoc(Vector2D(screenLoc.GetRotation() + Angle) * screenLoc.Size());
 		Vector2D shift = CenterPos + newScreenLoc;
-		Sprite->RenderEx(shift.X, shift.Y, Angle, size.X/64.0f, size.Y/64.0f);
+		CollisionSprite->RenderEx(shift.X, shift.Y, Angle, size.X/64.0f, size.Y/64.0f);
 	}
+}
+
+void Camera::RenderFog()
+{
+	FogSprite->RenderEx(Resolution.X/2, Resolution.Y/2, 0, ShownSize * FogScale, ShownSize * FogScale);
 }
 
 void Camera::SetLocation(Vector2D newLocation)
@@ -80,7 +99,12 @@ void Camera::SetRotation(Rotator angle)
 	Angle = angle;
 }
 
-void Camera::ShowCollizion(bool bShow)
+void Camera::ShowCollision(bool bShow)
 {
-	bShowCollizion = bShow;
+	bShowCollision = bShow;
+}
+
+void Camera::ShowFog(bool bShow)
+{
+	bRenderFog = bShow;
 }

@@ -10,15 +10,13 @@
 
 // Standart structures e.g. NULL
 #include <stdio.h>
-// More structures e.g. count and endl 
-#include <iostream>
 
 // Debugging methods
 #if defined(DEBUG)
 	#define WARN(message)					\
 	{										\
-		std::cout << "Warning: ";			\
-		std::cout << message << std::endl;	\
+		MessageBox(NULL, TEXT(message), "Error", MB_OK | MB_ICONERROR | MB_APPLMODAL); \
+		exit(1);\
 	}
 
 	#define WARN_IF(condition, message)		\

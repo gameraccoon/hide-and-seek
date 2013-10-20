@@ -13,6 +13,10 @@ HGE *Hge = NULL;
 hgeSprite*	Crosshair;
 hgeFont*	Font;
 
+const int SCREEN_WIDTH = 800;
+const int SCREEN_HEIGHT = 600;
+const bool bWINDOWED = true;
+
 // Class helper needed to desctruct many objects at once
 class StaticGroup
 {
@@ -38,12 +42,11 @@ private:
 // Handles for HGE resourcces
 HTEXTURE	Texture;
 
-bool bShowCollizion = false;
+bool bShowCollision = false;
 bool bBtnCPressed = false;
 
-const int SCREEN_WIDTH = 800;
-const int SCREEN_HEIGHT = 600;
-const bool bWINDOWED = true;
+bool bShowFog = true;
+bool bBtnFPressed = false;
 
 Vector2D MousePos = ZeroVector;
 
@@ -78,8 +81,8 @@ bool FrameFunc()
 	if (Hge->Input_GetKeyState(HGEK_W))	Direction += UpDirection;
 	if (Hge->Input_GetKeyState(HGEK_S))	Direction += DownDirection;
 
-	if (Hge->Input_GetKeyState(HGEK_LEFT))	CameraAngle += 0.01f;
-	if (Hge->Input_GetKeyState(HGEK_RIGHT))	CameraAngle -= 0.01f;
+	if (Hge->Input_GetKeyState(HGEK_Q))	CameraAngle += 0.005f;
+	if (Hge->Input_GetKeyState(HGEK_E))	CameraAngle -= 0.005f;
 
 	OurHero->Move(Vector2D(Direction.GetRotation() - CameraAngle) * Direction.Ort().Size() * 100); // constant speed
 	
@@ -97,13 +100,28 @@ bool FrameFunc()
 		if (!bBtnCPressed)
 		{
 			bBtnCPressed = true;
-			bShowCollizion = !bShowCollizion;
-			MainCamera->ShowCollizion(bShowCollizion);
+			bShowCollision = !bShowCollision;
+			MainCamera->ShowCollision(bShowCollision);
 		}
 	}
 	else
 	{
 		bBtnCPressed = false;
+	}
+
+	// Switch on/off showing Fog
+	if (Hge->Input_GetKeyState(HGEK_F))
+	{
+		if (!bBtnFPressed)
+		{
+			bBtnFPressed = true;
+			bShowFog = !bShowFog;
+			MainCamera->ShowFog(bShowFog);
+		}
+	}
+	else
+	{
+		bBtnFPressed = false;
 	}
 
 	// Do World update
