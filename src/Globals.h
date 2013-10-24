@@ -16,7 +16,7 @@
 	#define WARN(message)					\
 	{										\
 		MessageBox(NULL, TEXT(message), "Error", MB_OK | MB_ICONERROR | MB_APPLMODAL); \
-		exit(1);\
+		exit(1);							\
 	}
 
 	#define WARN_IF(condition, message)		\

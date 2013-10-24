@@ -18,9 +18,14 @@ public:
 	void SetRotation(Rotator angle);
 	void ShowCollision(bool bShow);
 	void ShowFog(bool bShow);
+	void ShowShadows(bool bShow);
+	/** Project point from world to screen */
+	Vector2D Project(Vector2D);
 protected:
+	void RenderActors();
 	void RenderCollisionBoxes();
 	virtual void RenderFog();
+	void RenderShadows();
 	World* BrowsableWorld;
 	Vector2D Location;
 	/** Screen resolution */
@@ -44,8 +49,11 @@ protected:
 	/** is camera render fog? */
 	bool bRenderFog;
 	/** Fog texture width */
-	int FogWidth;
+	float FogWidth;
 	float FogScale;
+	/** */
+	bool bRenderShadows;
+private: void DrawQuad(Vector2D first, Vector2D second, Vector2D third, Vector2D fourth);
 };
 
 #endif

@@ -21,12 +21,22 @@ BoundingBox::~BoundingBox(void)
 {
 }
 
-Vector2D BoundingBox::GetMin()
+Vector2D BoundingBox::GetFirst()
 {
 	return Vector2D(MinX, MinY);
 }
 
-Vector2D BoundingBox::GetMax()
+Vector2D BoundingBox::GetThird()
 {
 	return Vector2D(MaxX, MaxY);
+}
+
+Vector2D BoundingBox::GetSecond()
+{
+	return Vector2D(MaxX, MinY);
+}
+
+Vector2D BoundingBox::GetFourth()
+{
+	return Vector2D(MinX, MaxY);
 }

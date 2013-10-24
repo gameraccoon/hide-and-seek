@@ -21,14 +21,17 @@
     <ClCompile Include="..\src\IActor.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\Processes.cpp" />
+    <ClCompile Include="..\src\RayTrace.cpp" />
     <ClCompile Include="..\src\Rotator.cpp" />
     <ClCompile Include="..\src\States.cpp" />
     <ClCompile Include="..\src\Vector2D.cpp" />
     <ClCompile Include="..\src\Wall.cpp" />
     <ClCompile Include="..\src\World.cpp" />
     <ClCompile Include="..\tests\testProcesses.cpp" />
+    <ClCompile Include="..\tests\testRayTrace.cpp" />
     <ClCompile Include="..\tests\testStates.cpp" />
     <ClCompile Include="..\tests\testVector2D.cpp" />
+    <ClCompile Include="..\tests\testWorld.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Actor.h" />
@@ -40,6 +43,7 @@
     <ClInclude Include="..\src\Hero.h" />
     <ClInclude Include="..\src\IActor.h" />
     <ClInclude Include="..\src\Processes.h" />
+    <ClInclude Include="..\src\RayTrace.h" />
     <ClInclude Include="..\src\Rotator.h" />
     <ClInclude Include="..\src\States.h" />
     <ClInclude Include="..\src\Vector2D.h" />

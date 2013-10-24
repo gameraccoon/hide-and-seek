@@ -15,7 +15,11 @@ hgeFont*	Font;
 
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
-const bool bWINDOWED = true;
+const bool FULL_SCREEN = false;
+
+//const int SCREEN_WIDTH = 1366;
+//const int SCREEN_HEIGHT = 768;
+//const bool FULL_SCREEN = true;
 
 // Class helper needed to desctruct many objects at once
 class StaticGroup
@@ -47,6 +51,9 @@ bool bBtnCPressed = false;
 
 bool bShowFog = true;
 bool bBtnFPressed = false;
+
+bool bShowShadows = true;
+bool bBtnHPressed = false;
 
 Vector2D MousePos = ZeroVector;
 
@@ -124,6 +131,21 @@ bool FrameFunc()
 		bBtnFPressed = false;
 	}
 
+	// Switch on/off showing Fog
+	if (Hge->Input_GetKeyState(HGEK_H))
+	{
+		if (!bBtnHPressed)
+		{
+			bBtnHPressed = true;
+			bShowShadows = !bShowShadows;
+			MainCamera->ShowShadows(bShowShadows);
+		}
+	}
+	else
+	{
+		bBtnHPressed = false;
+	}
+
 	// Do World update
 	GameWorld->Update(dt);
 
@@ -133,15 +155,33 @@ bool FrameFunc()
 	return false;
 }
 
+void TestRender()
+{
+	hgeTriple tr1;
+	tr1.tex = 0;
+	tr1.blend = BLEND_DEFAULT;
+	tr1.v[0].z = tr1.v[1].z = tr1.v[2].z = 0.5f;
+	tr1.v[0].x = tr1.v[0].y = 150.f;
+	tr1.v[1].x = tr1.v[2].y = 300.f;
+	tr1.v[2].x = 450.f;
+	tr1.v[1].y = 200.f;
+	tr1.v[0].col = 0xFF000000;
+	tr1.v[1].col = 0xFF000000;
+	tr1.v[2].col = 0xFF000000;
+	
+	Hge->Gfx_RenderTriple(&tr1);
+}
+
 bool RenderFunc()
 {
 	Hge->Gfx_BeginScene();
-	Hge->Gfx_Clear(0);
+	Hge->Gfx_Clear(0xFF333333);
 	//-- Here renders graphics
 	MainCamera->Render();
 	Crosshair->Render(MousePos.X, MousePos.Y);
+	//TestRender();
 	Arrow->Render();
-	Font->printf(5, 5, HGETEXT_LEFT, "dt:%.3f\nFPS:%d (constant)", Hge->Timer_GetDelta(), Hge->Timer_GetFPS());
+	Font->printf(5, 5, HGETEXT_LEFT, "dt:%.3f\nFPS:%d", Hge->Timer_GetDelta(), Hge->Timer_GetFPS());
 	//-- end of render graphics
 	Hge->Gfx_EndScene();
 
@@ -157,10 +197,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	Hge->System_SetState(HGE_RENDERFUNC, RenderFunc);
 	Hge->System_SetState(HGE_TITLE, "Stealth game - alpha1");
 	Hge->System_SetState(HGE_FPS, 100);
-	Hge->System_SetState(HGE_WINDOWED, bWINDOWED);
+	Hge->System_SetState(HGE_WINDOWED, !FULL_SCREEN);
 	Hge->System_SetState(HGE_SCREENWIDTH, SCREEN_WIDTH);
 	Hge->System_SetState(HGE_SCREENHEIGHT, SCREEN_HEIGHT);
 	Hge->System_SetState(HGE_SCREENBPP, 32);
+	Hge->System_SetState(HGE_SHOWSPLASH, false); // hidding splash for develop-time only
 
 	if(Hge->System_Initiate())
 	{
@@ -194,9 +235,24 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		Group.Insert(new Wall(GameWorld, Hge, Vector2D(250.0f, 300.0f), Vector2D(80, 20)));
 		Group.Insert(new Wall(GameWorld, Hge, Vector2D(250.0f, 200.0f), Vector2D(80, 20)));
 		Group.Insert(new Wall(GameWorld, Hge, Vector2D(200.0f, 250.0f), Vector2D(20, 80)));
-		Group.Insert(new Wall(GameWorld, Hge, Vector2D(300.0f, 250.0f), Vector2D(20, 80)));
+		//Group.Insert(new Wall(GameWorld, Hge, Vector2D(500.0f, 450.0f), Vector2D(20, 80)));
 
-		OurHero = new Hero(GameWorld, Hge, Vector2D(0.0f, 0.0f));
+		Group.Insert(new Wall(GameWorld, Hge, Vector2D(450.0f, 300.0f), Vector2D(80, 20)));
+		Group.Insert(new Wall(GameWorld, Hge, Vector2D(450.0f, 200.0f), Vector2D(80, 20)));
+		//Group.Insert(new Wall(GameWorld, Hge, Vector2D(400.0f, 250.0f), Vector2D(20, 80)));
+		Group.Insert(new Wall(GameWorld, Hge, Vector2D(500.0f, 250.0f), Vector2D(20, 80)));
+		
+		//Group.Insert(new Wall(GameWorld, Hge, Vector2D(350.0f, 200.0f), Vector2D(80, 20)));
+		Group.Insert(new Wall(GameWorld, Hge, Vector2D(350.0f, 100.0f), Vector2D(80, 20)));
+		Group.Insert(new Wall(GameWorld, Hge, Vector2D(300.0f, 150.0f), Vector2D(20, 80)));
+		Group.Insert(new Wall(GameWorld, Hge, Vector2D(400.0f, 150.0f), Vector2D(20, 80)));
+		
+		//Group.Insert(new Wall(GameWorld, Hge, Vector2D(350.0f, 400.0f), Vector2D(80, 20)));
+		//Group.Insert(new Wall(GameWorld, Hge, Vector2D(350.0f, 300.0f), Vector2D(80, 20)));
+		Group.Insert(new Wall(GameWorld, Hge, Vector2D(300.0f, 350.0f), Vector2D(20, 80)));
+		Group.Insert(new Wall(GameWorld, Hge, Vector2D(400.0f, 350.0f), Vector2D(20, 80)));
+
+		OurHero = new Hero(GameWorld, Hge, Vector2D(0.0f, 350.0f));
 		Group.Insert(OurHero);
 
 		Arrow = new DirectionArrow(Hge);
