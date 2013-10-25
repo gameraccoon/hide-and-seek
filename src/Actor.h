@@ -29,7 +29,8 @@ public:
 	EActorType GetType();
 	/** Get bounding box */
 	BoundingBox GetBoundingBox();
-
+	/** */
+	Hull* GetHull();
 protected:
 	/** */
 	virtual void UpdateCollision() = 0;
@@ -47,6 +48,8 @@ protected:
 	hgeSprite *Sprite;
 	/** Bounding box */
 	BoundingBox ColideBox;
+	/** Hull */
+	Hull Geometry;
 };
 
 #endif

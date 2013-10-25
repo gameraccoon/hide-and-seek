@@ -19,6 +19,7 @@ public:
 	void ShowCollision(bool bShow);
 	void ShowFog(bool bShow);
 	void ShowShadows(bool bShow);
+	void ShowNormals(bool bShow);
 	/** Project point from world to screen */
 	Vector2D Project(Vector2D);
 protected:
@@ -53,6 +54,7 @@ protected:
 	float FogScale;
 	/** */
 	bool bRenderShadows;
+	bool bShowNormals;
 private: void DrawQuad(Vector2D first, Vector2D second, Vector2D third, Vector2D fourth);
 };
 

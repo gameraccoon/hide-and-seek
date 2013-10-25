@@ -17,7 +17,7 @@ class Vector2D
 public:
 	Vector2D(float x, float y);
 	Vector2D(const Vector2D& vect);
-	Vector2D(const Rotator& rot);
+	Vector2D(Rotator rot);
 	virtual ~Vector2D(void);
 
 	float X, Y;
@@ -30,6 +30,15 @@ public:
 
 	/** Normalize vector */
 	Vector2D Ort(void);
+
+	Vector2D MirrorH();
+
+	Vector2D MirrorV();
+
+	Vector2D GetNormal();
+
+	/** Project this vector to line that parallel with the vector "base" */
+	Vector2D Project(Vector2D base);
 
 	/** Get angle between vector and OX axis */
 	Rotator GetRotation(void);
@@ -57,9 +66,6 @@ public:
     friend Vector2D operator/=(Vector2D& vect, float scalar);
 
 	friend float DotProduct(const Vector2D& left, const Vector2D& right);
-
-	/** Project vector "vect" on line that parallel with the vector "base" */
-	friend Vector2D Project(Vector2D base, Vector2D vect);
 };
 
 extern const Vector2D LeftDirection;

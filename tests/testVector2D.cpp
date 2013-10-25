@@ -162,11 +162,11 @@ public:
 		Vector2D testVectorD(0.0f, -1.0f);
 		Vector2D testVectorE(0.0f, 0.0f);
 		
-		CFIXCC_ASSERT_EQUALS(testVectorA.GetRotation(), 0.0f);
-		CFIXCC_ASSERT_EQUALS(testVectorB.GetRotation(), PI);
-		CFIXCC_ASSERT_EQUALS(testVectorC.GetRotation(), PI/2);
-		CFIXCC_ASSERT_EQUALS(testVectorD.GetRotation(), -PI/2);
-		CFIXCC_ASSERT_EQUALS(testVectorE.GetRotation(), 0.0f);		//Invalid parameter should not cause errors
+		CFIXCC_ASSERT_EQUALS(testVectorA.GetRotation().GetValue(), 0.0f);
+		CFIXCC_ASSERT_EQUALS(testVectorB.GetRotation().GetValue(), PI);
+		CFIXCC_ASSERT_EQUALS(testVectorC.GetRotation().GetValue(), PI/2);
+		CFIXCC_ASSERT_EQUALS(testVectorD.GetRotation().GetValue(), -PI/2);
+		CFIXCC_ASSERT_EQUALS(testVectorE.GetRotation().GetValue(), 0.0f);		//Invalid parameter should not cause errors
 	}
 
 	void testVectorDotProduct()
@@ -186,14 +186,14 @@ public:
 		Vector2D testVectorB(16.9f, 803.27f);
 
 		// Another (slowlest) way to calc projection vector
-		Vector2D projectAB = testVectorA.Ort() * testVectorB.Size() * cos(testVectorA.GetRotation() - testVectorB.GetRotation());
+		Vector2D projectAB = testVectorA.Ort() * testVectorB.Size() * cos((testVectorA.GetRotation() - testVectorB.GetRotation()).GetValue());
 
-		CFIXCC_ASSERT_EQUALS(Project(oX, testVectorA), Vector2D(5.2f, 0.0f));
-		CFIXCC_ASSERT_EQUALS(Project(oYxFive, testVectorB), Vector2D(0.0f, 803.27f));
-		CFIXCC_ASSERT_EQUALS(Project(oX, oYxFive), Vector2D(0.0f, 0.0f));
-		CFIXCC_ASSERT_EQUALS(Project(oX, testVectorA) + Project(oYxFive, testVectorA), testVectorA);
+		CFIXCC_ASSERT_EQUALS(testVectorA.Project(oX), Vector2D(5.2f, 0.0f));
+		CFIXCC_ASSERT_EQUALS(testVectorB.Project(oYxFive), Vector2D(0.0f, 803.27f));
+		CFIXCC_ASSERT_EQUALS(oYxFive.Project(oX), Vector2D(0.0f, 0.0f));
+		CFIXCC_ASSERT_EQUALS(testVectorA.Project(oX) + testVectorA.Project(oYxFive), testVectorA);
 		
-		CFIXCC_ASSERT_EQUALS(Project(testVectorA, testVectorB), projectAB);
+		CFIXCC_ASSERT_EQUALS(testVectorB.Project(testVectorA), projectAB);
 	}
 };
 

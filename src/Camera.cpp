@@ -30,6 +30,8 @@ Camera::Camera(HGE *hge, World* world, Vector2D location) : Location(location),
 
 	bShowCollision = false;
 	bRenderFog = true;
+	bShowNormals = false;
+	bRenderShadows = true;
 }
 
 Camera::~Camera(void)
@@ -42,16 +44,15 @@ Camera::~Camera(void)
 
 void Camera::Render()
 {
-	
 	if (bRenderShadows)
 		RenderShadows();
-	
+
 	RenderActors();
 
-	if (bShowCollision)
-		RenderCollisionBoxes();
 	if (bRenderFog)
 		RenderFog();
+	if (bShowCollision)
+		RenderCollisionBoxes();
 }
 
 void Camera::RenderActors()
@@ -122,27 +123,36 @@ void Camera::RenderShadows()
 	{
 		if ((*it)->GetType() == AT_Static)
 		{
-			BoundingBox box = (*it)->GetBoundingBox();
-			Vector2D first = box.GetFirst();
-			Vector2D second = box.GetSecond();
-			Vector2D third = box.GetThird();
-			Vector2D fourth = box.GetFourth();
-			first = Project(first);
-			second = Project(second);
-			third = Project(third);
-			fourth = Project(fourth);
-			
-			Vector2D prfirst = first + (first - CenterPos).Ort() * 3000;
-			Vector2D prsecond = second + (second - CenterPos).Ort() * 3000;
-			Vector2D prthird = third + (third - CenterPos).Ort() * 3000;
-			Vector2D prfourth = fourth + (fourth - CenterPos).Ort() * 3000;
+			Hull *hull = (*it)->GetHull();
+			for (int i = 0; i < hull->Borders.size(); i++)
+			{
+				// cast shadows
+				if (abs((
+						hull->Borders[i].GetNormal().GetRotation()
+						- ((*it)->GetLocation() + (hull->Borders[i].GetA() + hull->Borders[i].GetB())/2 - Location).GetRotation()
+					).GetValue()) > PI/2)
+				{
+					Vector2D a((*it)->GetLocation() + hull->Borders[i].GetA());
+					Vector2D b((*it)->GetLocation() + hull->Borders[i].GetB());
 
-			DrawQuad(first, second, third, fourth);
-			DrawQuad(prfirst, prsecond, prthird, prfourth);
-			DrawQuad(first, second, prsecond, prfirst);
-			DrawQuad(second, third, prthird, prsecond);
-			DrawQuad(third, fourth, prfourth, prthird);
-			DrawQuad(fourth, first, prfirst, prfourth);
+					a = Project(a);
+					b = Project(b);
+
+					DrawQuad(a, b, b + (b - CenterPos).Ort() * 3000, a + (a - CenterPos).Ort() * 3000);
+				}
+
+				// Test functional
+				if (bShowNormals)
+				{
+					Vector2D LinePos((*it)->GetLocation() + (hull->Borders[i].GetA() + hull->Borders[i].GetB())/2);
+					Vector2D Norm(LinePos + hull->Borders[i].GetNormal() * 20);
+
+					LinePos = Project(LinePos);
+					Norm = Project(Norm);
+
+					Hge->Gfx_RenderLine(LinePos.X, LinePos.Y, Norm.X, Norm.Y);
+				}
+			}
 		}
 	}
 }
@@ -165,7 +175,7 @@ Vector2D Camera::GetResolution()
 
 void Camera::SetRotation(Rotator angle)
 {
-	Angle = angle;
+	Angle = angle.GetValue();
 }
 
 void Camera::ShowCollision(bool bShow)
@@ -181,4 +191,9 @@ void Camera::ShowFog(bool bShow)
 void Camera::ShowShadows(bool bShow)
 {
 	bRenderShadows = bShow;
+}
+
+void Camera::ShowNormals(bool bShow)
+{
+	bShowNormals = bShow;
 }

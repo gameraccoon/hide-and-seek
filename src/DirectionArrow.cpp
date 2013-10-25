@@ -1,6 +1,6 @@
 #include "DirectionArrow.h"
 
-DirectionArrow::DirectionArrow(HGE *hge) : CenterLocation(ZeroVector)
+DirectionArrow::DirectionArrow(HGE *hge) : CenterLocation(ZeroVector), Direction(0.0f)
 {
 	Hge = hge;
 
@@ -51,7 +51,7 @@ void DirectionArrow::Render()
 {
 	if (bDrawable)
 	{
-		Vector2D location = CenterLocation + Vector2D(Direction)*50;
-		ArrowSprite->RenderEx(location.X, location.Y, Direction);
+		Vector2D location = CenterLocation + Vector2D(Direction) * 50;
+		ArrowSprite->RenderEx(location.X, location.Y, Direction.GetValue());
 	}
 }

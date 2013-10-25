@@ -5,17 +5,15 @@ const byte RayTrace::RightBit = 2;
 const byte RayTrace::BottomBit = 4;
 const byte RayTrace::TopBit = 8;
 
-RayTrace::RayTrace(World * world, Vector2D start, Vector2D end) : StartPoint(start), EndPoint(end)
+RayTrace::RayTrace(World * world, Vector2D start, Vector2D end) : StartPoint(start), EndPoint(end), Angle((end - start).GetRotation())
 {
 	OwnerWorld = world;
-	Angle = (end - start).GetRotation();
 	RayLength = (end - start).Size();
 }
 
-RayTrace::RayTrace(World * world, Vector2D start, Rotator rotation, float length) : StartPoint(start), EndPoint(Vector2D(rotation) * length)
+RayTrace::RayTrace(World * world, Vector2D start, Rotator rotation, float length) : StartPoint(start), EndPoint(Vector2D(rotation) * length), Angle(rotation)
 {
 	OwnerWorld = world;
-	Angle = rotation;
 	RayLength = length;
 }
 

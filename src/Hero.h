@@ -21,7 +21,6 @@ public:
 	void Update(float deltaTime);
 	/** Render the actor in the current location */
 	void Render(Vector2D shift, Rotator angle);
-
 private:
 	/** */
 	void UpdateCollision();

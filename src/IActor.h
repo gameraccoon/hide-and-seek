@@ -4,6 +4,7 @@
 #include "../src/Globals.h"
 #include "../src/Vector2D.h"
 #include "../src/BoundingBox.h"
+#include "../src/Hull.h"
 
 /** Types of an actors */
 enum EActorType
@@ -36,6 +37,8 @@ public:
 	virtual EActorType GetType() = 0;
 	/** Get bounding box */
 	virtual BoundingBox GetBoundingBox() = 0;
+	/** */
+	virtual Hull* GetHull() = 0;
 };
 
 #endif

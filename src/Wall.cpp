@@ -7,6 +7,12 @@ Wall::Wall(World *ownerWorld, HGE *hge, Vector2D location, Vector2D size) : Acto
 
 	UpdateCollision();
 
+	Geometry.Points.insert(Geometry.Points.end(), -Size/2);
+	Geometry.Points.insert(Geometry.Points.end(), (Size/2).MirrorV());
+	Geometry.Points.insert(Geometry.Points.end(), Size/2);
+	Geometry.Points.insert(Geometry.Points.end(), (Size/2).MirrorH());
+	Geometry.Generate();
+
 	WallTexture = Hge->Texture_Load("testTexture.png");
 
 	WARN_IF(!WallTexture, "Texture 'testTexture.png' not found!");
@@ -35,6 +41,6 @@ void Wall::Render(Vector2D shift, Rotator angle)
 {
 	if (Sprite != NULL)
 	{
-		Sprite->RenderEx(shift.X, shift.Y, Direction + angle, Size.X/126.0f, Size.Y/126.0f);
+		Sprite->RenderEx(shift.X, shift.Y, (Direction + angle).GetValue(), Size.X/126.0f, Size.Y/126.0f);
 	}
 }

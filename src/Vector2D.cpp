@@ -14,10 +14,10 @@ Vector2D::Vector2D(const Vector2D& vect)
 	Y = vect.Y;
 }
 
-Vector2D::Vector2D(const Rotator& rot)
+Vector2D::Vector2D(Rotator rot)
 {
-	X = cos(rot);
-	Y = sin(rot);
+	X = cos(rot.GetValue());
+	Y = sin(rot.GetValue());
 }
 
 Vector2D::~Vector2D(void)
@@ -45,6 +45,35 @@ Vector2D Vector2D::Ort(void)
 Rotator Vector2D::GetRotation(void)
 {
 	return atan2(Y, X);
+}
+
+Vector2D Vector2D::MirrorH()
+{
+	return Vector2D(-X, Y);
+}
+
+Vector2D Vector2D::MirrorV()
+{
+	return Vector2D(X, -Y);
+}
+
+Vector2D Vector2D::GetNormal()
+{
+	return GetRotation() - PI/2;
+}
+
+Vector2D Vector2D::Project(Vector2D base)
+{
+	float qSize = base.QSize();
+	Vector2D result(ZeroVector);
+
+	if (qSize != 0.0f)
+	{
+		float dProduct = DotProduct(base, *this);
+		result = base * dProduct / qSize;
+	}
+
+	return result;
 }
 
 Vector2D operator-(const Vector2D& vect)
@@ -144,21 +173,6 @@ Vector2D operator/=(Vector2D& vect, float scalar)
 float DotProduct(const Vector2D& left, const Vector2D& right)
 {
 	return left.X*right.X + left.Y*right.Y;
-}
-
-Vector2D Project(Vector2D base, Vector2D vect)
-{
-	float qSize = base.QSize();
-	Vector2D result(ZeroVector);
-
-	if (qSize != 0.0f)
-	{
-		
-		float dProduct = DotProduct(base, vect);
-		result = base * dProduct / qSize;
-	}
-
-	return result;
 }
 
 const Vector2D LeftDirection(-1.0f, 0.0f);

@@ -8,6 +8,11 @@ Hero::Hero(World *ownerWorld, HGE *hge, Vector2D location) : Actor(ownerWorld, h
 
 	Speed = 12.0f;
 
+	Geometry.Points.insert(Geometry.Points.end(), -Size / 2);
+	Geometry.Points.insert(Geometry.Points.end(), (Size / 2).MirrorV());
+	Geometry.Points.insert(Geometry.Points.end(), Size / 2);
+	Geometry.Points.insert(Geometry.Points.end(), (Size / 2).MirrorH());
+
 	HeroTexture = Hge->Texture_Load("particles.png");
 
 	WARN_IF(!HeroTexture, "Texture 'particles.png' not found!");
@@ -65,6 +70,6 @@ void Hero::Render(Vector2D shift, Rotator angle)
 {
 	if (Sprite != NULL)
 	{
-		Sprite->RenderEx(shift.X, shift.Y, Direction + angle);
+		Sprite->RenderEx(shift.X, shift.Y, (Direction + angle).GetValue());
 	}
 }

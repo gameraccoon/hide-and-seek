@@ -1,7 +1,7 @@
 #include "Actor.h"
 
 
-Actor::Actor(World *ownerWorld, HGE *hge, Vector2D location) : Location(location), ColideBox(location, location)
+Actor::Actor(World *ownerWorld, HGE *hge, Vector2D location) : Location(location), ColideBox(location, location), Direction(0.0f)
 {
 	Hge = hge;
 	OwnerWorld = ownerWorld;
@@ -32,4 +32,9 @@ EActorType Actor::GetType()
 BoundingBox Actor::GetBoundingBox()
 {
 	return ColideBox;
+}
+
+Hull* Actor::GetHull()
+{
+	return &Geometry;
 }

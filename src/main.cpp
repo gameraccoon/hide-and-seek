@@ -55,6 +55,9 @@ bool bBtnFPressed = false;
 bool bShowShadows = true;
 bool bBtnHPressed = false;
 
+bool bShowNormals= false;
+bool bBtnNPressed = false;
+
 Vector2D MousePos = ZeroVector;
 
 const Vector2D SCREEN_CENTER(SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
@@ -131,7 +134,7 @@ bool FrameFunc()
 		bBtnFPressed = false;
 	}
 
-	// Switch on/off showing Fog
+	// Switch on/off showing Shadows
 	if (Hge->Input_GetKeyState(HGEK_H))
 	{
 		if (!bBtnHPressed)
@@ -144,6 +147,21 @@ bool FrameFunc()
 	else
 	{
 		bBtnHPressed = false;
+	}
+
+	// Switch on/off showing Normals
+	if (Hge->Input_GetKeyState(HGEK_N))
+	{
+		if (!bBtnNPressed)
+		{
+			bBtnNPressed = true;
+			bShowNormals = !bShowNormals;
+			MainCamera->ShowNormals(bShowNormals);
+		}
+	}
+	else
+	{
+		bBtnNPressed = false;
 	}
 
 	// Do World update
@@ -243,7 +261,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		Group.Insert(new Wall(GameWorld, Hge, Vector2D(500.0f, 250.0f), Vector2D(20, 80)));
 		
 		//Group.Insert(new Wall(GameWorld, Hge, Vector2D(350.0f, 200.0f), Vector2D(80, 20)));
-		Group.Insert(new Wall(GameWorld, Hge, Vector2D(350.0f, 100.0f), Vector2D(80, 20)));
+		//Group.Insert(new Wall(GameWorld, Hge, Vector2D(350.0f, 100.0f), Vector2D(80, 20)));
 		Group.Insert(new Wall(GameWorld, Hge, Vector2D(300.0f, 150.0f), Vector2D(20, 80)));
 		Group.Insert(new Wall(GameWorld, Hge, Vector2D(400.0f, 150.0f), Vector2D(20, 80)));
 		
