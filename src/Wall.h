@@ -8,6 +8,7 @@ class Wall : public Actor
 public:
 	Wall(World *ownerWorld, HGE *hge, Vector2D location, Vector2D size);
 	~Wall(void);
+	/** Dummy (wall do nothing) */
 	void Update(float deltaTime);
 	/** Render the actor in the current location */
 	void Render(Vector2D shift, Rotator angle);

@@ -27,11 +27,13 @@ Vector2D Border::GetB()
 void Border::SetA(Vector2D a)
 {
 	A = a;
+	// recalculate normal
 	Normal = (B - a).GetNormal();
 }
 
 void Border::SetB(Vector2D b)
 {
 	B = b;
+	// recalculate normal
 	Normal = (b - A).GetNormal();
 }

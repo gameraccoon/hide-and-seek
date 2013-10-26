@@ -17,14 +17,17 @@ public:
 	//IActor* Trace(Vector2D out_point, Vector2D out_normal);
 protected:
 	byte GetDotCode(const BoundingBox *box, const Vector2D *dot);
-
+	/** World where placed this helper */
 	World *OwnerWorld;
-
+	/** Start point of the ray */
 	Vector2D StartPoint;
+	/** End point of the ray (ray can't be infinite in this discrete system) */
 	Vector2D EndPoint;
+	/** Angle between this ray and world's X-axis */
 	Rotator Angle;
+	/** Length of ray (ray can't be infinite in this discrete system) */
 	float RayLength;
-	// constaints
+	// helpers constaints
 	static const byte LeftBit;
 	static const byte RightBit;
 	static const byte BottomBit;

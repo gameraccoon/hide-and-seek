@@ -35,9 +35,9 @@ public:
 	virtual void Render(Vector2D shift, Rotator angle) = 0;
 	/** Get actor type */
 	virtual EActorType GetType() = 0;
-	/** Get bounding box */
+	/** Get axis-aligned bounding box */
 	virtual BoundingBox GetBoundingBox() = 0;
-	/** */
+	/** Get hull of this actor */
 	virtual Hull* GetHull() = 0;
 };
 

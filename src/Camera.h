@@ -11,23 +11,38 @@ class Camera
 public:
 	Camera(HGE *hge, World* world, Vector2D location);
 	~Camera(void);
+	/** Render of all objects thats seen by camera */
 	void Render();
-	void SetLocation(Vector2D newLocation);
-	void SetResolution(Vector2D newResolution);
+	/** Set new location of camera in the world */
+	virtual void SetLocation(Vector2D newLocation);
+	/** Set screen resolution */
+	virtual void SetResolution(Vector2D newResolution);
+	/** Get screen resolution */
 	Vector2D GetResolution();
+	/** Set new angle of camera rotation */
 	void SetRotation(Rotator angle);
+	/** Switch showing collision */
 	void ShowCollision(bool bShow);
+	/** Switch showing fog */
 	void ShowFog(bool bShow);
+	/** Switch showing shadows */
 	void ShowShadows(bool bShow);
+	/** Switch showing normals */
 	void ShowNormals(bool bShow);
-	/** Project point from world to screen */
+	/** Project point from world coordinates to screen coordinates */
 	Vector2D Project(Vector2D);
 protected:
+	/** Render all seen actors */
 	void RenderActors();
+	/** Render collision AABB to screen */
 	void RenderCollisionBoxes();
+	/** Render fog (fog of war) */
 	virtual void RenderFog();
+	/** Render shadows of player view */
 	void RenderShadows();
+	/** World which render this camera*/
 	World* BrowsableWorld;
+	/** Camera location in the world */
 	Vector2D Location;
 	/** Screen resolution */
 	Vector2D Resolution;
@@ -41,21 +56,27 @@ protected:
 	hgeSprite *CollisionSprite;
 	/** Texture of all Camera sprites */
 	HTEXTURE CamTexture;
+	/** Texture of fog */
 	HTEXTURE FogTexture;
+	/** Sprite of fog */
 	hgeSprite *FogSprite;
-	/** is camera shows collision? */
+	/** Is camera shows collision? */
 	bool bShowCollision;
-	/** maximum distans of renderable objects from camera */
+	/** Maximum distans of renderable objects from camera */
 	float ShownSize;
-	/** is camera render fog? */
+	/** Is camera render fog? */
 	bool bRenderFog;
 	/** Fog texture width */
 	float FogWidth;
+	/** Fog's size */
 	float FogScale;
-	/** */
+	/** Is camera render shadows? */
 	bool bRenderShadows;
+	/** Is camera shows normals of objects? */
 	bool bShowNormals;
-private: void DrawQuad(Vector2D first, Vector2D second, Vector2D third, Vector2D fourth);
+private:
+	/** Helper method. Drawing quad on screen */
+	void DrawQuad(Vector2D first, Vector2D second, Vector2D third, Vector2D fourth);
 };
 
 #endif

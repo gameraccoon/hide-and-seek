@@ -27,9 +27,9 @@ public:
 	virtual void Render(Vector2D shift, Rotator angle) = 0;
 	/** Get actor type */
 	EActorType GetType();
-	/** Get bounding box */
+	/** Get axis-aligned bounding box */
 	BoundingBox GetBoundingBox();
-	/** */
+	/** Get actor's hull */
 	Hull* GetHull();
 protected:
 	/** */
@@ -48,7 +48,7 @@ protected:
 	hgeSprite *Sprite;
 	/** Bounding box */
 	BoundingBox ColideBox;
-	/** Hull */
+	/** Geometry for physics and shadows calculation */
 	Hull Geometry;
 };
 

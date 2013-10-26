@@ -30,11 +30,11 @@ public:
 
 	/** Normalize vector */
 	Vector2D Ort(void);
-
+	/** Mirror horisontally */
 	Vector2D MirrorH();
-
+	/** Mirror vertically */
 	Vector2D MirrorV();
-
+	/** Get normal-vector */
 	Vector2D GetNormal();
 
 	/** Project this vector to line that parallel with the vector "base" */

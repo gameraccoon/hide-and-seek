@@ -10,9 +10,9 @@ class Rotator
 public:
 	Rotator(float angle);
 	~Rotator();
-
+	/** Get value of angle */
 	float GetValue();
-	
+	/** Get rotator that mirrored from X-axis */
 	friend Rotator operator-(Rotator rot);
 
 	friend bool operator==(const Rotator& left, const Rotator& right);
