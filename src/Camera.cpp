@@ -32,9 +32,9 @@ Camera::Camera(HGE *hge, World* world, Vector2D location) : Location(location),
 	FogSprite->SetHotSpot(FogWidth/2, FogWidth/2);
 
 	// Standart parameters of rendering
-	bShowCollision = false;
+	bShowAABB = false;
 	bRenderFog = true;
-	bShowNormals = false;
+	bShowBorders = false;
 	bRenderShadows = true;
 }
 
@@ -55,8 +55,10 @@ void Camera::Render()
 
 	if (bRenderFog)
 		RenderFog();
-	if (bShowCollision)
+	if (bShowAABB)
 		RenderCollisionBoxes();
+	if (bShowBorders)
+		RenderHulls();
 }
 
 void Camera::RenderActors()
@@ -165,18 +167,41 @@ void Camera::RenderShadows()
 					// Draw shadow's quad of this border to far of the screen
 					DrawQuad(a, b, b + (b - CenterPos).Ort() * 3000, a + (a - CenterPos).Ort() * 3000);
 				}
+			}
+		}
+	}
+}
 
-				// Drawing normal of this border
-				if (bShowNormals)
-				{
-					Vector2D LinePos((*it)->GetLocation() + (hull->Borders[i].GetA() + hull->Borders[i].GetB())/2);
-					Vector2D Norm(LinePos + hull->Borders[i].GetNormal() * 20);
+void Camera::RenderHulls()
+{
+	const int normal_length = 10;
 
-					LinePos = Project(LinePos);
-					Norm = Project(Norm);
+	// for each actors in the world
+	for (std::set<IActor*>::iterator it = BrowsableWorld->AllActors.begin(); it != BrowsableWorld->AllActors.end(); it++)
+	{
+		// if actor - static
+		if ((*it)->GetType() == AT_Static)
+		{
+			// get actors geometry
+			Hull *hull = (*it)->GetHull();
+			// for each border of actor's geometry
+			for (int i = 0; i < hull->Borders.size(); i++)
+			{
+				// draw border
+				Vector2D A((*it)->GetLocation() + hull->Borders[i].GetA()), B((*it)->GetLocation() + hull->Borders[i].GetB());
+				A = Project(A);
+				B = Project(B);
+				
+				Hge->Gfx_RenderLine(A.X, A.Y, B.X, B.Y, 0xFFFF00FF);
 
-					Hge->Gfx_RenderLine(LinePos.X, LinePos.Y, Norm.X, Norm.Y);
-				}
+				// draw normal
+				Vector2D LinePos((*it)->GetLocation() + (hull->Borders[i].GetA() + hull->Borders[i].GetB()) / 2);
+				Vector2D Norm(LinePos + hull->Borders[i].GetNormal() * normal_length);
+
+				LinePos = Project(LinePos);
+				Norm = Project(Norm);
+
+				Hge->Gfx_RenderLine(LinePos.X, LinePos.Y, Norm.X, Norm.Y, 0xFF0000FF);
 			}
 		}
 	}
@@ -203,9 +228,9 @@ void Camera::SetRotation(Rotator angle)
 	Angle = angle.GetValue();
 }
 
-void Camera::ShowCollision(bool bShow)
+void Camera::ShowAABB(bool bShow)
 {
-	bShowCollision = bShow;
+	bShowAABB = bShow;
 }
 
 void Camera::ShowFog(bool bShow)
@@ -218,7 +243,7 @@ void Camera::ShowShadows(bool bShow)
 	bRenderShadows = bShow;
 }
 
-void Camera::ShowNormals(bool bShow)
+void Camera::ShowHulls(bool bShow)
 {
-	bShowNormals = bShow;
+	bShowBorders = bShow;
 }

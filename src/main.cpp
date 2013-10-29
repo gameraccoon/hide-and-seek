@@ -13,13 +13,16 @@ HGE *Hge = NULL;
 hgeSprite*	Crosshair;
 hgeFont*	Font;
 
-const int SCREEN_WIDTH = 800;
-const int SCREEN_HEIGHT = 600;
-const bool FULL_SCREEN = false;
-
-//const int SCREEN_WIDTH = 1366;
-//const int SCREEN_HEIGHT = 768;
-//const bool FULL_SCREEN = true;
+//#define FULLSCREEN
+#ifndef FULLSCREEN
+	const int SCREEN_WIDTH = 800;
+	const int SCREEN_HEIGHT = 600;
+	const bool FULL_SCREEN = false;
+#else
+	const int SCREEN_WIDTH = 1366;
+	const int SCREEN_HEIGHT = 768;
+	const bool FULL_SCREEN = true;
+#endif
 
 // Class helper needed to desctruct many objects at once
 class StaticGroup
@@ -46,8 +49,8 @@ private:
 // Handles for HGE resourcces
 HTEXTURE	Texture;
 
-bool bShowCollision = false;
-bool bBtnCPressed = false;
+bool bShowAABB = false;
+bool bBtnBPressed = false;
 
 bool bShowFog = true;
 bool bBtnFPressed = false;
@@ -55,8 +58,8 @@ bool bBtnFPressed = false;
 bool bShowShadows = true;
 bool bBtnHPressed = false;
 
-bool bShowNormals= false;
-bool bBtnNPressed = false;
+bool bShowModels = false;
+bool bBtnCPressed = false;
 
 Vector2D MousePos = ZeroVector;
 
@@ -105,18 +108,18 @@ bool FrameFunc()
 	MainCamera->SetCenterShift(CameraShift);
 	
 	// Switch on/off showing collizion boxes
-	if (Hge->Input_GetKeyState(HGEK_C))
+	if (Hge->Input_GetKeyState(HGEK_B))
 	{
-		if (!bBtnCPressed)
+		if (!bBtnBPressed)
 		{
-			bBtnCPressed = true;
-			bShowCollision = !bShowCollision;
-			MainCamera->ShowCollision(bShowCollision);
+			bBtnBPressed = true;
+			bShowAABB = !bShowAABB;
+			MainCamera->ShowAABB(bShowAABB);
 		}
 	}
 	else
 	{
-		bBtnCPressed = false;
+		bBtnBPressed = false;
 	}
 
 	// Switch on/off showing Fog
@@ -150,18 +153,18 @@ bool FrameFunc()
 	}
 
 	// Switch on/off showing Normals
-	if (Hge->Input_GetKeyState(HGEK_N))
+	if (Hge->Input_GetKeyState(HGEK_C))
 	{
-		if (!bBtnNPressed)
+		if (!bBtnCPressed)
 		{
-			bBtnNPressed = true;
-			bShowNormals = !bShowNormals;
-			MainCamera->ShowNormals(bShowNormals);
+			bBtnCPressed = true;
+			bShowModels = !bShowModels;
+			MainCamera->ShowHulls(bShowModels);
 		}
 	}
 	else
 	{
-		bBtnNPressed = false;
+		bBtnCPressed = false;
 	}
 
 	// Do World update
@@ -173,23 +176,6 @@ bool FrameFunc()
 	return false;
 }
 
-void TestRender()
-{
-	hgeTriple tr1;
-	tr1.tex = 0;
-	tr1.blend = BLEND_DEFAULT;
-	tr1.v[0].z = tr1.v[1].z = tr1.v[2].z = 0.5f;
-	tr1.v[0].x = tr1.v[0].y = 150.f;
-	tr1.v[1].x = tr1.v[2].y = 300.f;
-	tr1.v[2].x = 450.f;
-	tr1.v[1].y = 200.f;
-	tr1.v[0].col = 0xFF000000;
-	tr1.v[1].col = 0xFF000000;
-	tr1.v[2].col = 0xFF000000;
-	
-	Hge->Gfx_RenderTriple(&tr1);
-}
-
 bool RenderFunc()
 {
 	Hge->Gfx_BeginScene();
@@ -197,9 +183,22 @@ bool RenderFunc()
 	//-- Here renders graphics
 	MainCamera->Render();
 	Crosshair->Render(MousePos.X, MousePos.Y);
-	//TestRender();
 	Arrow->Render();
+
+	// fps and dt
 	Font->printf(5, 5, HGETEXT_LEFT, "dt:%.3f\nFPS:%d", Hge->Timer_GetDelta(), Hge->Timer_GetFPS());
+	
+	// Status of rendering elements
+	if (bShowAABB)
+		Font->printf(5, 60, HGETEXT_LEFT, "Showing Bounding boxes");
+	if (bShowModels)
+		Font->printf(5, 90, HGETEXT_LEFT, "Showing Models");
+
+	if (!bShowFog)
+		Font->printf(5, 120, HGETEXT_LEFT, "Hidded Fog");
+	if (!bShowShadows)
+		Font->printf(5, 150, HGETEXT_LEFT, "Hidded Shadows");
+
 	//-- end of render graphics
 	Hge->Gfx_EndScene();
 

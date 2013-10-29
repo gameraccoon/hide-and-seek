@@ -21,14 +21,14 @@ public:
 	Vector2D GetResolution();
 	/** Set new angle of camera rotation */
 	void SetRotation(Rotator angle);
-	/** Switch showing collision */
-	void ShowCollision(bool bShow);
+	/** Switch showing bounding boxes */
+	void ShowAABB(bool bShow);
 	/** Switch showing fog */
 	void ShowFog(bool bShow);
 	/** Switch showing shadows */
 	void ShowShadows(bool bShow);
 	/** Switch showing normals */
-	void ShowNormals(bool bShow);
+	void ShowHulls(bool bShow);
 	/** Project point from world coordinates to screen coordinates */
 	Vector2D Project(Vector2D);
 protected:
@@ -40,6 +40,8 @@ protected:
 	virtual void RenderFog();
 	/** Render shadows of player view */
 	void RenderShadows();
+	/** Render hulls */
+	void RenderHulls();
 	/** World which render this camera*/
 	World* BrowsableWorld;
 	/** Camera location in the world */
@@ -60,8 +62,8 @@ protected:
 	HTEXTURE FogTexture;
 	/** Sprite of fog */
 	hgeSprite *FogSprite;
-	/** Is camera shows collision? */
-	bool bShowCollision;
+	/** Is camera shows AABB? */
+	bool bShowAABB;
 	/** Maximum distans of renderable objects from camera */
 	float ShownSize;
 	/** Is camera render fog? */
@@ -72,8 +74,8 @@ protected:
 	float FogScale;
 	/** Is camera render shadows? */
 	bool bRenderShadows;
-	/** Is camera shows normals of objects? */
-	bool bShowNormals;
+	/** Is camera shows borders of objects? */
+	bool bShowBorders;
 private:
 	/** Helper method. Drawing quad on screen */
 	void DrawQuad(Vector2D first, Vector2D second, Vector2D third, Vector2D fourth);

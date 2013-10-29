@@ -29,11 +29,6 @@
     <ClCompile Include="..\src\Vector2D.cpp" />
     <ClCompile Include="..\src\Wall.cpp" />
     <ClCompile Include="..\src\World.cpp" />
-    <ClCompile Include="..\tests\testProcesses.cpp" />
-    <ClCompile Include="..\tests\testRayTrace.cpp" />
-    <ClCompile Include="..\tests\testStates.cpp" />
-    <ClCompile Include="..\tests\testVector2D.cpp" />
-    <ClCompile Include="..\tests\testWorld.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Actor.h" />
@@ -57,13 +52,16 @@
   <PropertyGroup Label="Globals">
     <SccProjectName />
     <SccLocalPath />
+    <ProjectGuid>{8778E24E-74EB-C90F-5F7E-B57D77431D14}</ProjectGuid>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -87,8 +85,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>.\Release\</OutDir>
     <IntDir>.\Release\</IntDir>
-    <IncludePath>C:\Other\hge\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Other\hge\lib\vc;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\Libs\hge\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Libs\hge\lib\vc;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
