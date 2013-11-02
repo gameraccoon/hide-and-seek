@@ -98,14 +98,24 @@ void Camera::RenderCollisionBoxes()
 	}
 }
 
-Vector2D Camera::Project(Vector2D point)
+Vector2D Camera::Project(Vector2D worldPoint)
 {
 	// calc camera-location
-	Vector2D screenLoc(point - Location);
+	Vector2D screenLoc(worldPoint - Location);
 	// calc screen-coordinates relativety camera center
 	Vector2D newScreenLoc(Vector2D(screenLoc.GetRotation() + Angle) * screenLoc.Size());
 	// calc absolute screen-coordinates
 	return CenterPos + newScreenLoc;
+}
+
+Vector2D Camera::GetWorldPos(Vector2D screenPoint)
+{
+	// calc relative screen-coordinates
+	Vector2D relScreenLoc(screenPoint - CenterPos);
+	// calc world-coordinates relativety camera
+	Vector2D screenLoc = Vector2D(relScreenLoc.GetRotation() - Angle) * relScreenLoc.Size();
+	// calc world location
+	return Location + screenLoc;
 }
 
 void Camera::RenderFog()

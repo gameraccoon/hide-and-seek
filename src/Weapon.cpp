@@ -1,9 +1,8 @@
 #include "Weapon.h"
 
 
-Weapon::Weapon(World *ownerWorld)
+Weapon::Weapon()
 {
-	OwnerWorld = ownerWorld;
 }
 
 
@@ -11,17 +10,22 @@ Weapon::~Weapon(void)
 {
 }
 
-void Weapon::StartShooting(Vector2D targetLocation)
+void Weapon::StartShooting(Vector2D currentLocation, Vector2D targetLocation)
 {
-	
+	OwnerWorld->Spawn(new Bullet(OwnerWorld, currentLocation, targetLocation));
 }
 
 void Weapon::StopShooting()
 {
-
+	
 }
 
 void Weapon::ChangeDirection(Vector2D targetLocation)
 {
 
+}
+
+void Weapon::SetOwnerWorld(World *world)
+{
+	OwnerWorld = world;
 }

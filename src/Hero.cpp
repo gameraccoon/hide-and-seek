@@ -85,10 +85,23 @@ void Hero::Render(Vector2D shift, Rotator angle)
 
 void Hero::StartShoting(Vector2D targetLocation)
 {
-	armedWeapon->StartShooting(targetLocation);
+	if (ArmedWeapon != NULL)
+	{
+		ArmedWeapon->StartShooting(Location ,targetLocation);
+	}
 }
 
 void Hero::StopShoting()
 {
-	armedWeapon->StopShooting();
+	if (ArmedWeapon != NULL)
+	{
+		ArmedWeapon->StopShooting();
+	}
+}
+
+void Hero::GiveWeapon(Weapon *weap)
+{
+	ArmedWeapon = weap;
+	weap->SetOwnerWorld(OwnerWorld);
+	ArmedWeapon->SetEquipped(true);
 }

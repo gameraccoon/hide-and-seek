@@ -49,6 +49,9 @@ private:
 // Handles for HGE resourcces
 HTEXTURE	Texture;
 
+bool bShooting = false;
+bool bBtnLMBPressed = false;
+
 bool bShowAABB = false;
 bool bBtnBPressed = false;
 
@@ -106,6 +109,21 @@ bool FrameFunc()
 	MainCamera->SetLocation(OurHero->GetLocation());
 	MainCamera->SetRotation(CameraAngle);
 	MainCamera->SetCenterShift(CameraShift);
+
+	// Shooting
+	if (Hge->Input_GetKeyState(HGEK_LBUTTON))
+	{
+		if (!bBtnLMBPressed)
+		{
+			bBtnLMBPressed = true;
+			bShooting = !bShooting;
+			OurHero->StartShoting(MainCamera->GetWorldPos(MousePos));
+		}
+	}
+	else
+	{
+		bBtnLMBPressed = false;
+	}
 	
 	// Switch on/off showing collizion boxes
 	if (Hge->Input_GetKeyState(HGEK_B))
@@ -271,6 +289,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		OurHero = new Hero(GameWorld, Vector2D(0.0f, 350.0f));
 		Group.Insert(OurHero);
+
+		OurHero->GiveWeapon(new Weapon());
 
 		Arrow = new DirectionArrow(Hge);
 		Arrow->SetCenter(SCREEN_CENTER);

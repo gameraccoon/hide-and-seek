@@ -4,15 +4,19 @@
 #include "../src/InventoryItem.h"
 #include "../src/Vector2D.h"
 #include "../src/World.h"
+#include "../src/Bullet.h"
+
+class Hero;
 
 class Weapon : public InventoryItem
 {
 public:
-	Weapon(World *ownerWorld);
+	Weapon(void);
 	~Weapon(void);
-	void StartShooting(Vector2D targetLocation);
+	void StartShooting(Vector2D currentLocation, Vector2D targetLocation);
 	void StopShooting();
 	void ChangeDirection(Vector2D targetLocation);
+	void SetOwnerWorld(World *world);
 private:
 	World *OwnerWorld;
 };

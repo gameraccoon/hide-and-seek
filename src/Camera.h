@@ -30,7 +30,9 @@ public:
 	/** Switch showing normals */
 	void ShowHulls(bool bShow);
 	/** Project point from world coordinates to screen coordinates */
-	Vector2D Project(Vector2D);
+	Vector2D Project(Vector2D worldPoint);
+	/** Project point from screen coordinates to the world coordinates */
+	Vector2D GetWorldPos(Vector2D screenPoint);
 protected:
 	/** Render all seen actors */
 	void RenderActors();
@@ -48,7 +50,7 @@ protected:
 	Vector2D Location;
 	/** Screen resolution */
 	Vector2D Resolution;
-	/** World location of camera center */
+	/** Shift camera center of screen left-top angle in screen coordinates */
 	Vector2D CenterPos;
 	/** Rotation */
 	float Angle;

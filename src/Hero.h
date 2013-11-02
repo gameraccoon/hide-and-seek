@@ -23,6 +23,8 @@ public:
 	void Update(float deltaTime);
 	/** Render the actor in the current location */
 	void Render(Vector2D shift, Rotator angle);
+
+	void GiveWeapon(Weapon *weap);
 	
 	/** Start shoting if we have a weapon */
 	void StartShoting(Vector2D targetLocation);
@@ -41,7 +43,7 @@ private:
 	/** Inventory */
 	std::vector<InventoryItem*> Inventory;
 	/** */
-	Weapon *armedWeapon;
+	Weapon *ArmedWeapon;
 	/** Is we shooting */
 	bool bShooting;
 };
