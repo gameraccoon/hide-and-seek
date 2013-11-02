@@ -6,7 +6,7 @@
 class FloatingCamera : public Camera
 {
 public:
-	FloatingCamera(HGE *hge, World* world, Vector2D location);
+	FloatingCamera(World* world, Vector2D location);
 	~FloatingCamera(void);
 	/** Set new location of this camera in the world */
 	void SetLocation(Vector2D newLocation);

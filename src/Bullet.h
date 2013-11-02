@@ -8,7 +8,7 @@
 class Bullet : public Actor
 {
 public:
-	Bullet(World *ownerWorld, HGE *hge, Vector2D location);
+	Bullet(World *ownerWorld, Vector2D location);
 	~Bullet(void);
 	/** Process moving and other actions of the Actor */
 	void Update(float deltaTime);

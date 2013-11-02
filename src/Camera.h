@@ -9,7 +9,7 @@
 class Camera
 {
 public:
-	Camera(HGE *hge, World* world, Vector2D location);
+	Camera(World* world, Vector2D location);
 	~Camera(void);
 	/** Render of all objects thats seen by camera */
 	void Render();

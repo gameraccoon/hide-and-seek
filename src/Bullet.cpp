@@ -1,7 +1,7 @@
 #include "Bullet.h"
 
 
-Bullet::Bullet(World *ownerWorld, HGE *hge, Vector2D location) : Actor(ownerWorld, hge, location)
+Bullet::Bullet(World *ownerWorld, Vector2D location) : Actor(ownerWorld, location)
 {
 	Speed = 10.0f;	
 	Type = AT_Bullet;

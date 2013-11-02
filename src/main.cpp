@@ -242,34 +242,34 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		Crosshair->SetBlendMode(BLEND_COLORMUL | BLEND_ALPHAADD | BLEND_NOZWRITE);
 		Crosshair->SetHotSpot(16, 16);
 
-		GameWorld = new World();
+		GameWorld = new World(Hge);
 
-		MainCamera = new FloatingCamera(Hge, GameWorld, Vector2D(0.0f, 0.0f));
+		MainCamera = new FloatingCamera(GameWorld, Vector2D(0.0f, 0.0f));
 		MainCamera->SetResolution(SCREEN_CENTER * 2);
 
 		StaticGroup Group = StaticGroup();
 		
-		Group.Insert(new Wall(GameWorld, Hge, Vector2D(250.0f, 300.0f), Vector2D(80, 20)));
-		Group.Insert(new Wall(GameWorld, Hge, Vector2D(250.0f, 200.0f), Vector2D(80, 20)));
-		Group.Insert(new Wall(GameWorld, Hge, Vector2D(200.0f, 250.0f), Vector2D(20, 80)));
-		//Group.Insert(new Wall(GameWorld, Hge, Vector2D(500.0f, 450.0f), Vector2D(20, 80)));
+		Group.Insert(new Wall(GameWorld, Vector2D(250.0f, 300.0f), Vector2D(80, 20)));
+		Group.Insert(new Wall(GameWorld, Vector2D(250.0f, 200.0f), Vector2D(80, 20)));
+		Group.Insert(new Wall(GameWorld, Vector2D(200.0f, 250.0f), Vector2D(20, 80)));
+		//Group.Insert(new Wall(GameWorld, Vector2D(500.0f, 450.0f), Vector2D(20, 80)));
 
-		Group.Insert(new Wall(GameWorld, Hge, Vector2D(450.0f, 300.0f), Vector2D(80, 20)));
-		Group.Insert(new Wall(GameWorld, Hge, Vector2D(450.0f, 200.0f), Vector2D(80, 20)));
-		//Group.Insert(new Wall(GameWorld, Hge, Vector2D(400.0f, 250.0f), Vector2D(20, 80)));
-		Group.Insert(new Wall(GameWorld, Hge, Vector2D(500.0f, 250.0f), Vector2D(20, 80)));
+		Group.Insert(new Wall(GameWorld, Vector2D(450.0f, 300.0f), Vector2D(80, 20)));
+		Group.Insert(new Wall(GameWorld, Vector2D(450.0f, 200.0f), Vector2D(80, 20)));
+		//Group.Insert(new Wall(GameWorld, Vector2D(400.0f, 250.0f), Vector2D(20, 80)));
+		Group.Insert(new Wall(GameWorld, Vector2D(500.0f, 250.0f), Vector2D(20, 80)));
 		
-		//Group.Insert(new Wall(GameWorld, Hge, Vector2D(350.0f, 200.0f), Vector2D(80, 20)));
-		//Group.Insert(new Wall(GameWorld, Hge, Vector2D(350.0f, 100.0f), Vector2D(80, 20)));
-		Group.Insert(new Wall(GameWorld, Hge, Vector2D(300.0f, 150.0f), Vector2D(20, 80)));
-		Group.Insert(new Wall(GameWorld, Hge, Vector2D(400.0f, 150.0f), Vector2D(20, 80)));
+		//Group.Insert(new Wall(GameWorld, Vector2D(350.0f, 200.0f), Vector2D(80, 20)));
+		//Group.Insert(new Wall(GameWorld, Vector2D(350.0f, 100.0f), Vector2D(80, 20)));
+		Group.Insert(new Wall(GameWorld, Vector2D(300.0f, 150.0f), Vector2D(20, 80)));
+		Group.Insert(new Wall(GameWorld, Vector2D(400.0f, 150.0f), Vector2D(20, 80)));
 		
-		//Group.Insert(new Wall(GameWorld, Hge, Vector2D(350.0f, 400.0f), Vector2D(80, 20)));
-		//Group.Insert(new Wall(GameWorld, Hge, Vector2D(350.0f, 300.0f), Vector2D(80, 20)));
-		Group.Insert(new Wall(GameWorld, Hge, Vector2D(300.0f, 350.0f), Vector2D(20, 80)));
-		Group.Insert(new Wall(GameWorld, Hge, Vector2D(400.0f, 350.0f), Vector2D(20, 80)));
+		//Group.Insert(new Wall(GameWorld, Vector2D(350.0f, 400.0f), Vector2D(80, 20)));
+		//Group.Insert(new Wall(GameWorld, Vector2D(350.0f, 300.0f), Vector2D(80, 20)));
+		Group.Insert(new Wall(GameWorld, Vector2D(300.0f, 350.0f), Vector2D(20, 80)));
+		Group.Insert(new Wall(GameWorld, Vector2D(400.0f, 350.0f), Vector2D(20, 80)));
 
-		OurHero = new Hero(GameWorld, Hge, Vector2D(0.0f, 350.0f));
+		OurHero = new Hero(GameWorld, Vector2D(0.0f, 350.0f));
 		Group.Insert(OurHero);
 
 		Arrow = new DirectionArrow(Hge);

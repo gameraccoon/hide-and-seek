@@ -2,7 +2,7 @@
 
 #include <typeinfo.h>
 
-Hero::Hero(World *ownerWorld, HGE *hge, Vector2D location) : Actor(ownerWorld, hge, location), Step(ZeroVector), Size(32.0f, 32.0f)
+Hero::Hero(World *ownerWorld, Vector2D location) : Actor(ownerWorld, location), Step(ZeroVector), Size(32.0f, 32.0f)
 {
 	Type = AT_Living;
 

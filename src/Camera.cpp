@@ -1,14 +1,14 @@
 #include "Camera.h"
 
 
-Camera::Camera(HGE *hge, World* world, Vector2D location) : Location(location),
+Camera::Camera(World* world, Vector2D location) : Location(location),
 												Resolution(ZeroVector),
 												CenterPos(ZeroVector)
 {
 	BrowsableWorld = world;
 	Angle = 0;
 
-	Hge = hge;
+	Hge = world->GetHge();
 
 	// Set max distantion (on screen) where we draw actors
 	ShownSize = 500.0f;

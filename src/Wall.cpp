@@ -1,7 +1,7 @@
 #include "Wall.h"
 
 
-Wall::Wall(World *ownerWorld, HGE *hge, Vector2D location, Vector2D size) : Actor(ownerWorld, hge, location), Size(size)
+Wall::Wall(World *ownerWorld, Vector2D location, Vector2D size) : Actor(ownerWorld, location), Size(size)
 {
 	Type = AT_Static;
 

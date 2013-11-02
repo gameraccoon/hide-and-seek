@@ -9,7 +9,7 @@
 class World
 {
 public:
-	World(void);
+	World(HGE *hge);
 	~World(void);
 	/** Add Actor to the World. */
 	void Spawn(IActor* actor);
@@ -19,6 +19,10 @@ public:
 	void Update(float deltaTime);
 	/** All actors in the World. */
 	std::set<IActor*> AllActors;
+	HGE* GetHge();
+private:
+	/** Pointer to the Hge subsystem */
+	HGE *Hge;
 };
 
 #endif

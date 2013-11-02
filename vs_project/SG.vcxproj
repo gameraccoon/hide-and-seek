@@ -132,6 +132,7 @@
       <AssemblerListingLocation>.\Release\</AssemblerListingLocation>
       <ObjectFileName>.\Release\</ObjectFileName>
       <ProgramDataBaseFileName>.\Release\</ProgramDataBaseFileName>
+      <BrowseInformation>true</BrowseInformation>
     </ClCompile>
     <Midl>
       <TypeLibraryName>.\Release\SG.tlb</TypeLibraryName>
@@ -143,6 +144,7 @@
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>.\Release\SG.bsc</OutputFile>
+      <PreserveSbr>true</PreserveSbr>
     </Bscmake>
     <Link>
       <SubSystem>Windows</SubSystem>

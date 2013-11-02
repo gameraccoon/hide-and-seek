@@ -17,7 +17,7 @@
 class Actor : public IActor
 {
 public:
-	Actor(World *ownerWorld, HGE *hge, Vector2D location);
+	Actor(World *ownerWorld, Vector2D location);
 	~Actor(void);
 	
 	/** Set new location of the actor in the World */

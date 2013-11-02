@@ -1,7 +1,8 @@
 #include "World.h"
 
-World::World(void)
+World::World(HGE* hge)
 {
+	Hge = hge;
 	std::set<IActor*> AllActors;
 }
 
@@ -26,4 +27,9 @@ void World::Update(float deltaTime)
 	{
 		(*it)->Update(deltaTime);
 	}
+}
+
+HGE* World::GetHge()
+{
+	return Hge;
 }

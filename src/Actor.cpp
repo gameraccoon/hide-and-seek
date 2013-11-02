@@ -1,9 +1,9 @@
 #include "Actor.h"
 
 
-Actor::Actor(World *ownerWorld, HGE *hge, Vector2D location) : Location(location), ColideBox(location, location), Direction(0.0f)
+Actor::Actor(World *ownerWorld, Vector2D location) : Location(location), ColideBox(location, location), Direction(0.0f)
 {
-	Hge = hge;
+	Hge = ownerWorld->GetHge();
 	OwnerWorld = ownerWorld;
 	OwnerWorld->Spawn(this);
 	Type = AT_Ghost;
