@@ -1,10 +1,13 @@
 #ifndef ACTOR_H
 #define ACTOR_H
 
+#include <vector>
+
 #include "../src/Globals.h"
 #include "../src/Vector2D.h"
 #include "../src/IActor.h"
 #include "../src/World.h"
+
 
 /**
  * The base class for all actors which may be placed in the World.

@@ -75,7 +75,7 @@ Hero *OurHero;
 // Our big World =)
 World *GameWorld;
 
-//
+// Camera
 FloatingCamera *MainCamera;
 
 // Test arrow for show directions on screen

@@ -1,5 +1,7 @@
 #include "Hero.h"
 
+#include <typeinfo.h>
+
 Hero::Hero(World *ownerWorld, HGE *hge, Vector2D location) : Actor(ownerWorld, hge, location), Step(ZeroVector), Size(32.0f, 32.0f)
 {
 	Type = AT_Living;
@@ -79,4 +81,14 @@ void Hero::Render(Vector2D shift, Rotator angle)
 	{
 		Sprite->RenderEx(shift.X, shift.Y, (Direction + angle).GetValue());
 	}
+}
+
+void Hero::StartShoting(Vector2D targetLocation)
+{
+	armedWeapon->StartShooting(targetLocation);
+}
+
+void Hero::StopShoting()
+{
+	armedWeapon->StopShooting();
 }

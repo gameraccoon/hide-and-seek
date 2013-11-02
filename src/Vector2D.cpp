@@ -144,7 +144,25 @@ Vector2D operator*(const Vector2D& vect, float scalar)
 	return newVect;
 }
 
+Vector2D operator*(float scalar, const Vector2D& vect)
+{
+	Vector2D newVect(vect);
+	
+	newVect.X *= scalar;
+	newVect.Y *= scalar;
+
+	return newVect;
+}
+
 Vector2D operator*=(Vector2D& vect, float scalar)
+{
+	vect.X *= scalar;
+	vect.Y *= scalar;
+
+	return Vector2D(vect);
+}
+
+Vector2D operator*=(float scalar, Vector2D& vect)
 {
 	vect.X *= scalar;
 	vect.Y *= scalar;

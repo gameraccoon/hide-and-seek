@@ -58,8 +58,10 @@ public:
     friend Vector2D operator-=(Vector2D& left, const Vector2D& right);
 
 	friend Vector2D operator*(const Vector2D& vect, float scalar);
+	friend Vector2D operator*(float scalar, const Vector2D& vect);
 
     friend Vector2D operator*=(Vector2D& vect, float scalar);
+	friend Vector2D operator*=(float scalar, Vector2D& vect);
 
 	friend Vector2D operator/(const Vector2D& vect, float scalar);
 
