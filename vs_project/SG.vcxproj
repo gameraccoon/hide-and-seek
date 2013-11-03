@@ -23,6 +23,7 @@
     <ClCompile Include="..\src\Hull.cpp" />
     <ClCompile Include="..\src\IActor.cpp" />
     <ClCompile Include="..\src\InventoryItem.cpp" />
+    <ClCompile Include="..\src\KeyListeners.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\Processes.cpp" />
     <ClCompile Include="..\src\RayTrace.cpp" />
@@ -46,6 +47,7 @@
     <ClInclude Include="..\src\Hull.h" />
     <ClInclude Include="..\src\IActor.h" />
     <ClInclude Include="..\src\InventoryItem.h" />
+    <ClInclude Include="..\src\KeyListeners.h" />
     <ClInclude Include="..\src\Processes.h" />
     <ClInclude Include="..\src\RayTrace.h" />
     <ClInclude Include="..\src\Rotator.h" />

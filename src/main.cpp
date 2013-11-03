@@ -4,6 +4,7 @@
 #include "../src/World.h"
 #include "../src/Wall.h"
 #include "../src/FloatingCamera.h"
+#include "../src/KeyListeners.h"
 #include <vector>
 
 // Hge subsystem
@@ -49,21 +50,6 @@ private:
 // Handles for HGE resourcces
 HTEXTURE	Texture;
 
-bool bShooting = false;
-bool bBtnLMBPressed = false;
-
-bool bShowAABB = false;
-bool bBtnBPressed = false;
-
-bool bShowFog = true;
-bool bBtnFPressed = false;
-
-bool bShowShadows = true;
-bool bBtnHPressed = false;
-
-bool bShowModels = false;
-bool bBtnCPressed = false;
-
 Vector2D MousePos = ZeroVector;
 
 const Vector2D SCREEN_CENTER(SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
@@ -83,6 +69,46 @@ FloatingCamera *MainCamera;
 
 // Test arrow for show directions on screen
 DirectionArrow *Arrow;
+
+// Butto
+ButtonListeners Listeners;
+
+// event listeners
+class BtnShadows : public ButtonSwitcher
+{
+public:
+	BtnShadows(HGE *hge) : ButtonSwitcher(hge, HGEK_H, true) { };
+	void Pressed() { MainCamera->ShowShadows(bActive); }
+};
+
+class BtnFog : public ButtonSwitcher
+{
+public:
+	BtnFog(HGE *hge) : ButtonSwitcher(hge, HGEK_F, true) { };
+	void Pressed() { MainCamera->ShowFog(bActive); }
+};
+
+class BtnAABB : public ButtonSwitcher
+{
+public:
+	BtnAABB(HGE *hge) : ButtonSwitcher(hge, HGEK_C, false) { };
+	void Pressed() { MainCamera->ShowAABB(bActive); }
+};
+
+class BtnHulls : public ButtonSwitcher
+{
+public:
+	BtnHulls(HGE *hge) : ButtonSwitcher(hge, HGEK_M, false) { };
+	void Pressed() { MainCamera->ShowHulls(bActive); }
+};
+
+class BtnShoot : public ButtonSwitcher
+{
+public:
+	BtnShoot(HGE *hge) : ButtonSwitcher(hge, HGEK_LBUTTON, true) { };
+	void Pressed() { OurHero->StartShoting(MainCamera->GetWorldPos(MousePos)); }
+	void Released() { OurHero->StopShoting(); }
+};
 
 bool FrameFunc()
 {
@@ -110,80 +136,8 @@ bool FrameFunc()
 	MainCamera->SetRotation(CameraAngle);
 	MainCamera->SetCenterShift(CameraShift);
 
-	// Shooting
-	if (Hge->Input_GetKeyState(HGEK_LBUTTON))
-	{
-		if (!bBtnLMBPressed)
-		{
-			bBtnLMBPressed = true;
-			bShooting = !bShooting;
-			OurHero->StartShoting(MainCamera->GetWorldPos(MousePos));
-		}
-	}
-	else
-	{
-		bBtnLMBPressed = false;
-	}
-	
-	// Switch on/off showing collizion boxes
-	if (Hge->Input_GetKeyState(HGEK_B))
-	{
-		if (!bBtnBPressed)
-		{
-			bBtnBPressed = true;
-			bShowAABB = !bShowAABB;
-			MainCamera->ShowAABB(bShowAABB);
-		}
-	}
-	else
-	{
-		bBtnBPressed = false;
-	}
-
-	// Switch on/off showing Fog
-	if (Hge->Input_GetKeyState(HGEK_F))
-	{
-		if (!bBtnFPressed)
-		{
-			bBtnFPressed = true;
-			bShowFog = !bShowFog;
-			MainCamera->ShowFog(bShowFog);
-		}
-	}
-	else
-	{
-		bBtnFPressed = false;
-	}
-
-	// Switch on/off showing Shadows
-	if (Hge->Input_GetKeyState(HGEK_H))
-	{
-		if (!bBtnHPressed)
-		{
-			bBtnHPressed = true;
-			bShowShadows = !bShowShadows;
-			MainCamera->ShowShadows(bShowShadows);
-		}
-	}
-	else
-	{
-		bBtnHPressed = false;
-	}
-
-	// Switch on/off showing Normals
-	if (Hge->Input_GetKeyState(HGEK_C))
-	{
-		if (!bBtnCPressed)
-		{
-			bBtnCPressed = true;
-			bShowModels = !bShowModels;
-			MainCamera->ShowHulls(bShowModels);
-		}
-	}
-	else
-	{
-		bBtnCPressed = false;
-	}
+	// Update key states
+	Listeners.Test();
 
 	// Do World update
 	GameWorld->Update(dt);
@@ -207,14 +161,14 @@ bool RenderFunc()
 	Font->printf(5, 5, HGETEXT_LEFT, "dt:%.3f\nFPS:%d", Hge->Timer_GetDelta(), Hge->Timer_GetFPS());
 	
 	// Status of rendering elements
-	if (bShowAABB)
+	if (Listeners.GetActive(HGEK_B))
 		Font->printf(5, 60, HGETEXT_LEFT, "Showing Bounding boxes");
-	if (bShowModels)
+	if (Listeners.GetActive(HGEK_C))
 		Font->printf(5, 90, HGETEXT_LEFT, "Showing Models");
 
-	if (!bShowFog)
+	if (!Listeners.GetActive(HGEK_F))
 		Font->printf(5, 120, HGETEXT_LEFT, "Hidded Fog");
-	if (!bShowShadows)
+	if (!Listeners.GetActive(HGEK_H))
 		Font->printf(5, 150, HGETEXT_LEFT, "Hidded Shadows");
 
 	//-- end of render graphics
@@ -294,6 +248,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		Arrow = new DirectionArrow(Hge);
 		Arrow->SetCenter(SCREEN_CENTER);
+		
+		Listeners.AddListener(new BtnAABB(Hge));
+		Listeners.AddListener(new BtnHulls(Hge));
+		Listeners.AddListener(new BtnFog(Hge));
+		Listeners.AddListener(new BtnShadows(Hge));
+		Listeners.AddListener(new BtnShoot(Hge));
 
 		// Let's rock now!
 		Hge->System_Start();

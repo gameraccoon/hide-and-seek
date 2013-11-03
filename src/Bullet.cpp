@@ -14,7 +14,7 @@ Bullet::Bullet(World *ownerWorld, Vector2D location, Vector2D targetLocation) : 
 	BulletTexture = Hge->Texture_Load("bullet.png");
 
 	WARN_IF(!BulletTexture, "Texture 'bullet.png' not found!");
-		
+	
 	Sprite = new hgeSprite(BulletTexture, 0, 0, 32, 32);
 	Sprite->SetColor(0xFFFFFFFF);
 	Sprite->SetHotSpot(16, 16);
