@@ -11,6 +11,8 @@ Bullet::Bullet(World *ownerWorld, Vector2D location, Vector2D targetLocation) : 
 
 	Destroyed = false;
 
+	OwnerWorld = ownerWorld;
+
 	BulletTexture = Hge->Texture_Load("bullet.png");
 
 	WARN_IF(!BulletTexture, "Texture 'bullet.png' not found!");
@@ -28,7 +30,19 @@ Bullet::~Bullet(void)
 
 void Bullet::Update(float deltaTime)
 {
-	Location += deltaTime * Speed * Vector2D(Direction);
+	Vector2D newLocation = Location + deltaTime * Speed * Vector2D(Direction);
+	
+	WARN_IF(!OwnerWorld, "Not assigned OwnerWorld for bullet");
+	
+	RayTrace ray(OwnerWorld, Location, newLocation);
+	if (!ray.FastTrace())
+	{
+		Location = newLocation;
+	}
+	else
+	{
+		Location = Vector2D(0.f, 0.f);// ToDo: destruct bullet
+	}
 }
 
 void Bullet::Render(Vector2D shift, Rotator angle)

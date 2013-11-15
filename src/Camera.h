@@ -81,6 +81,8 @@ protected:
 private:
 	/** Helper method. Drawing quad on screen */
 	void DrawQuad(Vector2D first, Vector2D second, Vector2D third, Vector2D fourth);
+	/** Drawing penumbra triangle */
+	void DrawPenumbra(Vector2D first, Vector2D second, Vector2D third);
 };
 
 #endif
