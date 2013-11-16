@@ -43,12 +43,12 @@ void Hero::Update(float deltaTime)
 	// for each actors in the world
 	for (std::set<IActor*>::iterator it = OwnerWorld->AllActors.begin(); it != OwnerWorld->AllActors.end(); it++)
 	{
-		// if actor is not a this Hero
+		// if the actor is not this Hero // test: and it is a static actor
 		if ((*it) != this && (*it)->GetType() == AT_Static)
 		{
-			// get actor's AABB (axis-aligned bounding box)
+			// get an actor's AABB (axis-aligned bounding box)
 			BoundingBox box = (*it)->GetBoundingBox();
-			// if actors AABB intersect with Hero's AABB (if hero does current step)
+			// if the actor's AABB intersects with the Hero's AABB (in new Hero location)
 			if ((box.MinX < newLocation.X + Size.X/2 && newLocation.X - Size.X/2 < box.MaxX)
 				&&
 				(box.MinY < newLocation.Y + Size.Y/2 && newLocation.Y - Size.Y/2 < box.MaxY))

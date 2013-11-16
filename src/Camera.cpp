@@ -197,7 +197,7 @@ void Camera::RenderShadows()
 				if (abs((
 						hull->Borders[i].GetNormal().GetRotation()
 						- ((*it)->GetLocation() + (hull->Borders[i].GetA() + hull->Borders[i].GetB())/2 - Location).GetRotation()
-					).GetValue()) > PI/2)
+					).GetValue()) < PI/2)
 				{
 					// Get border's points
 					Vector2D a((*it)->GetLocation() + hull->Borders[i].GetA());

@@ -131,10 +131,11 @@ bool FrameFunc()
 	Vector2D *test = new Vector2D(0,0);
 	
 
-	if (trace.CheckIntersect2Lines(Vector2D(0, 0), Vector2D(1, 1), Vector2D(0, 1), Vector2D(1, 0), test))
+	//if (trace.CheckIntersect2Lines(Vector2D(-1, 0), Vector2D(1, 0), Vector2D(0, -1), Vector2D(0, 1), test))
 	{
 		OurHero->Move(Vector2D(Direction.GetRotation() - CameraAngle) * Direction.Ort().Size() * 100); // constant speed
 	}
+	
 	delete test;
 
 	Hge->Input_GetMousePos(&MousePos.X, &MousePos.Y);
@@ -173,10 +174,10 @@ bool RenderFunc()
 	Font->printf(5, 5, HGETEXT_LEFT, "dt:%.3f\nFPS:%d", Hge->Timer_GetDelta(), Hge->Timer_GetFPS());
 	
 	// Status of rendering elements
-	if (Listeners.GetActive(HGEK_B))
-		Font->printf(5, 60, HGETEXT_LEFT, "Showing Bounding boxes");
+	if (Listeners.GetActive(HGEK_M))
+		Font->printf(5, 60, HGETEXT_LEFT, "Showing Models");
 	if (Listeners.GetActive(HGEK_C))
-		Font->printf(5, 90, HGETEXT_LEFT, "Showing Models");
+		Font->printf(5, 90, HGETEXT_LEFT, "Showing Bounding boxes");
 
 	if (!Listeners.GetActive(HGEK_F))
 		Font->printf(5, 120, HGETEXT_LEFT, "Hidded Fog");
