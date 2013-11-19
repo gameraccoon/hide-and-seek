@@ -33,12 +33,12 @@ byte RayTrace::GetDotCode(const BoundingBox *box, const Vector2D *dot)
 		| ((dot->Y > box->MaxY) ? TopBit : 0));
 }
 
-inline int area(Vector2D a, Vector2D b, Vector2D c)
+inline float SignedArea(Vector2D a, Vector2D b, Vector2D c)
 {
 	return (b.X - a.X) * (c.Y - a.Y) - (b.Y - a.Y) * (c.X - a.X);
 }
 
-inline void swap(float &a, float &b)
+inline void Swap(float &a, float &b)
 {
 	float temp;
 	temp = a;
@@ -46,57 +46,67 @@ inline void swap(float &a, float &b)
 	b = temp;
 }
 
-const double EPS = 1E-9;
+//
+const double EPS = 1E-4;
  
-inline int det(float a, float b, float c, float d)
+inline float Det(float a, float b, float c, float d)
 {
 	return a * d - b * c;
 }
  
-inline bool between (float a, float b, double c)
+inline bool IsBetween(float a, float b, double c)
 {
 	return min(a, b) <= c + EPS && c <= max(a, b) + EPS;
 }
 
-inline bool intersect_1 (float a, float b, float c, float d)
+inline bool IsAAIntersect(float a, float b, float c, float d)
 {
-	if (a > b)  swap(a, b);
-	if (c > d)  swap(c, d);
+	if (a > b)
+		Swap(a, b);
+	if (c > d)
+		Swap(c, d);
+
 	return max(a, c) <= min(b, d);
 }
 
 bool RayTrace::CheckIntersect2Lines(Vector2D A1, Vector2D A2, Vector2D B1, Vector2D B2)
 {
-	return intersect_1 (A1.X, A2.X, B1.X, B2.X)
-		&& intersect_1 (A1.Y, A2.Y, B1.Y, B2.Y)
-		&& area(A1, A2, B1) * area(A1, A2, B2) <= 0
-		&& area(B1, B2, A1) * area(B1, B2, A2) <= 0;
+	if (IsAAIntersect(A1.X, A2.X, B1.X, B2.X)
+		&& IsAAIntersect(A1.Y, A2.Y, B1.Y, B2.Y)
+		&& SignedArea(A1, A2, B1) * SignedArea(A1, A2, B2) <= 0
+		&& SignedArea(B1, B2, A1) * SignedArea(B1, B2, A2) <= 0)
+	{
+				return true;
+	}
+	return false;
 }
- 
-bool RayTrace::GetPointIntersect2Lines(Vector2D A1, Vector2D A2, Vector2D B1, Vector2D B2, Vector2D *outIntersectionPoint)
-{
-	int DA1 = A1.Y - A2.Y;
-	int DB1 = A2.X - A1.X;
-	int DC1 = -DA1 * A1.X - DB1 * A1.Y;
-	int DA2 = B1.Y - B2.Y;
-	int DB2 = B2.X - B1.X;
-	int DC2 = -DA2 * B1.X - DB2 * B1.Y;
 
-	int zn = det (DA1, DB1, DA2, DB2);
+Vector2D RayTrace::GetPointIntersect2Lines(Vector2D A1, Vector2D A2, Vector2D B1, Vector2D B2)
+{
+	float DA1 = A1.Y - A2.Y;
+	float DB1 = A2.X - A1.X;
+	float DC1 = -DA1 * A1.X - DB1 * A1.Y;
+	float DA2 = B1.Y - B2.Y;
+	float DB2 = B2.X - B1.X;
+	float DC2 = -DA2 * B1.X - DB2 * B1.Y;
+
+	float zn = Det(DA1, DB1, DA2, DB2);
 	
+	// if lines are not parallel
 	if (zn != 0)
 	{
-		double x = -det(DC1, DB1, DC2, DB2) * 1. / zn;
-		double y = -det(DA1, DC1, DA2, DC2) * 1. / zn;
-		return between (A1.X, A2.X, x) && between (A1.Y, A2.Y, y)
-			&& between (B1.X, B2.X, x) && between (B1.Y, B2.Y, y);
+		float x = (float) (-Det(DC1, DB1, DC2, DB2) * 1. / zn);
+		float y = (float) (-Det(DA1, DC1, DA2, DC2) * 1. / zn);
+
+		if (IsBetween(A1.X, A2.X, x) && IsBetween(A1.Y, A2.Y, y)
+			&& IsBetween(B1.X, B2.X, x) && IsBetween(B1.Y, B2.Y, y))
+		{
+			return Vector2D(x, y);
+		}
 	}
-	else
-	{
-		return det(DA1, DC1, DA2, DC2) == 0 && det(DB1, DC1, DB2, DC2) == 0
-			&& intersect_1 (A1.X, A2.X, B1.X, B2.Y)
-			&& intersect_1 (A1.Y, A2.Y, B1.Y, B2.Y);
-	}
+
+	// if lines not intersected
+	return ZeroVector;
 }
 
 bool RayTrace::CheckIntersectAABBLine(const BoundingBox* box, const Vector2D* first, const Vector2D* last)
