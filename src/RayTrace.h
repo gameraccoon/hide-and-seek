@@ -14,8 +14,8 @@ public:
 	RayTrace(World * world, Vector2D start, Rotator rotation, float length);
 	~RayTrace(void);
 	bool FastTrace();
-	//IActor* Trace(Vector2D out_point, Vector2D out_normal);
-//protected:
+	IActor* Trace(Vector2D *point = NULL, Vector2D *normal = NULL);
+protected:
 	byte GetDotCode(const BoundingBox *box, const Vector2D *dot);
 	bool CheckIntersectAABBLine(const BoundingBox* box, const Vector2D* first, const Vector2D* last);
 	bool CheckIntersectVertLineWithLine(Vector2D A1, Vector2D A2, float x, float minY, float maxY);

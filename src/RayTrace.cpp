@@ -76,7 +76,7 @@ bool RayTrace::CheckIntersect2Lines(Vector2D A1, Vector2D A2, Vector2D B1, Vecto
 		&& SignedArea(A1, A2, B1) * SignedArea(A1, A2, B2) <= 0
 		&& SignedArea(B1, B2, A1) * SignedArea(B1, B2, A2) <= 0)
 	{
-				return true;
+		return true;
 	}
 	return false;
 }
@@ -164,11 +164,59 @@ bool RayTrace::FastTrace()
 			// get cohen's code for end point
 			byte b = GetDotCode(&box, &EndPoint);
 
-			// one point is in BB another is out BB
-			if ((a == 0 || b == 0) && ((a & b) == 0))
+			// if points on some side of BB
+			if ((a & b) != 0)
+			{
+				// go to the next actor
+				continue;
+			}
+
+			// if raytrace intersect AABB of this actor
+			if (((a == 0 || b == 0) && ((a & b) == 0))					// one point is in BB another is out BB
+				||
+				((a | b) == 3 || (a | b) == 12)							// points on opposite sides of BB // 0011 or 1100 
+				||
+				CheckIntersectAABBLine(&box, &StartPoint, &EndPoint))	// other cases of intersection
 			{
 				//return true;
+				// get hull of current actor
+                Hull *hull = itActor->GetHull();
+
+				// for each border
+				for (std::vector<Border>::iterator it2 = hull->Borders.begin(); it2 != hull->Borders.end(); it2++)
+				{
+					Vector2D actorsLocation((*it)->GetLocation());
+					// if ray have different direction with normal
+					if (abs((it2->GetNormal().GetRotation() - (EndPoint - StartPoint).GetRotation()).GetValue()) > PI/2)
+					{
+						// if raytrace intersect this border
+						if (CheckIntersect2Lines(actorsLocation + it2->GetA(), actorsLocation + it2->GetB(), StartPoint, EndPoint))
+						{
+							return true;
+						}
+					}
+				}
 			}
+		}
+	}
+	return false;
+}
+
+IActor* RayTrace::Trace(Vector2D *point, Vector2D *normal)
+{
+	IActor *itActor;
+	// for each actor in the world
+	for (std::set<IActor*>::iterator it = OwnerWorld->AllActors.begin(); it != OwnerWorld->AllActors.end(); it++)
+	{
+		itActor = *it;
+		if (itActor->GetType() == AT_Static)
+		{
+			// get bounding box of current actor
+			BoundingBox box = itActor->GetBoundingBox();
+			// get cohen's code for start point
+			byte a = GetDotCode(&box, &StartPoint);
+			// get cohen's code for end point
+			byte b = GetDotCode(&box, &EndPoint);
 
 			// if points on some side of BB
 			if ((a & b) != 0)
@@ -177,36 +225,38 @@ bool RayTrace::FastTrace()
 				continue;
 			}
 
-			// if points on opposite sides of BB
-			if ((a | b) == 3 || (a | b) == 12) // 0011 or 1100 
+			// if raytrace intersect AABB of this actor
+			if (((a == 0 || b == 0) && ((a & b) == 0))					// one point is in BB another is out BB
+				||
+				((a | b) == 3 || (a | b) == 12)							// points on opposite sides of BB // 0011 or 1100 
+				||
+				CheckIntersectAABBLine(&box, &StartPoint, &EndPoint))	// other cases of intersection
 			{
 				//return true;
-			}
-
-			// if raytrace intersect AABB of this actor
-			if (CheckIntersectAABBLine(&box, &StartPoint, &EndPoint))
-			{
-				return true;
 				// get hull of current actor
                 Hull *hull = itActor->GetHull();
 
 				// for each border
 				for (std::vector<Border>::iterator it2 = hull->Borders.begin(); it2 != hull->Borders.end(); it2++)
 				{
-					// if raytrace intersect some border of hull
-					if (CheckIntersect2Lines(it2->GetA(), it2->GetB(), StartPoint, EndPoint))
+					Vector2D actorsLocation((*it)->GetLocation());
+					// if ray have different direction with normal
+					if (abs((it2->GetNormal().GetRotation() - (EndPoint - StartPoint).GetRotation()).GetValue()) > PI/2)
 					{
-						return true;
+						// if raytrace intersect this border
+						if (CheckIntersect2Lines(actorsLocation + it2->GetA(), actorsLocation + it2->GetB(), StartPoint, EndPoint))
+						{
+							// return all values
+							if (point != NULL)
+								*point = GetPointIntersect2Lines(actorsLocation + it2->GetA(), actorsLocation + it2->GetB(), StartPoint, EndPoint);
+							if (normal != NULL)
+								*normal = it2->GetNormal();
+							return *it;
+						}
 					}
 				}
-
 			}
 		}
 	}
-	return false;
+	return NULL;
 }
-
-//IActor* Trace(Vector2D *point, Vector2D *normal)
-//{
-//
-//}

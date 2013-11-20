@@ -6,8 +6,6 @@
 #include "../src/World.h"
 #include "../src/Bullet.h"
 
-class Hero;
-
 class Weapon : public InventoryItem
 {
 public:

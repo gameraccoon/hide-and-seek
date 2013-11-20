@@ -2,7 +2,7 @@
 
 
 Bullet::Bullet(World *ownerWorld, Vector2D location, Vector2D targetLocation) : Actor(ownerWorld, location),
-																		Direction((targetLocation - location).GetRotation())
+																				Direction((targetLocation - location).GetRotation())
 {
 	Speed = 10.0f;	
 	Type = AT_Bullet;
@@ -39,14 +39,18 @@ void Bullet::Update(float deltaTime)
 	WARN_IF(!OwnerWorld, "Not assigned OwnerWorld for bullet");
 
 	RayTrace ray(OwnerWorld, Location, newLocation);
-	if (!ray.FastTrace())
+	Vector2D traceLocation(ZeroVector);
+	IActor *trasedActor = ray.Trace(&traceLocation);
+
+	if (trasedActor == NULL)
 	{
 		Location = newLocation;
 	}
 	else
 	{
 		Location = Vector2D(350.f, 250.f);// ToDo: destruct bullet
-		//Speed = 0.0f;
+		new Hero(OwnerWorld, traceLocation);
+		Speed = 0.0f;
 	}
 }
 
