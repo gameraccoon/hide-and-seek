@@ -14,9 +14,14 @@ public:
 	RayTrace(World * world, Vector2D start, Rotator rotation, float length);
 	~RayTrace(void);
 	bool FastTrace();
-	//IActor* Trace(Vector2D out_point, Vector2D out_normal);
+	IActor* Trace(Vector2D *point = NULL, Vector2D *normal = NULL);
 protected:
 	byte GetDotCode(const BoundingBox *box, const Vector2D *dot);
+	bool CheckIntersectAABBLine(const BoundingBox* box, const Vector2D* first, const Vector2D* last);
+	bool CheckIntersectVertLineWithLine(Vector2D A1, Vector2D A2, float x, float minY, float maxY);
+	bool CheckIntersectHoryLineWithLine(Vector2D A1, Vector2D A2, float y, float minX, float maxX);
+	bool CheckIntersect2Lines(Vector2D A1, Vector2D A2, Vector2D B1, Vector2D B2);
+	Vector2D GetPointIntersect2Lines(Vector2D A1, Vector2D A2, Vector2D B1, Vector2D B2);
 	/** World where placed this helper */
 	World *OwnerWorld;
 	/** Start point of the ray */

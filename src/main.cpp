@@ -126,8 +126,18 @@ bool FrameFunc()
 	if (Hge->Input_GetKeyState(HGEK_Q))	CameraAngle += 0.005f;
 	if (Hge->Input_GetKeyState(HGEK_E))	CameraAngle -= 0.005f;
 
-	OurHero->Move(Vector2D(Direction.GetRotation() - CameraAngle) * Direction.Ort().Size() * 100); // constant speed
+
+	RayTrace trace = RayTrace(GameWorld, Vector2D(0, 0), Vector2D(1, 1));
+	Vector2D *test = new Vector2D(0,0);
 	
+
+	//if (trace.CheckIntersect2Lines(Vector2D(-1, 0), Vector2D(1, 0), Vector2D(0, -1), Vector2D(0, 1), test))
+	{
+		OurHero->Move(Vector2D(Direction.GetRotation() - CameraAngle) * Direction.Ort().Size() * 100); // constant speed
+	}
+	
+	delete test;
+
 	Hge->Input_GetMousePos(&MousePos.X, &MousePos.Y);
 
 	Vector2D CameraShift((MousePos - SCREEN_CENTER)/2);
@@ -137,7 +147,7 @@ bool FrameFunc()
 	MainCamera->SetCenterShift(CameraShift);
 
 	// Update key states
-	Listeners.Test();
+	Listeners.Check();
 
 	// Do World update
 	GameWorld->Update(dt);
@@ -152,8 +162,11 @@ bool RenderFunc()
 {
 	Hge->Gfx_BeginScene();
 	Hge->Gfx_Clear(0xFF333333);
-	//-- Here renders graphics
+	
+	//-- Start renders graphics
+
 	MainCamera->Render();
+	
 	Crosshair->Render(MousePos.X, MousePos.Y);
 	Arrow->Render();
 
@@ -161,17 +174,18 @@ bool RenderFunc()
 	Font->printf(5, 5, HGETEXT_LEFT, "dt:%.3f\nFPS:%d", Hge->Timer_GetDelta(), Hge->Timer_GetFPS());
 	
 	// Status of rendering elements
-	if (Listeners.GetActive(HGEK_B))
-		Font->printf(5, 60, HGETEXT_LEFT, "Showing Bounding boxes");
+	if (Listeners.GetActive(HGEK_M))
+		Font->printf(5, 60, HGETEXT_LEFT, "Showing Models");
 	if (Listeners.GetActive(HGEK_C))
-		Font->printf(5, 90, HGETEXT_LEFT, "Showing Models");
+		Font->printf(5, 90, HGETEXT_LEFT, "Showing Bounding boxes");
 
 	if (!Listeners.GetActive(HGEK_F))
 		Font->printf(5, 120, HGETEXT_LEFT, "Hidded Fog");
 	if (!Listeners.GetActive(HGEK_H))
 		Font->printf(5, 150, HGETEXT_LEFT, "Hidded Shadows");
 
-	//-- end of render graphics
+	//-- Stop render graphics
+
 	Hge->Gfx_EndScene();
 
 	return false;

@@ -5,13 +5,13 @@ Wall::Wall(World *ownerWorld, Vector2D location, Vector2D size) : Actor(ownerWor
 {
 	Type = AT_Static;
 
-	UpdateCollision();
-
 	Geometry.Points.insert(Geometry.Points.end(), -Size/2);
 	Geometry.Points.insert(Geometry.Points.end(), (Size/2).MirrorV());
 	Geometry.Points.insert(Geometry.Points.end(), Size/2);
 	Geometry.Points.insert(Geometry.Points.end(), (Size/2).MirrorH());
 	Geometry.Generate();
+
+	UpdateCollision();
 
 	WallTexture = Hge->Texture_Load("testTexture.png");
 

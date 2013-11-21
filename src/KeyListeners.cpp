@@ -17,7 +17,7 @@ byte ButtonSwitcher::GetKey()
 	return Key;
 }
 
-void ButtonSwitcher::Test()
+void ButtonSwitcher::Check()
 {
 	if (Hge->Input_GetKeyState(Key))
 	{
@@ -49,11 +49,11 @@ void ButtonListeners::AddListener(ButtonSwitcher *listener)
 	Listeners.insert(Listeners.begin(), listener);
 }
 
-void ButtonListeners::Test()
+void ButtonListeners::Check()
 {
 	for (int i = 0; i < Listeners.size(); i++)
 	{
-		Listeners[i]->Test();
+		Listeners[i]->Check();
 	}
 }
 

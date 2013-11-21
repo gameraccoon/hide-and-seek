@@ -13,7 +13,7 @@ public:
 
 	byte GetKey();
 
-	void Test();
+	void Check();
 
 	virtual void Switch();
 
@@ -32,7 +32,7 @@ class ButtonListeners
 public:
 	void AddListener(ButtonSwitcher *listener);
 
-	void Test();
+	void Check();
 
 	bool GetActive(int key);
 

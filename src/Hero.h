@@ -8,6 +8,8 @@
 #include "../src/InventoryItem.h"
 #include "../src/Weapon.h"
 
+class Weapon;
+
 class Hero:public Actor
 {
 public:

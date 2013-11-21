@@ -4,6 +4,9 @@
 #include "Globals.h"
 #include "../src/World.h"
 #include "../src/Actor.h"
+#include "../src/RayTrace.h"
+
+#include "../src/Hero.h"
 
 class Bullet : public Actor
 {
