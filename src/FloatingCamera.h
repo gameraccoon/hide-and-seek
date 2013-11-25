@@ -6,12 +6,10 @@
 class FloatingCamera : public Camera
 {
 public:
-	FloatingCamera(World* world, Vector2D location);
+	FloatingCamera(World* world, Vector2D resolution, Vector2D location);
 	~FloatingCamera(void);
 	/** Set new location of this camera in the world */
 	void SetLocation(Vector2D newLocation);
-	/** Set new screen resolution */
-	void SetResolution(Vector2D newResolution);
 	/** Set shift of center of the screen */
 	void SetCenterShift(Vector2D shift);
 protected:

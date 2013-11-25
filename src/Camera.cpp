@@ -1,7 +1,7 @@
 #include "Camera.h"
 
 
-Camera::Camera(World* world, Vector2D location) : Location(location),
+Camera::Camera(World* world, Vector2D resolution, Vector2D location) : Location(location),
 												Resolution(ZeroVector),
 												CenterPos(ZeroVector)
 {
@@ -10,6 +10,8 @@ Camera::Camera(World* world, Vector2D location) : Location(location),
 
 	Hge = world->GetHge();
 
+	Resolution = resolution;
+
 	// Set max distantion (on screen) where we draw actors
 	ShownSize = 500.0f;
 
@@ -17,6 +19,8 @@ Camera::Camera(World* world, Vector2D location) : Location(location),
 	FogWidth = 512.0f;
 	// Set scale of fog sprite
 	FogScale = ShownSize * 1.5f / (FogWidth / 2.0f);
+
+	RenderTarget = Hge->Target_Create(Resolution.X, Resolution.Y, false);
 
 	CamTexture = Hge->Texture_Load("colision.png");
 	FogTexture = Hge->Texture_Load("fog.png");
@@ -44,21 +48,100 @@ Camera::~Camera(void)
 	delete FogSprite;
 	Hge->Texture_Free(CamTexture);
 	Hge->Texture_Free(FogTexture);
+	Hge->Target_Free(RenderTarget);
 }
 
 void Camera::Render()
 {
-	if (bRenderShadows)
-		RenderShadows();
+	HTARGET zone = Hge->Target_Create(ShownSize, ShownSize, false);
+	HTARGET lights = Hge->Target_Create(Resolution.X, Resolution.Y, false);
+	
+	//clean lights
+	Hge->Gfx_BeginScene(lights);
+	Hge->Gfx_Clear(0);	
+	Hge->Gfx_EndScene();
 
+	// for each light on the scene
+	//for (std::set<IActor*>::iterator it = BrowsableWorld->AllActors.begin(); it != BrowsableWorld->AllActors.end(); it++)
+	{
+		//if ((*it)->GetType() == AT_Light)
+		{
+			Hge->Gfx_BeginScene(zone);
+			Hge->Gfx_Clear(0x333333);	
+
+			// Shadows
+			if (bRenderShadows)
+			{
+				RenderShadows();
+			}
+
+			// Actors
+			RenderActors();
+
+			// Fog
+			if (bRenderFog)
+			{
+				RenderFog();
+			}
+	
+			Hge->Gfx_EndScene();
+
+			// render light to lights
+			hgeSprite *light = new hgeSprite(Hge->Target_GetTexture(zone), 0, 0, Resolution.X, Resolution.Y);
+			light->SetBlendMode(BLEND_ALPHAADD);
+
+			Hge->Gfx_BeginScene(lights);
+			light->Render(0, 0);
+			Hge->Gfx_EndScene();
+
+			delete light;
+		}
+	}
+
+	hgeSprite *finalLights = new hgeSprite(Hge->Target_GetTexture(lights), 0, 0, Resolution.X, Resolution.Y);
+	finalLights->SetBlendMode(BLEND_DEFAULT);
+
+	// start rendering to target
+	Hge->Gfx_BeginScene(RenderTarget);
+	// fill gray background
+	Hge->Gfx_Clear(0);	
+
+	finalLights->Render(0, 0);	
+
+	/*// Shadows
+	if (bRenderShadows)
+	{
+		RenderShadows();
+	}
+
+	// Actors
 	RenderActors();
 
+	// Fog
 	if (bRenderFog)
+	{
 		RenderFog();
+	}*/
+
+	// Bounding boxes
 	if (bShowAABB)
+	{
 		RenderCollisionBoxes();
+	}
+
+	// Borders
 	if (bShowBorders)
+	{
 		RenderHulls();
+	}
+
+	// end rendering to target
+	Hge->Gfx_EndScene();
+	
+	Hge->Target_Free(zone);
+	Hge->Target_Free(lights);
+
+	delete finalLights;
 }
 
 void Camera::RenderActors()
@@ -255,12 +338,6 @@ void Camera::SetLocation(Vector2D newLocation)
 	Location = newLocation;
 }
 
-void Camera::SetResolution(Vector2D newResolution)
-{
-	Resolution = newResolution;
-	CenterPos = Resolution/2;
-}
-
 Vector2D Camera::GetResolution()
 {
 	return Resolution;
@@ -289,4 +366,9 @@ void Camera::ShowShadows(bool bShow)
 void Camera::ShowHulls(bool bShow)
 {
 	bShowBorders = bShow;
+}
+
+HTEXTURE Camera::GetRenderTexture()
+{
+	return RenderTarget;
 }

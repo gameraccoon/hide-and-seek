@@ -48,7 +48,7 @@ private:
 };
 
 // Handles for HGE resourcces
-HTEXTURE	Texture;
+HTEXTURE Texture;
 
 Vector2D MousePos = ZeroVector;
 
@@ -160,13 +160,18 @@ bool FrameFunc()
 
 bool RenderFunc()
 {
-	Hge->Gfx_BeginScene();
-	Hge->Gfx_Clear(0xFF333333);
-	
-	//-- Start renders graphics
+	hgeSprite* CameraRenderSpr = new hgeSprite(Hge->Target_GetTexture(MainCamera->GetRenderTexture()), 0, 0, MainCamera->GetResolution().X, MainCamera->GetResolution().Y);
+	//CameraRender->SetBlendMode(BLEND_COLORMUL | BLEND_ALPHAADD | BLEND_NOZWRITE);
 
 	MainCamera->Render();
 	
+	Hge->Gfx_BeginScene();
+	Hge->Gfx_Clear(0);
+	
+	//-- Start renders graphics
+
+	CameraRenderSpr->Render(0, 0);
+
 	Crosshair->Render(MousePos.X, MousePos.Y);
 	Arrow->Render();
 
@@ -187,6 +192,8 @@ bool RenderFunc()
 	//-- Stop render graphics
 
 	Hge->Gfx_EndScene();
+
+	delete CameraRenderSpr;
 
 	return false;
 }
@@ -230,8 +237,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		GameWorld = new World(Hge);
 
-		MainCamera = new FloatingCamera(GameWorld, Vector2D(0.0f, 0.0f));
-		MainCamera->SetResolution(SCREEN_CENTER * 2);
+		MainCamera = new FloatingCamera(GameWorld, SCREEN_CENTER * 2, Vector2D(0.0f, 0.0f));
 
 		StaticGroup Group = StaticGroup();
 		

@@ -3,14 +3,12 @@
 
 #include "actor.h"
 
-class LightEmitter :
-	public Actor
+class LightEmitter : public Actor
 {
 public:
 	LightEmitter(World *ownerWorld, Vector2D location);
 	~LightEmitter(void);
 	void Update(float deltaTime);
-	/** Render the actor in the current location */
 	void Render(Vector2D shift, Rotator angle);
 protected:
 	void UpdateCollision();

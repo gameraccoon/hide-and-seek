@@ -14,7 +14,8 @@ enum EActorType
 	AT_Dynamic,	// movable objects like barrel		// added in collisions list and check collisions only on moving
 	AT_Living,	// player or NPC					// added in collisions list and check collisions always
 	AT_Bullet,	// basic bullets					// check collisions all life cycle but not be added in collisions list
-	AT_Special	// doors, rockets, turrels, etc.
+	AT_Special,	// doors, rockets, turrels, etc.
+	AT_Light
 };
 
 /**

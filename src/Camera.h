@@ -1,6 +1,9 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
+#include <hge.h>
+#include <hgeresource.h>
+
 #include "../src/Globals.h"
 #include "../src/Vector2D.h"
 #include "../src/Actor.h"
@@ -9,14 +12,14 @@
 class Camera
 {
 public:
-	Camera(World* world, Vector2D location);
+	Camera(World* world, Vector2D resolution, Vector2D location);
 	~Camera(void);
+	/** Get pointer to the texture which will be used to render */
+	HTEXTURE GetRenderTexture();
 	/** Render of all objects thats seen by camera */
 	void Render();
 	/** Set new location of camera in the world */
 	virtual void SetLocation(Vector2D newLocation);
-	/** Set screen resolution */
-	virtual void SetResolution(Vector2D newResolution);
 	/** Get screen resolution */
 	Vector2D GetResolution();
 	/** Set new angle of camera rotation */
@@ -62,6 +65,8 @@ protected:
 	HTEXTURE CamTexture;
 	/** Texture of fog */
 	HTEXTURE FogTexture;
+	/** Render target */
+	HTARGET RenderTarget;
 	/** Sprite of fog */
 	hgeSprite *FogSprite;
 	/** Is camera shows AABB? */
