@@ -5,6 +5,7 @@
 #include "../src/Wall.h"
 #include "../src/FloatingCamera.h"
 #include "../src/KeyListeners.h"
+#include "../src/LightEmitter.h"
 #include <vector>
 
 // Hge subsystem
@@ -65,7 +66,7 @@ Hero *OurHero;
 World *GameWorld;
 
 // Camera
-FloatingCamera *MainCamera;
+Camera *MainCamera;
 
 // Test arrow for show directions on screen
 DirectionArrow *Arrow;
@@ -144,7 +145,7 @@ bool FrameFunc()
 	CameraShift = CameraShift.Ort() * min(CameraShift.Size(), MAX_CAMERA_RANGE);
 	MainCamera->SetLocation(OurHero->GetLocation());
 	MainCamera->SetRotation(CameraAngle);
-	MainCamera->SetCenterShift(CameraShift);
+	//MainCamera->SetCenterShift(CameraShift);
 
 	// Update key states
 	Listeners.Check();
@@ -237,7 +238,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		GameWorld = new World(Hge);
 
-		MainCamera = new FloatingCamera(GameWorld, SCREEN_CENTER * 2, Vector2D(0.0f, 0.0f));
+		MainCamera = new Camera(GameWorld, SCREEN_CENTER * 2, Vector2D(0.0f, 0.0f));
 
 		StaticGroup Group = StaticGroup();
 		
@@ -260,6 +261,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		//Group.Insert(new Wall(GameWorld, Vector2D(350.0f, 300.0f), Vector2D(80, 20)));
 		Group.Insert(new Wall(GameWorld, Vector2D(300.0f, 350.0f), Vector2D(20, 80)));
 		Group.Insert(new Wall(GameWorld, Vector2D(400.0f, 350.0f), Vector2D(20, 80)));
+
+		Group.Insert(new LightEmitter(GameWorld, Vector2D(350, 250)));
 
 		OurHero = new Hero(GameWorld, Vector2D(0.0f, 350.0f));
 		Group.Insert(OurHero);

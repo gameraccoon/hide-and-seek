@@ -41,7 +41,7 @@ protected:
 	void RenderActors();
 	/** Render collision AABB to screen */
 	void RenderCollisionBoxes();
-	/** Render fog (fog of war) */
+	/** Render fog for the camera (fog of war) */
 	virtual void RenderFog();
 	/** Render shadows of player view */
 	void RenderShadows();

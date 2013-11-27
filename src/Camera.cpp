@@ -2,15 +2,13 @@
 
 
 Camera::Camera(World* world, Vector2D resolution, Vector2D location) : Location(location),
-												Resolution(ZeroVector),
-												CenterPos(ZeroVector)
+												Resolution(resolution),
+												CenterPos(resolution/2)
 {
 	BrowsableWorld = world;
 	Angle = 0;
 
 	Hge = world->GetHge();
-
-	Resolution = resolution;
 
 	// Set max distantion (on screen) where we draw actors
 	ShownSize = 500.0f;
@@ -56,42 +54,42 @@ void Camera::Render()
 	HTARGET zone = Hge->Target_Create(ShownSize, ShownSize, false);
 	HTARGET lights = Hge->Target_Create(Resolution.X, Resolution.Y, false);
 	
-	//clean lights
+	// clean lights cached map
 	Hge->Gfx_BeginScene(lights);
-	Hge->Gfx_Clear(0);	
+	Hge->Gfx_Clear(0);
 	Hge->Gfx_EndScene();
 
 	// for each light on the scene
-	//for (std::set<IActor*>::iterator it = BrowsableWorld->AllActors.begin(); it != BrowsableWorld->AllActors.end(); it++)
+	for (std::set<IActor*>::iterator it = BrowsableWorld->AllActors.begin(); it != BrowsableWorld->AllActors.end(); it++)
 	{
-		//if ((*it)->GetType() == AT_Light)
+		if ((*it)->GetType() == AT_Light)
 		{
 			Hge->Gfx_BeginScene(zone);
-			Hge->Gfx_Clear(0x333333);	
+			Hge->Gfx_Clear(0x333333);
 
-			// Shadows
+			// Shadows for this light
 			if (bRenderShadows)
 			{
-				RenderShadows();
+				//RenderShadows();
 			}
 
-			// Actors
-			RenderActors();
+			// Actors beside this light
+			//RenderActors();
 
-			// Fog
-			if (bRenderFog)
+			// Fog of this light
+			//if (bRenderFog)
 			{
-				RenderFog();
+				FogSprite->RenderEx(ShownSize/2,ShownSize/2,0,ShownSize/FogWidth,ShownSize/FogWidth);
 			}
 	
 			Hge->Gfx_EndScene();
 
 			// render light to lights
-			hgeSprite *light = new hgeSprite(Hge->Target_GetTexture(zone), 0, 0, Resolution.X, Resolution.Y);
+			hgeSprite *light = new hgeSprite(Hge->Target_GetTexture(zone), 0, 0, ShownSize, ShownSize);
 			light->SetBlendMode(BLEND_ALPHAADD);
 
 			Hge->Gfx_BeginScene(lights);
-			light->Render(0, 0);
+			light->Render(Project((*it)->GetLocation()).X-ShownSize/2, Project((*it)->GetLocation()).Y-ShownSize/2);
 			Hge->Gfx_EndScene();
 
 			delete light;
@@ -104,24 +102,21 @@ void Camera::Render()
 	// start rendering to target
 	Hge->Gfx_BeginScene(RenderTarget);
 	// fill gray background
-	Hge->Gfx_Clear(0);	
+	Hge->Gfx_Clear(0);
 
-	finalLights->Render(0, 0);	
+	finalLights->Render(0, 0);
 
-	/*// Shadows
+	// Shadows for player's view
 	if (bRenderShadows)
 	{
 		RenderShadows();
 	}
 
-	// Actors
-	RenderActors();
-
-	// Fog
+	// Render player's fog
 	if (bRenderFog)
 	{
 		RenderFog();
-	}*/
+	}
 
 	// Bounding boxes
 	if (bShowAABB)
