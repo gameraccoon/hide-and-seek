@@ -11,7 +11,7 @@ Camera::Camera(World* world, Vector2D resolution, Vector2D location) : Location(
 	Hge = world->GetHge();
 
 	// Set max distantion (on screen) where we draw actors
-	ShownSize = 500.0f;
+	ShownSize = 512.0f;
 
 	// Set fog texture size
 	FogWidth = 512.0f;
@@ -74,10 +74,10 @@ void Camera::Render()
 			}
 
 			// Actors beside this light
-			//RenderActors();
+			RenderActors((*it)->GetLocation());
 
 			// Fog of this light
-			//if (bRenderFog)
+			if (bRenderFog)
 			{
 				FogSprite->RenderEx(ShownSize/2,ShownSize/2,0,ShownSize/FogWidth,ShownSize/FogWidth);
 			}
@@ -139,22 +139,22 @@ void Camera::Render()
 	delete finalLights;
 }
 
-void Camera::RenderActors()
+void Camera::RenderActors(Vector2D lightPos)
 {
 	// for each actors in the world
 	for (std::set<IActor*>::iterator it = BrowsableWorld->AllActors.begin(); it != BrowsableWorld->AllActors.end(); it++)
 	{
-		// Get screen location
-		Vector2D screenLoc((*it)->GetLocation() - Location);
+		// Get actor's camera local location
+		Vector2D screenLoc((*it)->GetLocation() - lightPos);
 		// Get distance from center of screen
 		float distanceFromCamera = screenLoc.Size();
 		// if actor is not far of drawing zone
 		if (distanceFromCamera < ShownSize)
 		{
-			// calc real screen location
+			// calc actor screen location
 			Vector2D newScreenLoc(Vector2D(screenLoc.GetRotation() + Angle) * distanceFromCamera);
 			// render actor
-			(*it)->Render(CenterPos + newScreenLoc, Angle);
+			(*it)->Render(newScreenLoc + Vector2D(ShownSize/2, ShownSize/2), Angle);
 		}
 	}
 }

@@ -38,7 +38,7 @@ public:
 	Vector2D GetWorldPos(Vector2D screenPoint);
 protected:
 	/** Render all seen actors */
-	void RenderActors();
+	void RenderActors(Vector2D lightPos);
 	/** Render collision AABB to screen */
 	void RenderCollisionBoxes();
 	/** Render fog for the camera (fog of war) */
