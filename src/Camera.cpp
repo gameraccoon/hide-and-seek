@@ -65,12 +65,12 @@ void Camera::Render()
 		if ((*it)->GetType() == AT_Light)
 		{
 			Hge->Gfx_BeginScene(zone);
-			Hge->Gfx_Clear(0x333333);
+			Hge->Gfx_Clear(0xFFFFFF);
 
 			// Shadows for this light
 			if (bRenderShadows)
 			{
-				//RenderShadows();
+				RenderShadows((*it)->GetLocation());
 			}
 
 			// Actors beside this light
@@ -87,6 +87,7 @@ void Camera::Render()
 			// render light to lights
 			hgeSprite *light = new hgeSprite(Hge->Target_GetTexture(zone), 0, 0, ShownSize, ShownSize);
 			light->SetBlendMode(BLEND_ALPHAADD);
+			light->SetColor(0xFF777777);
 
 			Hge->Gfx_BeginScene(lights);
 			light->Render(Project((*it)->GetLocation()).X-ShownSize/2, Project((*it)->GetLocation()).Y-ShownSize/2);
@@ -109,7 +110,7 @@ void Camera::Render()
 	// Shadows for player's view
 	if (bRenderShadows)
 	{
-		RenderShadows();
+		//RenderShadows();
 	}
 
 	// Render player's fog
@@ -186,6 +187,16 @@ Vector2D Camera::Project(Vector2D worldPoint)
 	return CenterPos + newScreenLoc;
 }
 
+Vector2D Camera::ProjectFrom(Vector2D worldPoint, Vector2D projectionCenter)
+{
+	// calc camera-location
+	Vector2D screenLoc(worldPoint - projectionCenter);
+	// calc screen-coordinates relativety camera center
+	Vector2D newScreenLoc(Vector2D(screenLoc.GetRotation() + Angle) * screenLoc.Size());
+	// calc absolute screen-coordinates
+	return Vector2D(ShownSize/2, ShownSize/2) + newScreenLoc;
+}
+
 Vector2D Camera::GetWorldPos(Vector2D screenPoint)
 {
 	// calc relative screen-coordinates
@@ -258,8 +269,9 @@ void Camera::DrawQuad(Vector2D first, Vector2D second, Vector2D third, Vector2D 
 	Hge->Gfx_RenderQuad(&quad);
 }
 
-void Camera::RenderShadows()
+void Camera::RenderShadows(Vector2D lightPos)
 {
+	Vector2D lightCenterPos(ShownSize/2, ShownSize/2);
 	// for each actors in the world
 	for (std::set<IActor*>::iterator it = BrowsableWorld->AllActors.begin(); it != BrowsableWorld->AllActors.end(); it++)
 	{
@@ -274,7 +286,7 @@ void Camera::RenderShadows()
 				// if border's normal and camera view on border have different directions (angle > PI/2)
 				if (abs((
 						hull->Borders[i].GetNormal().GetRotation()
-						- ((*it)->GetLocation() + (hull->Borders[i].GetA() + hull->Borders[i].GetB())/2 - Location).GetRotation()
+						- ((*it)->GetLocation() + (hull->Borders[i].GetA() + hull->Borders[i].GetB())/2 - lightPos).GetRotation()
 					).GetValue()) < PI/2)
 				{
 					// Get border's points
@@ -282,11 +294,11 @@ void Camera::RenderShadows()
 					Vector2D b((*it)->GetLocation() + hull->Borders[i].GetB());
 
 					// project them on screen
-					a = Project(a);
-					b = Project(b);
+					a = ProjectFrom(a, lightPos);
+					b = ProjectFrom(b, lightPos);
 
 					// Draw shadow's quad of this border to far of the screen
-					DrawQuad(a, b, b + (b - CenterPos).Ort() * 3000, a + (a - CenterPos).Ort() * 3000);
+					DrawQuad(a, b, b + (b - lightCenterPos).Ort() * 3000, a + (a - lightCenterPos).Ort() * 3000);
 				}
 			}
 		}

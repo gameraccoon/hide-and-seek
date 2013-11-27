@@ -34,6 +34,7 @@ public:
 	void ShowHulls(bool bShow);
 	/** Project point from world coordinates to screen coordinates */
 	Vector2D Project(Vector2D worldPoint);
+	Vector2D ProjectFrom(Vector2D worldPoint, Vector2D projectionCenter);
 	/** Project point from screen coordinates to the world coordinates */
 	Vector2D GetWorldPos(Vector2D screenPoint);
 protected:
@@ -44,7 +45,7 @@ protected:
 	/** Render fog for the camera (fog of war) */
 	virtual void RenderFog();
 	/** Render shadows of player view */
-	void RenderShadows();
+	void RenderShadows(Vector2D lightPos);
 	/** Render hulls */
 	void RenderHulls();
 	/** World which render this camera*/

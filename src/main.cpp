@@ -66,7 +66,7 @@ Hero *OurHero;
 World *GameWorld;
 
 // Camera
-Camera *MainCamera;
+FloatingCamera *MainCamera;
 
 // Test arrow for show directions on screen
 DirectionArrow *Arrow;
@@ -145,7 +145,7 @@ bool FrameFunc()
 	CameraShift = CameraShift.Ort() * min(CameraShift.Size(), MAX_CAMERA_RANGE);
 	MainCamera->SetLocation(OurHero->GetLocation());
 	MainCamera->SetRotation(CameraAngle);
-	//MainCamera->SetCenterShift(CameraShift);
+	MainCamera->SetCenterShift(CameraShift);
 
 	// Update key states
 	Listeners.Check();
@@ -238,7 +238,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		GameWorld = new World(Hge);
 
-		MainCamera = new Camera(GameWorld, SCREEN_CENTER * 2, Vector2D(0.0f, 0.0f));
+		MainCamera = new FloatingCamera(GameWorld, SCREEN_CENTER * 2, Vector2D(0.0f, 0.0f));
 
 		StaticGroup Group = StaticGroup();
 		
@@ -263,7 +263,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		Group.Insert(new Wall(GameWorld, Vector2D(400.0f, 350.0f), Vector2D(20, 80)));
 
 		Group.Insert(new LightEmitter(GameWorld, Vector2D(350, 250)));
-		//Group.Insert(new LightEmitter(GameWorld, Vector2D(350, 350)));
+		Group.Insert(new LightEmitter(GameWorld, Vector2D(330, 450)));
 
 		OurHero = new Hero(GameWorld, Vector2D(0.0f, 350.0f));
 		Group.Insert(OurHero);
