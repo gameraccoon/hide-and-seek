@@ -89,6 +89,13 @@ public:
 	void Pressed() { MainCamera->ShowFog(bActive); }
 };
 
+class BtnLights : public ButtonSwitcher
+{
+public:
+	BtnLights(HGE *hge) : ButtonSwitcher(hge, HGEK_L, false) { };
+	void Pressed() { MainCamera->ShowLights(bActive); }
+};
+
 class BtnAABB : public ButtonSwitcher
 {
 public:
@@ -176,6 +183,7 @@ bool RenderFunc()
 	Crosshair->Render(MousePos.X, MousePos.Y);
 	Arrow->Render();
 
+	Font->SetScale(0.7);
 	// fps and dt
 	Font->printf(5, 5, HGETEXT_LEFT, "dt:%.3f\nFPS:%d", Hge->Timer_GetDelta(), Hge->Timer_GetFPS());
 	
@@ -184,11 +192,13 @@ bool RenderFunc()
 		Font->printf(5, 60, HGETEXT_LEFT, "Showing Models");
 	if (Listeners.GetActive(HGEK_C))
 		Font->printf(5, 90, HGETEXT_LEFT, "Showing Bounding boxes");
+	if (Listeners.GetActive(HGEK_L))
+		Font->printf(5, 120, HGETEXT_LEFT, "Showing Light emitters");
 
 	if (!Listeners.GetActive(HGEK_F))
-		Font->printf(5, 120, HGETEXT_LEFT, "Hidded Fog");
+		Font->printf(5, 150, HGETEXT_LEFT, "Hidded Fog");
 	if (!Listeners.GetActive(HGEK_H))
-		Font->printf(5, 150, HGETEXT_LEFT, "Hidded Shadows");
+		Font->printf(5, 180, HGETEXT_LEFT, "Hidded Shadows");
 
 	//-- Stop render graphics
 
@@ -261,9 +271,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		//Group.Insert(new Wall(GameWorld, Vector2D(350.0f, 300.0f), Vector2D(80, 20)));
 		Group.Insert(new Wall(GameWorld, Vector2D(300.0f, 350.0f), Vector2D(20, 80)));
 		Group.Insert(new Wall(GameWorld, Vector2D(400.0f, 350.0f), Vector2D(20, 80)));
-
+		
 		Group.Insert(new LightEmitter(GameWorld, Vector2D(350, 250)));
 		Group.Insert(new LightEmitter(GameWorld, Vector2D(330, 450)));
+		Group.Insert(new LightEmitter(GameWorld, Vector2D(150, 250)));
+		Group.Insert(new LightEmitter(GameWorld, Vector2D(230, 450)));
 
 		OurHero = new Hero(GameWorld, Vector2D(0.0f, 350.0f));
 		Group.Insert(OurHero);
@@ -277,6 +289,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		Listeners.AddListener(new BtnHulls(Hge));
 		Listeners.AddListener(new BtnFog(Hge));
 		Listeners.AddListener(new BtnShadows(Hge));
+		Listeners.AddListener(new BtnLights(Hge));
 		Listeners.AddListener(new BtnShoot(Hge));
 
 		// Let's rock now!

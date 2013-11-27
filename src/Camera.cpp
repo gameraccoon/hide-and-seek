@@ -16,7 +16,7 @@ Camera::Camera(World* world, Vector2D resolution, Vector2D location) : Location(
 	// Set fog texture size
 	FogWidth = 512.0f;
 	// Set scale of fog sprite
-	FogScale = ShownSize * 1.5f / (FogWidth / 2.0f);
+	FogScale = ShownSize * 0.9f / (FogWidth / 2.0f);
 
 	RenderTarget = Hge->Target_Create(Resolution.X, Resolution.Y, false);
 
@@ -38,6 +38,7 @@ Camera::Camera(World* world, Vector2D resolution, Vector2D location) : Location(
 	bRenderFog = true;
 	bShowBorders = false;
 	bRenderShadows = true;
+	bShowLights = false;
 }
 
 Camera::~Camera(void)
@@ -70,7 +71,7 @@ void Camera::Render()
 			// Shadows for this light
 			if (bRenderShadows)
 			{
-				RenderShadows((*it)->GetLocation());
+				RenderLightShadows((*it)->GetLocation());
 			}
 
 			// Actors beside this light
@@ -116,7 +117,7 @@ void Camera::Render()
 	// Render player's fog
 	if (bRenderFog)
 	{
-		RenderFog();
+		//RenderFog();
 	}
 
 	// Bounding boxes
@@ -129,6 +130,12 @@ void Camera::Render()
 	if (bShowBorders)
 	{
 		RenderHulls();
+	}
+	
+	// Lights
+	if (bShowLights)
+	{
+		RenderLights();
 	}
 
 	// end rendering to target
@@ -269,7 +276,7 @@ void Camera::DrawQuad(Vector2D first, Vector2D second, Vector2D third, Vector2D 
 	Hge->Gfx_RenderQuad(&quad);
 }
 
-void Camera::RenderShadows(Vector2D lightPos)
+void Camera::RenderLightShadows(Vector2D lightPos)
 {
 	Vector2D lightCenterPos(ShownSize/2, ShownSize/2);
 	// for each actors in the world
@@ -299,6 +306,41 @@ void Camera::RenderShadows(Vector2D lightPos)
 
 					// Draw shadow's quad of this border to far of the screen
 					DrawQuad(a, b, b + (b - lightCenterPos).Ort() * 3000, a + (a - lightCenterPos).Ort() * 3000);
+				}
+			}
+		}
+	}
+}
+
+void Camera::RenderShadows()
+{
+	// for each actors in the world
+	for (std::set<IActor*>::iterator it = BrowsableWorld->AllActors.begin(); it != BrowsableWorld->AllActors.end(); it++)
+	{
+		// if actor - static
+		if ((*it)->GetType() == AT_Static)
+		{
+			// get actors geometry
+			Hull *hull = (*it)->GetHull();
+			// for each border of actor's geometry
+			for (int i = 0; i < hull->Borders.size(); i++)
+			{
+				// if border's normal and camera view on border have different directions (angle > PI/2)
+				if (abs((
+						hull->Borders[i].GetNormal().GetRotation()
+						- ((*it)->GetLocation() + (hull->Borders[i].GetA() + hull->Borders[i].GetB())/2 - Location).GetRotation()
+					).GetValue()) < PI/2)
+				{
+					// Get border's points
+					Vector2D a((*it)->GetLocation() + hull->Borders[i].GetA());
+					Vector2D b((*it)->GetLocation() + hull->Borders[i].GetB());
+
+					// project them on screen
+					a = Project(a);
+					b = Project(b);
+
+					// Draw shadow's quad of this border to far of the screen
+					DrawQuad(a, b, b + (b - CenterPos).Ort() * 3000, a + (a - CenterPos).Ort() * 3000);
 				}
 			}
 		}
@@ -340,6 +382,23 @@ void Camera::RenderHulls()
 	}
 }
 
+void Camera::RenderLights()
+{
+	const int normal_length = 10;
+
+	// for each actors in the world
+	for (std::set<IActor*>::iterator it = BrowsableWorld->AllActors.begin(); it != BrowsableWorld->AllActors.end(); it++)
+	{
+		// if actor - static
+		if ((*it)->GetType() == AT_Light)
+		{
+			Vector2D lightLocation(Project((*it)->GetLocation()));
+			Hge->Gfx_RenderLine(lightLocation.X - 5,lightLocation.Y,lightLocation.X + 5,lightLocation.Y,0xFFAA6600,0);
+			Hge->Gfx_RenderLine(lightLocation.X,lightLocation.Y - 5,lightLocation.X,lightLocation.Y + 5,0xFFAA6600,0);
+		}
+	}
+}
+
 void Camera::SetLocation(Vector2D newLocation)
 {
 	Location = newLocation;
@@ -373,6 +432,11 @@ void Camera::ShowShadows(bool bShow)
 void Camera::ShowHulls(bool bShow)
 {
 	bShowBorders = bShow;
+}
+
+void Camera::ShowLights(bool bShow)
+{
+	bShowLights = bShow;
 }
 
 HTEXTURE Camera::GetRenderTexture()

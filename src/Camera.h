@@ -28,6 +28,8 @@ public:
 	void ShowAABB(bool bShow);
 	/** Switch showing fog */
 	void ShowFog(bool bShow);
+	/** Switch showing light ceners */
+	void ShowLights(bool bShow);
 	/** Switch showing shadows */
 	void ShowShadows(bool bShow);
 	/** Switch showing normals */
@@ -45,9 +47,12 @@ protected:
 	/** Render fog for the camera (fog of war) */
 	virtual void RenderFog();
 	/** Render shadows of player view */
-	void RenderShadows(Vector2D lightPos);
+	void RenderShadows();
+	void RenderLightShadows(Vector2D lightPos);
 	/** Render hulls */
 	void RenderHulls();
+	/** Render lights centers */
+	void RenderLights();
 	/** World which render this camera*/
 	World* BrowsableWorld;
 	/** Camera location in the world */
@@ -84,6 +89,8 @@ protected:
 	bool bRenderShadows;
 	/** Is camera shows borders of objects? */
 	bool bShowBorders;
+	/** Is camera shows centers of lights? */
+	bool bShowLights;
 private:
 	/** Helper method. Drawing quad on screen */
 	void DrawQuad(Vector2D first, Vector2D second, Vector2D third, Vector2D fourth);
