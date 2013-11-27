@@ -53,10 +53,9 @@ Camera::~Camera(void)
 void Camera::Render()
 {
 	HTARGET zone = Hge->Target_Create(ShownSize, ShownSize, false);
-	HTARGET lights = Hge->Target_Create(Resolution.X, Resolution.Y, false);
 	
 	// clean lights cached map
-	Hge->Gfx_BeginScene(lights);
+	Hge->Gfx_BeginScene(RenderTarget);
 	Hge->Gfx_Clear(0);
 	Hge->Gfx_EndScene();
 
@@ -67,15 +66,15 @@ void Camera::Render()
 		{
 			Hge->Gfx_BeginScene(zone);
 			Hge->Gfx_Clear(0xFFFFFF);
+			
+			// Actors beside this light
+			RenderActors((*it)->GetLocation());
 
 			// Shadows for this light
 			if (bRenderShadows)
 			{
 				RenderLightShadows((*it)->GetLocation());
 			}
-
-			// Actors beside this light
-			RenderActors((*it)->GetLocation());
 
 			// Fog of this light
 			if (bRenderFog)
@@ -90,7 +89,7 @@ void Camera::Render()
 			light->SetBlendMode(BLEND_ALPHAADD);
 			light->SetColor(0xFF777777);
 
-			Hge->Gfx_BeginScene(lights);
+			Hge->Gfx_BeginScene(RenderTarget);
 			light->Render(Project((*it)->GetLocation()).X-ShownSize/2, Project((*it)->GetLocation()).Y-ShownSize/2);
 			Hge->Gfx_EndScene();
 
@@ -98,15 +97,8 @@ void Camera::Render()
 		}
 	}
 
-	hgeSprite *finalLights = new hgeSprite(Hge->Target_GetTexture(lights), 0, 0, Resolution.X, Resolution.Y);
-	finalLights->SetBlendMode(BLEND_DEFAULT);
-
 	// start rendering to target
 	Hge->Gfx_BeginScene(RenderTarget);
-	// fill gray background
-	Hge->Gfx_Clear(0);
-
-	finalLights->Render(0, 0);
 
 	// Shadows for player's view
 	if (bRenderShadows)
@@ -142,9 +134,6 @@ void Camera::Render()
 	Hge->Gfx_EndScene();
 	
 	Hge->Target_Free(zone);
-	Hge->Target_Free(lights);
-
-	delete finalLights;
 }
 
 void Camera::RenderActors(Vector2D lightPos)
