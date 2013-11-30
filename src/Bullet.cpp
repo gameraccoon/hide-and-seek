@@ -49,7 +49,6 @@ void Bullet::Update(float deltaTime)
 	else
 	{
 		Location = Vector2D(350.f, 250.f);// ToDo: destruct bullet
-		new Hero(OwnerWorld, traceLocation);
 		Speed = 0.0f;
 	}
 }

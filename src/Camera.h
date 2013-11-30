@@ -38,7 +38,7 @@ public:
 	Vector2D Project(Vector2D worldPoint);
 	Vector2D ProjectFrom(Vector2D worldPoint, Vector2D projectionCenter);
 	/** Project point from screen coordinates to the world coordinates */
-	Vector2D GetWorldPos(Vector2D screenPoint);
+	Vector2D DeProject(Vector2D screenPoint);
 protected:
 	/** Render all seen actors */
 	void RenderActors(Vector2D lightPos);
@@ -91,6 +91,8 @@ protected:
 	bool bShowBorders;
 	/** Is camera shows centers of lights? */
 	bool bShowLights;
+	/** Helper variable */
+	HTARGET Zone;
 private:
 	/** Helper method. Drawing quad on screen */
 	void DrawQuad(Vector2D first, Vector2D second, Vector2D third, Vector2D fourth);

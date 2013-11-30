@@ -71,8 +71,11 @@ FloatingCamera *MainCamera;
 // Test arrow for show directions on screen
 DirectionArrow *Arrow;
 
-// Butto
+// Button
 ButtonListeners Listeners;
+
+// Group of actors that will be destroyed on shutdown
+StaticGroup Group;
 
 // event listeners
 class BtnShadows : public ButtonSwitcher
@@ -114,8 +117,15 @@ class BtnShoot : public ButtonSwitcher
 {
 public:
 	BtnShoot(HGE *hge) : ButtonSwitcher(hge, HGEK_LBUTTON, true) { };
-	void Pressed() { OurHero->StartShoting(MainCamera->GetWorldPos(MousePos)); }
+	void Pressed() { OurHero->StartShoting(MainCamera->DeProject(MousePos)); }
 	void Released() { OurHero->StopShoting(); }
+};
+
+class BtnAddLight : public ButtonSwitcher
+{
+public:
+	BtnAddLight(HGE *hge) : ButtonSwitcher(hge, HGEK_RBUTTON, true) { };
+	void Pressed() { Group.Insert(new LightEmitter(GameWorld, MainCamera->DeProject(MousePos))); }
 };
 
 bool FrameFunc()
@@ -250,7 +260,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		MainCamera = new FloatingCamera(GameWorld, SCREEN_CENTER * 2, Vector2D(0.0f, 0.0f));
 
-		StaticGroup Group = StaticGroup();
+		Group = StaticGroup();
 		
 		Group.Insert(new Wall(GameWorld, Vector2D(250.0f, 300.0f), Vector2D(80, 20)));
 		Group.Insert(new Wall(GameWorld, Vector2D(250.0f, 200.0f), Vector2D(80, 20)));
@@ -272,9 +282,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		Group.Insert(new Wall(GameWorld, Vector2D(300.0f, 350.0f), Vector2D(20, 80)));
 		Group.Insert(new Wall(GameWorld, Vector2D(400.0f, 350.0f), Vector2D(20, 80)));
 		
-		Group.Insert(new LightEmitter(GameWorld, Vector2D(350, 250)));
-		Group.Insert(new LightEmitter(GameWorld, Vector2D(330, 450)));
-		Group.Insert(new LightEmitter(GameWorld, Vector2D(150, 250)));
+		//Group.Insert(new LightEmitter(GameWorld, Vector2D(350, 250)));
+		//Group.Insert(new LightEmitter(GameWorld, Vector2D(330, 450)));
+		//Group.Insert(new LightEmitter(GameWorld, Vector2D(150, 250)));
 		Group.Insert(new LightEmitter(GameWorld, Vector2D(230, 450)));
 
 		OurHero = new Hero(GameWorld, Vector2D(0.0f, 350.0f));
@@ -291,6 +301,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		Listeners.AddListener(new BtnShadows(Hge));
 		Listeners.AddListener(new BtnLights(Hge));
 		Listeners.AddListener(new BtnShoot(Hge));
+		Listeners.AddListener(new BtnAddLight(Hge));
 
 		// Let's rock now!
 		Hge->System_Start();

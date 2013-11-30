@@ -19,6 +19,7 @@ Camera::Camera(World* world, Vector2D resolution, Vector2D location) : Location(
 	FogScale = ShownSize * 0.9f / (FogWidth / 2.0f);
 
 	RenderTarget = Hge->Target_Create(Resolution.X, Resolution.Y, false);
+	Zone = Hge->Target_Create(ShownSize, ShownSize, false);
 
 	CamTexture = Hge->Texture_Load("colision.png");
 	FogTexture = Hge->Texture_Load("fog.png");
@@ -48,12 +49,11 @@ Camera::~Camera(void)
 	Hge->Texture_Free(CamTexture);
 	Hge->Texture_Free(FogTexture);
 	Hge->Target_Free(RenderTarget);
+	Hge->Target_Free(Zone);
 }
 
 void Camera::Render()
 {
-	HTARGET zone = Hge->Target_Create(ShownSize, ShownSize, false);
-	
 	// clean lights cached map
 	Hge->Gfx_BeginScene(RenderTarget);
 	Hge->Gfx_Clear(0);
@@ -64,7 +64,7 @@ void Camera::Render()
 	{
 		if ((*it)->GetType() == AT_Light)
 		{
-			Hge->Gfx_BeginScene(zone);
+			Hge->Gfx_BeginScene(Zone);
 			Hge->Gfx_Clear(0xFFFFFF);
 			
 			// Actors beside this light
@@ -85,7 +85,7 @@ void Camera::Render()
 			Hge->Gfx_EndScene();
 
 			// render light to lights
-			hgeSprite *light = new hgeSprite(Hge->Target_GetTexture(zone), 0, 0, ShownSize, ShownSize);
+			hgeSprite *light = new hgeSprite(Hge->Target_GetTexture(Zone), 0, 0, ShownSize, ShownSize);
 			light->SetBlendMode(BLEND_ALPHAADD);
 			light->SetColor(0xFF777777);
 
@@ -132,8 +132,6 @@ void Camera::Render()
 
 	// end rendering to target
 	Hge->Gfx_EndScene();
-	
-	Hge->Target_Free(zone);
 }
 
 void Camera::RenderActors(Vector2D lightPos)
@@ -193,7 +191,7 @@ Vector2D Camera::ProjectFrom(Vector2D worldPoint, Vector2D projectionCenter)
 	return Vector2D(ShownSize/2, ShownSize/2) + newScreenLoc;
 }
 
-Vector2D Camera::GetWorldPos(Vector2D screenPoint)
+Vector2D Camera::DeProject(Vector2D screenPoint)
 {
 	// calc relative screen-coordinates
 	Vector2D relScreenLoc(screenPoint - CenterPos);
