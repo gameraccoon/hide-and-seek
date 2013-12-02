@@ -10,18 +10,13 @@
 
 // Standart structures e.g. NULL
 #include <stdio.h>
-// More structures e.g. counnt and endl 
-#include <iostream>
-
-// comment this definition in release
-#define DEBUG
 
 // Debugging methods
 #if defined(DEBUG)
 	#define WARN(message)					\
 	{										\
-		std::cout << "Warning: ";			\
-		std::cout << message << std::endl;	\
+		MessageBox(NULL, TEXT(message), "Error", MB_OK | MB_ICONERROR | MB_APPLMODAL); \
+		exit(1);							\
 	}
 
 	#define WARN_IF(condition, message)		\
@@ -38,18 +33,15 @@
  * WARN or WARN_IF it's necessary to include next
  * instructions
  */
-  //// dummy for debugging methods
-  //#if (!defined DEBUG) && (!defined RELEASE)
- 	//#define RELEASE
-  //	#define WARN(message)
-  //	#define WARN_IF(condition, message)
-  //#endif
+  // dummy for debugging methods
+  #if (!defined DEBUG) && (!defined RELEASE)
+ 	#define RELEASE
+  	#define WARN(message)
+  	#define WARN_IF(condition, message)
+  #endif
 /*
  * It will provide reusability of these classes in
  * other programs.
  */
-
-/** HGE subsystem */
-extern HGE *Hge;
 
 #endif

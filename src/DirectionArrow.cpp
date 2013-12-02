@@ -1,7 +1,9 @@
 #include "DirectionArrow.h"
 
-DirectionArrow::DirectionArrow(void) : CenterLocation(ZeroVector)
+DirectionArrow::DirectionArrow(HGE *hge) : CenterLocation(ZeroVector), Direction(0.0f)
 {
+	Hge = hge;
+
 	ArrowTexture = Hge->Texture_Load("arrow.png");
 
 	WARN_IF(!ArrowTexture, "Texture 'arrow.png' not found!");
@@ -49,7 +51,7 @@ void DirectionArrow::Render()
 {
 	if (bDrawable)
 	{
-		Vector2D location = CenterLocation + Vector2D(Direction)*50;
-		ArrowSprite->RenderEx(location.X, location.Y, Direction);
+		Vector2D location = CenterLocation + Vector2D(Direction) * 50;
+		ArrowSprite->RenderEx(location.X, location.Y, Direction.GetValue());
 	}
 }

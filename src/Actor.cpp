@@ -1,12 +1,17 @@
 #include "Actor.h"
 
 
-Actor::Actor(Vector2D location) : Location(location)
+Actor::Actor(World *ownerWorld, Vector2D location) : Location(location), ColideBox(location, location), Direction(0.0f)
 {
+	Hge = ownerWorld->GetHge();
+	OwnerWorld = ownerWorld;
+	OwnerWorld->Spawn(this);
+	Type = AT_Ghost;
 }
 
 Actor::~Actor(void)
 {
+	OwnerWorld->Delete(this);
 }
 
 Vector2D Actor::GetLocation()
@@ -19,10 +24,17 @@ void Actor::SetLocation(Vector2D newLocation)
 	Location = newLocation;
 }
 
-//void Actor::Render()
-//{
-//	if (Sprite != NULL)
-//	{
-//		Sprite->RenderEx(Location.X, Location.Y, Direction);
-//	}
-//}
+EActorType Actor::GetType()
+{
+	return Type;
+}
+
+BoundingBox Actor::GetBoundingBox()
+{
+	return ColideBox;
+}
+
+Hull* Actor::GetHull()
+{
+	return &Geometry;
+}

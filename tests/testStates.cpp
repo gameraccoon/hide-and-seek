@@ -7,7 +7,6 @@ class testStates : public cfixcc::TestFixture
 {
 private:
 	
-
 	class TestStateA:public State
 	{
 	public:

@@ -6,16 +6,17 @@
 class Wall : public Actor
 {
 public:
-	Wall(Vector2D location, Vector2D size);
+	Wall(World *ownerWorld, Vector2D location, Vector2D size);
 	~Wall(void);
+	/** Dummy (wall do nothing) */
 	void Update(float deltaTime);
 	/** Render the actor in the current location */
 	void Render(Vector2D shift, Rotator angle);
 private:
-	/** Wall lenght */
-	float Lenght;
-	/** Wall weight */
-	float Weight;
+	/** */
+	void UpdateCollision();
+	/** Wall lenght and height */
+	Vector2D Size;
 	/** Texture for sprites */
 	HTEXTURE WallTexture;
 };

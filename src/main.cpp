@@ -4,37 +4,129 @@
 #include "../src/World.h"
 #include "../src/Wall.h"
 #include "../src/FloatingCamera.h"
+#include "../src/KeyListeners.h"
+#include "../src/LightEmitter.h"
+#include <vector>
+
+// Hge subsystem
+HGE *Hge = NULL;
 
 // Pointers to the HGE objects we will use
 hgeSprite*	Crosshair;
 hgeFont*	Font;
 
-// Handles for HGE resourcces
-HTEXTURE	Texture;
+//#define FULLSCREEN
+#ifndef FULLSCREEN
+	const int SCREEN_WIDTH = 800;
+	const int SCREEN_HEIGHT = 600;
+	const bool FULL_SCREEN = false;
+#else
+	const int SCREEN_WIDTH = 1366;
+	const int SCREEN_HEIGHT = 768;
+	const bool FULL_SCREEN = true;
+#endif
 
-const int SCREEN_WIDTH = 800;
-const int SCREEN_HEIGHT = 600;
+// Class helper needed to desctruct many objects at once
+class StaticGroup
+{
+public:
+	void DestructAll()
+	{
+		for (std::vector<Actor*>::iterator it = Actors.begin(); it != Actors.end(); it++)
+		{
+			delete (*it);
+			(*it) = NULL;
+		}
+	}
+
+	void Insert(Actor *actor)
+	{
+		Actors.insert(Actors.begin(), actor);
+	}
+
+private:
+	std::vector<Actor*> Actors;
+};
+
+// Handles for HGE resourcces
+HTEXTURE Texture;
 
 Vector2D MousePos = ZeroVector;
 
 const Vector2D SCREEN_CENTER(SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
 
+const float MAX_CAMERA_RANGE = min(SCREEN_HEIGHT, SCREEN_WIDTH) / 4.0f;
+
 float CameraAngle = 0.0f;
 
-// Our Hero whom we control
+// The Hero whom we control
 Hero *OurHero;
 
 // Our big World =)
 World *GameWorld;
 
-// testWall
-Wall *TestWall;
-
-//
+// Camera
 FloatingCamera *MainCamera;
 
-// test arrow for show directions on screen
+// Test arrow for show directions on screen
 DirectionArrow *Arrow;
+
+// Button
+ButtonListeners Listeners;
+
+// Group of actors that will be destroyed on shutdown
+StaticGroup Group;
+
+// event listeners
+class BtnShadows : public ButtonSwitcher
+{
+public:
+	BtnShadows(HGE *hge) : ButtonSwitcher(hge, HGEK_H, true) { };
+	void Pressed() { MainCamera->ShowShadows(bActive); }
+};
+
+class BtnFog : public ButtonSwitcher
+{
+public:
+	BtnFog(HGE *hge) : ButtonSwitcher(hge, HGEK_F, true) { };
+	void Pressed() { MainCamera->ShowFog(bActive); }
+};
+
+class BtnLights : public ButtonSwitcher
+{
+public:
+	BtnLights(HGE *hge) : ButtonSwitcher(hge, HGEK_L, false) { };
+	void Pressed() { MainCamera->ShowLights(bActive); }
+};
+
+class BtnAABB : public ButtonSwitcher
+{
+public:
+	BtnAABB(HGE *hge) : ButtonSwitcher(hge, HGEK_C, false) { };
+	void Pressed() { MainCamera->ShowAABB(bActive); }
+};
+
+class BtnHulls : public ButtonSwitcher
+{
+public:
+	BtnHulls(HGE *hge) : ButtonSwitcher(hge, HGEK_M, false) { };
+	void Pressed() { MainCamera->ShowHulls(bActive); }
+};
+
+class BtnShoot : public ButtonSwitcher
+{
+public:
+	BtnShoot(HGE *hge) : ButtonSwitcher(hge, HGEK_LBUTTON, true) { };
+	void Pressed() { OurHero->StartShoting(MainCamera->DeProject(MousePos)); }
+	void Released() { OurHero->StopShoting(); }
+};
+
+class BtnAddLight : public ButtonSwitcher
+{
+public:
+	BtnAddLight(HGE *hge) : ButtonSwitcher(hge, HGEK_RBUTTON, true) { };
+	void Pressed() { Group.Insert(new LightEmitter(GameWorld, MainCamera->DeProject(MousePos))); }
+};
 
 bool FrameFunc()
 {
@@ -49,19 +141,33 @@ bool FrameFunc()
 	if (Hge->Input_GetKeyState(HGEK_W))	Direction += UpDirection;
 	if (Hge->Input_GetKeyState(HGEK_S))	Direction += DownDirection;
 
-	if (Hge->Input_GetKeyState(HGEK_LEFT))	CameraAngle += 0.01;
-	if (Hge->Input_GetKeyState(HGEK_RIGHT))	CameraAngle -= 0.01;
+	if (Hge->Input_GetKeyState(HGEK_Q))	CameraAngle += 0.005f;
+	if (Hge->Input_GetKeyState(HGEK_E))	CameraAngle -= 0.005f;
 
-	OurHero->Move(Vector2D(Direction.GetRotation() - CameraAngle) * Direction.Ort().Size() * 100); // constant speed
+
+	RayTrace trace = RayTrace(GameWorld, Vector2D(0, 0), Vector2D(1, 1));
+	Vector2D *test = new Vector2D(0,0);
 	
+
+	//if (trace.CheckIntersect2Lines(Vector2D(-1, 0), Vector2D(1, 0), Vector2D(0, -1), Vector2D(0, 1), test))
+	{
+		OurHero->Move(Vector2D(Direction.GetRotation() - CameraAngle) * Direction.Ort().Size() * 100); // constant speed
+	}
+	
+	delete test;
+
 	Hge->Input_GetMousePos(&MousePos.X, &MousePos.Y);
 
 	Vector2D CameraShift((MousePos - SCREEN_CENTER)/2);
+	CameraShift = CameraShift.Ort() * min(CameraShift.Size(), MAX_CAMERA_RANGE);
 	MainCamera->SetLocation(OurHero->GetLocation());
 	MainCamera->SetRotation(CameraAngle);
 	MainCamera->SetCenterShift(CameraShift);
 
-	// Do some movement calculations for actors in World
+	// Update key states
+	Listeners.Check();
+
+	// Do World update
 	GameWorld->Update(dt);
 
 	Arrow->SetVDirection(Direction);
@@ -72,15 +178,43 @@ bool FrameFunc()
 
 bool RenderFunc()
 {
+	hgeSprite* CameraRenderSpr = new hgeSprite(Hge->Target_GetTexture(MainCamera->GetRenderTexture()), 0, 0, MainCamera->GetResolution().X, MainCamera->GetResolution().Y);
+	//CameraRender->SetBlendMode(BLEND_COLORMUL | BLEND_ALPHAADD | BLEND_NOZWRITE);
+
+	MainCamera->Render();
+	
 	Hge->Gfx_BeginScene();
 	Hge->Gfx_Clear(0);
-	//-- Here renders graphics
-	MainCamera->Render();
+	
+	//-- Start renders graphics
+
+	CameraRenderSpr->Render(0, 0);
+
 	Crosshair->Render(MousePos.X, MousePos.Y);
 	Arrow->Render();
-	Font->printf(5, 5, HGETEXT_LEFT, "dt:%.3f\nFPS:%d (constant)", Hge->Timer_GetDelta(), Hge->Timer_GetFPS());
-	//-- end of render graphics
+
+	Font->SetScale(0.7);
+	// fps and dt
+	Font->printf(5, 5, HGETEXT_LEFT, "dt:%.3f\nFPS:%d", Hge->Timer_GetDelta(), Hge->Timer_GetFPS());
+	
+	// Status of rendering elements
+	if (Listeners.GetActive(HGEK_M))
+		Font->printf(5, 60, HGETEXT_LEFT, "Showing Models");
+	if (Listeners.GetActive(HGEK_C))
+		Font->printf(5, 90, HGETEXT_LEFT, "Showing Bounding boxes");
+	if (Listeners.GetActive(HGEK_L))
+		Font->printf(5, 120, HGETEXT_LEFT, "Showing Light emitters");
+
+	if (!Listeners.GetActive(HGEK_F))
+		Font->printf(5, 150, HGETEXT_LEFT, "Hidded Fog");
+	if (!Listeners.GetActive(HGEK_H))
+		Font->printf(5, 180, HGETEXT_LEFT, "Hidded Shadows");
+
+	//-- Stop render graphics
+
 	Hge->Gfx_EndScene();
+
+	delete CameraRenderSpr;
 
 	return false;
 }
@@ -94,10 +228,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	Hge->System_SetState(HGE_RENDERFUNC, RenderFunc);
 	Hge->System_SetState(HGE_TITLE, "Stealth game - alpha1");
 	Hge->System_SetState(HGE_FPS, 100);
-	Hge->System_SetState(HGE_WINDOWED, true);
+	Hge->System_SetState(HGE_WINDOWED, !FULL_SCREEN);
 	Hge->System_SetState(HGE_SCREENWIDTH, SCREEN_WIDTH);
 	Hge->System_SetState(HGE_SCREENHEIGHT, SCREEN_HEIGHT);
 	Hge->System_SetState(HGE_SCREENBPP, 32);
+	Hge->System_SetState(HGE_SHOWSPLASH, false); // hidding splash for develop-time only
 
 	if(Hge->System_Initiate())
 	{
@@ -121,20 +256,52 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		Crosshair->SetBlendMode(BLEND_COLORMUL | BLEND_ALPHAADD | BLEND_NOZWRITE);
 		Crosshair->SetHotSpot(16, 16);
 
-		GameWorld = new World();
+		GameWorld = new World(Hge);
 
-		MainCamera = new FloatingCamera(GameWorld, Vector2D(0.0f, 0.0f));
-		MainCamera->SetResolution(SCREEN_CENTER * 2);
+		MainCamera = new FloatingCamera(GameWorld, SCREEN_CENTER * 2, Vector2D(0.0f, 0.0f));
 
-		TestWall = new Wall(Vector2D(300.0f, 200.0f), Vector2D(100, 20));
+		Group = StaticGroup();
+		
+		Group.Insert(new Wall(GameWorld, Vector2D(250.0f, 300.0f), Vector2D(80, 20)));
+		Group.Insert(new Wall(GameWorld, Vector2D(250.0f, 200.0f), Vector2D(80, 20)));
+		Group.Insert(new Wall(GameWorld, Vector2D(200.0f, 250.0f), Vector2D(20, 80)));
+		//Group.Insert(new Wall(GameWorld, Vector2D(500.0f, 450.0f), Vector2D(20, 80)));
 
-		OurHero = new Hero(Vector2D(100.0f, 100.0f));
+		Group.Insert(new Wall(GameWorld, Vector2D(450.0f, 300.0f), Vector2D(80, 20)));
+		Group.Insert(new Wall(GameWorld, Vector2D(450.0f, 200.0f), Vector2D(80, 20)));
+		//Group.Insert(new Wall(GameWorld, Vector2D(400.0f, 250.0f), Vector2D(20, 80)));
+		Group.Insert(new Wall(GameWorld, Vector2D(500.0f, 250.0f), Vector2D(20, 80)));
+		
+		//Group.Insert(new Wall(GameWorld, Vector2D(350.0f, 200.0f), Vector2D(80, 20)));
+		//Group.Insert(new Wall(GameWorld, Vector2D(350.0f, 100.0f), Vector2D(80, 20)));
+		Group.Insert(new Wall(GameWorld, Vector2D(300.0f, 150.0f), Vector2D(20, 80)));
+		Group.Insert(new Wall(GameWorld, Vector2D(400.0f, 150.0f), Vector2D(20, 80)));
+		
+		//Group.Insert(new Wall(GameWorld, Vector2D(350.0f, 400.0f), Vector2D(80, 20)));
+		//Group.Insert(new Wall(GameWorld, Vector2D(350.0f, 300.0f), Vector2D(80, 20)));
+		Group.Insert(new Wall(GameWorld, Vector2D(300.0f, 350.0f), Vector2D(20, 80)));
+		Group.Insert(new Wall(GameWorld, Vector2D(400.0f, 350.0f), Vector2D(20, 80)));
+		
+		//Group.Insert(new LightEmitter(GameWorld, Vector2D(350, 250)));
+		//Group.Insert(new LightEmitter(GameWorld, Vector2D(330, 450)));
+		//Group.Insert(new LightEmitter(GameWorld, Vector2D(150, 250)));
+		Group.Insert(new LightEmitter(GameWorld, Vector2D(230, 450)));
 
-		GameWorld->Spawn(OurHero);
-		GameWorld->Spawn(TestWall);
+		OurHero = new Hero(GameWorld, Vector2D(0.0f, 350.0f));
+		Group.Insert(OurHero);
 
-		Arrow = new DirectionArrow();
+		OurHero->GiveWeapon(new Weapon());
+
+		Arrow = new DirectionArrow(Hge);
 		Arrow->SetCenter(SCREEN_CENTER);
+		
+		Listeners.AddListener(new BtnAABB(Hge));
+		Listeners.AddListener(new BtnHulls(Hge));
+		Listeners.AddListener(new BtnFog(Hge));
+		Listeners.AddListener(new BtnShadows(Hge));
+		Listeners.AddListener(new BtnLights(Hge));
+		Listeners.AddListener(new BtnShoot(Hge));
+		Listeners.AddListener(new BtnAddLight(Hge));
 
 		// Let's rock now!
 		Hge->System_Start();
@@ -143,8 +310,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		delete Font;
 		delete Crosshair;
 		delete Arrow;
-		delete TestWall;
-		delete OurHero;
+		Group.DestructAll();
 		delete MainCamera;
 		delete GameWorld;
 		Hge->Texture_Free(Texture);

@@ -1,6 +1,8 @@
 #ifndef STATES_H
 #define STATES_H
 
+#include "../src/Globals.h"
+
 // dummy for debugging methods
 #if (!defined DEBUG) && (!defined RELEASE)
 	#define RELEASE

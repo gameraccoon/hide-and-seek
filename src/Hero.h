@@ -5,12 +5,16 @@
 #include "../src/Vector2D.h"
 #include "../src/DirectionArrow.h"
 #include "../src/Actor.h"
+#include "../src/InventoryItem.h"
+#include "../src/Weapon.h"
+
+class Weapon;
 
 class Hero:public Actor
 {
 public:
 	/** Initialization of a new Hero standing at a given point */
-	Hero(Vector2D location);
+	Hero(World *ownerWorld, Vector2D location);
 
 	~Hero();
 
@@ -22,13 +26,28 @@ public:
 	/** Render the actor in the current location */
 	void Render(Vector2D shift, Rotator angle);
 
+	void GiveWeapon(Weapon *weap);
+	
+	/** Start shoting if we have a weapon */
+	void StartShoting(Vector2D targetLocation);
+	void StopShoting();
 private:
+	/** */
+	void UpdateCollision();
 	/** Hero moving speed in Px/s */
 	float Speed;
 	/** Delta between needless position and current position */
 	Vector2D Step;
+	/** */
+	Vector2D Size;
 	/** Texture of all Hero sprites */
 	HTEXTURE HeroTexture;
+	/** Inventory */
+	std::vector<InventoryItem*> Inventory;
+	/** */
+	Weapon *ArmedWeapon;
+	/** Is we shooting */
+	bool bShooting;
 };
 
 #endif

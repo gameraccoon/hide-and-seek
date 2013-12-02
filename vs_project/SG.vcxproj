@@ -12,46 +12,66 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Actor.cpp" />
+    <ClCompile Include="..\src\Border.cpp" />
+    <ClCompile Include="..\src\BoundingBox.cpp" />
+    <ClCompile Include="..\src\Bullet.cpp" />
     <ClCompile Include="..\src\Camera.cpp" />
     <ClCompile Include="..\src\DirectionArrow.cpp" />
     <ClCompile Include="..\src\FloatingCamera.cpp" />
     <ClCompile Include="..\src\Globals.cpp" />
     <ClCompile Include="..\src\Hero.cpp" />
+    <ClCompile Include="..\src\Hull.cpp" />
+    <ClCompile Include="..\src\IActor.cpp" />
+    <ClCompile Include="..\src\InventoryItem.cpp" />
+    <ClCompile Include="..\src\KeyListeners.cpp" />
+    <ClCompile Include="..\src\LightEmitter.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\Processes.cpp" />
+    <ClCompile Include="..\src\RayTrace.cpp" />
     <ClCompile Include="..\src\Rotator.cpp" />
     <ClCompile Include="..\src\States.cpp" />
     <ClCompile Include="..\src\Vector2D.cpp" />
     <ClCompile Include="..\src\Wall.cpp" />
+    <ClCompile Include="..\src\Weapon.cpp" />
     <ClCompile Include="..\src\World.cpp" />
-    <ClCompile Include="..\tests\testProcesses.cpp" />
-    <ClCompile Include="..\tests\testStates.cpp" />
-    <ClCompile Include="..\tests\testVector2D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Actor.h" />
+    <ClInclude Include="..\src\Border.h" />
+    <ClInclude Include="..\src\BoundingBox.h" />
+    <ClInclude Include="..\src\Bullet.h" />
     <ClInclude Include="..\src\Camera.h" />
     <ClInclude Include="..\src\DirectionArrow.h" />
     <ClInclude Include="..\src\FloatingCamera.h" />
     <ClInclude Include="..\src\Globals.h" />
     <ClInclude Include="..\src\Hero.h" />
+    <ClInclude Include="..\src\Hull.h" />
+    <ClInclude Include="..\src\IActor.h" />
+    <ClInclude Include="..\src\InventoryItem.h" />
+    <ClInclude Include="..\src\KeyListeners.h" />
+    <ClInclude Include="..\src\LightEmitter.h" />
     <ClInclude Include="..\src\Processes.h" />
+    <ClInclude Include="..\src\RayTrace.h" />
     <ClInclude Include="..\src\Rotator.h" />
     <ClInclude Include="..\src\States.h" />
     <ClInclude Include="..\src\Vector2D.h" />
     <ClInclude Include="..\src\Wall.h" />
+    <ClInclude Include="..\src\Weapon.h" />
     <ClInclude Include="..\src\World.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <SccProjectName />
     <SccLocalPath />
+    <ProjectGuid>{8778E24E-74EB-C90F-5F7E-B57D77431D14}</ProjectGuid>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -75,8 +95,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>.\Release\</OutDir>
     <IntDir>.\Release\</IntDir>
-    <IncludePath>C:\Other\hge\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Other\hge\lib\vc;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\Libs\hge\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Libs\hge\lib\vc;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -112,10 +132,11 @@
       <Optimization>MaxSpeed</Optimization>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Release\</AssemblerListingLocation>
       <ObjectFileName>.\Release\</ObjectFileName>
       <ProgramDataBaseFileName>.\Release\</ProgramDataBaseFileName>
+      <BrowseInformation>true</BrowseInformation>
     </ClCompile>
     <Midl>
       <TypeLibraryName>.\Release\SG.tlb</TypeLibraryName>
@@ -127,6 +148,7 @@
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>.\Release\SG.bsc</OutputFile>
+      <PreserveSbr>true</PreserveSbr>
     </Bscmake>
     <Link>
       <SubSystem>Windows</SubSystem>
