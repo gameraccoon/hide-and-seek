@@ -95,8 +95,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>.\Release\</OutDir>
     <IntDir>.\Release\</IntDir>
-    <IncludePath>D:\Libs\hge\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Libs\hge\lib\vc;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\Libs\hge181\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Libs\hge181\lib\vc;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

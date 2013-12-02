@@ -21,6 +21,8 @@ public:
 	/** Say that we want to move the Hero on this step */
 	void Move(Vector2D step);
 
+	void Rotate(Rotator newDirection);
+
 	/** Process moving and other actions of the Hero */
 	void Update(float deltaTime);
 	/** Render the actor in the current location */

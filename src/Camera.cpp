@@ -86,7 +86,7 @@ void Camera::Render()
 
 			// render light to lights
 			hgeSprite *light = new hgeSprite(Hge->Target_GetTexture(Zone), 0, 0, ShownSize, ShownSize);
-			light->SetBlendMode(BLEND_ALPHAADD);
+			light->SetBlendMode(BLEND_COLORMUL);
 			light->SetColor(0xFF777777);
 
 			Hge->Gfx_BeginScene(RenderTarget);

@@ -15,12 +15,12 @@ Hero::Hero(World *ownerWorld, Vector2D location) : Actor(ownerWorld, location), 
 	Geometry.Points.insert(Geometry.Points.end(), Size / 2);
 	Geometry.Points.insert(Geometry.Points.end(), (Size / 2).MirrorH());
 
-	HeroTexture = Hge->Texture_Load("particles.png");
+	HeroTexture = Hge->Texture_Load("hero.png");
 
-	WARN_IF(!HeroTexture, "Texture 'particles.png' not found!");
+	WARN_IF(!HeroTexture, "Texture 'hero.png' not found!");
 		
-	Sprite = new hgeSprite(HeroTexture, 96, 64, 32, 32);
-	Sprite->SetColor(0xFFFFA000);
+	Sprite = new hgeSprite(HeroTexture, 0, 0, 32, 32);
+	Sprite->SetColor(0xFFFFFFFF);
 	Sprite->SetHotSpot(16, 16);
 }
 
@@ -33,6 +33,11 @@ Hero::~Hero(void)
 void Hero::Move(Vector2D step)
 {
 	Step = step;
+}
+
+void Hero::Rotate(Rotator newDirection)
+{
+	Direction = newDirection;
 }
 
 void Hero::Update(float deltaTime)

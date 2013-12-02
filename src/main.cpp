@@ -149,10 +149,8 @@ bool FrameFunc()
 	Vector2D *test = new Vector2D(0,0);
 	
 
-	//if (trace.CheckIntersect2Lines(Vector2D(-1, 0), Vector2D(1, 0), Vector2D(0, -1), Vector2D(0, 1), test))
-	{
-		OurHero->Move(Vector2D(Direction.GetRotation() - CameraAngle) * Direction.Ort().Size() * 100); // constant speed
-	}
+	OurHero->Move(Vector2D(Direction.GetRotation() - CameraAngle) * Direction.Ort().Size() * 100); // constant speed
+	OurHero->Rotate((MainCamera->DeProject(MousePos) - OurHero->GetLocation()).GetRotation());
 	
 	delete test;
 
