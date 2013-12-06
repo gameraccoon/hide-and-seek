@@ -143,16 +143,10 @@ bool FrameFunc()
 
 	if (Hge->Input_GetKeyState(HGEK_Q))	CameraAngle += 0.005f;
 	if (Hge->Input_GetKeyState(HGEK_E))	CameraAngle -= 0.005f;
-
-
-	RayTrace trace = RayTrace(GameWorld, Vector2D(0, 0), Vector2D(1, 1));
-	Vector2D *test = new Vector2D(0,0);
 	
 
 	OurHero->Move(Vector2D(Direction.GetRotation() - CameraAngle) * Direction.Ort().Size() * 100); // constant speed
 	OurHero->Rotate((MainCamera->DeProject(MousePos) - OurHero->GetLocation()).GetRotation());
-	
-	delete test;
 
 	Hge->Input_GetMousePos(&MousePos.X, &MousePos.Y);
 
@@ -177,7 +171,6 @@ bool FrameFunc()
 bool RenderFunc()
 {
 	hgeSprite* CameraRenderSpr = new hgeSprite(Hge->Target_GetTexture(MainCamera->GetRenderTexture()), 0, 0, MainCamera->GetResolution().X, MainCamera->GetResolution().Y);
-	//CameraRender->SetBlendMode(BLEND_COLORMUL | BLEND_ALPHAADD | BLEND_NOZWRITE);
 
 	MainCamera->Render();
 	
@@ -191,7 +184,7 @@ bool RenderFunc()
 	Crosshair->Render(MousePos.X, MousePos.Y);
 	Arrow->Render();
 
-	Font->SetScale(0.7);
+	Font->SetScale(0.7f);
 	// fps and dt
 	Font->printf(5, 5, HGETEXT_LEFT, "dt:%.3f\nFPS:%d", Hge->Timer_GetDelta(), Hge->Timer_GetFPS());
 	
