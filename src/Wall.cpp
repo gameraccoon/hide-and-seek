@@ -44,3 +44,8 @@ void Wall::Render(Vector2D shift, Rotator angle)
 		Sprite->RenderEx(shift.X, shift.Y, (Direction + angle).GetValue(), Size.X/126.0f, Size.Y/126.0f);
 	}
 }
+
+void Wall::TakeDamage(float damageValue, Vector2D impulse)
+{
+	// do nothing
+}

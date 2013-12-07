@@ -24,3 +24,7 @@ void LightEmitter::Render(Vector2D shift, Rotator angle)
 void LightEmitter::UpdateCollision()
 {
 }
+
+void LightEmitter::TakeDamage(float damageValue,Vector2D impulse)
+{
+}

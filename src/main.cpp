@@ -278,6 +278,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		//Group.Insert(new LightEmitter(GameWorld, Vector2D(150, 250)));
 		Group.Insert(new LightEmitter(GameWorld, Vector2D(230, 450)));
 
+		Group.Insert(new Man(GameWorld, Vector2D(230, 450)));
+
 		OurHero = new Hero(GameWorld, Vector2D(0.0f, 350.0f));
 		Group.Insert(OurHero);
 

@@ -4,14 +4,15 @@ Man::Man(World *ownerWorld, Vector2D location) : Actor(ownerWorld, location), St
 {
 	Type = AT_Living;
 
-	UpdateCollision();
-
 	Speed = 12.0f;
 
 	Geometry.Points.insert(Geometry.Points.end(), -Size / 2);
 	Geometry.Points.insert(Geometry.Points.end(), (Size / 2).MirrorV());
 	Geometry.Points.insert(Geometry.Points.end(), Size / 2);
 	Geometry.Points.insert(Geometry.Points.end(), (Size / 2).MirrorH());
+	Geometry.Generate();
+	
+	UpdateCollision();
 
 	ManTexture = Hge->Texture_Load("hero.png");
 
@@ -47,7 +48,7 @@ void Man::Update(float deltaTime)
 	for (std::set<IActor*>::iterator it = OwnerWorld->AllActors.begin(); it != OwnerWorld->AllActors.end(); it++)
 	{
 		// if the actor is not this man // test: and it is a static actor
-		if ((*it) != this && (*it)->GetType() == AT_Static)
+		if ((*it) != this && ((*it)->GetType() != AT_Light && (*it)->GetType() != AT_Special && (*it)->GetType() != AT_Bullet))
 		{
 			// get an actor's AABB (axis-aligned bounding box)
 			BoundingBox box = (*it)->GetBoundingBox();
@@ -107,4 +108,9 @@ void Man::GiveWeapon(Weapon *weap)
 	ArmedWeapon = weap;
 	weap->SetOwnerWorld(OwnerWorld);
 	ArmedWeapon->SetEquipped(true);
+}
+
+void Man::TakeDamage(float damageValue,Vector2D impulse)
+{
+	Move(impulse);
 }

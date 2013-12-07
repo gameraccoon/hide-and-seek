@@ -40,6 +40,8 @@ public:
 	virtual BoundingBox GetBoundingBox() = 0;
 	/** Get hull of this actor */
 	virtual Hull* GetHull() = 0;
+	/** Take some damage to the actor */
+	virtual void TakeDamage(float damageValue, Vector2D impulse) = 0;
 };
 
 #endif

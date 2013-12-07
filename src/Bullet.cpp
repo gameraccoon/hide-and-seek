@@ -20,10 +20,6 @@ Bullet::Bullet(World *ownerWorld, Vector2D location, Vector2D targetLocation) : 
 	Sprite = new hgeSprite(BulletTexture, 0, 0, 32, 32);
 	Sprite->SetColor(0xFFFFFFFF);
 	Sprite->SetHotSpot(16, 16);
-
-	// red bullet if between hero and target there is something
-	RayTrace ray(OwnerWorld, location, targetLocation);
-	if (ray.FastTrace()) { Sprite->SetColor(0xFFFF3333); }
 }
 
 Bullet::~Bullet(void)
@@ -48,6 +44,7 @@ void Bullet::Update(float deltaTime)
 	}
 	else
 	{
+		trasedActor->TakeDamage(10, Vector2D(Direction) * Speed);
 		Location = Vector2D(350.f, 250.f);// ToDo: destruct bullet
 		Speed = 0.0f;
 	}
@@ -63,4 +60,10 @@ void Bullet::Render(Vector2D shift, Rotator angle)
 
 void Bullet::UpdateCollision()
 {
+}
+
+
+void Bullet::TakeDamage(float damageValue,Vector2D impulse)
+{
+	// do nothing for now
 }

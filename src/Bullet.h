@@ -16,6 +16,8 @@ public:
 	/** Render the actor in the current location */
 	void Render(Vector2D shift, Rotator angle);
 	bool Destroyed;
+	/** Take some damage to the bullet */
+	virtual void TakeDamage(float damageValue, Vector2D impulse);
 protected:
 	void UpdateCollision();
 	Rotator Direction;

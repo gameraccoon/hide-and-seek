@@ -12,6 +12,8 @@ public:
 	void Update(float deltaTime);
 	/** Render the actor in the current location */
 	void Render(Vector2D shift, Rotator angle);
+	/** Try to take some damage to the wall =) */
+	virtual void TakeDamage(float damageValue, Vector2D impulse);
 private:
 	/** */
 	void UpdateCollision();

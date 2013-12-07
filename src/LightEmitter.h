@@ -10,6 +10,7 @@ public:
 	~LightEmitter(void);
 	void Update(float deltaTime);
 	void Render(Vector2D shift, Rotator angle);
+	virtual void TakeDamage(float damageValue,Vector2D impulse);
 protected:
 	void UpdateCollision();
 	float Brightness;

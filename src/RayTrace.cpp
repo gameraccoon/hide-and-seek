@@ -155,7 +155,7 @@ bool RayTrace::FastTrace()
 	for (std::set<IActor*>::iterator it = OwnerWorld->AllActors.begin(); it != OwnerWorld->AllActors.end(); it++)
 	{
 		itActor = *it;
-		if (itActor->GetType() == AT_Static)
+		if ((*it)->GetType() != AT_Light && (*it)->GetType() != AT_Special)
 		{
 			// get bounding box of current actor
 			BoundingBox box = itActor->GetBoundingBox();
@@ -209,7 +209,7 @@ IActor* RayTrace::Trace(Vector2D *point, Vector2D *normal)
 	for (std::set<IActor*>::iterator it = OwnerWorld->AllActors.begin(); it != OwnerWorld->AllActors.end(); it++)
 	{
 		itActor = *it;
-		if (itActor->GetType() == AT_Static)
+		if ((*it)->GetType() != AT_Light && (*it)->GetType() != AT_Special)
 		{
 			// get bounding box of current actor
 			BoundingBox box = itActor->GetBoundingBox();

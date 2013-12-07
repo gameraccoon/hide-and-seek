@@ -33,6 +33,10 @@ public:
 	/** Start shoting if the man have a weapon */
 	void StartShoting(Vector2D targetLocation);
 	void StopShoting();
+
+	
+	/** Try to take some damage to the man =) */
+	virtual void TakeDamage(float damageValue,Vector2D impulse);
 protected:
 	/** */
 	void UpdateCollision();

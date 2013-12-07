@@ -342,7 +342,7 @@ void Camera::RenderHulls()
 	for (std::set<IActor*>::iterator it = BrowsableWorld->AllActors.begin(); it != BrowsableWorld->AllActors.end(); it++)
 	{
 		// if actor - static
-		if ((*it)->GetType() == AT_Static)
+		if ((*it)->GetType() != AT_Light && (*it)->GetType() != AT_Special)
 		{
 			// get actors geometry
 			Hull *hull = (*it)->GetHull();
