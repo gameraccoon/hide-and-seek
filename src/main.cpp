@@ -55,7 +55,7 @@ Vector2D MousePos = ZeroVector;
 
 const Vector2D SCREEN_CENTER(SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
 
-const float MAX_CAMERA_RANGE = min(SCREEN_HEIGHT, SCREEN_WIDTH) / 4.0f;
+const float MAX_CAMERA_RANGE = std::min(SCREEN_HEIGHT, SCREEN_WIDTH) / 4.0f;
 
 float CameraAngle = 0.0f;
 
@@ -151,7 +151,7 @@ bool FrameFunc()
 	Hge->Input_GetMousePos(&MousePos.X, &MousePos.Y);
 
 	Vector2D CameraShift((MousePos - SCREEN_CENTER)/2);
-	CameraShift = CameraShift.Ort() * min(CameraShift.Size(), MAX_CAMERA_RANGE);
+	CameraShift = CameraShift.Ort() * std::min(CameraShift.Size(), MAX_CAMERA_RANGE);
 	MainCamera->SetLocation(OurHero->GetLocation());
 	MainCamera->SetRotation(CameraAngle);
 	MainCamera->SetCenterShift(CameraShift);

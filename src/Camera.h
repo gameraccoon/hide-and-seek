@@ -13,7 +13,7 @@ class Camera
 {
 public:
 	Camera(World* world, Vector2D resolution, Vector2D location);
-	~Camera(void);
+	virtual ~Camera(void);
 	/** Get pointer to the texture which will be used to render */
 	HTEXTURE GetRenderTexture();
 	/** Render of all objects thats seen by camera */
