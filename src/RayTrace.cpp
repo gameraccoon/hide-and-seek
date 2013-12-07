@@ -48,15 +48,15 @@ inline void Swap(float &a, float &b)
 
 //
 const double EPS = 1E-4;
- 
+
 inline float Det(float a, float b, float c, float d)
 {
 	return a * d - b * c;
 }
- 
+
 inline bool IsBetween(float a, float b, double c)
 {
-	return min(a, b) <= c + EPS && c <= max(a, b) + EPS;
+	return std::min(a, b) <= c + EPS && c <= std::max(a, b) + EPS;
 }
 
 inline bool IsAAIntersect(float a, float b, float c, float d)
@@ -66,7 +66,7 @@ inline bool IsAAIntersect(float a, float b, float c, float d)
 	if (c > d)
 		Swap(c, d);
 
-	return max(a, c) <= min(b, d);
+	return std::max(a, c) <= std::min(b, d);
 }
 
 bool RayTrace::CheckIntersect2Lines(Vector2D A1, Vector2D A2, Vector2D B1, Vector2D B2)

@@ -18,7 +18,7 @@ class Actor : public IActor
 {
 public:
 	Actor(World *ownerWorld, Vector2D location);
-	~Actor(void);
+	virtual ~Actor(void);
 	
 	/** Set new location of the actor in the World */
 	void SetLocation(Vector2D newLocations);

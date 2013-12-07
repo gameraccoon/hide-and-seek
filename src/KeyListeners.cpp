@@ -7,6 +7,10 @@ ButtonSwitcher::ButtonSwitcher(HGE *hge, byte key, bool active)
 	Hge = hge;
 }
 
+ButtonSwitcher::~ButtonSwitcher()
+{
+}
+
 bool ButtonSwitcher::IsActive()
 {
 	return bActive;
@@ -51,7 +55,7 @@ void ButtonListeners::AddListener(ButtonSwitcher *listener)
 
 void ButtonListeners::Check()
 {
-	for (int i = 0; i < Listeners.size(); i++)
+	for (int i = 0; i < (int) Listeners.size(); i++)
 	{
 		Listeners[i]->Check();
 	}
@@ -59,7 +63,7 @@ void ButtonListeners::Check()
 
 bool ButtonListeners::GetActive(int key)
 {
-	for (int i = 0; i < Listeners.size(); i++)
+	for (int i = 0; i < (int) Listeners.size(); i++)
 	{
 		if (Listeners[i]->GetKey() == key)
 		{

@@ -8,7 +8,7 @@ class ButtonSwitcher
 {
 public:
 	ButtonSwitcher(HGE *hge, byte key, bool active);
-
+	virtual ~ButtonSwitcher();
 	bool IsActive();
 
 	byte GetKey();

@@ -18,8 +18,8 @@ Camera::Camera(World* world, Vector2D resolution, Vector2D location) : Location(
 	// Set scale of fog sprite
 	FogScale = ShownSize * 0.9f / (FogWidth / 2.0f);
 
-	RenderTarget = Hge->Target_Create(Resolution.X, Resolution.Y, false);
-	Zone = Hge->Target_Create(ShownSize, ShownSize, false);
+	RenderTarget = Hge->Target_Create((int) Resolution.X, (int) Resolution.Y, false);
+	Zone = Hge->Target_Create((int) ShownSize, (int) ShownSize, false);
 
 	CamTexture = Hge->Texture_Load("colision.png");
 	FogTexture = Hge->Texture_Load("fog.png");
@@ -275,7 +275,7 @@ void Camera::RenderLightShadows(Vector2D lightPos)
 			// get actors geometry
 			Hull *hull = (*it)->GetHull();
 			// for each border of actor's geometry
-			for (int i = 0; i < hull->Borders.size(); i++)
+			for (int i = 0; i < (int) hull->Borders.size(); i++)
 			{
 				// if border's normal and camera view on border have different directions (angle > PI/2)
 				if (abs((
@@ -310,7 +310,7 @@ void Camera::RenderShadows()
 			// get actors geometry
 			Hull *hull = (*it)->GetHull();
 			// for each border of actor's geometry
-			for (int i = 0; i < hull->Borders.size(); i++)
+			for (int i = 0; i < (int) hull->Borders.size(); i++)
 			{
 				// if border's normal and camera view on border have different directions (angle > PI/2)
 				if (abs((
@@ -347,7 +347,7 @@ void Camera::RenderHulls()
 			// get actors geometry
 			Hull *hull = (*it)->GetHull();
 			// for each border of actor's geometry
-			for (int i = 0; i < hull->Borders.size(); i++)
+			for (int i = 0; i < (int) hull->Borders.size(); i++)
 			{
 				// draw border
 				Vector2D A((*it)->GetLocation() + hull->Borders[i].GetA()), B((*it)->GetLocation() + hull->Borders[i].GetB());
@@ -371,8 +371,6 @@ void Camera::RenderHulls()
 
 void Camera::RenderLights()
 {
-	const int normal_length = 10;
-
 	// for each actors in the world
 	for (std::set<IActor*>::iterator it = BrowsableWorld->AllActors.begin(); it != BrowsableWorld->AllActors.end(); it++)
 	{
