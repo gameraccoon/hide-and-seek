@@ -7,10 +7,12 @@
 #include "../src/Actor.h"
 #include "../src/InventoryItem.h"
 #include "../src/Weapon.h"
+#include "../src/PathFinder.h"
+#include "../src/DummyMan.h"
 
 class Weapon;
 
-class Man:public Actor
+class Man:public DummyMan
 {
 public:
 	/** Initialization of a new man standing at a given point */
@@ -18,42 +20,16 @@ public:
 
 	~Man();
 
-	/** Say that we want to move the man on this step */
-	void Move(Vector2D step);
-
-	void Rotate(Rotator newDirection);
-
 	/** Process moving and other actions of the man */
-	void Update(float deltaTime);
-	/** Render the actor in the current location */
-	void Render(Vector2D shift, Rotator angle);
+	virtual void Update(float deltaTime);
 
-	void GiveWeapon(Weapon *weap);
-	
-	/** Start shoting if the man have a weapon */
-	void StartShoting(Vector2D targetLocation);
-	void StopShoting();
-
-	
 	/** Try to take some damage to the man =) */
 	virtual void TakeDamage(float damageValue,Vector2D impulse);
 protected:
-	/** */
-	void UpdateCollision();
-	/** Hero moving speed in Px/s */
-	float Speed;
-	/** Delta between needless position and current position */
-	Vector2D Step;
-	/** */
-	Vector2D Size;
-	/** Texture of all man's sprites */
-	HTEXTURE ManTexture;
-	/** Inventory */
-	std::vector<InventoryItem*> Inventory;
-	/** */
-	Weapon *ArmedWeapon;
-	/** Is we shooting */
-	bool bShooting;
+	/**  */
+	PathFinder Navigator;
+	/** Point to which this man aspire */
+	Vector2D DestinationPoint;
 };
 
 #endif
