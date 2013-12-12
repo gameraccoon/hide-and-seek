@@ -27,6 +27,8 @@
     <ClCompile Include="..\src\LightEmitter.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\Man.cpp" />
+    <ClCompile Include="..\src\PathFinder.cpp" />
+    <ClCompile Include="..\src\PathPoint.cpp" />
     <ClCompile Include="..\src\Processes.cpp" />
     <ClCompile Include="..\src\RayTrace.cpp" />
     <ClCompile Include="..\src\Rotator.cpp" />
@@ -52,6 +54,8 @@
     <ClInclude Include="..\src\KeyListeners.h" />
     <ClInclude Include="..\src\LightEmitter.h" />
     <ClInclude Include="..\src\Man.h" />
+    <ClInclude Include="..\src\PathFinder.h" />
+    <ClInclude Include="..\src\PathPoint.h" />
     <ClInclude Include="..\src\Processes.h" />
     <ClInclude Include="..\src\RayTrace.h" />
     <ClInclude Include="..\src\Rotator.h" />
