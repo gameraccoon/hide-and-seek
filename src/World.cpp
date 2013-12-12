@@ -9,6 +9,7 @@ World::World(HGE* hge)
 World::~World(void)
 {
 	AllActors.clear();
+	RemoveAllPathPoints();
 }
 
 void World::Spawn(IActor* actor)
@@ -32,4 +33,17 @@ void World::Update(float deltaTime)
 HGE* World::GetHge()
 {
 	return Hge;
+}
+
+void World::AddPathPoint(PathPoint* newPoint)
+{
+	NavigationMap.insert(newPoint);
+}
+
+void World::RemoveAllPathPoints()
+{
+	for (std::set<PathPoint*>::iterator it = NavigationMap.begin(), end = NavigationMap.end(); it != end; it++)
+	{
+		delete (*it);
+	}
 }

@@ -6,6 +6,7 @@
 #include "../src/FloatingCamera.h"
 #include "../src/KeyListeners.h"
 #include "../src/LightEmitter.h"
+#include "../src/PathPoint.h"
 #include <vector>
 
 // Hge subsystem
@@ -113,6 +114,14 @@ public:
 	void Pressed() { MainCamera->ShowHulls(bActive); }
 };
 
+class BtnPaths : public ButtonSwitcher
+{
+public:
+	BtnPaths(HGE *hge) : ButtonSwitcher(hge, HGEK_P, false) { };
+	void Pressed() { MainCamera->ShowPaths(bActive); }
+};
+
+
 class BtnShoot : public ButtonSwitcher
 {
 public:
@@ -195,11 +204,13 @@ bool RenderFunc()
 		Font->printf(5, 90, HGETEXT_LEFT, "Showing Bounding boxes");
 	if (Listeners.GetActive(HGEK_L))
 		Font->printf(5, 120, HGETEXT_LEFT, "Showing Light emitters");
+	if (Listeners.GetActive(HGEK_P))
+		Font->printf(5, 150, HGETEXT_LEFT, "Showing Paths");
 
 	if (!Listeners.GetActive(HGEK_F))
-		Font->printf(5, 150, HGETEXT_LEFT, "Hidded Fog");
+		Font->printf(5, 180, HGETEXT_LEFT, "Hidded Fog");
 	if (!Listeners.GetActive(HGEK_H))
-		Font->printf(5, 180, HGETEXT_LEFT, "Hidded Shadows");
+		Font->printf(5, 210, HGETEXT_LEFT, "Hidded Shadows");
 
 	//-- Stop render graphics
 
@@ -293,8 +304,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		Listeners.AddListener(new BtnFog(Hge));
 		Listeners.AddListener(new BtnShadows(Hge));
 		Listeners.AddListener(new BtnLights(Hge));
+		Listeners.AddListener(new BtnPaths(Hge));
 		Listeners.AddListener(new BtnShoot(Hge));
 		Listeners.AddListener(new BtnAddLight(Hge));
+
+		{ // namespace shows that we don't save pointers
+			PathPoint *a, *b;
+			GameWorld->AddPathPoint(a = new PathPoint(Vector2D(30.f, 80.f)));
+			GameWorld->AddPathPoint(b = new PathPoint(Vector2D(60.f, 120.f)));
+			a->Connect(b); // a -> b but not a <- b
+		}
 
 		// Let's rock now!
 		Hge->System_Start();

@@ -1,7 +1,7 @@
 #ifndef PATHPOINT_H
 #define PATHPOINT_H
 
-#include <list>
+#include <set>
 #include "../src/Vector2D.h"
 
 class PathPoint
@@ -9,10 +9,12 @@ class PathPoint
 public:
 	PathPoint(Vector2D location);
 	virtual ~PathPoint(void);
+	/** Add point to the legal points list */
+	void Connect(PathPoint* destPoint);
 	/** Location of this point in a world (points don't know to which world they belongs) */
 	Vector2D Location;
 	/** Points at which we can go from this point */
-	std::list<PathPoint*> LegalPoints;
+	std::set<PathPoint*> LegalPoints;
 };
 
 #endif

@@ -34,6 +34,8 @@ public:
 	void ShowShadows(bool bShow);
 	/** Switch showing normals */
 	void ShowHulls(bool bShow);
+	/** Switch showing paths */
+	void ShowPaths(bool bShow);
 	/** Project point from world coordinates to screen coordinates */
 	Vector2D Project(Vector2D worldPoint);
 	Vector2D ProjectFrom(Vector2D worldPoint, Vector2D projectionCenter);
@@ -53,6 +55,8 @@ protected:
 	void RenderHulls();
 	/** Render lights centers */
 	void RenderLights();
+	/** Render all path points and paths in the world */
+	void RenderPaths();
 	/** World which render this camera*/
 	World* BrowsableWorld;
 	/** Camera location in the world */
@@ -89,6 +93,8 @@ protected:
 	bool bRenderShadows;
 	/** Is camera shows borders of objects? */
 	bool bShowBorders;
+	/** Is camera shows paths */
+	bool bShowPaths;
 	/** Is camera shows centers of lights? */
 	bool bShowLights;
 	/** Helper variable */

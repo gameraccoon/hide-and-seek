@@ -40,6 +40,7 @@ Camera::Camera(World* world, Vector2D resolution, Vector2D location) : Location(
 	bShowBorders = false;
 	bRenderShadows = true;
 	bShowLights = false;
+	bShowPaths = false;
 }
 
 Camera::~Camera(void)
@@ -60,7 +61,7 @@ void Camera::Render()
 	Hge->Gfx_EndScene();
 
 	// for each light on the scene
-	for (std::set<IActor*>::iterator it = BrowsableWorld->AllActors.begin(); it != BrowsableWorld->AllActors.end(); it++)
+	for (std::set<IActor*>::iterator it = BrowsableWorld->AllActors.begin(), end = BrowsableWorld->AllActors.end(); it != end; it++)
 	{
 		if ((*it)->GetType() == AT_Light)
 		{
@@ -130,6 +131,12 @@ void Camera::Render()
 		RenderLights();
 	}
 
+	// Paths
+	if (bShowPaths)
+	{
+		RenderPaths();
+	}
+
 	// end rendering to target
 	Hge->Gfx_EndScene();
 }
@@ -137,7 +144,7 @@ void Camera::Render()
 void Camera::RenderActors(Vector2D lightPos)
 {
 	// for each actors in the world
-	for (std::set<IActor*>::iterator it = BrowsableWorld->AllActors.begin(); it != BrowsableWorld->AllActors.end(); it++)
+	for (std::set<IActor*>::iterator it = BrowsableWorld->AllActors.begin(), end = BrowsableWorld->AllActors.end(); it != end; it++)
 	{
 		// Get actor's camera local location
 		Vector2D screenLoc((*it)->GetLocation() - lightPos);
@@ -157,7 +164,7 @@ void Camera::RenderActors(Vector2D lightPos)
 void Camera::RenderCollisionBoxes()
 {
 	// for each actors in the world
-	for (std::set<IActor*>::iterator it = BrowsableWorld->AllActors.begin(); it != BrowsableWorld->AllActors.end(); it++)
+	for (std::set<IActor*>::iterator it = BrowsableWorld->AllActors.begin(), end = BrowsableWorld->AllActors.end(); it != end; it++)
 	{
 		// get location and size of actor's AABB (axis-aligned bounding box)
 		Vector2D min = (*it)->GetBoundingBox().GetFirst();
@@ -267,7 +274,7 @@ void Camera::RenderLightShadows(Vector2D lightPos)
 {
 	Vector2D lightCenterPos(ShownSize/2, ShownSize/2);
 	// for each actors in the world
-	for (std::set<IActor*>::iterator it = BrowsableWorld->AllActors.begin(); it != BrowsableWorld->AllActors.end(); it++)
+	for (std::set<IActor*>::iterator it = BrowsableWorld->AllActors.begin(), end = BrowsableWorld->AllActors.end(); it != end; it++)
 	{
 		// if actor - static
 		if ((*it)->GetType() == AT_Static)
@@ -302,7 +309,7 @@ void Camera::RenderLightShadows(Vector2D lightPos)
 void Camera::RenderShadows()
 {
 	// for each actors in the world
-	for (std::set<IActor*>::iterator it = BrowsableWorld->AllActors.begin(); it != BrowsableWorld->AllActors.end(); it++)
+	for (std::set<IActor*>::iterator it = BrowsableWorld->AllActors.begin(), end = BrowsableWorld->AllActors.end(); it != end; it++)
 	{
 		// if actor - static
 		if ((*it)->GetType() == AT_Static)
@@ -339,7 +346,7 @@ void Camera::RenderHulls()
 	const int normal_length = 10;
 
 	// for each actors in the world
-	for (std::set<IActor*>::iterator it = BrowsableWorld->AllActors.begin(); it != BrowsableWorld->AllActors.end(); it++)
+	for (std::set<IActor*>::iterator it = BrowsableWorld->AllActors.begin(), end = BrowsableWorld->AllActors.end(); it != end; it++)
 	{
 		// if actor - static
 		if ((*it)->GetType() != AT_Light && (*it)->GetType() != AT_Special)
@@ -372,14 +379,36 @@ void Camera::RenderHulls()
 void Camera::RenderLights()
 {
 	// for each actors in the world
-	for (std::set<IActor*>::iterator it = BrowsableWorld->AllActors.begin(); it != BrowsableWorld->AllActors.end(); it++)
+	for (std::set<IActor*>::iterator it = BrowsableWorld->AllActors.begin(), end = BrowsableWorld->AllActors.end(); it != end; it++)
 	{
 		// if actor - static
 		if ((*it)->GetType() == AT_Light)
 		{
 			Vector2D lightLocation(Project((*it)->GetLocation()));
-			Hge->Gfx_RenderLine(lightLocation.X - 5,lightLocation.Y,lightLocation.X + 5,lightLocation.Y,0xFFAA6600,0);
-			Hge->Gfx_RenderLine(lightLocation.X,lightLocation.Y - 5,lightLocation.X,lightLocation.Y + 5,0xFFAA6600,0);
+			Hge->Gfx_RenderLine(lightLocation.X - 5, lightLocation.Y, lightLocation.X + 5, lightLocation.Y, 0xFFAA6600, 0);
+			Hge->Gfx_RenderLine(lightLocation.X, lightLocation.Y - 5, lightLocation.X, lightLocation.Y + 5, 0xFFAA6600, 0);
+		}
+	}
+}
+
+void Camera::RenderPaths()
+{
+	// for each actors in the world
+	for (std::set<PathPoint*>::iterator it = BrowsableWorld->NavigationMap.begin(), end = BrowsableWorld->NavigationMap.end(); it != end; it++)
+	{
+		Vector2D pathPointLocation(Project((*it)->Location));
+		
+		// render green diamond
+		Hge->Gfx_RenderLine(pathPointLocation.X - 5, pathPointLocation.Y, pathPointLocation.X, pathPointLocation.Y - 5, 0xFF00FF00, 0);
+		Hge->Gfx_RenderLine(pathPointLocation.X, pathPointLocation.Y - 5, pathPointLocation.X + 5, pathPointLocation.Y, 0xFF00FF00, 0);
+		Hge->Gfx_RenderLine(pathPointLocation.X + 5, pathPointLocation.Y, pathPointLocation.X, pathPointLocation.Y + 5, 0xFF00FF00, 0);
+		Hge->Gfx_RenderLine(pathPointLocation.X, pathPointLocation.Y + 5, pathPointLocation.X - 5, pathPointLocation.Y, 0xFF00FF00, 0);
+
+		// render path line
+		for (std::set<PathPoint*>::iterator it2 = (*it)->LegalPoints.begin(), end = (*it)->LegalPoints.end(); it2 != end; it2++)
+		{
+			Vector2D nextPointLocation(Project((*it2)->Location));
+			Hge->Gfx_RenderLine(pathPointLocation.X, pathPointLocation.Y, nextPointLocation.X, nextPointLocation.Y, 0xFF00FF00, 0);
 		}
 	}
 }
@@ -422,6 +451,11 @@ void Camera::ShowHulls(bool bShow)
 void Camera::ShowLights(bool bShow)
 {
 	bShowLights = bShow;
+}
+
+void Camera::ShowPaths(bool bShow)
+{
+	bShowPaths = bShow;
 }
 
 HTEXTURE Camera::GetRenderTexture()

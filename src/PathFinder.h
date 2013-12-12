@@ -19,7 +19,7 @@ public:
 	bool CreateNewPath(Vector2D startPoint, Vector2D endPoint);
 	/**
 	 * Get location of a next point of this path.
-	 * @return next point or ZeroVector if it was last point of this path.
+	 * @return next point or ZeroVector if no more points of this path.
 	 */
 	Vector2D GetNextPoint();
 private:
