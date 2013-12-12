@@ -17,4 +17,11 @@ public:
 	std::set<PathPoint*> LegalPoints;
 };
 
+/** Two sided connect */
+inline void ConnectTwoPoints(PathPoint* a, PathPoint* b)
+{
+	a->Connect(b);
+	b->Connect(a);
+}
+
 #endif

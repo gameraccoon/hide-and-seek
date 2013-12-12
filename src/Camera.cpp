@@ -404,11 +404,25 @@ void Camera::RenderPaths()
 		Hge->Gfx_RenderLine(pathPointLocation.X + 5, pathPointLocation.Y, pathPointLocation.X, pathPointLocation.Y + 5, 0xFF00FF00, 0);
 		Hge->Gfx_RenderLine(pathPointLocation.X, pathPointLocation.Y + 5, pathPointLocation.X - 5, pathPointLocation.Y, 0xFF00FF00, 0);
 
-		// render path line
+		// render path arrow
 		for (std::set<PathPoint*>::iterator it2 = (*it)->LegalPoints.begin(), end = (*it)->LegalPoints.end(); it2 != end; it2++)
 		{
 			Vector2D nextPointLocation(Project((*it2)->Location));
 			Hge->Gfx_RenderLine(pathPointLocation.X, pathPointLocation.Y, nextPointLocation.X, nextPointLocation.Y, 0xFF00FF00, 0);
+			Vector2D thirdPoint = pathPointLocation + (nextPointLocation - pathPointLocation)/3;
+
+			Vector2D Direction = (nextPointLocation - pathPointLocation).Ort();
+			float arrowlength = 5.f;
+			
+			Hge->Gfx_RenderLine(thirdPoint.X,
+								thirdPoint.Y,
+								thirdPoint.X + (Direction.GetNormal().X - Direction.Ort().X) * arrowlength,
+								thirdPoint.Y + (Direction.GetNormal().Y - Direction.Ort().Y) * arrowlength, 0xFF00FF00, 0);
+			
+			Hge->Gfx_RenderLine(thirdPoint.X,
+								thirdPoint.Y,
+								thirdPoint.X - (Direction.GetNormal().X + Direction.Ort().X) * arrowlength,
+								thirdPoint.Y - (Direction.GetNormal().Y + Direction.Ort().Y) * arrowlength, 0xFF00FF00, 0);
 		}
 	}
 }
