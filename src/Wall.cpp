@@ -1,14 +1,35 @@
 #include "Wall.h"
 
+#include "../src/ActorFactory.h"
 
-Wall::Wall(World *ownerWorld, Vector2D location, Vector2D size) : Actor(ownerWorld, location), Size(size)
+// unnamed namespase to hide from another places
+namespace
+{
+	// specific factory
+	IActor* CreateWall(World *world, const Vector2D location, const Vector2D scale, const Rotator rotation)
+	{
+		return new Wall(world, location, scale);
+	}
+
+	const std::string WALL_ID = "Wall";
+
+	// register specific factory in actor factory
+	const bool registered = ActorFactory::RegisterActor(WALL_ID, CreateWall);
+}
+
+Wall::Wall(World *ownerWorld, Vector2D location, Vector2D scale) : Actor(ownerWorld, location, Rotator(0.f))
 {
 	Type = AT_Static;
 
-	Geometry.Points.insert(Geometry.Points.end(), -Size/2);
-	Geometry.Points.insert(Geometry.Points.end(), (Size/2).MirrorV());
-	Geometry.Points.insert(Geometry.Points.end(), Size/2);
-	Geometry.Points.insert(Geometry.Points.end(), (Size/2).MirrorH());
+	const int spritelSize = 126;
+
+	OriginalSize = Vector2D(20, 20);
+	SetScale(scale);
+
+	Geometry.Points.insert(Geometry.Points.end(), -CalculatedSize/2);
+	Geometry.Points.insert(Geometry.Points.end(), (CalculatedSize/2).MirrorV());
+	Geometry.Points.insert(Geometry.Points.end(), CalculatedSize/2);
+	Geometry.Points.insert(Geometry.Points.end(), (CalculatedSize/2).MirrorH());
 	Geometry.Generate();
 
 	UpdateCollision();
@@ -17,9 +38,11 @@ Wall::Wall(World *ownerWorld, Vector2D location, Vector2D size) : Actor(ownerWor
 
 	WARN_IF(!WallTexture, "Texture 'testTexture.png' not found!");
 
-	Sprite = new hgeSprite(WallTexture, 0, 0, 126, 126);
+	Sprite = new hgeSprite(WallTexture, 0, 0, (float)spritelSize, (float)spritelSize);
 	Sprite->SetColor(0xFFFFFFFF);
-	Sprite->SetHotSpot(63, 63);
+	Sprite->SetHotSpot(spritelSize/2 + 1, spritelSize/2 + 1);
+
+	ClassID = WALL_ID;
 }
 
 Wall::~Wall(void)
@@ -34,14 +57,14 @@ void Wall::Update(float deltaTime)
 
 void Wall::UpdateCollision()
 {
-	ColideBox = BoundingBox(Location - Size/2, Location + Size/2);
+	ColideBox = BoundingBox(Location - CalculatedSize/2, Location + CalculatedSize/2);
 }
 
 void Wall::Render(Vector2D shift, Rotator angle)
 {
 	if (Sprite != NULL)
 	{
-		Sprite->RenderEx(shift.X, shift.Y, (Direction + angle).GetValue(), Size.X/126.0f, Size.Y/126.0f);
+		Sprite->RenderEx(shift.X, shift.Y, (Direction + angle).GetValue(), CalculatedSize.X/126.0f, CalculatedSize.Y/126.0f);
 	}
 }
 

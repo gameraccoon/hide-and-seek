@@ -6,6 +6,7 @@
 #include "../src/Globals.h"
 #include "../src/IActor.h"
 #include "../src/PathPoint.h"
+#include <string>
 
 class World
 {
@@ -18,6 +19,7 @@ public:
 	void Delete(IActor* actor);
 	/** Update all Actors in the World */
 	void Update(float deltaTime);
+	/** Get a pointer to the Hge subsystem */
 	HGE* GetHge();
 	/** Add nwe PathPoint to the navigation map*/
 	void AddPathPoint(PathPoint* newPoint);

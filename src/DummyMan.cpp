@@ -1,7 +1,7 @@
 #include "DummyMan.h"
 
-DummyMan::DummyMan(World *ownerWorld, Vector2D location) : Actor(ownerWorld, location),
-												Size(32.0f, 32.0f)
+DummyMan::DummyMan(World *ownerWorld, Vector2D location) : Actor(ownerWorld, location, Rotator(0.f)),
+														Size(32.0f, 32.0f)
 {
 	Type = AT_Living;
 
@@ -34,11 +34,6 @@ void DummyMan::Move(Vector2D step)
 {
 	Location += step;
 	UpdateCollision();
-}
-
-void DummyMan::Rotate(Rotator newDirection)
-{
-	Direction = newDirection;
 }
 
 void DummyMan::UpdateCollision()

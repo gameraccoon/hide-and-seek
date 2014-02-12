@@ -1,8 +1,9 @@
 #include "Bullet.h"
 
 
-Bullet::Bullet(World *ownerWorld, Vector2D location, Vector2D targetLocation) : Actor(ownerWorld, location),
-																				Direction((targetLocation - location).GetRotation())
+Bullet::Bullet(World *ownerWorld, Vector2D location, Vector2D targetLocation) :
+																Actor(ownerWorld, location, (targetLocation - location).GetRotation()),
+																Direction((targetLocation - location).GetRotation())
 {
 	Speed = 10.0f;	
 	Type = AT_Bullet;

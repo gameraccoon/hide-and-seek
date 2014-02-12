@@ -1,9 +1,13 @@
 #include "Hero.h"
 
+#include "../src/ActorFactory.h"
+
 Hero::Hero(World *ownerWorld, Vector2D location) : DummyMan(ownerWorld, location),
 												Step(ZeroVector)
 {
 	Speed = 1.f;
+
+	ClassID = "Hero";
 }
 
 Hero::~Hero(void)

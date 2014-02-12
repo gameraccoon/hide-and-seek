@@ -33,12 +33,12 @@
  * WARN or WARN_IF it's necessary to include next
  * instructions
  */
-  // dummy for debugging methods
-  #if (!defined DEBUG) && (!defined RELEASE)
+// dummy for debugging methods
+#if (!defined DEBUG) && (!defined RELEASE)
  	#define RELEASE
   	#define WARN(message)
   	#define WARN_IF(condition, message)
-  #endif
+#endif
 /*
  * It will provide reusability of these classes in
  * other programs.

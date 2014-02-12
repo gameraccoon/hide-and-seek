@@ -17,8 +17,6 @@ public:
 private:
 	/** */
 	void UpdateCollision();
-	/** Wall lenght and height */
-	Vector2D Size;
 	/** Texture for sprites */
 	HTEXTURE WallTexture;
 };

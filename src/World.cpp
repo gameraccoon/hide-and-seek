@@ -8,6 +8,20 @@ World::World(HGE* hge)
 
 World::~World(void)
 {
+	std::set<IActor*>::iterator it, next = AllActors.begin(), end = AllActors.end();
+
+	while (next != end)
+	{
+		it = next;
+		next++;
+		
+		AllActors.erase(it);
+
+		delete (*it);
+	}
+
+	delete (*end);
+
 	AllActors.clear();
 	RemoveAllPathPoints();
 }

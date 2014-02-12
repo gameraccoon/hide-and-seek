@@ -7,6 +7,7 @@
 #include "../src/KeyListeners.h"
 #include "../src/LightEmitter.h"
 #include "../src/PathPoint.h"
+#include "../src/LevelLoader.h"
 #include <vector>
 
 // Hge subsystem
@@ -26,28 +27,6 @@ hgeFont*	Font;
 	const int SCREEN_HEIGHT = 768;
 	const bool FULL_SCREEN = true;
 #endif
-
-// Class helper needed to desctruct many objects at once
-class StaticGroup
-{
-public:
-	void DestructAll()
-	{
-		for (std::vector<Actor*>::iterator it = Actors.begin(); it != Actors.end(); it++)
-		{
-			delete (*it);
-			(*it) = NULL;
-		}
-	}
-
-	void Insert(Actor *actor)
-	{
-		Actors.insert(Actors.begin(), actor);
-	}
-
-private:
-	std::vector<Actor*> Actors;
-};
 
 // Handles for HGE resourcces
 HTEXTURE Texture;
@@ -74,9 +53,6 @@ DirectionArrow *Arrow;
 
 // Button
 ButtonListeners Listeners;
-
-// Group of actors that will be destroyed on shutdown
-StaticGroup Group;
 
 // event listeners
 class BtnShadows : public ButtonSwitcher
@@ -134,7 +110,7 @@ class BtnAddLight : public ButtonSwitcher
 {
 public:
 	BtnAddLight(HGE *hge) : ButtonSwitcher(hge, HGEK_RBUTTON, true) { };
-	void Pressed() { Group.Insert(new LightEmitter(GameWorld, MainCamera->DeProject(MousePos))); }
+	void Pressed() { new LightEmitter(GameWorld, MainCamera->DeProject(MousePos)); }
 };
 
 bool FrameFunc()
@@ -155,7 +131,7 @@ bool FrameFunc()
 	
 
 	OurHero->Move(Vector2D(Direction.GetRotation() - CameraAngle) * Direction.Ort().Size() * 100); // constant speed
-	OurHero->Rotate((MainCamera->DeProject(MousePos) - OurHero->GetLocation()).GetRotation());
+	OurHero->SetRotation((MainCamera->DeProject(MousePos) - OurHero->GetLocation()).GetRotation());
 
 	Hge->Input_GetMousePos(&MousePos.X, &MousePos.Y);
 
@@ -262,37 +238,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		MainCamera = new FloatingCamera(GameWorld, SCREEN_CENTER * 2, Vector2D(0.0f, 0.0f));
 
-		Group = StaticGroup();
-		
-		Group.Insert(new Wall(GameWorld, Vector2D(250.0f, 300.0f), Vector2D(80, 20)));
-		Group.Insert(new Wall(GameWorld, Vector2D(250.0f, 200.0f), Vector2D(80, 20)));
-		Group.Insert(new Wall(GameWorld, Vector2D(200.0f, 250.0f), Vector2D(20, 80)));
-		//Group.Insert(new Wall(GameWorld, Vector2D(500.0f, 450.0f), Vector2D(20, 80)));
-
-		Group.Insert(new Wall(GameWorld, Vector2D(450.0f, 300.0f), Vector2D(80, 20)));
-		Group.Insert(new Wall(GameWorld, Vector2D(450.0f, 200.0f), Vector2D(80, 20)));
-		//Group.Insert(new Wall(GameWorld, Vector2D(400.0f, 250.0f), Vector2D(20, 80)));
-		Group.Insert(new Wall(GameWorld, Vector2D(500.0f, 250.0f), Vector2D(20, 80)));
-		
-		//Group.Insert(new Wall(GameWorld, Vector2D(350.0f, 200.0f), Vector2D(80, 20)));
-		//Group.Insert(new Wall(GameWorld, Vector2D(350.0f, 100.0f), Vector2D(80, 20)));
-		Group.Insert(new Wall(GameWorld, Vector2D(300.0f, 150.0f), Vector2D(20, 80)));
-		Group.Insert(new Wall(GameWorld, Vector2D(400.0f, 150.0f), Vector2D(20, 80)));
-		
-		//Group.Insert(new Wall(GameWorld, Vector2D(350.0f, 400.0f), Vector2D(80, 20)));
-		//Group.Insert(new Wall(GameWorld, Vector2D(350.0f, 300.0f), Vector2D(80, 20)));
-		Group.Insert(new Wall(GameWorld, Vector2D(300.0f, 350.0f), Vector2D(20, 80)));
-		Group.Insert(new Wall(GameWorld, Vector2D(400.0f, 350.0f), Vector2D(20, 80)));
-		
-		//Group.Insert(new LightEmitter(GameWorld, Vector2D(350, 250)));
-		//Group.Insert(new LightEmitter(GameWorld, Vector2D(330, 450)));
-		//Group.Insert(new LightEmitter(GameWorld, Vector2D(150, 250)));
-		Group.Insert(new LightEmitter(GameWorld, Vector2D(230, 450)));
-
-		Group.Insert(new Man(GameWorld, Vector2D(230, 450)));
-
+		// hero will be deleted automaticaly as other actors
 		OurHero = new Hero(GameWorld, Vector2D(0.0f, 350.0f));
-		Group.Insert(OurHero);
 
 		OurHero->GiveWeapon(new Weapon());
 
@@ -325,10 +272,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			ConnectTwoPoints(a, b);
 			GameWorld->AddPathPoint(a = new PathPoint(Vector2D(350.f, 50.f)));
 			ConnectTwoPoints(a, b);
-			//ConnectTwoPoints(a, c);
 			c->Connect(a); // c -> a
 			ConnectTwoPoints(a, d);
 		}
+
+		LevelLoader::Load(GameWorld, std::string("test"));
 
 		// Let's rock now!
 		Hge->System_Start();
@@ -337,7 +285,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		delete Font;
 		delete Crosshair;
 		delete Arrow;
-		Group.DestructAll();
 		delete MainCamera;
 		delete GameWorld;
 		Hge->Texture_Free(Texture);

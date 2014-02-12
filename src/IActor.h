@@ -3,6 +3,7 @@
 
 #include "../src/Globals.h"
 #include "../src/Vector2D.h"
+#include "../src/Rotator.h"
 #include "../src/BoundingBox.h"
 #include "../src/Hull.h"
 
@@ -24,12 +25,18 @@ enum EActorType
 class IActor
 {
 public:
-	IActor(void);
-	~IActor(void);
 	/** Set new location of the actor in the World */
-	virtual void SetLocation(Vector2D newLocations) = 0;
+	virtual void SetLocation(const Vector2D& newLocations) = 0;
 	/** Get actor's world location */
 	virtual Vector2D GetLocation() = 0;
+	/** Set actor's rotation */
+	virtual void SetRotation(const Rotator& newRotation) = 0;
+	/** Get actor's rotation */
+	virtual Rotator GetRotation() = 0;
+	/** Set actor's scale */
+	virtual void SetScale(const Vector2D& newScale) = 0;
+	/** Get actor's scale */
+	virtual Vector2D GetScale() = 0;
 	/** Process moving and other actions of the Actor */
 	virtual void Update(float deltaTime) = 0;
 	/** Render the actor in the current location */
@@ -42,6 +49,8 @@ public:
 	virtual Hull* GetHull() = 0;
 	/** Take some damage to the actor */
 	virtual void TakeDamage(float damageValue, Vector2D impulse) = 0;
+	/** Returns class identificator of this actor */
+	virtual std::string GetClassID() = 0;
 };
 
 #endif

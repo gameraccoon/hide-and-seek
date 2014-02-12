@@ -1,5 +1,22 @@
 #include "Man.h"
 
+#include "../src/ActorFactory.h"
+
+// unnamed namespase to hide from another places
+namespace
+{
+	// specific factory
+	IActor* CreateMan(World *world, const Vector2D location, const Vector2D scale, const Rotator rotation)
+	{
+		return new Man(world, location);
+	}
+
+	const std::string MAN_ID = "Man";
+
+	// register specific factory in actor factory
+	const bool registered = ActorFactory::RegisterActor(MAN_ID, CreateMan);
+}
+
 Man::Man(World *ownerWorld, Vector2D location) : DummyMan(ownerWorld, location),
 												Navigator(ownerWorld),
 												DestinationPoint(location)
@@ -7,6 +24,8 @@ Man::Man(World *ownerWorld, Vector2D location) : DummyMan(ownerWorld, location),
 	Type = AT_Living;
 
 	Speed = 50.0f;
+
+	ClassID = MAN_ID;
 }
 
 Man::~Man(void)

@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Actor.cpp" />
+    <ClCompile Include="..\src\ActorFactory.cpp" />
     <ClCompile Include="..\src\Border.cpp" />
     <ClCompile Include="..\src\BoundingBox.cpp" />
     <ClCompile Include="..\src\Bullet.cpp" />
@@ -25,6 +26,7 @@
     <ClCompile Include="..\src\IActor.cpp" />
     <ClCompile Include="..\src\InventoryItem.cpp" />
     <ClCompile Include="..\src\KeyListeners.cpp" />
+    <ClCompile Include="..\src\LevelLoader.cpp" />
     <ClCompile Include="..\src\LightEmitter.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\Man.cpp" />
@@ -41,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Actor.h" />
+    <ClInclude Include="..\src\ActorFactory.h" />
     <ClInclude Include="..\src\Border.h" />
     <ClInclude Include="..\src\BoundingBox.h" />
     <ClInclude Include="..\src\Bullet.h" />
@@ -54,6 +57,7 @@
     <ClInclude Include="..\src\IActor.h" />
     <ClInclude Include="..\src\InventoryItem.h" />
     <ClInclude Include="..\src\KeyListeners.h" />
+    <ClInclude Include="..\src\LevelLoader.h" />
     <ClInclude Include="..\src\LightEmitter.h" />
     <ClInclude Include="..\src\Man.h" />
     <ClInclude Include="..\src\PathFinder.h" />
