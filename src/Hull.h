@@ -12,11 +12,11 @@ public:
 	Hull(void);
 	~Hull(void);
 	/** Corners of a hull's borders */
-	std::vector<Vector2D> Points;
+	std::vector<Vector2D> points;
 	/** Borders of hull (calculates from Points) */
-	std::vector<Border> Borders;
+	std::vector<Border> borders;
 	/** Calc borders from points */
-	void Generate();
+	void generate();
 };
 
 #endif

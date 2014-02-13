@@ -10,12 +10,12 @@ InventoryItem::~InventoryItem(void)
 {
 }
 
-bool InventoryItem::IsEquipped()
+bool InventoryItem::isEquipped()
 {
-	return bEquipped;
+	return this->bEquipped;
 }
 
-void InventoryItem::SetEquipped(bool equipped)
+void InventoryItem::setEquipped(bool equipped)
 {
-	bEquipped = equipped;
+	this->bEquipped = equipped;
 }

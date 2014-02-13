@@ -1,7 +1,7 @@
 #include "PathPoint.h"
 
 
-PathPoint::PathPoint(Vector2D location) : Location(location)
+PathPoint::PathPoint(Vector2D location) : location(location)
 {
 }
 
@@ -11,7 +11,7 @@ PathPoint::~PathPoint(void)
 }
 
 
-void PathPoint::Connect(PathPoint* destPoint)
+void PathPoint::connect(PathPoint* destPoint)
 {
-	LegalPoints.insert(destPoint);
+	this->legalPoints.insert(destPoint);
 }

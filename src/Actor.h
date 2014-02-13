@@ -21,61 +21,61 @@ public:
 	virtual ~Actor(void);
 	
 	/** Set new location of the actor in the World */
-	void SetLocation(const Vector2D& newLocations);
+	void setLocation(const Vector2D& newLocations);
 	/** Get actor's world location */
-	Vector2D GetLocation();
+	Vector2D getLocation();
 	/** Set actor's rotation */
-	void SetRotation(const Rotator& newRotation);
+	void setRotation(const Rotator& newRotation);
 	/** Get actor's rotation */
-	Rotator GetRotation();
+	Rotator getRotation();
 	/** Set actor's scale */
-	void SetScale(const Vector2D& newScale);
+	void setScale(const Vector2D& newScale);
 	/** Get actor's scale */
-	Vector2D GetScale();
+	Vector2D getScale();
 	/** Process moving and other actions of the Actor */
-	void Update(float deltatime);
+	void update(float deltatime);
 	/** Render the actor in the current location */
-	void Render(Vector2D shift, Rotator angle);
+	void render(Vector2D shift, Rotator angle);
 	/** Say to actor, that it mast be destroyed now */
-	void Destroy();
+	void destroy();
 	/** Is actor wait to be automatically destroyed? */
-	bool IsWaitDestruction();
+	bool isWaitDestruction();
 	/** Get actor type */
-	EActorType GetType();
+	EActorType getType();
 	/** Get axis-aligned bounding box */
-	BoundingBox GetBoundingBox();
+	BoundingBox getBoundingBox();
 	/** Get actor's hull */
-	Hull* GetHull();
+	Hull* getHull();
 	/** Returns class identificator of this actor */
-	std::string GetClassID();
+	std::string getClassID();
 protected:
 	/** */
-	virtual void UpdateCollision() = 0;
+	virtual void updateCollision() = 0;
 	/** Pointer of the HGE subsystem */
-	HGE *Hge;
+	HGE *hge;
 	/** Pointer to the owner World */
-	World* OwnerWorld;
+	World* ownerWorld;
 	/** Type of the actor */
-	EActorType Type;
+	EActorType type;
 	/** Location of the actor in the world */
-	Vector2D Location;
-	Vector2D Scale;
-	Vector2D OriginalSize;
-	Vector2D CalculatedSize;
+	Vector2D location;
+	Vector2D scale;
+	Vector2D originalSize;
+	Vector2D calculatedSize;
 	/** Angle between world's x-axis and actor's x-axis */
-	Rotator Direction;
+	Rotator direction;
 	/** Sprite of the actor */
-	hgeSprite *Sprite;
+	hgeSprite *sprite;
 	/** Bounding box */
-	BoundingBox ColideBox;
+	BoundingBox colideBox;
 	/** Geometry for physics and shadows calculation */
-	Hull Geometry;
+	Hull geometry;
 	/** Specific class identificator */
-	std::string ClassID;
+	std::string classID;
 	/** Is actor wait automatically destruction? */
 	bool bWaitDestruction;
 	/** Time that actor live */
-	float Lifetime;
+	float lifetime;
 };
 
 #endif

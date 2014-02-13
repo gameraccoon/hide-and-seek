@@ -13,30 +13,30 @@ public:
 	RayTrace(World * world, Vector2D start, Vector2D end);
 	RayTrace(World * world, Vector2D start, Rotator rotation, float length);
 	~RayTrace(void);
-	bool FastTrace();
-	IActor* Trace(Vector2D *point = NULL, Vector2D *normal = NULL);
+	bool fastTrace();
+	IActor* trace(Vector2D *outPoint = NULL, Vector2D *outNormal = NULL);
 protected:
-	byte GetDotCode(const BoundingBox *box, const Vector2D *dot);
-	bool CheckIntersectAABBLine(const BoundingBox* box, const Vector2D* first, const Vector2D* last);
-	bool CheckIntersectVertLineWithLine(Vector2D A1, Vector2D A2, float x, float minY, float maxY);
-	bool CheckIntersectHoryLineWithLine(Vector2D A1, Vector2D A2, float y, float minX, float maxX);
-	bool CheckIntersect2Lines(Vector2D A1, Vector2D A2, Vector2D B1, Vector2D B2);
-	Vector2D GetPointIntersect2Lines(Vector2D A1, Vector2D A2, Vector2D B1, Vector2D B2);
+	byte getDotCode(const BoundingBox *box, const Vector2D *dot);
+	bool checkIntersectAABBLine(const BoundingBox* box, const Vector2D* first, const Vector2D* last);
+	bool checkIntersectVertLineWithLine(Vector2D A1, Vector2D A2, float x, float minY, float maxY);
+	bool checkIntersectHoryLineWithLine(Vector2D A1, Vector2D A2, float y, float minX, float maxX);
+	bool checkIntersect2Lines(Vector2D A1, Vector2D A2, Vector2D B1, Vector2D B2);
+	Vector2D getPointIntersect2Lines(Vector2D A1, Vector2D A2, Vector2D B1, Vector2D B2);
 	/** World where placed this helper */
-	World *OwnerWorld;
+	World *ownerWorld;
 	/** Start point of the ray */
-	Vector2D StartPoint;
+	Vector2D startPoint;
 	/** End point of the ray (ray can't be infinite in this discrete system) */
-	Vector2D EndPoint;
+	Vector2D endPoint;
 	/** Angle between this ray and world's X-axis */
-	Rotator Angle;
+	Rotator angle;
 	/** Length of ray (ray can't be infinite in this discrete system) */
-	float RayLength;
+	float rayLength;
 	// helpers constaints
-	static const byte LeftBit;
-	static const byte RightBit;
-	static const byte BottomBit;
-	static const byte TopBit;
+	static const byte LEFT_BIT;
+	static const byte RIGHT_BIT;
+	static const byte BOTTOM_BIT;
+	static const byte TOP_BIT;
 };
 
 #endif

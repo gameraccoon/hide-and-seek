@@ -14,16 +14,16 @@ namespace
 	const std::string LIGHT_EMITTER_ID = "LightEmitter";
 
 	// register specific factory in actor factory
-	const bool registered = ActorFactory::RegisterActor(LIGHT_EMITTER_ID, CreateLightEmitter);
+	const bool registered = ActorFactory::registerActor(LIGHT_EMITTER_ID, CreateLightEmitter);
 }
 
 LightEmitter::LightEmitter(World *ownerWorld, Vector2D location) : Actor(ownerWorld, location, Rotator(0.f))
 {
-	Type = AT_Light;
-	Brightness = 1.f;
-	Color = 0xFFFFFFFF;
+	this->type = AT_Light;
+	this->brightness = 1.f;
+	this->color = 0xFFFFFFFF;
 
-	ClassID = LIGHT_EMITTER_ID;
+	this->classID = LIGHT_EMITTER_ID;
 }
 
 
@@ -31,19 +31,19 @@ LightEmitter::~LightEmitter(void)
 {
 }
 
-void LightEmitter::Update(float deltatime)
+void LightEmitter::update(float deltatime)
 {
-	Actor::Update(deltatime);
+	Actor::update(deltatime);
 }
 
-void LightEmitter::Render(Vector2D shift, Rotator angle)
-{
-}
-
-void LightEmitter::UpdateCollision()
+void LightEmitter::render(Vector2D shift, Rotator angle)
 {
 }
 
-void LightEmitter::TakeDamage(float damageValue,Vector2D impulse)
+void LightEmitter::updateCollision()
+{
+}
+
+void LightEmitter::takeDamage(float damageValue,Vector2D impulse)
 {
 }

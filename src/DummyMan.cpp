@@ -1,78 +1,78 @@
 #include "DummyMan.h"
 
 DummyMan::DummyMan(World *ownerWorld, Vector2D location) : Actor(ownerWorld, location, Rotator(0.f)),
-														Size(32.0f, 32.0f)
+														size(32.0f, 32.0f)
 {
-	Type = AT_Living;
+	this->type = AT_Living;
 
-	Speed = 12.0f;
+	this->speed = 12.0f;
 
-	Geometry.Points.insert(Geometry.Points.end(), -Size / 2);
-	Geometry.Points.insert(Geometry.Points.end(), (Size / 2).MirrorV());
-	Geometry.Points.insert(Geometry.Points.end(), Size / 2);
-	Geometry.Points.insert(Geometry.Points.end(), (Size / 2).MirrorH());
-	Geometry.Generate();
+	this->geometry.points.insert(this->geometry.points.end(), -this->size / 2);
+	this->geometry.points.insert(this->geometry.points.end(), (this->size / 2).mirrorV());
+	this->geometry.points.insert(this->geometry.points.end(), this->size / 2);
+	this->geometry.points.insert(this->geometry.points.end(), (this->size / 2).mirrorH());
+	this->geometry.generate();
 	
-	UpdateCollision();
+	this->updateCollision();
 
-	ManTexture = Hge->Texture_Load("hero.png");
+	this->manTexture = this->hge->Texture_Load("hero.png");
 
-	WARN_IF(!ManTexture, "Texture 'hero.png' not found!");
+	WARN_IF(!this->manTexture, "Texture 'hero.png' not found!");
 		
-	Sprite = new hgeSprite(ManTexture, 0, 0, 32, 32);
-	Sprite->SetColor(0xFFFFFFFF);
-	Sprite->SetHotSpot(16, 16);
+	this->sprite = new hgeSprite(this->manTexture, 0, 0, 32, 32);
+	this->sprite->SetColor(0xFFFFFFFF);
+	this->sprite->SetHotSpot(16, 16);
 }
 
 DummyMan::~DummyMan(void)
 {
-	delete Sprite;
-	Hge->Texture_Free(ManTexture);
+	delete this->sprite;
+	this->hge->Texture_Free(this->manTexture);
 }
 
-void DummyMan::Move(Vector2D step)
+void DummyMan::move(Vector2D step)
 {
-	Location += step;
-	UpdateCollision();
+	this->location += step;
+	this->updateCollision();
 }
 
-void DummyMan::UpdateCollision()
+void DummyMan::updateCollision()
 {
-	ColideBox = BoundingBox(Location - Size/2, Location + Size/2);
+	this->colideBox = BoundingBox(this->location - this->size/2, this->location + this->size/2);
 }
 
-void DummyMan::Render(Vector2D shift, Rotator angle)
+void DummyMan::render(Vector2D shift, Rotator angle)
 {
-	if (Sprite != NULL)
+	if (this->sprite != NULL)
 	{
-		Sprite->RenderEx(shift.X, shift.Y, (Direction + angle).GetValue());
+		this->sprite->RenderEx(shift.x, shift.y, (this->direction + angle).getValue());
 	}
 }
 
-void DummyMan::StartShoting(Vector2D targetLocation)
+void DummyMan::startShoting(Vector2D targetLocation)
 {
-	if (ArmedWeapon != NULL)
+	if (this->armedWeapon != NULL)
 	{
-		ArmedWeapon->StartShooting(Location ,targetLocation);
+		this->armedWeapon->startShooting(this->location ,targetLocation);
 	}
 }
 
-void DummyMan::StopShoting()
+void DummyMan::stopShoting()
 {
-	if (ArmedWeapon != NULL)
+	if (this->armedWeapon != NULL)
 	{
-		ArmedWeapon->StopShooting();
+		this->armedWeapon->stopShooting();
 	}
 }
 
-void DummyMan::GiveWeapon(Weapon *weap)
+void DummyMan::giveWeapon(Weapon *weap)
 {
-	ArmedWeapon = weap;
-	weap->SetOwnerWorld(OwnerWorld);
-	ArmedWeapon->SetEquipped(true);
+	this->armedWeapon = weap;
+	weap->setOwnerWorld(this->ownerWorld);
+	this->armedWeapon->setEquipped(true);
 }
 
-void DummyMan::TakeDamage(float damageValue,Vector2D impulse)
+void DummyMan::takeDamage(float damageValue,Vector2D impulse)
 {
-	Move(impulse);
+	this->move(impulse);
 }

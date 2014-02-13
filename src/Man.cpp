@@ -14,54 +14,54 @@ namespace
 	const std::string MAN_ID = "Man";
 
 	// register specific factory in actor factory
-	const bool registered = ActorFactory::RegisterActor(MAN_ID, CreateMan);
+	const bool registered = ActorFactory::registerActor(MAN_ID, CreateMan);
 }
 
 Man::Man(World *ownerWorld, Vector2D location) : DummyMan(ownerWorld, location),
-												Navigator(ownerWorld),
-												DestinationPoint(location)
+												navigator(ownerWorld),
+												destinationPoint(location)
 {
-	Type = AT_Living;
+	this->type = AT_Living;
 
-	Speed = 50.0f;
+	this->speed = 50.0f;
 
-	ClassID = MAN_ID;
+	this->classID = MAN_ID;
 }
 
 Man::~Man(void)
 {
 }
 
-void Man::Update(float deltatime)
+void Man::update(float deltatime)
 {
-	if (DestinationPoint == Location)
+	if (this->destinationPoint == this->location)
 	{
-		DestinationPoint = Navigator.GetNextPoint();
-		Direction = (DestinationPoint - Location).GetRotation();
+		this->destinationPoint = this->navigator.getNextPoint();
+		this->direction = (this->destinationPoint - this->location).rotation();
 	}
 
-	float stepSize = Speed * deltatime;
-	if (stepSize > (DestinationPoint - Location).Size())
+	float stepSize = this->speed * deltatime;
+	if (stepSize > (this->destinationPoint - this->location).size())
 	{
-		Location = DestinationPoint;
-		UpdateCollision();
+		this->location = this->destinationPoint;
+		this->updateCollision();
 		return;
 	}
-	Vector2D newLocation = Location + (DestinationPoint - Location).Ort() * stepSize;
+	Vector2D newLocation = this->location + (this->destinationPoint - this->location).ort() * stepSize;
 	bool bFree = true;
 
 	// for each actors in the world
-	for (std::set<IActor*>::iterator it = OwnerWorld->AllActors.begin(); it != OwnerWorld->AllActors.end(); it++)
+	for (std::set<IActor*>::iterator i = this->ownerWorld->allActors.begin(), iEnd = this->ownerWorld->allActors.end(); i != iEnd; i++)
 	{
 		// if the actor is not this man // test: and it is a static actor
-		if ((*it) != this && ((*it)->GetType() != AT_Light && (*it)->GetType() != AT_Special && (*it)->GetType() != AT_Bullet))
+		if ((*i) != this && ((*i)->getType() != AT_Light && (*i)->getType() != AT_Special && (*i)->getType() != AT_Bullet))
 		{
 			// get an actor's AABB (axis-aligned bounding box)
-			BoundingBox box = (*it)->GetBoundingBox();
+			BoundingBox box = (*i)->getBoundingBox();
 			// if the actor's AABB intersects with the Man's AABB (in new Man location)
-			if ((box.MinX < newLocation.X + Size.X/2 && newLocation.X - Size.X/2 < box.MaxX)
+			if ((box.minX < newLocation.x + this->size.x/2 && newLocation.x - this->size.x/2 < box.maxX)
 				&&
-				(box.MinY < newLocation.Y + Size.Y/2 && newLocation.Y - Size.Y/2 < box.MaxY))
+				(box.minY < newLocation.y + this->size.y/2 && newLocation.y - this->size.y/2 < box.maxY))
 			{
 				// actor's path is not free
 				bFree = false;
@@ -73,25 +73,25 @@ void Man::Update(float deltatime)
 	if (bFree)
 	{
 		// accept new position of the man
-		Location = newLocation;
+		this->location = newLocation;
 	}
 	
-	UpdateCollision();
+	this->updateCollision();
 
 	// use superclass method
-	DummyMan::Update(deltatime);
+	DummyMan::update(deltatime);
 }
 
-void Man::TakeDamage(float damageValue,Vector2D impulse)
+void Man::takeDamage(float damageValue,Vector2D impulse)
 {
-	for (std::set<IActor*>::iterator it = OwnerWorld->AllActors.begin(); it != OwnerWorld->AllActors.end(); it++)
+	for (std::set<IActor*>::iterator i = this->ownerWorld->allActors.begin(), iEnd = this->ownerWorld->allActors.end(); i != iEnd; i++)
 	{
-		if ((*it)->GetType() == AT_Living && (*it) != this)
+		if ((*i)->getType() == AT_Living && (*i) != this)
 		{
-			Navigator.CreateNewPath(Location, (*it)->GetLocation());
+			this->navigator.createNewPath(this->location, (*i)->getLocation());
 		}
 	}
 	
-	DestinationPoint = Navigator.GetNextPoint();
-	Direction = (DestinationPoint - Location).GetRotation();
+	this->destinationPoint = this->navigator.getNextPoint();
+	this->direction = (this->destinationPoint - this->location).rotation();
 }

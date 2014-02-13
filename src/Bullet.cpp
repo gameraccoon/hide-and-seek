@@ -2,74 +2,72 @@
 
 
 Bullet::Bullet(World *ownerWorld, Vector2D location, Vector2D targetLocation) :
-																Actor(ownerWorld, location, (targetLocation - location).GetRotation()),
-																Direction((targetLocation - location).GetRotation())
+	Actor(ownerWorld, location, (targetLocation - location).rotation()),
+	direction((targetLocation - location).rotation())
 {
-	Speed = 10.0f;	
-	Type = AT_Bullet;
+	this->speed = 10.0f;	
+	this->type = AT_Bullet;
 
-	Speed = 450.0f;
+	this->speed = 450.0f;
 
-	Destroyed = false;
+	this->ownerWorld = ownerWorld;
 
-	OwnerWorld = ownerWorld;
+	this->bulletTexture = this->hge->Texture_Load("bullet.png");
 
-	BulletTexture = Hge->Texture_Load("bullet.png");
-
-	WARN_IF(!BulletTexture, "Texture 'bullet.png' not found!");
+	WARN_IF(!this->bulletTexture, "Texture 'bullet.png' not found!");
 	
-	Sprite = new hgeSprite(BulletTexture, 0, 0, 32, 32);
-	Sprite->SetColor(0xFFFFFFFF);
-	Sprite->SetHotSpot(16, 16);
+	this->sprite = new hgeSprite(this->bulletTexture, 0, 0, 32, 32);
+	this->sprite->SetColor(0xFFFFFFFF);
+	this->sprite->SetHotSpot(16, 16);
 }
 
 Bullet::~Bullet(void)
 {
-	delete Sprite;
-	Hge->Texture_Free(BulletTexture);
+	delete this->sprite;
+	this->hge->Texture_Free(this->bulletTexture);
 }
 
-void Bullet::Update(float deltatime)
+void Bullet::update(float deltatime)
 {
-	Vector2D newLocation = Location + deltatime * Speed * Vector2D(Direction);
+	Vector2D newLocation = this->location + deltatime * this->speed * Vector2D(this->direction);
 	
-	WARN_IF(!OwnerWorld, "Not assigned OwnerWorld for bullet");
+	WARN_IF(!this->ownerWorld, "Not assigned OwnerWorld for bullet");
 
-	RayTrace ray(OwnerWorld, Location, newLocation);
-	Vector2D traceLocation(ZeroVector);
-	IActor *trasedActor = ray.Trace(&traceLocation);
+	RayTrace ray(this->ownerWorld, this->location, newLocation);
+	Vector2D traceLocation(ZERO_VECTOR);
+	IActor *trasedActor = ray.trace(&traceLocation);
 
 	if (trasedActor == NULL)
 	{
-		Location = newLocation;
+		this->location = newLocation;
 	}
 	else
 	{
-		trasedActor->TakeDamage(10, Vector2D(Direction) * Speed);
-		Speed = 0.0f;
-		this->Destroy();
+		trasedActor->takeDamage(10, Vector2D(this->direction) * this->speed);
+		this->speed = 0.0f;
+		this->destroy();
 	}
 
 	// bullet will be destroyed after 10 second
-	if (Lifetime > 10.f)
+	if (this->lifetime > 10.f)
 	{
-		this->Destroy();
+		this->destroy();
 	}
 }
 
-void Bullet::Render(Vector2D shift, Rotator angle)
+void Bullet::render(Vector2D shift, Rotator angle)
 {
-	if (Sprite != NULL)
+	if (this->sprite != NULL)
 	{
-		Sprite->RenderEx(shift.X, shift.Y, (Direction + angle).GetValue(), 0.3f, 0.3f);
+		this->sprite->RenderEx(shift.x, shift.y, (this->direction + angle).getValue(), 0.3f, 0.3f);
 	}
 }
 
-void Bullet::UpdateCollision()
+void Bullet::updateCollision()
 {
 }
 
-void Bullet::TakeDamage(float damageValue,Vector2D impulse)
+void Bullet::takeDamage(float damageValue,Vector2D impulse)
 {
 	// do nothing for now
 }

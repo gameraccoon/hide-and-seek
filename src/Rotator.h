@@ -11,7 +11,7 @@ public:
 	Rotator(float angle);
 	~Rotator();
 	/** Get value of angle */
-	float GetValue();
+	float getValue();
 	/** Get rotator that mirrored from X-axis */
 	friend Rotator operator-(Rotator rot);
 
@@ -27,7 +27,7 @@ public:
 
     friend Rotator operator-=(Rotator& left, const Rotator& right);
 protected:
-	float Value;
+	float value;
 };
 
 #endif

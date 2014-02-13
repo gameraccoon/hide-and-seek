@@ -1,97 +1,97 @@
 #include "Actor.h"
 
-Actor::Actor(World *ownerWorld, Vector2D location, Rotator rotation) : Location(location),
-																	ColideBox(location, location),
-																	Direction(rotation),
-																	Scale(0.f, 0.f),
-																	OriginalSize(1.f, 1.f),
-																	CalculatedSize(1.f, 1.f)
+Actor::Actor(World *ownerWorld, Vector2D location, Rotator rotation) : location(location),
+	colideBox(location, location),
+	direction(rotation),
+	scale(0.f, 0.f),
+	originalSize(1.f, 1.f),
+	calculatedSize(1.f, 1.f)
 {
-	Hge = ownerWorld->GetHge();
-	OwnerWorld = ownerWorld;
-	OwnerWorld->Spawn(this);
-	Type = AT_Ghost;
+	this->hge = ownerWorld->getHge();
+	this->ownerWorld = ownerWorld;
+	this->ownerWorld->spawnActor(this);
+	this->type = AT_Ghost;
 
-	ClassID = "Actor";
+	this->classID = "Actor";
 
-	bWaitDestruction = false;
+	this->bWaitDestruction = false;
 }
 
 Actor::~Actor(void)
 {
-	OwnerWorld->Delete(this);
+	this->ownerWorld->removeActor(this);
 }
 
-void Actor::SetLocation(const Vector2D& newLocation)
+void Actor::setLocation(const Vector2D& location)
 {
-	Location = Vector2D(newLocation);
+	this->location = Vector2D(location);
 }
 
-Vector2D Actor::GetLocation()
+Vector2D Actor::getLocation()
 {
-	return Location;
+	return this->location;
 }
 
-void Actor::SetRotation(const Rotator& newRotation)
+void Actor::setRotation(const Rotator& rotation)
 {
-	Direction = Rotator(newRotation);
+	this->direction = Rotator(rotation);
 }
 
-Rotator Actor::GetRotation()
+Rotator Actor::getRotation()
 {
-	return Direction;
+	return this->direction;
 }
 
-void Actor::SetScale(const Vector2D& newScale)
+void Actor::setScale(const Vector2D& scale)
 {
-	Scale = Vector2D(newScale);
-	CalculatedSize.X = OriginalSize.X * Scale.X;
-	CalculatedSize.Y = OriginalSize.Y * Scale.Y;
+	this->scale = Vector2D(scale);
+	this->calculatedSize.x = this->originalSize.x * scale.x;
+	this->calculatedSize.y = this->originalSize.y * scale.y;
 }
 
-Vector2D Actor::GetScale()
+Vector2D Actor::getScale()
 {
-	return Scale;
+	return this->scale;
 }
 
-EActorType Actor::GetType()
+EActorType Actor::getType()
 {
-	return Type;
+	return this->type;
 }
 
-BoundingBox Actor::GetBoundingBox()
+BoundingBox Actor::getBoundingBox()
 {
-	return ColideBox;
+	return this->colideBox;
 }
 
-Hull* Actor::GetHull()
+Hull* Actor::getHull()
 {
-	return &Geometry;
+	return &(this->geometry);
 }
 
-std::string Actor::GetClassID()
+std::string Actor::getClassID()
 {
-	return ClassID;
+	return this->classID;
 }
 
-void Actor::Update(float deltatime)
+void Actor::update(float deltatime)
 {
-	Lifetime += deltatime;
+	this->lifetime += deltatime;
 }
 
-void Actor::Render(Vector2D shift, Rotator angle)
+void Actor::render(Vector2D shift, Rotator angle)
 {
 }
 
-void Actor::Destroy()
+void Actor::destroy()
 {
-	if (!bWaitDestruction)
+	if (!this->bWaitDestruction)
 	{
-		bWaitDestruction = true;
+		this->bWaitDestruction = true;
 	}
 }
 
-bool Actor::IsWaitDestruction()
+bool Actor::isWaitDestruction()
 {
-	return bWaitDestruction;
+	return this->bWaitDestruction;
 }

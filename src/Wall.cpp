@@ -14,62 +14,63 @@ namespace
 	const std::string WALL_ID = "Wall";
 
 	// register specific factory in actor factory
-	const bool registered = ActorFactory::RegisterActor(WALL_ID, CreateWall);
+	const bool registered = ActorFactory::registerActor(WALL_ID, CreateWall);
 }
 
 Wall::Wall(World *ownerWorld, Vector2D location, Vector2D scale) : Actor(ownerWorld, location, Rotator(0.f))
 {
-	Type = AT_Static;
+	this->type = AT_Static;
 
 	const int spritelSize = 126;
 
-	OriginalSize = Vector2D(20, 20);
-	SetScale(scale);
+	this->originalSize = Vector2D(20, 20);
+	this->setScale(scale);
 
-	Geometry.Points.insert(Geometry.Points.end(), -CalculatedSize/2);
-	Geometry.Points.insert(Geometry.Points.end(), (CalculatedSize/2).MirrorV());
-	Geometry.Points.insert(Geometry.Points.end(), CalculatedSize/2);
-	Geometry.Points.insert(Geometry.Points.end(), (CalculatedSize/2).MirrorH());
-	Geometry.Generate();
+	this->geometry.points.insert(this->geometry.points.end(), -this->calculatedSize/2);
+	this->geometry.points.insert(this->geometry.points.end(), (this->calculatedSize/2).mirrorV());
+	this->geometry.points.insert(this->geometry.points.end(), this->calculatedSize/2);
+	this->geometry.points.insert(this->geometry.points.end(), (this->calculatedSize/2).mirrorH());
+	this->geometry.generate();
 
-	UpdateCollision();
+	this->updateCollision();
 
-	WallTexture = Hge->Texture_Load("testTexture.png");
+	this->wallTexture = this->hge->Texture_Load("testTexture.png");
 
-	WARN_IF(!WallTexture, "Texture 'testTexture.png' not found!");
+	WARN_IF(!this->wallTexture, "Texture 'testTexture.png' not found!");
 
-	Sprite = new hgeSprite(WallTexture, 0, 0, (float)spritelSize, (float)spritelSize);
-	Sprite->SetColor(0xFFFFFFFF);
-	Sprite->SetHotSpot(spritelSize/2 + 1, spritelSize/2 + 1);
+	this->sprite = new hgeSprite(this->wallTexture, 0, 0, (float)spritelSize, (float)spritelSize);
+	this->sprite->SetColor(0xFFFFFFFF);
+	this->sprite->SetHotSpot(spritelSize/2 + 1, spritelSize/2 + 1);
 
-	ClassID = WALL_ID;
+	this->classID = WALL_ID;
 }
 
 Wall::~Wall(void)
 {
-	delete Sprite;
-	Hge->Texture_Free(WallTexture);
+	delete this->sprite;
+	this->hge->Texture_Free(this->wallTexture);
 }
 
-void Wall::Update(float deltatime)
+void Wall::update(float deltatime)
 {
-	Actor::Update(deltatime);
+	Actor::update(deltatime);
 }
 
-void Wall::UpdateCollision()
+void Wall::updateCollision()
 {
-	ColideBox = BoundingBox(Location - CalculatedSize/2, Location + CalculatedSize/2);
+	this->colideBox = BoundingBox(this->location - this->calculatedSize/2, this->location + this->calculatedSize/2);
 }
 
-void Wall::Render(Vector2D shift, Rotator angle)
+void Wall::render(Vector2D shift, Rotator angle)
 {
-	if (Sprite != NULL)
+	if (this->sprite != NULL)
 	{
-		Sprite->RenderEx(shift.X, shift.Y, (Direction + angle).GetValue(), CalculatedSize.X/126.0f, CalculatedSize.Y/126.0f);
+		this->sprite->RenderEx(shift.x, shift.y,
+			(this->direction + angle).getValue(), this->calculatedSize.x/126.0f, this->calculatedSize.y/126.0f);
 	}
 }
 
-void Wall::TakeDamage(float damageValue, Vector2D impulse)
+void Wall::takeDamage(float damageValue, Vector2D impulse)
 {
 	// do nothing
 }

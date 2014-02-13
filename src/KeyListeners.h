@@ -9,36 +9,36 @@ class ButtonSwitcher
 public:
 	ButtonSwitcher(HGE *hge, byte key, bool active);
 	virtual ~ButtonSwitcher();
-	bool IsActive();
+	bool isActive();
 
-	byte GetKey();
+	byte getKey();
 
-	void Check();
+	void check();
 
-	virtual void Switch();
+	virtual void switchState();
 
-	virtual void Pressed() { }
-	virtual void Released() { }
+	virtual void pressed() { }
+	virtual void released() { }
 
 protected:
 	bool bPressed;
 	bool bActive;
-	byte Key;
-	HGE *Hge;
+	byte key;
+	HGE *hge;
 };
 
 class ButtonListeners
 {
 public:
-	void AddListener(ButtonSwitcher *listener);
+	void addListener(ButtonSwitcher *listener);
 
-	void Check();
+	void check();
 
-	bool GetActive(int key);
+	bool isActive(int key);
 
-	void Destruct();
+	void destruct();
 private:
-	std::vector<ButtonSwitcher*> Listeners;
+	std::vector<ButtonSwitcher*> listeners;
 };
 
 #endif

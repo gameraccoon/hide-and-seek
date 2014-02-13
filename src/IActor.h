@@ -26,35 +26,35 @@ class IActor
 {
 public:
 	/** Set new location of the actor in the World */
-	virtual void SetLocation(const Vector2D& newLocations) = 0;
+	virtual void setLocation(const Vector2D& location) = 0;
 	/** Get actor's world location */
-	virtual Vector2D GetLocation() = 0;
+	virtual Vector2D getLocation() = 0;
 	/** Set actor's rotation */
-	virtual void SetRotation(const Rotator& newRotation) = 0;
+	virtual void setRotation(const Rotator& rotation) = 0;
 	/** Get actor's rotation */
-	virtual Rotator GetRotation() = 0;
+	virtual Rotator getRotation() = 0;
 	/** Set actor's scale */
-	virtual void SetScale(const Vector2D& newScale) = 0;
+	virtual void setScale(const Vector2D& scale) = 0;
 	/** Get actor's scale */
-	virtual Vector2D GetScale() = 0;
+	virtual Vector2D getScale() = 0;
 	/** Process moving and other actions of the Actor */
-	virtual void Update(float deltatime) = 0;
+	virtual void update(float deltatime) = 0;
 	/** Render the actor in the current location */
-	virtual void Render(Vector2D shift, Rotator angle) = 0;
+	virtual void render(Vector2D shift, Rotator angle) = 0;
 	/** Say to actor, that it mast be destroyed now */
-	virtual void Destroy() = 0;
+	virtual void destroy() = 0;
 	/** Is actor wait to be automatically destroyed? */
-	virtual bool IsWaitDestruction() = 0;
+	virtual bool isWaitDestruction() = 0;
 	/** Get actor type */
-	virtual EActorType GetType() = 0;
+	virtual EActorType getType() = 0;
 	/** Get axis-aligned bounding box */
-	virtual BoundingBox GetBoundingBox() = 0;
+	virtual BoundingBox getBoundingBox() = 0;
 	/** Get hull of this actor */
-	virtual Hull* GetHull() = 0;
+	virtual Hull* getHull() = 0;
 	/** Take some damage to the actor */
-	virtual void TakeDamage(float damageValue, Vector2D impulse) = 0;
+	virtual void takeDamage(float damageValue, Vector2D impulse) = 0;
 	/** Returns class identificator of this actor */
-	virtual std::string GetClassID() = 0;
+	virtual std::string getClassID() = 0;
 };
 
 #endif

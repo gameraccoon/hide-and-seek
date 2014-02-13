@@ -33,20 +33,20 @@ public:
 	 * register new actor class by identifier and "create" function
 	 * @return true if class was not registered earlier
 	 */
-	static bool RegisterActor(std::string actorId, CreateActorCallback createFn);
+	static bool registerActor(std::string actorId, CreateActorCallback createFn);
 
 	/**
 	 * unregister already registred class
 	 * @return true if class was unregistered
 	 */ 
-	static bool UnregisterActor(std::string actorID);
+	static bool unregisterActor(std::string actorID);
 
 	/**
 	 * Create actor by identifier.
 	 */
-	static IActor* CreateActor(std::string actorID, World *world, const Vector2D location, const Vector2D size, const Rotator rotation);
+	static IActor* createActor(std::string actorID, World *world, const Vector2D location, const Vector2D size, const Rotator rotation);
 private:
-	static CallbackMap Callbacks;
+	static CallbackMap callbacks;
 };
 
 #endif

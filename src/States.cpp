@@ -2,7 +2,7 @@
 
 #include <cstdlib>
 
-void State::Process()
+void State::process()
 {
 	WARN("Function 'Process' not redefined in some state");
 }
@@ -27,23 +27,23 @@ public:
 	 */
 	StateIterator(StateIterator *prewState, State *state)
 	{
-		PrewState = prewState;
-		CurrentState = state;
+		this->prewState = prewState;
+		this->currentState = state;
 	}
 
 	~StateIterator()
 	{
-		WARN_IF(CurrentState == NULL, "Trying to destruct StateIterator which has no State");
-		delete CurrentState;
+		WARN_IF(this->currentState == NULL, "Trying to destruct StateIterator which has no State");
+		delete this->currentState;
 	}
 
 	/**
 	 * Выполнить код состояния
 	 */
-	void Process()
+	void process()
 	{
-		WARN_IF(!CurrentState, "Trying to process State which not exist in StateIterator");
-		CurrentState->Process();
+		WARN_IF(!this->currentState, "Trying to process State which not exist in StateIterator");
+		this->currentState->process();
 	}
 
 	/**
@@ -51,47 +51,47 @@ public:
 	 */
 	StateIterator* ReturnLast()
 	{
-		return PrewState;
+		return this->prewState;
 	}
 
 private:
 	/**
 	 * Состояние, за которым закреплён итератор
 	 */
-	State *CurrentState;
+	State *currentState;
 
 	/**
 	 * Предыдущее состояние
 	 *
 	 * Оно будет установлено, когда текущее состояние будет удалено.
 	 */
-	StateIterator *PrewState;
+	StateIterator *prewState;
 };
 
 StatesStack::StatesStack()
 {
-	Head = NULL;
+	this->head = NULL;
 }
 
-void StatesStack::Push(State *newState)
+void StatesStack::push(State *newState)
 {
-	Head = new StateIterator(Head, newState);
+	this->head = new StateIterator(this->head, newState);
 }
 
-void StatesStack::Pop()
+void StatesStack::pop()
 {
 	// запоминаем ссылку на старое состояние
-	StateIterator* oldHead = Head;
-	WARN_IF(!Head, "Trying to 'Pop' from empty StatesStack. It is a fatal error.");
+	StateIterator* oldHead = this->head;
+	WARN_IF(!this->head, "Trying to 'Pop' from empty StatesStack. It is a fatal error.");
 	// устонавливаем новое состояние
-	Head = Head->ReturnLast();      
+	this->head = this->head->ReturnLast();      
 	delete oldHead;
 }
 
-void StatesStack::Process()
+void StatesStack::process()
 {
-	if (Head != NULL)
+	if (this->head != NULL)
 	{
-		Head->Process();
+		this->head->process();
 	}
 }

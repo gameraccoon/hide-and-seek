@@ -11,11 +11,11 @@
 #include <vector>
 
 // Hge subsystem
-HGE *Hge = NULL;
+HGE *hge = NULL;
 
 // Pointers to the HGE objects we will use
-hgeSprite*	Crosshair;
-hgeFont*	Font;
+hgeSprite*	crosshair;
+hgeFont*	font;
 
 //#define FULLSCREEN
 #ifndef FULLSCREEN
@@ -28,245 +28,243 @@ hgeFont*	Font;
 	const bool FULL_SCREEN = true;
 #endif
 
-// Handles for HGE resourcces
-HTEXTURE Texture;
-
-Vector2D MousePos = ZeroVector;
-
 const Vector2D SCREEN_CENTER(SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
 
 const float MAX_CAMERA_RANGE = std::min(SCREEN_HEIGHT, SCREEN_WIDTH) / 4.0f;
 
-float CameraAngle = 0.0f;
+Vector2D mousePos = ZERO_VECTOR;
+
+float cameraAngle = 0.0f;
 
 // The Hero whom we control
-Hero *OurHero;
+Hero *ourHero;
 
 // Our big World =)
-World *GameWorld;
+World *gameWorld;
 
 // Camera
-FloatingCamera *MainCamera;
+FloatingCamera *mainCamera;
 
 // Test arrow for show directions on screen
-DirectionArrow *Arrow;
+DirectionArrow *arrow;
 
 // Button
-ButtonListeners Listeners;
+ButtonListeners listeners;
 
 // event listeners
 class BtnShadows : public ButtonSwitcher
 {
 public:
 	BtnShadows(HGE *hge) : ButtonSwitcher(hge, HGEK_H, true) { };
-	void Pressed() { MainCamera->ShowShadows(bActive); }
+	void pressed() { ::mainCamera->showShadows(bActive); }
 };
 
 class BtnFog : public ButtonSwitcher
 {
 public:
 	BtnFog(HGE *hge) : ButtonSwitcher(hge, HGEK_F, true) { };
-	void Pressed() { MainCamera->ShowFog(bActive); }
+	void pressed() { ::mainCamera->showFog(bActive); }
 };
 
 class BtnLights : public ButtonSwitcher
 {
 public:
 	BtnLights(HGE *hge) : ButtonSwitcher(hge, HGEK_L, false) { };
-	void Pressed() { MainCamera->ShowLights(bActive); }
+	void pressed() { ::mainCamera->showLights(bActive); }
 };
 
 class BtnAABB : public ButtonSwitcher
 {
 public:
 	BtnAABB(HGE *hge) : ButtonSwitcher(hge, HGEK_C, false) { };
-	void Pressed() { MainCamera->ShowAABB(bActive); }
+	void pressed() { ::mainCamera->showAABB(bActive); }
 };
 
 class BtnHulls : public ButtonSwitcher
 {
 public:
 	BtnHulls(HGE *hge) : ButtonSwitcher(hge, HGEK_M, false) { };
-	void Pressed() { MainCamera->ShowHulls(bActive); }
+	void pressed() { ::mainCamera->showHulls(bActive); }
 };
 
 class BtnPaths : public ButtonSwitcher
 {
 public:
 	BtnPaths(HGE *hge) : ButtonSwitcher(hge, HGEK_P, false) { };
-	void Pressed() { MainCamera->ShowPaths(bActive); }
+	void pressed() { ::mainCamera->showPaths(bActive); }
 };
 
 class BtnShoot : public ButtonSwitcher
 {
 public:
 	BtnShoot(HGE *hge) : ButtonSwitcher(hge, HGEK_LBUTTON, true) { };
-	void Pressed() { OurHero->StartShoting(MainCamera->DeProject(MousePos)); }
-	void Released() { OurHero->StopShoting(); }
+	void pressed() { ::ourHero->startShoting(::mainCamera->deProject(::mousePos)); }
+	void released() { ::ourHero->stopShoting(); }
 };
 
 class BtnAddLight : public ButtonSwitcher
 {
 public:
 	BtnAddLight(HGE *hge) : ButtonSwitcher(hge, HGEK_RBUTTON, true) { };
-	void Pressed() { new LightEmitter(GameWorld, MainCamera->DeProject(MousePos)); }
+	void pressed() { new LightEmitter(::gameWorld, ::mainCamera->deProject(::mousePos)); }
 };
 
 bool FrameFunc()
 {
-	float dt = Hge->Timer_GetDelta();
+	float dt = ::hge->Timer_GetDelta();
 
 	// Process keys
-	if (Hge->Input_GetKeyState(HGEK_ESCAPE)) return true;
+	if (::hge->Input_GetKeyState(HGEK_ESCAPE)) return true;
 
-	Vector2D Direction = ZeroVector;
-	if (Hge->Input_GetKeyState(HGEK_A))	Direction += LeftDirection;
-	if (Hge->Input_GetKeyState(HGEK_D))	Direction += RightDirection;
-	if (Hge->Input_GetKeyState(HGEK_W))	Direction += UpDirection;
-	if (Hge->Input_GetKeyState(HGEK_S))	Direction += DownDirection;
+	Vector2D Direction = ZERO_VECTOR;
+	if (::hge->Input_GetKeyState(HGEK_A))	Direction += LEFT_DIRECTION;
+	if (::hge->Input_GetKeyState(HGEK_D))	Direction += RIGHT_DIRECTION;
+	if (::hge->Input_GetKeyState(HGEK_W))	Direction += UP_DIRECTION;
+	if (::hge->Input_GetKeyState(HGEK_S))	Direction += DOWN_DIRECTION;
 
-	if (Hge->Input_GetKeyState(HGEK_Q))	CameraAngle += 0.005f;
-	if (Hge->Input_GetKeyState(HGEK_E))	CameraAngle -= 0.005f;
+	if (::hge->Input_GetKeyState(HGEK_Q))	::cameraAngle += 0.005f;
+	if (::hge->Input_GetKeyState(HGEK_E))	::cameraAngle -= 0.005f;
 	
 
-	OurHero->Move(Vector2D(Direction.GetRotation() - CameraAngle) * Direction.Ort().Size() * 100); // constant speed
-	OurHero->SetRotation((MainCamera->DeProject(MousePos) - OurHero->GetLocation()).GetRotation());
+	::ourHero->move(Vector2D(Direction.rotation() - ::cameraAngle) * Direction.ort().size() * 100); // constant speed
+	::ourHero->setRotation((::mainCamera->deProject(::mousePos) - ::ourHero->getLocation()).rotation());
 
-	Hge->Input_GetMousePos(&MousePos.X, &MousePos.Y);
+	::hge->Input_GetMousePos(&::mousePos.x, &::mousePos.y);
 
-	Vector2D CameraShift((MousePos - SCREEN_CENTER)/2);
-	CameraShift = CameraShift.Ort() * std::min(CameraShift.Size(), MAX_CAMERA_RANGE);
-	MainCamera->SetLocation(OurHero->GetLocation());
-	MainCamera->SetRotation(CameraAngle);
-	MainCamera->SetCenterShift(CameraShift);
+	Vector2D CameraShift((::mousePos - SCREEN_CENTER)/2);
+	CameraShift = CameraShift.ort() * std::min(CameraShift.size(), MAX_CAMERA_RANGE);
+	::mainCamera->setLocation(::ourHero->getLocation());
+	::mainCamera->setRotation(::cameraAngle);
+	::mainCamera->setCenterShift(CameraShift);
 
 	// Update key states
-	Listeners.Check();
+	::listeners.check();
 
 	// Do World update
-	GameWorld->Update(dt);
+	::gameWorld->update(dt);
 
-	Arrow->SetVDirection(Direction);
-	Arrow->SetCenter(SCREEN_CENTER - CameraShift);
+	::arrow->setVDirection(Direction);
+	::arrow->setCenter(SCREEN_CENTER - CameraShift);
 
 	return false;
 }
 
 bool RenderFunc()
 {
-	hgeSprite* CameraRenderSpr = new hgeSprite(Hge->Target_GetTexture(MainCamera->GetRenderTexture()), 0, 0, MainCamera->GetResolution().X, MainCamera->GetResolution().Y);
+	hgeSprite* cameraRenderSprite = new hgeSprite(::hge->Target_GetTexture(::mainCamera->getRenderTexture()), 0, 0,
+		::mainCamera->getResolution().x, ::mainCamera->getResolution().y);
 
-	MainCamera->Render();
+	::mainCamera->render();
 	
-	Hge->Gfx_BeginScene();
-	Hge->Gfx_Clear(0);
+	::hge->Gfx_BeginScene();
+	::hge->Gfx_Clear(0);
 	
 	//-- Start renders graphics
 
-	CameraRenderSpr->Render(0, 0);
+	cameraRenderSprite->Render(0, 0);
 
-	Crosshair->Render(MousePos.X, MousePos.Y);
-	Arrow->Render();
+	::crosshair->Render(::mousePos.x, ::mousePos.y);
+	::arrow->render();
 
-	Font->SetScale(0.7f);
 	// fps and dt
-	Font->printf(5, 5, HGETEXT_LEFT, "dt:%.3f\nFPS:%d", Hge->Timer_GetDelta(), Hge->Timer_GetFPS());
+	::font->printf(5, 5, HGETEXT_LEFT, "dt:%.3f\nFPS:%d", ::hge->Timer_GetDelta(), ::hge->Timer_GetFPS());
 	
 	// Status of rendering elements
-	if (Listeners.GetActive(HGEK_M))
-		Font->printf(5, 60, HGETEXT_LEFT, "Showing Models");
-	if (Listeners.GetActive(HGEK_C))
-		Font->printf(5, 90, HGETEXT_LEFT, "Showing Bounding boxes");
-	if (Listeners.GetActive(HGEK_L))
-		Font->printf(5, 120, HGETEXT_LEFT, "Showing Light emitters");
-	if (Listeners.GetActive(HGEK_P))
-		Font->printf(5, 150, HGETEXT_LEFT, "Showing Paths");
+	if (::listeners.isActive(HGEK_M))
+		::font->printf(5, 60, HGETEXT_LEFT, "Showing Models");
+	if (::listeners.isActive(HGEK_C))
+		::font->printf(5, 90, HGETEXT_LEFT, "Showing Bounding boxes");
+	if (::listeners.isActive(HGEK_L))
+		::font->printf(5, 120, HGETEXT_LEFT, "Showing Light emitters");
+	if (::listeners.isActive(HGEK_P))
+		::font->printf(5, 150, HGETEXT_LEFT, "Showing Paths");
 
-	if (!Listeners.GetActive(HGEK_F))
-		Font->printf(5, 180, HGETEXT_LEFT, "Hidded Fog");
-	if (!Listeners.GetActive(HGEK_H))
-		Font->printf(5, 210, HGETEXT_LEFT, "Hidded Shadows");
+	if (!::listeners.isActive(HGEK_F))
+		::font->printf(5, 180, HGETEXT_LEFT, "Hidded Fog");
+	if (!::listeners.isActive(HGEK_H))
+		::font->printf(5, 210, HGETEXT_LEFT, "Hidded Shadows");
 
 	//-- Stop render graphics
 
-	Hge->Gfx_EndScene();
+	::hge->Gfx_EndScene();
 
-	delete CameraRenderSpr;
+	delete cameraRenderSprite;
 
 	return false;
 }
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
-	Hge = hgeCreate(HGE_VERSION);
+	::hge = hgeCreate(HGE_VERSION);
 
-	Hge->System_SetState(HGE_LOGFILE, "SG.log");
-	Hge->System_SetState(HGE_FRAMEFUNC, FrameFunc);
-	Hge->System_SetState(HGE_RENDERFUNC, RenderFunc);
-	Hge->System_SetState(HGE_TITLE, "Stealth game - alpha1");
-	Hge->System_SetState(HGE_FPS, 100);
-	Hge->System_SetState(HGE_WINDOWED, !FULL_SCREEN);
-	Hge->System_SetState(HGE_SCREENWIDTH, SCREEN_WIDTH);
-	Hge->System_SetState(HGE_SCREENHEIGHT, SCREEN_HEIGHT);
-	Hge->System_SetState(HGE_SCREENBPP, 32);
-	Hge->System_SetState(HGE_SHOWSPLASH, false); // hidding splash for develop-time only
+	::hge->System_SetState(HGE_LOGFILE, "SG.log");
+	::hge->System_SetState(HGE_FRAMEFUNC, FrameFunc);
+	::hge->System_SetState(HGE_RENDERFUNC, RenderFunc);
+	::hge->System_SetState(HGE_TITLE, "Stealth game - alpha1");
+	::hge->System_SetState(HGE_FPS, 100);
+	::hge->System_SetState(HGE_WINDOWED, !FULL_SCREEN);
+	::hge->System_SetState(HGE_SCREENWIDTH, SCREEN_WIDTH);
+	::hge->System_SetState(HGE_SCREENHEIGHT, SCREEN_HEIGHT);
+	::hge->System_SetState(HGE_SCREENBPP, 32);
+	::hge->System_SetState(HGE_SHOWSPLASH, false); // hidding splash for develop-time only
 
-	if(Hge->System_Initiate())
+	if(::hge->System_Initiate())
 	{
 		// Load sound and texture
-		Texture = Hge->Texture_Load("particles.png");
-		if(!Texture)
+		HTEXTURE texture = ::hge->Texture_Load("particles.png");
+		if(!texture)
 		{
 			// If one of the data files is not found, display
 			// an error message and shutdown.
 			MessageBox(NULL, "Can't load one of the following files:\nFONT1.FNT, FONT1.PNG, PARTICLES.PNG", "Error", MB_OK | MB_ICONERROR | MB_APPLMODAL);
-			Hge->System_Shutdown();
-			Hge->Release();
+			::hge->System_Shutdown();
+			::hge->Release();
 			return 0;
 		}
 
 		// Load a font
-		Font = new hgeFont("font1.fnt");
+		::font = new hgeFont("font1.fnt");
+		::font->SetScale(0.7f);
 
 		// Create and set up a particle system
-		Crosshair = new hgeSprite(Texture, 64, 96, 32, 32);
-		Crosshair->SetBlendMode(BLEND_COLORMUL | BLEND_ALPHAADD | BLEND_NOZWRITE);
-		Crosshair->SetHotSpot(16, 16);
+		::crosshair = new hgeSprite(texture, 64, 96, 32, 32);
+		::crosshair->SetBlendMode(BLEND_COLORMUL | BLEND_ALPHAADD | BLEND_NOZWRITE);
+		::crosshair->SetHotSpot(16, 16);
 
-		GameWorld = new World(Hge);
+		::gameWorld = new World(::hge);
 
-		MainCamera = new FloatingCamera(GameWorld, SCREEN_CENTER * 2, Vector2D(0.0f, 0.0f));
+		::mainCamera = new FloatingCamera(::gameWorld, SCREEN_CENTER * 2, Vector2D(0.0f, 0.0f));
 
 		// hero will be deleted automaticaly as other actors
-		OurHero = new Hero(GameWorld, Vector2D(0.0f, 350.0f));
+		::ourHero = new Hero(::gameWorld, Vector2D(0.0f, 350.0f));
 
-		OurHero->GiveWeapon(new Weapon());
+		::ourHero->giveWeapon(new Weapon());
 
-		Arrow = new DirectionArrow(Hge);
-		Arrow->SetCenter(SCREEN_CENTER);
+		::arrow = new DirectionArrow(::hge);
+		::arrow->setCenter(SCREEN_CENTER);
 		
-		Listeners.AddListener(new BtnAABB(Hge));
-		Listeners.AddListener(new BtnHulls(Hge));
-		Listeners.AddListener(new BtnFog(Hge));
-		Listeners.AddListener(new BtnShadows(Hge));
-		Listeners.AddListener(new BtnLights(Hge));
-		Listeners.AddListener(new BtnPaths(Hge));
-		Listeners.AddListener(new BtnShoot(Hge));
-		Listeners.AddListener(new BtnAddLight(Hge));
+		::listeners.addListener(new BtnAABB(::hge));
+		::listeners.addListener(new BtnHulls(::hge));
+		::listeners.addListener(new BtnFog(::hge));
+		::listeners.addListener(new BtnShadows(::hge));
+		::listeners.addListener(new BtnLights(::hge));
+		::listeners.addListener(new BtnPaths(::hge));
+		::listeners.addListener(new BtnShoot(::hge));
+		::listeners.addListener(new BtnAddLight(::hge));
 
-		LevelLoader::Load(GameWorld, std::string("test"));
-		//LevelLoader::Save(GameWorld, std::string("test"));
+		LevelLoader::load(::gameWorld, std::string("test"));
+		//LevelLoader::save(GameWorld, std::string("test"));
 
 		// Let's rock now!
-		Hge->System_Start();
+		::hge->System_Start();
 
 		// Delete created objects and free loaded resources
-		delete Font;
-		delete Crosshair;
-		delete Arrow;
-		delete MainCamera;
-		delete GameWorld;
-		Hge->Texture_Free(Texture);
+		delete ::font;
+		delete ::crosshair;
+		delete ::arrow;
+		delete ::mainCamera;
+		delete ::gameWorld;
+		::hge->Texture_Free(texture);
 	}
 	else
 	{
@@ -274,7 +272,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	}
 
 	// Clean up and shutdown
-	Hge->System_Shutdown();
-	Hge->Release();
+	::hge->System_Shutdown();
+	::hge->Release();
 	return 0;
 }

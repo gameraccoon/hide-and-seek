@@ -10,18 +10,18 @@ public:
 	PathPoint(Vector2D location);
 	virtual ~PathPoint(void);
 	/** Add point to the legal points list */
-	void Connect(PathPoint* destPoint);
+	void connect(PathPoint* destPoint);
 	/** Location of this point in a world (points don't know to which world they belongs) */
-	Vector2D Location;
+	Vector2D location;
 	/** Points at which we can go from this point */
-	std::set<PathPoint*> LegalPoints;
+	std::set<PathPoint*> legalPoints;
 };
 
 /** Two sided connect */
 inline void ConnectTwoPoints(PathPoint* a, PathPoint* b)
 {
-	a->Connect(b);
-	b->Connect(a);
+	a->connect(b);
+	b->connect(a);
 }
 
 #endif

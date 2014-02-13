@@ -9,8 +9,8 @@ public:
 	LevelLoader(void);
 	~LevelLoader(void);
 
-	static void Save(World* world, const std::string levelName);
-	static void Load(World* world, const std::string levelName);
+	static void save(World* world, const std::string levelName);
+	static void load(World* world, const std::string levelName);
 };
 
 #endif

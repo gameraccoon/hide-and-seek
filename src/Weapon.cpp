@@ -10,22 +10,22 @@ Weapon::~Weapon(void)
 {
 }
 
-void Weapon::StartShooting(Vector2D currentLocation, Vector2D targetLocation)
+void Weapon::startShooting(Vector2D currentLocation, Vector2D targetLocation)
 {
-	OwnerWorld->Spawn(new Bullet(OwnerWorld, currentLocation, targetLocation));
+	this->ownerWorld->spawnActor(new Bullet(this->ownerWorld, currentLocation, targetLocation));
 }
 
-void Weapon::StopShooting()
+void Weapon::stopShooting()
 {
 	
 }
 
-void Weapon::ChangeDirection(Vector2D targetLocation)
+void Weapon::changeDirection(Vector2D targetLocation)
 {
 
 }
 
-void Weapon::SetOwnerWorld(World *world)
+void Weapon::setOwnerWorld(World *world)
 {
-	OwnerWorld = world;
+	this->ownerWorld = world;
 }

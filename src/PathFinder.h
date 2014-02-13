@@ -12,9 +12,9 @@ class CalculationPoint
 {
 public:
 	CalculationPoint(PathPoint* point, float g, float h, CalculationPoint* cameFrom);
-	PathPoint* Point;
-	float F, G, H;
-	CalculationPoint* CameFrom;
+	PathPoint* point;
+	float f, g, h;
+	CalculationPoint* cameFrom;
 };
 
 /**
@@ -27,19 +27,19 @@ public:
 	~PathFinder(void);
 	
 	/** Find and save path from startPoint to endPoint in owner world */
-	bool CreateNewPath(Vector2D startPoint, Vector2D endPoint);
+	bool createNewPath(Vector2D startPoint, Vector2D endPoint);
 	/**
 	 * Get location of a next point of this path.
 	 * @return next point or DestinationPoint if no more points of this path.
 	 */
-	Vector2D GetNextPoint();
+	Vector2D getNextPoint();
 private:
 	/** Current path */
-	std::list<PathPoint*> Path;
-	Vector2D DestinationPoint;
-	World* OwnerWorld;
-	std::set<CalculationPoint*> ClosedSet;
-	void ReconstructPath(CalculationPoint* start, CalculationPoint* end);
+	std::list<PathPoint*> path;
+	Vector2D destinationPoint;
+	World* ownerWorld;
+	std::set<CalculationPoint*> closedSet;
+	void reconstructPath(CalculationPoint* start, CalculationPoint* end);
 };
 
 #endif

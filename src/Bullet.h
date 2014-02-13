@@ -12,18 +12,17 @@ public:
 	Bullet(World *ownerWorld, Vector2D location, Vector2D targetLocation);
 	~Bullet(void);
 	/** Process moving and other actions of the Actor */
-	void Update(float deltatime);
+	void update(float deltatime);
 	/** Render the actor in the current location */
-	void Render(Vector2D shift, Rotator angle);
-	bool Destroyed;
+	void render(Vector2D shift, Rotator angle);
 	/** Take some damage to the bullet */
-	virtual void TakeDamage(float damageValue, Vector2D impulse);
+	virtual void takeDamage(float damageValue, Vector2D impulse);
 protected:
-	void UpdateCollision();
-	Rotator Direction;
-	World *OwnerWorld;
-	float Speed;
-	HTEXTURE BulletTexture;
+	void updateCollision();
+	Rotator direction;
+	World* ownerWorld;
+	float speed;
+	HTEXTURE bulletTexture;
 };
 
 #endif

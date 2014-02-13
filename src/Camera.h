@@ -15,80 +15,80 @@ public:
 	Camera(World* world, Vector2D resolution, Vector2D location);
 	virtual ~Camera(void);
 	/** Get pointer to the texture which will be used to render */
-	HTEXTURE GetRenderTexture();
+	HTEXTURE getRenderTexture();
 	/** Render of all objects thats seen by camera */
-	void Render();
+	void render();
 	/** Set new location of camera in the world */
-	virtual void SetLocation(Vector2D newLocation);
+	virtual void setLocation(Vector2D newLocation);
 	/** Get screen resolution */
-	Vector2D GetResolution();
+	Vector2D getResolution();
 	/** Set new angle of camera rotation */
-	void SetRotation(Rotator angle);
+	void setRotation(Rotator angle);
 	/** Switch showing bounding boxes */
-	void ShowAABB(bool bShow);
+	void showAABB(bool show);
 	/** Switch showing fog */
-	void ShowFog(bool bShow);
+	void showFog(bool show);
 	/** Switch showing light ceners */
-	void ShowLights(bool bShow);
+	void showLights(bool show);
 	/** Switch showing shadows */
-	void ShowShadows(bool bShow);
+	void showShadows(bool show);
 	/** Switch showing normals */
-	void ShowHulls(bool bShow);
+	void showHulls(bool show);
 	/** Switch showing paths */
-	void ShowPaths(bool bShow);
+	void showPaths(bool show);
 	/** Project point from world coordinates to screen coordinates */
-	Vector2D Project(Vector2D worldPoint);
-	Vector2D ProjectFrom(Vector2D worldPoint, Vector2D projectionCenter);
+	Vector2D project(Vector2D worldPoint);
+	Vector2D projectFrom(Vector2D worldPoint, Vector2D projectionCenter);
 	/** Project point from screen coordinates to the world coordinates */
-	Vector2D DeProject(Vector2D screenPoint);
+	Vector2D deProject(Vector2D screenPoint);
 protected:
 	/** Render all seen actors */
-	void RenderActors(Vector2D lightPos);
+	void renderActors(Vector2D lightPos);
 	/** Render collision AABB to screen */
-	void RenderCollisionBoxes();
+	void renderCollisionBoxes();
 	/** Render fog for the camera (fog of war) */
-	virtual void RenderFog();
+	virtual void renderFog();
 	/** Render shadows of player view */
-	void RenderShadows();
-	void RenderLightShadows(Vector2D lightPos);
+	void renderShadows();
+	void renderLightShadows(Vector2D lightPos);
 	/** Render hulls */
-	void RenderHulls();
+	void renderHulls();
 	/** Render lights centers */
-	void RenderLights();
+	void renderLights();
 	/** Render all path points and paths in the world */
-	void RenderPaths();
+	void renderPaths();
 	/** World which render this camera*/
-	World* BrowsableWorld;
+	World* browsableWorld;
 	/** Camera location in the world */
-	Vector2D Location;
+	Vector2D location;
 	/** Screen resolution */
-	Vector2D Resolution;
+	Vector2D resolution;
 	/** Shift camera center of screen left-top angle in screen coordinates */
-	Vector2D CenterPos;
+	Vector2D centerPos;
 	/** Rotation */
-	float Angle;
+	float angle;
 	/** Pointer of the HGE subsystem */
-	HGE *Hge;
+	HGE *hge;
 	/** Sprite of the actor */
-	hgeSprite *CollisionSprite;
+	hgeSprite *collisionSprite;
 	/** Texture of all Camera sprites */
-	HTEXTURE CamTexture;
+	HTEXTURE camTexture;
 	/** Texture of fog */
-	HTEXTURE FogTexture;
+	HTEXTURE fogTexture;
 	/** Render target */
-	HTARGET RenderTarget;
+	HTARGET renderTarget;
 	/** Sprite of fog */
-	hgeSprite *FogSprite;
+	hgeSprite *fogSprite;
 	/** Is camera shows AABB? */
 	bool bShowAABB;
 	/** Maximum distans of renderable objects from camera */
-	float ShownSize;
+	float shownSize;
 	/** Is camera render fog? */
 	bool bRenderFog;
 	/** Fog texture width */
-	float FogWidth;
+	float fogWidth;
 	/** Fog's size */
-	float FogScale;
+	float fogScale;
 	/** Is camera render shadows? */
 	bool bRenderShadows;
 	/** Is camera shows borders of objects? */
@@ -98,12 +98,12 @@ protected:
 	/** Is camera shows centers of lights? */
 	bool bShowLights;
 	/** Helper variable */
-	HTARGET Zone;
+	HTARGET zone;
 private:
 	/** Helper method. Drawing quad on screen */
-	void DrawQuad(Vector2D first, Vector2D second, Vector2D third, Vector2D fourth);
+	void drawQuad(Vector2D first, Vector2D second, Vector2D third, Vector2D fourth);
 	/** Drawing penumbra triangle */
-	void DrawPenumbra(Vector2D first, Vector2D second, Vector2D third);
+	void drawPenumbra(Vector2D first, Vector2D second, Vector2D third);
 };
 
 #endif

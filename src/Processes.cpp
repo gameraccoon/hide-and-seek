@@ -2,21 +2,21 @@
 
 Process::Process(int id)
 {
-	ProcessID = id;
+	this->processID = id;
 }
 
 Process::~Process()
 {
 }
 
-void Process::Run()
+void Process::run()
 {
     WARN("Function 'Run' not redefined in some process");
 }
 
-int Process::GetId()
+int Process::getId()
 {
-	return ProcessID;
+	return this->processID;
 }
 
 /**
@@ -31,75 +31,75 @@ protected:
     /**
      * Процесс, который хранится в этом контейнере
      */
-    Process* CurrentProcess;
+    Process* currentProcess;
 
     /**
      * Процесс, который выполнится следом за данным
      */
-    ProcessContainer* Next;
+    ProcessContainer* next;
 
 public:
     ProcessContainer(ProcessContainer *next, Process *process)
     {
-        CurrentProcess = process;
-        Next = next;
+        this->currentProcess = process;
+        this->next = next;
     }
 
 	~ProcessContainer()
 	{
-		delete CurrentProcess;
+		delete this->currentProcess;
 	}
 
     /**
      * Имя процесса
      */
-    int GetId()
+    int getId()
     {
-        return CurrentProcess->GetId();
+        return this->currentProcess->getId();
     }
 
     /**
      * Получить ссылку на следующий процесс
      */
-    ProcessContainer* GetNext()
+    ProcessContainer* getNext()
     {
-        return Next;
+        return this->next;
     }
 
     /**
      * Запустить выполнение этого и следующих по цепочке процессов
      */
-    void Run()
+    void run()
     {
-        CurrentProcess->Run();
-        if (Next != NULL)
+        this->currentProcess->run();
+        if (this->next != NULL)
         {
-            Next->Run();
+            this->next->run();
         }
     }
 
     /**
      * Удалить все экземпляры процессов с определённым именем
      */
-	void Remove(int id)
+	void remove(int id)
     {
         // если это не последний процесс в цепочке
-        if (Next != NULL && id >= 0)
+        if (this->next != NULL && id >= 0)
         {
             // если следующий процесс - то что мы хотим удалить
-			if (Next->GetId() == id)
+			if (this->next->getId() == id)
             {
                 // удаляем следующий процесс, сохраняя связи
-                ProcessContainer *processToDelete = Next;
-                Next = Next->GetNext();
+                ProcessContainer *processToDelete = this->next;
+                this->next = this->next->getNext();
                 delete processToDelete;  
                 // рекурсивный вызов (нужен чтобы удалить дублирующиеся элементы)
-				this->Remove(id);
+				this->remove(id);
             }
             else
             {
                 // посылаем запрос на удаление дальше по цепочке
-				Next->Remove(id);
+				this->next->remove(id);
             }
         }
     }
@@ -108,41 +108,41 @@ public:
 
 ProcessManager::ProcessManager()
 {
-	First = NULL;
+	this->first = NULL;
 }
 
-void ProcessManager::Add(Process *process)
+void ProcessManager::add(Process *process)
 {
-	First = new ProcessContainer(First, process);
+	this->first = new ProcessContainer(this->first, process);
 }
 
-void ProcessManager::Run()
+void ProcessManager::run()
 {
-	if (First != 0)
+	if (this->first != 0)
 	{
-		First->Run();
+		this->first->run();
 	}
 }
 
-void ProcessManager::Remove(int id)
+void ProcessManager::remove(int id)
 {
     // если есть что удалять
-    if (First != NULL && id >= 0)
+    if (this->first != NULL && id >= 0)
     {
         // если следующий процесс - то что мы хотим удалить
-        if (First->GetId() == id)
+        if (this->first->getId() == id)
         {
             // удаляем следующий процесс, сохраняя связи
-            ProcessContainer *processToDelete = First;
-            First = First->GetNext();
+            ProcessContainer *processToDelete = this->first;
+            this->first = this->first->getNext();
             delete processToDelete;
             // рекурсивный вызов (нужен чтобы удалить дублирующиеся элементы)
-			this->Remove(id);
+			this->remove(id);
         }
         else
         {
             // посылаем запрос на удаление дальше по цепочке
-			First->Remove(id);
+			this->first->remove(id);
         }
     }
 }

@@ -11,12 +11,12 @@ class Weapon : public InventoryItem
 public:
 	Weapon(void);
 	~Weapon(void);
-	void StartShooting(Vector2D currentLocation, Vector2D targetLocation);
-	void StopShooting();
-	void ChangeDirection(Vector2D targetLocation);
-	void SetOwnerWorld(World *world);
+	void startShooting(Vector2D currentLocation, Vector2D targetLocation);
+	void stopShooting();
+	void changeDirection(Vector2D targetLocation);
+	void setOwnerWorld(World *world);
 private:
-	World *OwnerWorld;
+	World *ownerWorld;
 };
 
 #endif

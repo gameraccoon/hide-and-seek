@@ -8,13 +8,13 @@ class LightEmitter : public Actor
 public:
 	LightEmitter(World *ownerWorld, Vector2D location);
 	~LightEmitter(void);
-	void Update(float deltatime);
-	void Render(Vector2D shift, Rotator angle);
-	virtual void TakeDamage(float damageValue,Vector2D impulse);
+	void update(float deltatime);
+	void render(Vector2D shift, Rotator angle);
+	virtual void takeDamage(float damageValue,Vector2D impulse);
 protected:
-	void UpdateCollision();
-	float Brightness;
-	long Color; // 0xAARRGGBB
+	void updateCollision();
+	float brightness;
+	long color; // 0xAARRGGBB
 };
 
 #endif

@@ -3,39 +3,39 @@
 #include "../src/ActorFactory.h"
 
 Hero::Hero(World *ownerWorld, Vector2D location) : DummyMan(ownerWorld, location),
-												Step(ZeroVector)
+	step(ZERO_VECTOR)
 {
-	Speed = 1.f;
+	this->speed = 1.f;
 
-	ClassID = "Hero";
+	this->classID = "Hero";
 }
 
 Hero::~Hero(void)
 {
 }
 
-void Hero::Move(Vector2D step)
+void Hero::move(Vector2D step)
 {
-	Step += step;
+	this->step += step;
 }
 
-void Hero::Update(float deltatime)
+void Hero::update(float deltatime)
 {
-	Vector2D newLocation = Location + Step * deltatime;
+	Vector2D newLocation = this->location + this->step * deltatime;
 	bool bFree = true;
 
 	// for each actors in the world
-	for (std::set<IActor*>::iterator it = OwnerWorld->AllActors.begin(); it != OwnerWorld->AllActors.end(); it++)
+	for (std::set<IActor*>::iterator it = this->ownerWorld->allActors.begin(); it != this->ownerWorld->allActors.end(); it++)
 	{
 		// if the actor is not this man // test: and it is a static actor
-		if ((*it) != this && ((*it)->GetType() != AT_Light && (*it)->GetType() != AT_Special && (*it)->GetType() != AT_Bullet))
+		if ((*it) != this && ((*it)->getType() != AT_Light && (*it)->getType() != AT_Special && (*it)->getType() != AT_Bullet))
 		{
 			// get an actor's AABB (axis-aligned bounding box)
-			BoundingBox box = (*it)->GetBoundingBox();
+			BoundingBox box = (*it)->getBoundingBox();
 			// if the actor's AABB intersects with the Man's AABB (in new Man location)
-			if ((box.MinX < newLocation.X + Size.X/2 && newLocation.X - Size.X/2 < box.MaxX)
+			if ((box.minX < newLocation.x + this->size.x/2 && newLocation.x - this->size.x/2 < box.maxX)
 				&&
-				(box.MinY < newLocation.Y + Size.Y/2 && newLocation.Y - Size.Y/2 < box.MaxY))
+				(box.minY < newLocation.y + this->size.y/2 && newLocation.y - this->size.y/2 < box.maxY))
 			{
 				// actor's path is not free
 				bFree = false;
@@ -43,16 +43,16 @@ void Hero::Update(float deltatime)
 		}
 		
 		// use superclass method
-		DummyMan::Update(deltatime);
+		DummyMan::update(deltatime);
 	}
 
 	// if actor's path is free
 	if (bFree)
 	{
 		// accept new position of the man
-		Location = newLocation;
+		this->location = newLocation;
 	}
 	
-	UpdateCollision();
-	Step = ZeroVector;
+	this->updateCollision();
+	this->step = ZERO_VECTOR;
 }

@@ -17,7 +17,7 @@ namespace TestStates
 			{
 			}
 
-			void Process()
+			void process()
 			{
 				TestValueForTestState = 1;
 			}
@@ -29,7 +29,7 @@ namespace TestStates
 			~TestStateB()
 			{
 			}
-			void Process()
+			void process()
 			{
 				TestValueForTestState = 2;
 			}
@@ -41,7 +41,7 @@ namespace TestStates
 			~TestStateC()
 			{
 			}
-			void Process()
+			void process()
 			{
 				TestValueForTestState = 3;
 			}
@@ -52,8 +52,8 @@ namespace TestStates
 			// Test processing statestack with one state
 			TestValueForTestState = 0;
 			StatesStack Stack;
-			Stack.Push(new TestStateA());
-			Stack.Process();
+			Stack.push(new TestStateA());
+			Stack.process();
 			Assert::AreEqual(TestValueForTestState, 1);
 		}
 
@@ -67,24 +67,24 @@ namespace TestStates
 			// Test processing statestack with one state
 			TestValueForTestState = 0;
 			StatesStack Stack;
-			Stack.Push(new TestStateA());	// A <-
-			Stack.Push(new TestStateB());	// A B <-
-			Stack.Process();				// Run B->Process()
+			Stack.push(new TestStateA());	// A <-
+			Stack.push(new TestStateB());	// A B <-
+			Stack.process();				// Run B->Process()
 			Assert::AreEqual(TestValueForTestState, 2);
 			TestValueForTestState = 0;
-			Stack.Push(new TestStateC());	// A B C <-
-			Stack.Process();				// Run C->Process()
+			Stack.push(new TestStateC());	// A B C <-
+			Stack.process();				// Run C->Process()
 			Assert::AreEqual(TestValueForTestState, 3);
 			TestValueForTestState = 0;
-			Stack.Pop();					// A B <-
-			Stack.Process();				// Run B->Process()
+			Stack.pop();					// A B <-
+			Stack.process();				// Run B->Process()
 			Assert::AreEqual(TestValueForTestState, 2);
 			TestValueForTestState = 0;
-			Stack.Pop();					// A <-
-			Stack.Process();				// Run A->Process()
+			Stack.pop();					// A <-
+			Stack.process();				// Run A->Process()
 			Assert::AreEqual(TestValueForTestState, 1);
 			TestValueForTestState = 0;
-			Stack.Pop();					// Nothing in stack
+			Stack.pop();					// Nothing in stack
 		}
 
 		};

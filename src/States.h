@@ -22,7 +22,7 @@ public:
 	 *
 	 * Функция для переопределения.
 	 */
-	virtual void Process() = 0;
+	virtual void process() = 0;
 };
 
 /**
@@ -44,23 +44,23 @@ public:
 	 *
 	 * @param newState состояние, которое станет текущим
 	 */
-	void Push(State *newState);
+	void push(State *newState);
 	
 	/**
 	 * Удалить текущее состояние
 	 *
 	 * Текущим станет предыдущее состояние
 	 */
-	void Pop();
+	void pop();
 
 	/**
 	 * Выполнить код состояния
 	 */
-	void Process();
+	void process();
 
 private:
 	/** Верхушка стека */
-	StateIterator *Head;
+	StateIterator *head;
 };
 
 #endif

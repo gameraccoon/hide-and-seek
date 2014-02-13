@@ -1,7 +1,8 @@
 #include "FloatingCamera.h"
 
 
-FloatingCamera::FloatingCamera(World* world, Vector2D resolution, Vector2D location) : Camera(world, resolution, location), Shift(ZeroVector)
+FloatingCamera::FloatingCamera(World* world, Vector2D resolution, Vector2D location) : Camera(world, resolution, location), 
+	shift(ZERO_VECTOR)
 {
 }
 
@@ -10,20 +11,20 @@ FloatingCamera::~FloatingCamera(void)
 {
 }
 
-void FloatingCamera::SetLocation(Vector2D newLocation)
+void FloatingCamera::setLocation(Vector2D newLocation)
 {
-	Location = newLocation;
-	CenterPos = Resolution/2 - Shift;
+	this->location = newLocation;
+	this->centerPos = this->resolution/2 - this->shift;
 }
 
-void FloatingCamera::SetCenterShift(Vector2D shift)
+void FloatingCamera::setCenterShift(Vector2D shift)
 {
-	Shift = shift;
-	CenterPos = Resolution/2 - Shift;
+	this->shift = shift;
+	this->centerPos = this->resolution/2 - this->shift;
 }
 
-void FloatingCamera::RenderFog()
+void FloatingCamera::renderFog()
 {
-	FogSprite->RenderEx(Resolution.X/2 - Shift.X, Resolution.Y/2 - Shift.Y, 0, FogScale, FogScale);
+	this->fogSprite->RenderEx(this->resolution.x/2 - this->shift.x, this->resolution.y/2 - this->shift.y, 0, this->fogScale, this->fogScale);
 	//Camera::RenderFog();
 }

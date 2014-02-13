@@ -4,16 +4,16 @@ const float PI = 3.14159265358979323846f;
 
 Rotator::Rotator(float angle)
 {
-	Value = angle;
+	this->value = angle;
 }
 
 Rotator::~Rotator()
 {
 }
 
-float Rotator::GetValue()
+float Rotator::getValue()
 {
-	float normValue = Value;
+	float normValue = this->value;
 	if (normValue <= -PI)
 	{
 		while (normValue <= -PI)
@@ -21,7 +21,7 @@ float Rotator::GetValue()
 			normValue += 2 * PI;
 		}
 
-		Value = normValue;
+		this->value = normValue;
 	}
 	else if (normValue > PI)
 	{
@@ -30,7 +30,7 @@ float Rotator::GetValue()
 			normValue -= 2 * PI;
 		}
 
-		Value = normValue;
+		this->value = normValue;
 	}
 
 	return normValue;
@@ -38,12 +38,12 @@ float Rotator::GetValue()
 
 Rotator operator-(Rotator rot)
 {
-	return Rotator(-rot.GetValue());
+	return Rotator(-rot.getValue());
 }
 
 bool operator==(const Rotator& left, const Rotator& right)
 {
-	return left.Value == right.Value;
+	return left.value == right.value;
 }
 
 bool operator!=(const Rotator& left, const Rotator& right)
@@ -53,28 +53,28 @@ bool operator!=(const Rotator& left, const Rotator& right)
 
 Rotator operator+(const Rotator& left, const Rotator& right)
 {
-	return left.Value + right.Value;
+	return left.value + right.value;
 }
 
 Rotator operator+=(Rotator& left, const Rotator& right)
 {
-	float newValue = left.Value + right.Value;
+	float newValue = left.value + right.value;
 
-	left.Value = newValue;
+	left.value = newValue;
 
 	return newValue;
 }
 
 Rotator operator-(const Rotator& left, const Rotator& right)
 {
-	return left.Value - right.Value;
+	return left.value - right.value;
 }
 
 Rotator operator-=(Rotator& left, const Rotator& right)
 {
-	float newValue = left.Value - right.Value;
+	float newValue = left.value - right.value;
 
-	left.Value = newValue;
+	left.value = newValue;
 
 	return newValue;
 }

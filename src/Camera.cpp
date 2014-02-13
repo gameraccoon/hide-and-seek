@@ -1,38 +1,38 @@
 #include "Camera.h"
 
 
-Camera::Camera(World* world, Vector2D resolution, Vector2D location) : Location(location),
-												Resolution(resolution),
-												CenterPos(resolution/2)
+Camera::Camera(World* world, Vector2D resolution, Vector2D location) : location(location),
+	resolution(resolution),
+	centerPos(resolution/2)
 {
-	BrowsableWorld = world;
-	Angle = 0;
+	this->browsableWorld = world;
+	this->angle = 0;
 
-	Hge = world->GetHge();
+	this->hge = world->getHge();
 
 	// Set max distantion (on screen) where we draw actors
-	ShownSize = 512.0f;
+	this->shownSize = 512.0f;
 
 	// Set fog texture size
-	FogWidth = 512.0f;
+	this->fogWidth = 512.0f;
 	// Set scale of fog sprite
-	FogScale = ShownSize * 0.9f / (FogWidth / 2.0f);
+	this->fogScale = this->shownSize * 0.9f / (this->fogWidth / 2.0f);
 
-	RenderTarget = Hge->Target_Create((int) Resolution.X, (int) Resolution.Y, false);
-	Zone = Hge->Target_Create((int) ShownSize, (int) ShownSize, false);
+	this->renderTarget = this->hge->Target_Create((int) this->resolution.x, (int) this->resolution.y, false);
+	this->zone = this->hge->Target_Create((int) this->shownSize, (int) this->shownSize, false);
 
-	CamTexture = Hge->Texture_Load("colision.png");
-	FogTexture = Hge->Texture_Load("fog.png");
+	this->camTexture = this->hge->Texture_Load("colision.png");
+	this->fogTexture = this->hge->Texture_Load("fog.png");
 
-	WARN_IF(!CamTexture || !FogTexture, "Texture 'colision.png' or 'for.png' not found!");
+	WARN_IF(!this->camTexture || !this->fogTexture, "Texture 'colision.png' or 'for.png' not found!");
 
-	CollisionSprite = new hgeSprite(CamTexture, 0, 0, 64, 64);
-	CollisionSprite->SetColor(0xFF00FF00);
-	CollisionSprite->SetHotSpot(0, 0);
+	this->collisionSprite = new hgeSprite(this->camTexture, 0, 0, 64, 64);
+	this->collisionSprite->SetColor(0xFF00FF00);
+	this->collisionSprite->SetHotSpot(0, 0);
 
-	FogSprite = new hgeSprite(FogTexture, 0.0f, 0.0f, FogWidth, FogWidth);
-	FogSprite->SetColor(0xFF000000);
-	FogSprite->SetHotSpot(FogWidth/2, FogWidth/2);
+	this->fogSprite = new hgeSprite(this->fogTexture, 0.0f, 0.0f, this->fogWidth, this->fogWidth);
+	this->fogSprite->SetColor(0xFF000000);
+	this->fogSprite->SetHotSpot(this->fogWidth/2, this->fogWidth/2);
 
 	// Standart parameters of rendering
 	bShowAABB = false;
@@ -45,178 +45,178 @@ Camera::Camera(World* world, Vector2D resolution, Vector2D location) : Location(
 
 Camera::~Camera(void)
 {
-	delete CollisionSprite;
-	delete FogSprite;
-	Hge->Texture_Free(CamTexture);
-	Hge->Texture_Free(FogTexture);
-	Hge->Target_Free(RenderTarget);
-	Hge->Target_Free(Zone);
+	delete this->collisionSprite;
+	delete this->fogSprite;
+	this->hge->Texture_Free(this->camTexture);
+	this->hge->Texture_Free(this->fogTexture);
+	this->hge->Target_Free(this->renderTarget);
+	this->hge->Target_Free(this->zone);
 }
 
-void Camera::Render()
+void Camera::render()
 {
 	// clean lights cached map
-	Hge->Gfx_BeginScene(RenderTarget);
-	Hge->Gfx_Clear(0);
-	Hge->Gfx_EndScene();
+	this->hge->Gfx_BeginScene(this->renderTarget);
+	this->hge->Gfx_Clear(0);
+	this->hge->Gfx_EndScene();
 
 	// for each light on the scene
-	for (std::set<IActor*>::iterator it = BrowsableWorld->AllActors.begin(), end = BrowsableWorld->AllActors.end(); it != end; it++)
+	for (std::set<IActor*>::iterator i = this->browsableWorld->allActors.begin(), iEnd = this->browsableWorld->allActors.end(); i != iEnd; i++)
 	{
-		if ((*it)->GetType() == AT_Light)
+		if ((*i)->getType() == AT_Light)
 		{
-			Hge->Gfx_BeginScene(Zone);
-			Hge->Gfx_Clear(0xFFFFFF);
+			this->hge->Gfx_BeginScene(this->zone);
+			this->hge->Gfx_Clear(0xFFFFFF);
 			
 			// Actors beside this light
-			RenderActors((*it)->GetLocation());
+			this->renderActors((*i)->getLocation());
 
 			// Shadows for this light
-			if (bRenderShadows)
+			if (this->bRenderShadows)
 			{
-				RenderLightShadows((*it)->GetLocation());
+				this->renderLightShadows((*i)->getLocation());
 			}
 
 			// Fog of this light
-			if (bRenderFog)
+			if (this->bRenderFog)
 			{
-				FogSprite->RenderEx(ShownSize/2,ShownSize/2,0,ShownSize/FogWidth,ShownSize/FogWidth);
+				this->fogSprite->RenderEx(this->shownSize/2, this->shownSize/2, 0, this->shownSize/this->fogWidth, this->shownSize/this->fogWidth);
 			}
 	
-			Hge->Gfx_EndScene();
+			this->hge->Gfx_EndScene();
 
 			// render light to lights
-			hgeSprite *light = new hgeSprite(Hge->Target_GetTexture(Zone), 0, 0, ShownSize, ShownSize);
+			hgeSprite *light = new hgeSprite(this->hge->Target_GetTexture(this->zone), 0, 0, this->shownSize, this->shownSize);
 			light->SetBlendMode(BLEND_COLORMUL);
 			light->SetColor(0xFF777777);
 
-			Hge->Gfx_BeginScene(RenderTarget);
-			light->Render(Project((*it)->GetLocation()).X-ShownSize/2, Project((*it)->GetLocation()).Y-ShownSize/2);
-			Hge->Gfx_EndScene();
+			this->hge->Gfx_BeginScene(this->renderTarget);
+			light->Render(this->project((*i)->getLocation()).x-this->shownSize/2, this->project((*i)->getLocation()).y - this->shownSize/2);
+			this->hge->Gfx_EndScene();
 
 			delete light;
 		}
 	}
 
 	// start rendering to target
-	Hge->Gfx_BeginScene(RenderTarget);
+	this->hge->Gfx_BeginScene(this->renderTarget);
 
 	// Shadows for player's view
-	if (bRenderShadows)
+	if (this->bRenderShadows)
 	{
-		//RenderShadows();
+		//this->renderShadows();
 	}
 
 	// Render player's fog
-	if (bRenderFog)
+	if (this->bRenderFog)
 	{
-		//RenderFog();
+		//this->renderFog();
 	}
 
 	// Bounding boxes
-	if (bShowAABB)
+	if (this->bShowAABB)
 	{
-		RenderCollisionBoxes();
+		this->renderCollisionBoxes();
 	}
 
 	// Borders
-	if (bShowBorders)
+	if (this->bShowBorders)
 	{
-		RenderHulls();
+		this->renderHulls();
 	}
 	
 	// Lights
-	if (bShowLights)
+	if (this->bShowLights)
 	{
-		RenderLights();
+		this->renderLights();
 	}
 
 	// Paths
-	if (bShowPaths)
+	if (this->bShowPaths)
 	{
-		RenderPaths();
+		this->renderPaths();
 	}
 
 	// end rendering to target
-	Hge->Gfx_EndScene();
+	this->hge->Gfx_EndScene();
 }
 
-void Camera::RenderActors(Vector2D lightPos)
+void Camera::renderActors(Vector2D lightPos)
 {
 	// for each actors in the world
-	for (std::set<IActor*>::iterator it = BrowsableWorld->AllActors.begin(), end = BrowsableWorld->AllActors.end(); it != end; it++)
+	for (std::set<IActor*>::iterator i = this->browsableWorld->allActors.begin(), iEnd = this->browsableWorld->allActors.end(); i != iEnd; i++)
 	{
 		// Get actor's camera local location
-		Vector2D screenLoc((*it)->GetLocation() - lightPos);
+		Vector2D screenLoc((*i)->getLocation() - lightPos);
 		// Get distance from center of screen
-		float distanceFromCamera = screenLoc.Size();
+		float distanceFromCamera = screenLoc.size();
 		// if actor is not far of drawing zone
-		if (distanceFromCamera < ShownSize)
+		if (distanceFromCamera < this->shownSize)
 		{
 			// calc actor screen location
-			Vector2D newScreenLoc(Vector2D(screenLoc.GetRotation() + Angle) * distanceFromCamera);
+			Vector2D newScreenLoc(Vector2D(screenLoc.rotation() + this->angle) * distanceFromCamera);
 			// render actor
-			(*it)->Render(newScreenLoc + Vector2D(ShownSize/2, ShownSize/2), Angle);
+			(*i)->render(newScreenLoc + Vector2D(this->shownSize/2, this->shownSize/2), this->angle);
 		}
 	}
 }
 
-void Camera::RenderCollisionBoxes()
+void Camera::renderCollisionBoxes()
 {
 	// for each actors in the world
-	for (std::set<IActor*>::iterator it = BrowsableWorld->AllActors.begin(), end = BrowsableWorld->AllActors.end(); it != end; it++)
+	for (std::set<IActor*>::iterator i = this->browsableWorld->allActors.begin(), iEnd = this->browsableWorld->allActors.end(); i != iEnd; i++)
 	{
 		// get location and size of actor's AABB (axis-aligned bounding box)
-		Vector2D min = (*it)->GetBoundingBox().GetFirst();
-		Vector2D size = (*it)->GetBoundingBox().GetThird() - min;
+		Vector2D min = (*i)->getBoundingBox().getFirst();
+		Vector2D size = (*i)->getBoundingBox().getThird() - min;
 
 		// project location on the screen
-		Vector2D shift = Project(min);
+		Vector2D shift = this->project(min);
 
 		// render collision sprite
-		CollisionSprite->RenderEx(shift.X, shift.Y, Angle, size.X/64.0f, size.Y/64.0f);
+		this->collisionSprite->RenderEx(shift.x, shift.y, this->angle, size.x/64.0f, size.y/64.0f);
 	}
 }
 
-Vector2D Camera::Project(Vector2D worldPoint)
+Vector2D Camera::project(Vector2D worldPoint)
 {
 	// calc camera-location
-	Vector2D screenLoc(worldPoint - Location);
+	Vector2D screenLoc(worldPoint - this->location);
 	// calc screen-coordinates relativety camera center
-	Vector2D newScreenLoc(Vector2D(screenLoc.GetRotation() + Angle) * screenLoc.Size());
+	Vector2D newScreenLoc(Vector2D(screenLoc.rotation() + this->angle) * screenLoc.size());
 	// calc absolute screen-coordinates
-	return CenterPos + newScreenLoc;
+	return this->centerPos + newScreenLoc;
 }
 
-Vector2D Camera::ProjectFrom(Vector2D worldPoint, Vector2D projectionCenter)
+Vector2D Camera::projectFrom(Vector2D worldPoint, Vector2D projectionCenter)
 {
 	// calc camera-location
 	Vector2D screenLoc(worldPoint - projectionCenter);
 	// calc screen-coordinates relativety camera center
-	Vector2D newScreenLoc(Vector2D(screenLoc.GetRotation() + Angle) * screenLoc.Size());
+	Vector2D newScreenLoc(Vector2D(screenLoc.rotation() + this->angle) * screenLoc.size());
 	// calc absolute screen-coordinates
-	return Vector2D(ShownSize/2, ShownSize/2) + newScreenLoc;
+	return Vector2D(this->shownSize/2, this->shownSize/2) + newScreenLoc;
 }
 
-Vector2D Camera::DeProject(Vector2D screenPoint)
+Vector2D Camera::deProject(Vector2D screenPoint)
 {
 	// calc relative screen-coordinates
-	Vector2D relScreenLoc(screenPoint - CenterPos);
+	Vector2D relScreenLoc(screenPoint - this->centerPos);
 	// calc world-coordinates relativety camera
-	Vector2D screenLoc = Vector2D(relScreenLoc.GetRotation() - Angle) * relScreenLoc.Size();
+	Vector2D screenLoc = Vector2D(relScreenLoc.rotation() - this->angle) * relScreenLoc.size();
 	// calc world location
-	return Location + screenLoc;
+	return this->location + screenLoc;
 }
 
-void Camera::RenderFog()
+void Camera::renderFog()
 {
 	// render fog sprite
-	FogSprite->RenderEx(Resolution.X/2, Resolution.Y/2, 0, FogScale, FogScale);
+	this->fogSprite->RenderEx(this->resolution.x/2, this->resolution.y/2, 0, this->fogScale, this->fogScale);
 }
 
-void Camera::DrawPenumbra(Vector2D first, Vector2D second, Vector2D third)
+void Camera::drawPenumbra(Vector2D first, Vector2D second, Vector2D third)
 {
-	HTEXTURE PenumbraTexture = Hge->Texture_Load("penumbra.png");
+	HTEXTURE PenumbraTexture = this->hge->Texture_Load("penumbra.png");
 
 	WARN_IF(!PenumbraTexture, "Texture 'penumbra.png' not found!");
 	
@@ -244,10 +244,10 @@ void Camera::DrawPenumbra(Vector2D first, Vector2D second, Vector2D third)
 	triple.v[2].tx = 1;
 	triple.v[2].ty = 0;
 
-	Hge->Gfx_RenderTriple(&triple);
+	this->hge->Gfx_RenderTriple(&triple);
 }
 
-void Camera::DrawQuad(Vector2D first, Vector2D second, Vector2D third, Vector2D fourth)
+void Camera::drawQuad(Vector2D first, Vector2D second, Vector2D third, Vector2D fourth)
 {
 	hgeQuad quad;
 	quad.tex = 0;
@@ -255,224 +255,225 @@ void Camera::DrawQuad(Vector2D first, Vector2D second, Vector2D third, Vector2D 
 	quad.v[0].z = quad.v[1].z = quad.v[2].z = quad.v[3].z = 0.5f;
 	quad.v[0].col = quad.v[1].col = quad.v[2].col = quad.v[3].col = 0xFF000000;
 
-	quad.v[0].x = first.X;
-	quad.v[0].y = first.Y;
+	quad.v[0].x = first.x;
+	quad.v[0].y = first.y;
 		
-	quad.v[1].x = second.X;
-	quad.v[1].y = second.Y;
+	quad.v[1].x = second.x;
+	quad.v[1].y = second.y;
 		
-	quad.v[2].x = third.X;
-	quad.v[2].y = third.Y;
+	quad.v[2].x = third.x;
+	quad.v[2].y = third.y;
 		
-	quad.v[3].x = fourth.X;
-	quad.v[3].y = fourth.Y;
+	quad.v[3].x = fourth.x;
+	quad.v[3].y = fourth.y;
 
-	Hge->Gfx_RenderQuad(&quad);
+	this->hge->Gfx_RenderQuad(&quad);
 }
 
-void Camera::RenderLightShadows(Vector2D lightPos)
+void Camera::renderLightShadows(Vector2D lightPos)
 {
-	Vector2D lightCenterPos(ShownSize/2, ShownSize/2);
+	Vector2D lightCenterPos(this->shownSize/2, this->shownSize/2);
 	// for each actors in the world
-	for (std::set<IActor*>::iterator it = BrowsableWorld->AllActors.begin(), end = BrowsableWorld->AllActors.end(); it != end; it++)
+	for (std::set<IActor*>::iterator i = this->browsableWorld->allActors.begin(), iEnd = this->browsableWorld->allActors.end(); i != iEnd; i++)
 	{
 		// if actor - static
-		if ((*it)->GetType() == AT_Static)
+		if ((*i)->getType() == AT_Static)
 		{
 			// get actors geometry
-			Hull *hull = (*it)->GetHull();
+			Hull *hull = (*i)->getHull();
 			// for each border of actor's geometry
-			for (int i = 0; i < (int) hull->Borders.size(); i++)
+			for (int j = 0; j < (int) hull->borders.size(); j++)
 			{
 				// if border's normal and camera view on border have different directions (angle > PI/2)
 				if (abs((
-						hull->Borders[i].GetNormal().GetRotation()
-						- ((*it)->GetLocation() + (hull->Borders[i].GetA() + hull->Borders[i].GetB())/2 - lightPos).GetRotation()
-					).GetValue()) < PI/2)
+						hull->borders[j].getNormal().rotation()
+						- ((*i)->getLocation() + (hull->borders[j].getA() + hull->borders[j].getB())/2 - lightPos).rotation()
+					).getValue()) < PI/2)
 				{
 					// Get border's points
-					Vector2D a((*it)->GetLocation() + hull->Borders[i].GetA());
-					Vector2D b((*it)->GetLocation() + hull->Borders[i].GetB());
+					Vector2D a((*i)->getLocation() + hull->borders[j].getA());
+					Vector2D b((*i)->getLocation() + hull->borders[j].getB());
 
 					// project them on screen
-					a = ProjectFrom(a, lightPos);
-					b = ProjectFrom(b, lightPos);
+					a = this->projectFrom(a, lightPos);
+					b = this->projectFrom(b, lightPos);
 
 					// Draw shadow's quad of this border to far of the screen
-					DrawQuad(a, b, b + (b - lightCenterPos).Ort() * 3000, a + (a - lightCenterPos).Ort() * 3000);
+					this->drawQuad(a, b, b + (b - lightCenterPos).ort() * 3000, a + (a - lightCenterPos).ort() * 3000);
 				}
 			}
 		}
 	}
 }
 
-void Camera::RenderShadows()
+void Camera::renderShadows()
 {
 	// for each actors in the world
-	for (std::set<IActor*>::iterator it = BrowsableWorld->AllActors.begin(), end = BrowsableWorld->AllActors.end(); it != end; it++)
+	for (std::set<IActor*>::iterator i = this->browsableWorld->allActors.begin(), iEnd = this->browsableWorld->allActors.end(); i != iEnd; i++)
 	{
 		// if actor - static
-		if ((*it)->GetType() == AT_Static)
+		if ((*i)->getType() == AT_Static)
 		{
 			// get actors geometry
-			Hull *hull = (*it)->GetHull();
+			Hull *hull = (*i)->getHull();
 			// for each border of actor's geometry
-			for (int i = 0; i < (int) hull->Borders.size(); i++)
+			for (int j = 0; j < (int) hull->borders.size(); j++)
 			{
 				// if border's normal and camera view on border have different directions (angle > PI/2)
 				if (abs((
-						hull->Borders[i].GetNormal().GetRotation()
-						- ((*it)->GetLocation() + (hull->Borders[i].GetA() + hull->Borders[i].GetB())/2 - Location).GetRotation()
-					).GetValue()) < PI/2)
+						hull->borders[j].getNormal().rotation()
+						- ((*i)->getLocation() + (hull->borders[j].getA() + hull->borders[j].getB())/2 - this->location).rotation()
+					).getValue()) < PI/2)
 				{
 					// Get border's points
-					Vector2D a((*it)->GetLocation() + hull->Borders[i].GetA());
-					Vector2D b((*it)->GetLocation() + hull->Borders[i].GetB());
+					Vector2D a((*i)->getLocation() + hull->borders[j].getA());
+					Vector2D b((*i)->getLocation() + hull->borders[j].getB());
 
 					// project them on screen
-					a = Project(a);
-					b = Project(b);
+					a = this->project(a);
+					b = this->project(b);
 
 					// Draw shadow's quad of this border to far of the screen
-					DrawQuad(a, b, b + (b - CenterPos).Ort() * 3000, a + (a - CenterPos).Ort() * 3000);
+					this->drawQuad(a, b, b + (b - this->centerPos).ort() * 3000, a + (a - this->centerPos).ort() * 3000);
 				}
 			}
 		}
 	}
 }
 
-void Camera::RenderHulls()
+void Camera::renderHulls()
 {
 	const int normal_length = 10;
 
 	// for each actors in the world
-	for (std::set<IActor*>::iterator it = BrowsableWorld->AllActors.begin(), end = BrowsableWorld->AllActors.end(); it != end; it++)
+	for (std::set<IActor*>::iterator i = this->browsableWorld->allActors.begin(), iEnd = this->browsableWorld->allActors.end(); i != iEnd; i++)
 	{
 		// if actor - static
-		if ((*it)->GetType() != AT_Light && (*it)->GetType() != AT_Special)
+		if ((*i)->getType() != AT_Light && (*i)->getType() != AT_Special)
 		{
 			// get actors geometry
-			Hull *hull = (*it)->GetHull();
+			Hull *hull = (*i)->getHull();
 			// for each border of actor's geometry
-			for (int i = 0; i < (int) hull->Borders.size(); i++)
+			for (int j = 0; j < (int) hull->borders.size(); j++)
 			{
 				// draw border
-				Vector2D A((*it)->GetLocation() + hull->Borders[i].GetA()), B((*it)->GetLocation() + hull->Borders[i].GetB());
-				A = Project(A);
-				B = Project(B);
+				Vector2D A((*i)->getLocation() + hull->borders[j].getA()), B((*i)->getLocation() + hull->borders[j].getB());
+				A = this->project(A);
+				B = this->project(B);
 				
-				Hge->Gfx_RenderLine(A.X, A.Y, B.X, B.Y, 0xFFFF00FF);
+				this->hge->Gfx_RenderLine(A.x, A.y, B.x, B.y, 0xFFFF00FF);
 
 				// draw normal
-				Vector2D LinePos((*it)->GetLocation() + (hull->Borders[i].GetA() + hull->Borders[i].GetB()) / 2);
-				Vector2D Norm(LinePos + hull->Borders[i].GetNormal() * normal_length);
+				Vector2D LinePos((*i)->getLocation() + (hull->borders[j].getA() + hull->borders[j].getB()) / 2);
+				Vector2D Norm(LinePos + hull->borders[j].getNormal() * normal_length);
 
-				LinePos = Project(LinePos);
-				Norm = Project(Norm);
+				LinePos = this->project(LinePos);
+				Norm = this->project(Norm);
 
-				Hge->Gfx_RenderLine(LinePos.X, LinePos.Y, Norm.X, Norm.Y, 0xFF0000FF);
+				this->hge->Gfx_RenderLine(LinePos.x, LinePos.y, Norm.x, Norm.y, 0xFF0000FF);
 			}
 		}
 	}
 }
 
-void Camera::RenderLights()
+void Camera::renderLights()
 {
 	// for each actors in the world
-	for (std::set<IActor*>::iterator it = BrowsableWorld->AllActors.begin(), end = BrowsableWorld->AllActors.end(); it != end; it++)
+	for (std::set<IActor*>::iterator i = this->browsableWorld->allActors.begin(), iEnd = this->browsableWorld->allActors.end(); i != iEnd; i++)
 	{
 		// if actor - static
-		if ((*it)->GetType() == AT_Light)
+		if ((*i)->getType() == AT_Light)
 		{
-			Vector2D lightLocation(Project((*it)->GetLocation()));
-			Hge->Gfx_RenderLine(lightLocation.X - 5, lightLocation.Y, lightLocation.X + 5, lightLocation.Y, 0xFFAA6600, 0);
-			Hge->Gfx_RenderLine(lightLocation.X, lightLocation.Y - 5, lightLocation.X, lightLocation.Y + 5, 0xFFAA6600, 0);
+			Vector2D lightLocation(this->project((*i)->getLocation()));
+			this->hge->Gfx_RenderLine(lightLocation.x - 5, lightLocation.y, lightLocation.x + 5, lightLocation.y, 0xFFAA6600, 0);
+			this->hge->Gfx_RenderLine(lightLocation.x, lightLocation.y - 5, lightLocation.x, lightLocation.y + 5, 0xFFAA6600, 0);
 		}
 	}
 }
 
-void Camera::RenderPaths()
+void Camera::renderPaths()
 {
 	// for each actors in the world
-	for (std::set<PathPoint*>::iterator it = BrowsableWorld->NavigationMap.begin(), end = BrowsableWorld->NavigationMap.end(); it != end; it++)
+	for (std::set<PathPoint*>::iterator i = this->browsableWorld->navigationMap.begin(),
+		iEnd = this->browsableWorld->navigationMap.end(); i != iEnd; i++)
 	{
-		Vector2D pathPointLocation(Project((*it)->Location));
+		Vector2D pathPointLocation(this->project((*i)->location));
 		
 		// render green diamond
-		Hge->Gfx_RenderLine(pathPointLocation.X - 5, pathPointLocation.Y, pathPointLocation.X, pathPointLocation.Y - 5, 0xFF00FF00, 0);
-		Hge->Gfx_RenderLine(pathPointLocation.X, pathPointLocation.Y - 5, pathPointLocation.X + 5, pathPointLocation.Y, 0xFF00FF00, 0);
-		Hge->Gfx_RenderLine(pathPointLocation.X + 5, pathPointLocation.Y, pathPointLocation.X, pathPointLocation.Y + 5, 0xFF00FF00, 0);
-		Hge->Gfx_RenderLine(pathPointLocation.X, pathPointLocation.Y + 5, pathPointLocation.X - 5, pathPointLocation.Y, 0xFF00FF00, 0);
+		this->hge->Gfx_RenderLine(pathPointLocation.x - 5, pathPointLocation.y, pathPointLocation.x, pathPointLocation.y - 5, 0xFF00FF00, 0);
+		this->hge->Gfx_RenderLine(pathPointLocation.x, pathPointLocation.y - 5, pathPointLocation.x + 5, pathPointLocation.y, 0xFF00FF00, 0);
+		this->hge->Gfx_RenderLine(pathPointLocation.x + 5, pathPointLocation.y, pathPointLocation.x, pathPointLocation.y + 5, 0xFF00FF00, 0);
+		this->hge->Gfx_RenderLine(pathPointLocation.x, pathPointLocation.y + 5, pathPointLocation.x - 5, pathPointLocation.y, 0xFF00FF00, 0);
 
 		// render path arrow
-		for (std::set<PathPoint*>::iterator it2 = (*it)->LegalPoints.begin(), end = (*it)->LegalPoints.end(); it2 != end; it2++)
+		for (std::set<PathPoint*>::iterator j = (*i)->legalPoints.begin(), jEnd = (*i)->legalPoints.end(); j != jEnd; j++)
 		{
-			Vector2D nextPointLocation(Project((*it2)->Location));
-			Hge->Gfx_RenderLine(pathPointLocation.X, pathPointLocation.Y, nextPointLocation.X, nextPointLocation.Y, 0xFF00FF00, 0);
+			Vector2D nextPointLocation(this->project((*j)->location));
+			this->hge->Gfx_RenderLine(pathPointLocation.x, pathPointLocation.y, nextPointLocation.x, nextPointLocation.y, 0xFF00FF00, 0);
 			Vector2D thirdPoint = pathPointLocation + (nextPointLocation - pathPointLocation)/3;
 
-			Vector2D Direction = (nextPointLocation - pathPointLocation).Ort();
+			Vector2D Direction = (nextPointLocation - pathPointLocation).ort();
 			float arrowlength = 5.f;
 			
-			Hge->Gfx_RenderLine(thirdPoint.X,
-								thirdPoint.Y,
-								thirdPoint.X + (Direction.GetNormal().X - Direction.Ort().X) * arrowlength,
-								thirdPoint.Y + (Direction.GetNormal().Y - Direction.Ort().Y) * arrowlength, 0xFF00FF00, 0);
+			this->hge->Gfx_RenderLine(thirdPoint.x,
+				thirdPoint.y,
+				thirdPoint.x + (Direction.normal().x - Direction.ort().x) * arrowlength,
+				thirdPoint.y + (Direction.normal().y - Direction.ort().y) * arrowlength, 0xFF00FF00, 0);
 			
-			Hge->Gfx_RenderLine(thirdPoint.X,
-								thirdPoint.Y,
-								thirdPoint.X - (Direction.GetNormal().X + Direction.Ort().X) * arrowlength,
-								thirdPoint.Y - (Direction.GetNormal().Y + Direction.Ort().Y) * arrowlength, 0xFF00FF00, 0);
+			this->hge->Gfx_RenderLine(thirdPoint.x,
+				thirdPoint.y,
+				thirdPoint.x - (Direction.normal().x + Direction.ort().x) * arrowlength,
+				thirdPoint.y - (Direction.normal().y + Direction.ort().y) * arrowlength, 0xFF00FF00, 0);
 		}
 	}
 }
 
-void Camera::SetLocation(Vector2D newLocation)
+void Camera::setLocation(Vector2D newLocation)
 {
-	Location = newLocation;
+	this->location = newLocation;
 }
 
-Vector2D Camera::GetResolution()
+Vector2D Camera::getResolution()
 {
-	return Resolution;
+	return this->resolution;
 }
 
-void Camera::SetRotation(Rotator angle)
+void Camera::setRotation(Rotator angle)
 {
-	Angle = angle.GetValue();
+	this->angle = angle.getValue();
 }
 
-void Camera::ShowAABB(bool bShow)
+void Camera::showAABB(bool show)
 {
-	bShowAABB = bShow;
+	this->bShowAABB = show;
 }
 
-void Camera::ShowFog(bool bShow)
+void Camera::showFog(bool show)
 {
-	bRenderFog = bShow;
+	this->bRenderFog = show;
 }
 
-void Camera::ShowShadows(bool bShow)
+void Camera::showShadows(bool show)
 {
-	bRenderShadows = bShow;
+	this->bRenderShadows = show;
 }
 
-void Camera::ShowHulls(bool bShow)
+void Camera::showHulls(bool show)
 {
-	bShowBorders = bShow;
+	this->bShowBorders = show;
 }
 
-void Camera::ShowLights(bool bShow)
+void Camera::showLights(bool show)
 {
-	bShowLights = bShow;
+	this->bShowLights = show;
 }
 
-void Camera::ShowPaths(bool bShow)
+void Camera::showPaths(bool show)
 {
-	bShowPaths = bShow;
+	this->bShowPaths = show;
 }
 
-HTEXTURE Camera::GetRenderTexture()
+HTEXTURE Camera::getRenderTexture()
 {
-	return RenderTarget;
+	return this->renderTarget;
 }

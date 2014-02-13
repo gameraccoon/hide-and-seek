@@ -15,24 +15,24 @@ LevelLoader::~LevelLoader(void)
 {
 }
 
-void LevelLoader::Save(World* world, const std::string levelName)
+void LevelLoader::save(World* world, const std::string levelName)
 {
 	// saving all actors in this world
 	std::ofstream mapFile;
 	mapFile.open(std::string("./maps/").append(levelName).append(std::string(".map")));
-	for (std::set<IActor*>::iterator it = world->AllActors.begin(), end = world->AllActors.end(); it != end; it++)
+	for (std::set<IActor*>::iterator i = world->allActors.begin(), iEnd = world->allActors.end(); i != iEnd; i++)
 	{
-		mapFile << (*it)->GetClassID();
+		mapFile << (*i)->getClassID();
 		mapFile << " ";
-		mapFile << (*it)->GetLocation().X;
+		mapFile << (*i)->getLocation().x;
 		mapFile << " ";
-		mapFile << (*it)->GetLocation().Y;
+		mapFile << (*i)->getLocation().y;
 		mapFile << " ";
-		mapFile << (*it)->GetScale().X;
+		mapFile << (*i)->getScale().x;
 		mapFile << " ";
-		mapFile << (*it)->GetScale().Y;
+		mapFile << (*i)->getScale().y;
 		mapFile << " ";
-		mapFile << (*it)->GetRotation().GetValue();
+		mapFile << (*i)->getRotation().getValue();
 		mapFile << "\n";
 	}
 	mapFile.close();
@@ -46,14 +46,14 @@ void LevelLoader::Save(World* world, const std::string levelName)
 
 	int i = 0;
 	// save locations of pathpoints
-	for (std::set<PathPoint*>::iterator it = world->NavigationMap.begin(), end = world->NavigationMap.end(); it != end; it++)
+	for (std::set<PathPoint*>::iterator j = world->navigationMap.begin(), jEnd = world->navigationMap.end(); j != jEnd; j++)
 	{
-		points.insert(PathPointMap::value_type((*it), i));
+		points.insert(PathPointMap::value_type((*j), i));
 		pathsFile << i;
 		pathsFile << " ";
-		pathsFile << (*it)->Location.X;
+		pathsFile << (*j)->location.x;
 		pathsFile << " ";
-		pathsFile << (*it)->Location.Y;
+		pathsFile << (*j)->location.y;
 		pathsFile << "\n";
 		i++;
 	}
@@ -61,26 +61,25 @@ void LevelLoader::Save(World* world, const std::string levelName)
 	pathsFile << "-1\n";
 
 	// save connections of pathpoints
-	for (std::set<PathPoint*>::iterator it = world->NavigationMap.begin(), end = world->NavigationMap.end(); it != end; it++)
+	for (std::set<PathPoint*>::iterator j = world->navigationMap.begin(), jEnd = world->navigationMap.end(); j != jEnd; i++)
 	{
-		int firstIndex = points.at(*it);
-		for (std::set<PathPoint*>::iterator it2 = (*it)->LegalPoints.begin(), end2 = (*it)->LegalPoints.end(); it2 != end2; it2++)
+		int firstIndex = points.at(*j);
+
+		for (std::set<PathPoint*>::iterator k = (*j)->legalPoints.begin(), kEnd = (*j)->legalPoints.end(); k != kEnd; k++)
 		{
-			int secondIndex = points.at(*it2);
+			int secondIndex = points.at(*k);
 
 			pathsFile << firstIndex;
 			pathsFile << " ";
 			pathsFile << secondIndex;
 			pathsFile << "\n";
 		}
-		
-		i++;
 	}
 
 	pathsFile.close();
 }
 
-void LevelLoader::Load(World* world, const std::string levelName)
+void LevelLoader::load(World* world, const std::string levelName)
 {
 	// loading actors
 	std::ifstream mapFile;
@@ -109,7 +108,7 @@ void LevelLoader::Load(World* world, const std::string levelName)
 
 		try
 		{
-			ActorFactory::CreateActor(ClassName, world, Vector2D(xPos, yPos), Vector2D(xScale, yScale), Rotator(angle));
+			ActorFactory::createActor(ClassName, world, Vector2D(xPos, yPos), Vector2D(xScale, yScale), Rotator(angle));
 		}
 		catch (std::runtime_error)
 		{
@@ -147,13 +146,13 @@ void LevelLoader::Load(World* world, const std::string levelName)
 		pathsFile >> point2;
 
 		// create way from point1 to point2
-		points.at(point1)->Connect(points.at(point2));
+		points.at(point1)->connect(points.at(point2));
 	}
 
 	// put paths into world
 	for (int i = 0, pointsSize = points.size(); i < pointsSize; i++)
 	{
-		world->AddPathPoint(points.at(i));
+		world->addPathPoint(points.at(i));
 	}
 
 	pathsFile.close();

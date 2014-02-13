@@ -17,26 +17,26 @@ public:
 	World(HGE *hge);
 	~World(void);
 	/** Add Actor to the World. */
-	void Spawn(IActor* actor);
+	void spawnActor(IActor* actor);
 	/** Delete actor from the World. */
-	void Delete(IActor* actor);
+	void removeActor(IActor* actor);
 	/** Update all Actors in the World */
-	void Update(float deltatime);
+	void update(float deltatime);
 	/** Get a pointer to the Hge subsystem */
-	HGE* GetHge();
+	HGE* getHge();
 	/** Add a new PathPoint to the navigation map*/
-	void AddPathPoint(PathPoint* newPoint);
+	void addPathPoint(PathPoint* pathPoint);
 	/** All actors in the World. */
-	ActorsSet AllActors;
+	ActorsSet allActors;
 	/** All pathpoints of this world */
-	PathPointsSet NavigationMap;
+	PathPointsSet navigationMap;
 private:
 	/** Pointer to the Hge subsystem */
-	HGE *Hge;
+	HGE *hge;
 	/** Free memory of path points */
-	void RemoveAllPathPoints();
+	void removeAllPathPoints();
 	/** Destroy actors that waits to be destroyed */
-	void CleanDestroyedActors();
+	void cleanDestroyedActors();
 };
 
 #endif

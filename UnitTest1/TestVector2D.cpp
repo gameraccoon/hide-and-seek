@@ -12,7 +12,7 @@ namespace Microsoft
 	{
 		namespace CppUnitTestFramework
 		{
-			template<> static std::wstring ToString<Vector2D>(const Vector2D& t) { RETURN_WIDE_STRING(t.X + t.Y); }
+			template<> static std::wstring ToString<Vector2D>(const Vector2D& t) { RETURN_WIDE_STRING(t.x + t.x); }
 		}
 	}
 }
@@ -30,10 +30,10 @@ namespace TestVector2D
 			Vector2D testVectorA(5.2f, -0.39f);
 			Vector2D testVectorB(testVectorA);
 		
-			Assert::IsTrue(testVectorA.X == 5.2f
-					&& testVectorA.Y == -0.39f);
-			Assert::IsTrue(testVectorB.X == 5.2f
-					&& testVectorB.Y == -0.39f);
+			Assert::IsTrue(testVectorA.x == 5.2f
+					&& testVectorA.y == -0.39f);
+			Assert::IsTrue(testVectorB.x == 5.2f
+					&& testVectorB.y == -0.39f);
 		}
 
 		TEST_METHOD(TestVectorInitializationFromAngle)
@@ -67,17 +67,17 @@ namespace TestVector2D
 			Vector2D testVectorA(5.2f, -0.39f);
 
 			Vector2D testVectorB = testVectorA;
-			testVectorB.X = 30.0f;
+			testVectorB.x = 30.0f;
 
-			Assert::AreEqual(testVectorB.X, 30.0f);
-			Assert::AreEqual(testVectorA.X, 5.2f);
+			Assert::AreEqual(testVectorB.x, 30.0f);
+			Assert::AreEqual(testVectorA.x, 5.2f);
 		}
 
 		TEST_METHOD(TestVectorSize)
 		{
 			Vector2D testVectorA(5.2f, -0.39f);
 
-			float testVectorSize = testVectorA.Size();
+			float testVectorSize = testVectorA.size();
 
 			Assert::AreEqual(testVectorSize, 5.2146f, 0.0001f);
 		}
@@ -86,7 +86,7 @@ namespace TestVector2D
 		{
 			Vector2D testVectorA(5.2f, -0.39f);
 
-			float testVectorSize = testVectorA.QSize();
+			float testVectorSize = testVectorA.qSize();
 
 			Assert::AreEqual(testVectorSize, 27.1921f, 0.0001f);
 		}
@@ -99,10 +99,10 @@ namespace TestVector2D
 
 			Assert::AreEqual(testVectorB, Vector2D(-5.2f, 0.39f));
 
-			testVectorB.Y = 70.0f;
+			testVectorB.y = 70.0f;
 
 			Assert::AreEqual(testVectorA, Vector2D(5.2f, -0.39f));
-			Assert::AreEqual(testVectorA.X, 5.2f);
+			Assert::AreEqual(testVectorA.x, 5.2f);
 		}
 
 		TEST_METHOD(TestVectorAddition)
@@ -152,24 +152,24 @@ namespace TestVector2D
 			float testScalar = 18.3f;
 
 			testVectorA /= testScalar;
-			Vector2D testVectorB = testVectorA / testVectorA.Size();	// B = ort(A);
+			Vector2D testVectorB = testVectorA / testVectorA.size();	// B = ort(A);
 
 			Assert::AreEqual(testVectorA, Vector2D(0.2841f, -0.0213f));
 			Assert::AreEqual(testVectorB, Vector2D(0.9972f, -0.07476377f));
-			Assert::AreEqual(testVectorB.Size(), 1.0f);				// ort size is only 1.0
+			Assert::AreEqual(testVectorB.size(), 1.0f);				// ort size is only 1.0
 		}
 
 		TEST_METHOD(TestVectorOrt)
 		{
 			Vector2D testVectorA(5.2f, -0.39f);
 
-			testVectorA = testVectorA.Ort();
+			testVectorA = testVectorA.ort();
 		
 			Assert::AreEqual(testVectorA, Vector2D(0.9972f, -0.07476377f));
-			Assert::AreEqual(testVectorA.Size(), 1.0f);				// ort size is only 1.0
+			Assert::AreEqual(testVectorA.size(), 1.0f);				// ort size is only 1.0
 
 			testVectorA = Vector2D(0.0f, 0.0f);
-			Assert::AreEqual(testVectorA.Ort(), Vector2D(0.0f, 0.0f));
+			Assert::AreEqual(testVectorA.ort(), Vector2D(0.0f, 0.0f));
 		}
 
 		TEST_METHOD(TestVectorGetRotation)
@@ -180,11 +180,11 @@ namespace TestVector2D
 			Vector2D testVectorD(0.0f, -1.0f);
 			Vector2D testVectorE(0.0f, 0.0f);
 		
-			Assert::AreEqual(testVectorA.GetRotation().GetValue(), 0.0f);
-			Assert::AreEqual(testVectorB.GetRotation().GetValue(), PI);
-			Assert::AreEqual(testVectorC.GetRotation().GetValue(), PI/2);
-			Assert::AreEqual(testVectorD.GetRotation().GetValue(), -PI/2);
-			Assert::AreEqual(testVectorE.GetRotation().GetValue(), 0.0f);		//Invalid parameter should not cause errors
+			Assert::AreEqual(testVectorA.rotation().getValue(), 0.0f);
+			Assert::AreEqual(testVectorB.rotation().getValue(), PI);
+			Assert::AreEqual(testVectorC.rotation().getValue(), PI/2);
+			Assert::AreEqual(testVectorD.rotation().getValue(), -PI/2);
+			Assert::AreEqual(testVectorE.rotation().getValue(), 0.0f);		//Invalid parameter should not cause errors
 		}
 
 		TEST_METHOD(TestVectorDotProduct)
@@ -204,14 +204,14 @@ namespace TestVector2D
 			Vector2D testVectorB(16.9f, 803.27f);
 
 			// Another (slowlest) way to calc projection vector
-			Vector2D projectAB = testVectorA.Ort() * testVectorB.Size() * cos((testVectorA.GetRotation() - testVectorB.GetRotation()).GetValue());
+			Vector2D projectAB = testVectorA.ort() * testVectorB.size() * cos((testVectorA.rotation() - testVectorB.rotation()).getValue());
 
-			Assert::AreEqual(testVectorA.Project(oX), Vector2D(5.2f, 0.0f));
-			Assert::AreEqual(testVectorB.Project(oYxFive), Vector2D(0.0f, 803.27f));
-			Assert::AreEqual(oYxFive.Project(oX), Vector2D(0.0f, 0.0f));
-			Assert::AreEqual(testVectorA.Project(oX) + testVectorA.Project(oYxFive), testVectorA);
+			Assert::AreEqual(testVectorA.project(oX), Vector2D(5.2f, 0.0f));
+			Assert::AreEqual(testVectorB.project(oYxFive), Vector2D(0.0f, 803.27f));
+			Assert::AreEqual(oYxFive.project(oX), Vector2D(0.0f, 0.0f));
+			Assert::AreEqual(testVectorA.project(oX) + testVectorA.project(oYxFive), testVectorA);
 		
-			Assert::AreEqual(testVectorB.Project(testVectorA), projectAB);
+			Assert::AreEqual(testVectorB.project(testVectorA), projectAB);
 		}
 	};
 }

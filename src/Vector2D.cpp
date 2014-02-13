@@ -4,91 +4,91 @@ const float VECTOR_ERROR = 0.0001f;
 
 Vector2D::Vector2D(float x, float y)
 {
-	X = x;
-	Y = y;
+	this->x = x;
+	this->y = y;
 }
 
-Vector2D::Vector2D(const Vector2D& vect)
+Vector2D::Vector2D(const Vector2D& vector)
 {
-	X = vect.X;
-	Y = vect.Y;
+	this->x = vector.x;
+	this->y = vector.y;
 }
 
-Vector2D::Vector2D(Rotator rot)
+Vector2D::Vector2D(Rotator rotator)
 {
-	X = cos(rot.GetValue());
-	Y = sin(rot.GetValue());
+	this->x = cos(rotator.getValue());
+	this->y = sin(rotator.getValue());
 }
 
 Vector2D::~Vector2D(void)
 {
 }
 
-float Vector2D::Size(void)
+float Vector2D::size(void)
 {
-	return sqrt(X*X + Y*Y);
+	return sqrt((this->x * this->x) + (this->y * this->y));
 }
 
-float Vector2D::QSize(void)
+float Vector2D::qSize(void)
 {
-	return X*X + Y*Y;
+	return (this->x * this->x) + (this->y * this->y);
 }
 
-Vector2D Vector2D::Ort(void)
+Vector2D Vector2D::ort(void)
 {
-	if (X == 0.0f && Y == 0.0f)
-		return ZeroVector;
+	if (this->x == 0.0f && this->y == 0.0f)
+		return ZERO_VECTOR;
 
-	return *this / Size();
+	return (*this) / this->size();
 }
 
-Rotator Vector2D::GetRotation(void)
+Rotator Vector2D::rotation(void)
 {
-	return atan2(Y, X);
+	return atan2(this->y, this->x);
 }
 
-Vector2D Vector2D::MirrorH()
+Vector2D Vector2D::mirrorH()
 {
-	return Vector2D(-X, Y);
+	return Vector2D(-this->x, this->y);
 }
 
-Vector2D Vector2D::MirrorV()
+Vector2D Vector2D::mirrorV()
 {
-	return Vector2D(X, -Y);
+	return Vector2D(this->x, -this->y);
 }
 
-Vector2D Vector2D::GetNormal()
+Vector2D Vector2D::normal()
 {
-	return GetRotation() - PI/2;
+	return this->rotation() - PI/2;
 }
 
-Vector2D Vector2D::Project(Vector2D base)
+Vector2D Vector2D::project(Vector2D base)
 {
-	float qSize = base.QSize();
-	Vector2D result(ZeroVector);
+	float qSize = base.qSize();
+	Vector2D result(ZERO_VECTOR);
 
 	if (qSize != 0.0f)
 	{
-		float dProduct = DotProduct(base, *this);
+		float dProduct = DotProduct(base, (*this));
 		result = base * dProduct / qSize;
 	}
 
 	return result;
 }
 
-Vector2D operator-(const Vector2D& vect)
+Vector2D operator-(const Vector2D& vector)
 {
-	Vector2D newVect(vect);
-	newVect.X = -vect.X;
-	newVect.Y = -vect.Y;
+	Vector2D newVect(vector);
+	newVect.x = -vector.x;
+	newVect.y = -vector.y;
 	return newVect;
 }
 
 bool operator==(const Vector2D& left, const Vector2D& right)
 {
 	float vError = 0.0f;
-	vError += abs(left.X - right.X);
-	vError += abs(left.Y - right.Y);
+	vError += abs(left.x - right.x);
+	vError += abs(left.y - right.y);
 
 	return vError <= VECTOR_ERROR;
 }
@@ -102,16 +102,16 @@ Vector2D operator+(const Vector2D& left, const Vector2D& right)
 {
 	Vector2D newVect(left);
 	
-	newVect.X += right.X;
-	newVect.Y += right.Y;
+	newVect.x += right.x;
+	newVect.y += right.y;
 
 	return newVect;
 }
 
 Vector2D operator+=(Vector2D& left, const Vector2D& right)
 {
-	left.X += right.X;
-	left.Y += right.Y;
+	left.x += right.x;
+	left.y += right.y;
 
 	return Vector2D(left);
 }
@@ -120,16 +120,16 @@ Vector2D operator-(const Vector2D& left, const Vector2D& right)
 {
 	Vector2D newVect(left);
 	
-	newVect.X -= right.X;
-	newVect.Y -= right.Y;
+	newVect.x -= right.x;
+	newVect.y -= right.y;
 
 	return newVect;
 }
 
 Vector2D operator-=(Vector2D& left, const Vector2D& right)
 {
-	left.X -= right.X;
-	left.Y -= right.Y;
+	left.x -= right.x;
+	left.y -= right.y;
 
 	return Vector2D(left);
 }
@@ -138,63 +138,63 @@ Vector2D operator*(const Vector2D& vect, float scalar)
 {
 	Vector2D newVect(vect);
 	
-	newVect.X *= scalar;
-	newVect.Y *= scalar;
+	newVect.x *= scalar;
+	newVect.y *= scalar;
 
 	return newVect;
 }
 
-Vector2D operator*(float scalar, const Vector2D& vect)
+Vector2D operator*(float scalar, const Vector2D& vector)
 {
-	Vector2D newVect(vect);
+	Vector2D newVect(vector);
 	
-	newVect.X *= scalar;
-	newVect.Y *= scalar;
+	newVect.x *= scalar;
+	newVect.y *= scalar;
 
 	return newVect;
 }
 
-Vector2D operator*=(Vector2D& vect, float scalar)
+Vector2D operator*=(Vector2D& vector, float scalar)
 {
-	vect.X *= scalar;
-	vect.Y *= scalar;
+	vector.x *= scalar;
+	vector.y *= scalar;
 
-	return Vector2D(vect);
+	return Vector2D(vector);
 }
 
-Vector2D operator*=(float scalar, Vector2D& vect)
+Vector2D operator*=(float scalar, Vector2D& vector)
 {
-	vect.X *= scalar;
-	vect.Y *= scalar;
+	vector.x *= scalar;
+	vector.y *= scalar;
 
-	return Vector2D(vect);
+	return Vector2D(vector);
 }
 
-Vector2D operator/(const Vector2D& vect, float scalar)
+Vector2D operator/(const Vector2D& vector, float scalar)
 {
-	Vector2D newVect(vect);
+	Vector2D newVect(vector);
 	
-	newVect.X /= scalar;
-	newVect.Y /= scalar;
+	newVect.x /= scalar;
+	newVect.y /= scalar;
 
 	return newVect;
 }
 
-Vector2D operator/=(Vector2D& vect, float scalar)
+Vector2D operator/=(Vector2D& vector, float scalar)
 {
-	vect.X /= scalar;
-	vect.Y /= scalar;
+	vector.x /= scalar;
+	vector.y /= scalar;
 
-	return Vector2D(vect);
+	return Vector2D(vector);
 }
 
 float DotProduct(const Vector2D& left, const Vector2D& right)
 {
-	return left.X*right.X + left.Y*right.Y;
+	return left.x * right.x + left.y * right.y;
 }
 
-const Vector2D LeftDirection(-1.0f, 0.0f);
-const Vector2D RightDirection(1.0f, 0.0f);
-const Vector2D UpDirection(0.0f, -1.0f);
-const Vector2D DownDirection(0.0f, 1.0f);
-const Vector2D ZeroVector(0.0f, 0.0f);
+const Vector2D LEFT_DIRECTION(-1.0f, 0.0f);
+const Vector2D RIGHT_DIRECTION(1.0f, 0.0f);
+const Vector2D UP_DIRECTION(0.0f, -1.0f);
+const Vector2D DOWN_DIRECTION(0.0f, 1.0f);
+const Vector2D ZERO_VECTOR(0.0f, 0.0f);

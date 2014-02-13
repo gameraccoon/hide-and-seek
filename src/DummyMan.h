@@ -19,32 +19,32 @@ public:
 	virtual ~DummyMan();
 
 	/** Say that we want to move the man on this step */
-	virtual void Move(Vector2D step);
+	virtual void move(Vector2D step);
 
 	/** Render the actor in the current location */
-	void Render(Vector2D shift, Rotator angle);
+	void render(Vector2D shift, Rotator angle);
 
-	void GiveWeapon(Weapon *weap);
+	void giveWeapon(Weapon *weap);
 	
 	/** Start shoting if the man have a weapon */
-	void StartShoting(Vector2D targetLocation);
-	void StopShoting();
+	void startShoting(Vector2D targetLocation);
+	void stopShoting();
 
 	/** Try to take some damage to the man =) */
-	virtual void TakeDamage(float damageValue,Vector2D impulse);
+	virtual void takeDamage(float damageValue,Vector2D impulse);
 protected:
 	/** */
-	void UpdateCollision();
+	void updateCollision();
 	/** Hero moving speed in Px/s */
-	float Speed;
+	float speed;
 	/** */
-	Vector2D Size;
+	Vector2D size;
 	/** Texture of all man's sprites */
-	HTEXTURE ManTexture;
+	HTEXTURE manTexture;
 	/** Inventory */
 	std::vector<InventoryItem*> Inventory;
 	/** */
-	Weapon *ArmedWeapon;
+	Weapon *armedWeapon;
 	/** Is we shooting */
 	bool bShooting;
 };

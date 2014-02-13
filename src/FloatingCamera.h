@@ -9,12 +9,12 @@ public:
 	FloatingCamera(World* world, Vector2D resolution, Vector2D location);
 	~FloatingCamera(void);
 	/** Set new location of this camera in the world */
-	void SetLocation(Vector2D newLocation);
+	void setLocation(Vector2D newLocation);
 	/** Set shift of center of the screen */
-	void SetCenterShift(Vector2D shift);
+	void setCenterShift(Vector2D shift);
 protected:
-	void RenderFog();
-	Vector2D Shift;
+	void renderFog();
+	Vector2D shift;
 };
 
 #endif

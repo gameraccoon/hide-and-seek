@@ -28,15 +28,15 @@ public:
      *
      * It should be overridden in the the child class.
      */
-	virtual void Run() = 0;
+	virtual void run() = 0;
 
 	/**
 	 * Get the process ID
 	 */
-    int GetId();
+    int getId();
 private:
 	/** ID of the process */
-	int ProcessID;
+	int processID;
 };
 
 /**
@@ -59,22 +59,22 @@ public:
     /**
      * Добавить новый процесс
      */
-    void Add(Process *process);
+    void add(Process *process);
 
     /**
      * Запустить выполнение всех процессов
      */
-    void Run();
+    void run();
 
     /**
 	 * Удалить все экземпляры процессов с определённым ID
      */
-	void Remove(int id);
+	void remove(int id);
 private:
     /**
      * Вершина стека
      */
-    ProcessContainer *First;
+    ProcessContainer *first;
 };
 
 #endif

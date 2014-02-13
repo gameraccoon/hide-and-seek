@@ -2,40 +2,42 @@
 
 #include "Hero.h"
 
-const byte RayTrace::LeftBit = 1;
-const byte RayTrace::RightBit = 2;
-const byte RayTrace::BottomBit = 4;
-const byte RayTrace::TopBit = 8;
+const byte RayTrace::LEFT_BIT = 1;
+const byte RayTrace::RIGHT_BIT = 2;
+const byte RayTrace::BOTTOM_BIT = 4;
+const byte RayTrace::TOP_BIT = 8;
 
-RayTrace::RayTrace(World * world, Vector2D start, Vector2D end) : StartPoint(start),
-																EndPoint(end),
-																Angle((end - start).GetRotation())
+RayTrace::RayTrace(World * world, Vector2D start, Vector2D end) : startPoint(start),
+	endPoint(end),
+	angle((end - start).rotation())
 {
-	OwnerWorld = world;
-	RayLength = (end - start).Size();
+	this->ownerWorld = world;
+	this->rayLength = (end - start).size();
 }
 
-RayTrace::RayTrace(World * world, Vector2D start, Rotator rotation, float length) : StartPoint(start), EndPoint(Vector2D(rotation) * length), Angle(rotation)
+RayTrace::RayTrace(World * world, Vector2D start, Rotator rotation, float length) : startPoint(start),
+	endPoint(Vector2D(rotation) * length),
+	angle(rotation)
 {
-	OwnerWorld = world;
-	RayLength = length;
+	this->ownerWorld = world;
+	this->rayLength = length;
 }
 
 RayTrace::~RayTrace(void)
 {
 }
 
-byte RayTrace::GetDotCode(const BoundingBox *box, const Vector2D *dot)
+byte RayTrace::getDotCode(const BoundingBox *box, const Vector2D *dot)
 {
-	return (((dot->X < box->MinX) ? LeftBit : 0)
-		| ((dot->X > box->MaxX) ? RightBit : 0)
-		| ((dot->Y < box->MinY) ? BottomBit : 0)
-		| ((dot->Y > box->MaxY) ? TopBit : 0));
+	return (((dot->x < box->minX) ? LEFT_BIT : 0)
+		| ((dot->x > box->maxX) ? RIGHT_BIT : 0)
+		| ((dot->y < box->minY) ? BOTTOM_BIT : 0)
+		| ((dot->y > box->maxY) ? TOP_BIT : 0));
 }
 
 inline float SignedArea(Vector2D a, Vector2D b, Vector2D c)
 {
-	return (b.X - a.X) * (c.Y - a.Y) - (b.Y - a.Y) * (c.X - a.X);
+	return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
 }
 
 inline void Swap(float &a, float &b)
@@ -69,10 +71,10 @@ inline bool IsAAIntersect(float a, float b, float c, float d)
 	return std::max(a, c) <= std::min(b, d);
 }
 
-bool RayTrace::CheckIntersect2Lines(Vector2D A1, Vector2D A2, Vector2D B1, Vector2D B2)
+bool RayTrace::checkIntersect2Lines(Vector2D A1, Vector2D A2, Vector2D B1, Vector2D B2)
 {
-	if (IsAAIntersect(A1.X, A2.X, B1.X, B2.X)
-		&& IsAAIntersect(A1.Y, A2.Y, B1.Y, B2.Y)
+	if (IsAAIntersect(A1.x, A2.x, B1.x, B2.x)
+		&& IsAAIntersect(A1.y, A2.y, B1.y, B2.y)
 		&& SignedArea(A1, A2, B1) * SignedArea(A1, A2, B2) <= 0
 		&& SignedArea(B1, B2, A1) * SignedArea(B1, B2, A2) <= 0)
 	{
@@ -81,14 +83,14 @@ bool RayTrace::CheckIntersect2Lines(Vector2D A1, Vector2D A2, Vector2D B1, Vecto
 	return false;
 }
 
-Vector2D RayTrace::GetPointIntersect2Lines(Vector2D A1, Vector2D A2, Vector2D B1, Vector2D B2)
+Vector2D RayTrace::getPointIntersect2Lines(Vector2D A1, Vector2D A2, Vector2D B1, Vector2D B2)
 {
-	float DA1 = A1.Y - A2.Y;
-	float DB1 = A2.X - A1.X;
-	float DC1 = -DA1 * A1.X - DB1 * A1.Y;
-	float DA2 = B1.Y - B2.Y;
-	float DB2 = B2.X - B1.X;
-	float DC2 = -DA2 * B1.X - DB2 * B1.Y;
+	float DA1 = A1.y - A2.y;
+	float DB1 = A2.x - A1.x;
+	float DC1 = -DA1 * A1.x - DB1 * A1.y;
+	float DA2 = B1.y - B2.y;
+	float DB2 = B2.x - B1.x;
+	float DC2 = -DA2 * B1.x - DB2 * B1.y;
 
 	float zn = Det(DA1, DB1, DA2, DB2);
 	
@@ -98,37 +100,37 @@ Vector2D RayTrace::GetPointIntersect2Lines(Vector2D A1, Vector2D A2, Vector2D B1
 		float x = (float) (-Det(DC1, DB1, DC2, DB2) * 1. / zn);
 		float y = (float) (-Det(DA1, DC1, DA2, DC2) * 1. / zn);
 
-		if (IsBetween(A1.X, A2.X, x) && IsBetween(A1.Y, A2.Y, y)
-			&& IsBetween(B1.X, B2.X, x) && IsBetween(B1.Y, B2.Y, y))
+		if (IsBetween(A1.x, A2.x, x) && IsBetween(A1.y, A2.y, y)
+			&& IsBetween(B1.x, B2.x, x) && IsBetween(B1.y, B2.y, y))
 		{
 			return Vector2D(x, y);
 		}
 	}
 
 	// if lines not intersected
-	return ZeroVector;
+	return ZERO_VECTOR;
 }
 
-bool RayTrace::CheckIntersectAABBLine(const BoundingBox* box, const Vector2D* first, const Vector2D* last)
+bool RayTrace::checkIntersectAABBLine(const BoundingBox* box, const Vector2D* first, const Vector2D* last)
 {
-	float l = box->MinX;
-	float t = box->MinY;
-	float r = box->MaxX;
-	float b = box->MaxY;
+	float l = box->minX;
+	float t = box->minY;
+	float r = box->maxX;
+	float b = box->maxY;
 
-	float x1 = first->X;
-	float y1 = first->Y;
-	float x2 = last->X;
-	float y2 = last->Y;
+	float x1 = first->x;
+	float y1 = first->y;
+	float x2 = last->x;
+	float y2 = last->y;
 
 	// ToDo: make it simpler (for axis-aligned borders)
-	if (CheckIntersect2Lines(Vector2D(l, t), Vector2D(l, b), Vector2D(x1, y1), Vector2D(x2, y2))
+	if (this->checkIntersect2Lines(Vector2D(l, t), Vector2D(l, b), Vector2D(x1, y1), Vector2D(x2, y2))
 		||
-		CheckIntersect2Lines(Vector2D(r, t), Vector2D(r, b), Vector2D(x1, y1), Vector2D(x2, y2))
+		this->checkIntersect2Lines(Vector2D(r, t), Vector2D(r, b), Vector2D(x1, y1), Vector2D(x2, y2))
 		||
-		CheckIntersect2Lines(Vector2D(l, t), Vector2D(r, t), Vector2D(x1, y1), Vector2D(x2, y2))
+		this->checkIntersect2Lines(Vector2D(l, t), Vector2D(r, t), Vector2D(x1, y1), Vector2D(x2, y2))
 		||
-		CheckIntersect2Lines(Vector2D(l, b), Vector2D(r, b), Vector2D(x1, y1), Vector2D(x2, y2)))
+		this->checkIntersect2Lines(Vector2D(l, b), Vector2D(r, b), Vector2D(x1, y1), Vector2D(x2, y2)))
 	{
 		return true;
 	}
@@ -138,31 +140,31 @@ bool RayTrace::CheckIntersectAABBLine(const BoundingBox* box, const Vector2D* fi
 	}
 }
 
-bool RayTrace::CheckIntersectVertLineWithLine(Vector2D A1, Vector2D A2, float x, float minY, float maxY)
+bool RayTrace::checkIntersectVertLineWithLine(Vector2D A1, Vector2D A2, float x, float minY, float maxY)
 {
 	return true;
 }
 
-bool RayTrace::CheckIntersectHoryLineWithLine(Vector2D A1, Vector2D A2, float y, float minX, float maxX)
+bool RayTrace::checkIntersectHoryLineWithLine(Vector2D A1, Vector2D A2, float y, float minX, float maxX)
 {
 	return true;
 }
 
-bool RayTrace::FastTrace()
+bool RayTrace::fastTrace()
 {
 	IActor *itActor;
 	// for each actor in the world
-	for (std::set<IActor*>::iterator it = OwnerWorld->AllActors.begin(); it != OwnerWorld->AllActors.end(); it++)
+	for (std::set<IActor*>::iterator i = this->ownerWorld->allActors.begin(), iEnd = this->ownerWorld->allActors.end(); i != iEnd; i++)
 	{
-		itActor = *it;
-		if ((*it)->GetType() != AT_Light && (*it)->GetType() != AT_Special)
+		itActor = *i;
+		if (itActor->getType() != AT_Light && itActor->getType() != AT_Special)
 		{
 			// get bounding box of current actor
-			BoundingBox box = itActor->GetBoundingBox();
+			BoundingBox box = itActor->getBoundingBox();
 			// get cohen's code for start point
-			byte a = GetDotCode(&box, &StartPoint);
+			byte a = this->getDotCode(&box, &this->startPoint);
 			// get cohen's code for end point
-			byte b = GetDotCode(&box, &EndPoint);
+			byte b = this->getDotCode(&box, &this->endPoint);
 
 			// if points on some side of BB
 			if ((a & b) != 0)
@@ -176,21 +178,22 @@ bool RayTrace::FastTrace()
 				||
 				((a | b) == 3 || (a | b) == 12)							// points on opposite sides of BB // 0011 or 1100 
 				||
-				CheckIntersectAABBLine(&box, &StartPoint, &EndPoint))	// other cases of intersection
+				this->checkIntersectAABBLine(&box, &this->startPoint, &this->endPoint))	// other cases of intersection
 			{
 				//return true;
 				// get hull of current actor
-                Hull *hull = itActor->GetHull();
+                Hull *hull = itActor->getHull();
 
 				// for each border
-				for (std::vector<Border>::iterator it2 = hull->Borders.begin(); it2 != hull->Borders.end(); it2++)
+				for (std::vector<Border>::iterator it2 = hull->borders.begin(); it2 != hull->borders.end(); it2++)
 				{
-					Vector2D actorsLocation((*it)->GetLocation());
+					Vector2D actorsLocation(itActor->getLocation());
 					// if ray have different direction with normal
-					if (abs((it2->GetNormal().GetRotation() - (EndPoint - StartPoint).GetRotation()).GetValue()) > PI/2)
+					if (abs((it2->getNormal().rotation() - (this->endPoint - this->startPoint).rotation()).getValue()) > PI/2)
 					{
 						// if raytrace intersect this border
-						if (CheckIntersect2Lines(actorsLocation + it2->GetA(), actorsLocation + it2->GetB(), StartPoint, EndPoint))
+						if (this->checkIntersect2Lines(actorsLocation + it2->getA(), actorsLocation + it2->getB(),
+							this->startPoint, this->endPoint))
 						{
 							return true;
 						}
@@ -202,21 +205,21 @@ bool RayTrace::FastTrace()
 	return false;
 }
 
-IActor* RayTrace::Trace(Vector2D *point, Vector2D *normal)
+IActor* RayTrace::trace(Vector2D *outPoint, Vector2D *outNormal)
 {
 	IActor *itActor;
 	// for each actor in the world
-	for (std::set<IActor*>::iterator it = OwnerWorld->AllActors.begin(); it != OwnerWorld->AllActors.end(); it++)
+	for (std::set<IActor*>::iterator i = this->ownerWorld->allActors.begin(), iEnd = this->ownerWorld->allActors.end(); i != iEnd; i++)
 	{
-		itActor = *it;
-		if ((*it)->GetType() != AT_Light && (*it)->GetType() != AT_Special)
+		itActor = *i;
+		if (itActor->getType() != AT_Light && itActor->getType() != AT_Special)
 		{
 			// get bounding box of current actor
-			BoundingBox box = itActor->GetBoundingBox();
+			BoundingBox box = itActor->getBoundingBox();
 			// get cohen's code for start point
-			byte a = GetDotCode(&box, &StartPoint);
+			byte a = this->getDotCode(&box, &this->startPoint);
 			// get cohen's code for end point
-			byte b = GetDotCode(&box, &EndPoint);
+			byte b = this->getDotCode(&box, &this->endPoint);
 
 			// if points on some side of BB
 			if ((a & b) != 0)
@@ -230,28 +233,35 @@ IActor* RayTrace::Trace(Vector2D *point, Vector2D *normal)
 				||
 				((a | b) == 3 || (a | b) == 12)							// points on opposite sides of BB // 0011 or 1100 
 				||
-				CheckIntersectAABBLine(&box, &StartPoint, &EndPoint))	// other cases of intersection
+				this->checkIntersectAABBLine(&box, &this->startPoint, &this->endPoint))	// other cases of intersection
 			{
 				//return true;
 				// get hull of current actor
-                Hull *hull = itActor->GetHull();
+                Hull *hull = itActor->getHull();
 
 				// for each border
-				for (std::vector<Border>::iterator it2 = hull->Borders.begin(); it2 != hull->Borders.end(); it2++)
+				for (std::vector<Border>::iterator j = hull->borders.begin(), jEnd = hull->borders.end(); j != jEnd; j++)
 				{
-					Vector2D actorsLocation((*it)->GetLocation());
+					Vector2D actorsLocation(itActor->getLocation());
 					// if ray have different direction with normal
-					if (abs((it2->GetNormal().GetRotation() - (EndPoint - StartPoint).GetRotation()).GetValue()) > PI/2)
+					if (abs((j->getNormal().rotation() - (this->endPoint - this->startPoint).rotation()).getValue()) > PI/2)
 					{
 						// if raytrace intersect this border
-						if (CheckIntersect2Lines(actorsLocation + it2->GetA(), actorsLocation + it2->GetB(), StartPoint, EndPoint))
+						if (this->checkIntersect2Lines(actorsLocation + j->getA(), actorsLocation + j->getB(), this->startPoint, this->endPoint))
 						{
 							// return all values
-							if (point != NULL)
-								*point = GetPointIntersect2Lines(actorsLocation + it2->GetA(), actorsLocation + it2->GetB(), StartPoint, EndPoint);
-							if (normal != NULL)
-								*normal = it2->GetNormal();
-							return *it;
+							if (outPoint != NULL)
+							{
+								*outPoint = this->getPointIntersect2Lines(actorsLocation + j->getA(), actorsLocation + j->getB(),
+									this->startPoint, this->endPoint);
+							}
+
+							if (outNormal != NULL)
+							{
+								*outNormal = j->getNormal();
+							}
+
+							return itActor;
 						}
 					}
 				}

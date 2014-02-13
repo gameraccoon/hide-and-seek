@@ -6,8 +6,8 @@ class InventoryItem
 public:
 	InventoryItem(void);
 	virtual ~InventoryItem(void);
-	virtual bool IsEquipped();
-	virtual void SetEquipped(bool equipped);
+	virtual bool isEquipped();
+	virtual void setEquipped(bool equipped);
 private:
 	bool bEquipped;
 };

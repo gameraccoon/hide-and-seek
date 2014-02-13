@@ -2,75 +2,75 @@
 
 World::World(HGE* hge)
 {
-	Hge = hge;
+	this->hge = hge;
 }
 
 World::~World(void)
 {
-	ActorsSet::iterator it, next = AllActors.begin(), end = AllActors.end();
+	ActorsSet::iterator i, iNext = this->allActors.begin(), iEnd = this->allActors.end();
 
-	while (next != end)
+	while (iNext != iEnd)
 	{
-		it = next;
-		next++;
+		i = iNext;
+		iNext++;
 		
-		AllActors.erase(it);
+		this->allActors.erase(i);
 
-		delete (*it);
+		delete (*i);
 	}
 
-	delete (*end);
+	delete (*iEnd);
 
-	AllActors.clear();
-	RemoveAllPathPoints();
+	this->allActors.clear();
+	this->removeAllPathPoints();
 }
 
-void World::Spawn(IActor* actor)
+void World::spawnActor(IActor* actor)
 {
-	AllActors.insert(actor);
+	this->allActors.insert(actor);
 }
 
-void World::Delete(IActor* actor)
+void World::removeActor(IActor* actor)
 {
-	AllActors.erase(actor);
+	this->allActors.erase(actor);
 }
 
-void World::Update(float deltatime)
+void World::update(float deltatime)
 {
-	for (ActorsSet::iterator it = AllActors.begin(), end = AllActors.end(); it != end; it++)
+	for (ActorsSet::iterator i = this->allActors.begin(), iEnd = this->allActors.end(); i != iEnd; i++)
 	{
-		(*it)->Update(deltatime);
+		(*i)->update(deltatime);
 	}
 
-	CleanDestroyedActors();
+	this->cleanDestroyedActors();
 }
 
-HGE* World::GetHge()
+HGE* World::getHge()
 {
-	return Hge;
+	return this->hge;
 }
 
-void World::AddPathPoint(PathPoint* newPoint)
+void World::addPathPoint(PathPoint* pathPoint)
 {
-	NavigationMap.insert(newPoint);
+	this->navigationMap.insert(pathPoint);
 }
 
-void World::RemoveAllPathPoints()
+void World::removeAllPathPoints()
 {
-	for (PathPointsSet::iterator it = NavigationMap.begin(), end = NavigationMap.end(); it != end; it++)
+	for (PathPointsSet::iterator i = this->navigationMap.begin(), iEnd = this->navigationMap.end(); i != iEnd; i++)
 	{
-		delete (*it);
+		delete (*i);
 	}
 }
 
-void World::CleanDestroyedActors()
+void World::cleanDestroyedActors()
 {
-	for (ActorsSet::iterator it = AllActors.begin(), end = AllActors.end(); it != end; it++)
+	for (ActorsSet::iterator i = this->allActors.begin(), iEnd = this->allActors.end(); i != iEnd; i++)
 	{
-		if ((*it)->IsWaitDestruction())
+		if ((*i)->isWaitDestruction())
 		{
-			IActor* actorToDelete = (*it);
-			AllActors.erase(actorToDelete);
+			IActor* actorToDelete = (*i);
+			this->allActors.erase(actorToDelete);
 			delete actorToDelete;
 		}
 	}

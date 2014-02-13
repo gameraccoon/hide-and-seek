@@ -20,10 +20,8 @@
     <ClCompile Include="..\src\DirectionArrow.cpp" />
     <ClCompile Include="..\src\DummyMan.cpp" />
     <ClCompile Include="..\src\FloatingCamera.cpp" />
-    <ClCompile Include="..\src\Globals.cpp" />
     <ClCompile Include="..\src\Hero.cpp" />
     <ClCompile Include="..\src\Hull.cpp" />
-    <ClCompile Include="..\src\IActor.cpp" />
     <ClCompile Include="..\src\InventoryItem.cpp" />
     <ClCompile Include="..\src\KeyListeners.cpp" />
     <ClCompile Include="..\src\LevelLoader.cpp" />

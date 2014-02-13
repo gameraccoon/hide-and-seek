@@ -17,25 +17,25 @@ public:
 	DirectionArrow(HGE *hge);
 	~DirectionArrow(void);
 	/** Set center of arrow in world coordinates */
-	void SetCenter(Vector2D newCenter);
+	void setCenter(Vector2D center);
 	/** Set new direction of arrow */
-	void SetDirection(Rotator newDirection);
+	void setDirection(Rotator direction);
 	/** Set new direction by vector */
-	void SetVDirection(Vector2D vectDirection);
+	void setVDirection(Vector2D vectDirection);
 	/** Render arrow to screen */
-	void Render();
+	void render();
 private:
 	/** Location of center of this arrow */
-	Vector2D CenterLocation;
+	Vector2D centerLocation;
 	/** Arrow direction in world */
-	Rotator Direction;
+	Rotator direction;
 	/** Pointer of the HGE subsystem */
-	HGE *Hge;
+	HGE *hge;
 	/** Is arrow can be rendered now? */
 	bool bDrawable;
-	hgeSprite* ArrowSprite;
+	hgeSprite* arrowSprite;
 	/** Texture includes all the sprites DirectionArrow */
-	HTEXTURE ArrowTexture;
+	HTEXTURE arrowTexture;
 };
 
 #endif

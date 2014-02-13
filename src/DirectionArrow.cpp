@@ -1,44 +1,44 @@
 #include "DirectionArrow.h"
 
-DirectionArrow::DirectionArrow(HGE *hge) : CenterLocation(ZeroVector), Direction(0.0f)
+DirectionArrow::DirectionArrow(HGE *hge) : centerLocation(ZERO_VECTOR), direction(0.0f)
 {
-	Hge = hge;
+	this->hge = hge;
 
-	ArrowTexture = Hge->Texture_Load("arrow.png");
+	this->arrowTexture = this->hge->Texture_Load("arrow.png");
 
-	WARN_IF(!ArrowTexture, "Texture 'arrow.png' not found!");
+	WARN_IF(!this->arrowTexture, "Texture 'arrow.png' not found!");
 		
-	ArrowSprite = new hgeSprite(ArrowTexture, 0, 0, 32, 32);
-	ArrowSprite->SetColor(0xFF00AA00);
-	ArrowSprite->SetHotSpot(16, 16);
+	this->arrowSprite = new hgeSprite(this->arrowTexture, 0, 0, 32, 32);
+	this->arrowSprite->SetColor(0xFF00AA00);
+	this->arrowSprite->SetHotSpot(16, 16);
 
 	bDrawable = false;
 }
 
 DirectionArrow::~DirectionArrow(void)
 {
-	delete ArrowSprite;
-	Hge->Texture_Free(ArrowTexture);
+	delete this->arrowSprite;
+	this->hge->Texture_Free(this->arrowTexture);
 }
 
-void DirectionArrow::SetCenter(Vector2D newCenter)
+void DirectionArrow::setCenter(Vector2D center)
 {
-	CenterLocation = newCenter;
+	this->centerLocation = center;
 }
 
-void DirectionArrow::SetDirection(Rotator newDirection)
+void DirectionArrow::setDirection(Rotator direction)
 {
-	bDrawable = true;
-	Direction = newDirection;
+	this->bDrawable = true;
+	this->direction = direction;
 }
 
 
-void DirectionArrow::SetVDirection(Vector2D vectDirection)
+void DirectionArrow::setVDirection(Vector2D vectDirection)
 {
-	if (vectDirection != ZeroVector)
+	if (vectDirection != ZERO_VECTOR)
 	{
-		bDrawable = true;
-		Direction = vectDirection.GetRotation();
+		this->bDrawable = true;
+		this->direction = vectDirection.rotation();
 	}
 	else
 	{
@@ -47,11 +47,11 @@ void DirectionArrow::SetVDirection(Vector2D vectDirection)
 }
 
 
-void DirectionArrow::Render()
+void DirectionArrow::render()
 {
-	if (bDrawable)
+	if (this->bDrawable)
 	{
-		Vector2D location = CenterLocation + Vector2D(Direction) * 50;
-		ArrowSprite->RenderEx(location.X, location.Y, Direction.GetValue());
+		Vector2D location = this->centerLocation + Vector2D(this->direction) * 50;
+		this->arrowSprite->RenderEx(location.x, location.y, this->direction.getValue());
 	}
 }

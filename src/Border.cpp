@@ -1,7 +1,9 @@
 #include "Border.h"
 
 
-Border::Border(Vector2D a, Vector2D b) : A(a), B(b), Normal((b - a).GetNormal())
+Border::Border(Vector2D a, Vector2D b) : a(a),
+										b(b),
+										normal((b - a).normal())
 {
 }
 
@@ -9,31 +11,35 @@ Border::~Border(void)
 {
 }
 
-Vector2D Border::GetNormal()
+Vector2D Border::getNormal()
 {
-	return Normal;
+	return this->normal;
 }
 
-Vector2D Border::GetA()
+Vector2D Border::getA()
 {
-	return A;
+	return this->a;
 }
 
-Vector2D Border::GetB()
+Vector2D Border::getB()
 {
-	return B;
+	return this->b;
 }
 
-void Border::SetA(Vector2D a)
+void Border::setA(Vector2D a)
 {
-	A = a;
-	// recalculate normal
-	Normal = (B - a).GetNormal();
+	this->a = a;
+	calculateNormal();
 }
 
-void Border::SetB(Vector2D b)
+void Border::setB(Vector2D b)
 {
-	B = b;
-	// recalculate normal
-	Normal = (b - A).GetNormal();
+	this->b = b;
+	calculateNormal();
+}
+
+void Border::calculateNormal()
+{
+	this->normal = (this->b - this->a).normal();
+
 }

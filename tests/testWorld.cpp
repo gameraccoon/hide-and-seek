@@ -9,7 +9,7 @@ HGE *TestWorldHge;
 World *TestedWorld;
 int TestValue;
 
-class testWorld : public cfixcc::TestFixture
+class TestWorld : public cfixcc::TestFixture
 {
 private:
 	class TestActor : public Actor
@@ -18,73 +18,72 @@ private:
 		TestActor(World * world) : Actor (world, TestWorldHge, ZeroVector) { }
 		~TestActor() { };
 
-		void Update(float deltaTime)
+		void update(float deltaTime)
 		{
-			TestValue += (int)deltaTime;
+			::TestValue += (int)deltaTime;
 		}
 		
-		void Render(Vector2D shift, Rotator angle) { }
+		void render(Vector2D shift, Rotator angle) { }
 	protected:
-		void UpdateCollision() { }
+		void updateCollision() { }
 	};
 
 public:
 
 	static void SetUp()
 	{
-		TestWorldHge = hgeCreate(HGE_VERSION);
-		TestedWorld = new World();
-		TestValue = 0;
+		::TestWorldHge = hgeCreate(HGE_VERSION);
+		::TestedWorld = new World();
+		::TestValue = 0;
 	}
 
 	static void TearDown()
 	{
-		TestWorldHge->Release();
-		delete TestedWorld;
+		::TestWorldHge->Release();
+		delete ::TestedWorld;
 	}
 
 	void testWorldAddingStaticActor()
 	{
-		TestActor actor1(TestedWorld);
+		TestActor actor1(::TestedWorld);
 
-		TestValue = 0;
+		::TestValue = 0;
 
-		TestedWorld->Update(1.f);
+		::TestedWorld->update(1.f);
 
-		CFIXCC_ASSERT_EQUALS(TestValue, 1);
+		CFIXCC_ASSERT_EQUALS(::TestValue, 1);
 	}
 
 	void testWorldDeletionStaticActor()
 	{
-		TestValue = 0;
+		::TestValue = 0;
 
-		TestedWorld->Update(1.f);
+		::TestedWorld->Update(1.f);
 
-		CFIXCC_ASSERT_EQUALS(TestValue, 0);
+		CFIXCC_ASSERT_EQUALS(::TestValue, 0);
 	}
 
 	void testWorldAdditionAndDeletionNonStaticActor()
 	{
-		TestActor *actor1 = new TestActor(TestedWorld);
+		TestActor *actor1 = new TestActor(::TestedWorld);
 
-		TestValue = 0;
+		::TestValue = 0;
 
-		TestedWorld->Update(1.f);
+		::TestedWorld->update(1.f);
 
-		CFIXCC_ASSERT_EQUALS(TestValue, 1);
+		CFIXCC_ASSERT_EQUALS(::TestValue, 1);
 
 		delete actor1;
 
-		TestValue = 0;
+		::TestValue = 0;
 
-		TestedWorld->Update(1.f);
+		::TestedWorld->update(1.f);
 
-		CFIXCC_ASSERT_EQUALS(TestValue, 0);
-
+		CFIXCC_ASSERT_EQUALS(::TestValue, 0);
 	}
 };
 
-CFIXCC_BEGIN_CLASS(testWorld)
+CFIXCC_BEGIN_CLASS(TestWorld)
 	CFIXCC_METHOD(testWorldAddingStaticActor)
 	CFIXCC_METHOD(testWorldDeletionStaticActor)
 	CFIXCC_METHOD(testWorldAdditionAndDeletionNonStaticActor)

@@ -3,80 +3,80 @@
 ButtonSwitcher::ButtonSwitcher(HGE *hge, byte key, bool active)
 {
 	bActive = active;
-	Key = key;
-	Hge = hge;
+	this->key = key;
+	this->hge = hge;
 }
 
 ButtonSwitcher::~ButtonSwitcher()
 {
 }
 
-bool ButtonSwitcher::IsActive()
+bool ButtonSwitcher::isActive()
 {
-	return bActive;
+	return this->bActive;
 }
 
-byte ButtonSwitcher::GetKey()
+byte ButtonSwitcher::getKey()
 {
-	return Key;
+	return this->key;
 }
 
-void ButtonSwitcher::Check()
+void ButtonSwitcher::check()
 {
-	if (Hge->Input_GetKeyState(Key))
+	if (this->hge->Input_GetKeyState(this->key))
 	{
-		if (!bPressed)
+		if (!this->bPressed)
 		{
-			bPressed = true;
-			Switch();
-			Pressed();
+			this->bPressed = true;
+			this->switchState();
+			this->pressed();
 		}
 	}
 	else
 	{
-		if (bPressed)
+		if (this->bPressed)
 		{
-			bPressed = false;
-			Released();
+			this->bPressed = false;
+			this->released();
 		}
 	}
 }
 
-void ButtonSwitcher::Switch()
+void ButtonSwitcher::switchState()
 {
-	bActive = !bActive;
+	this->bActive = !this->bActive;
 }
 
 
-void ButtonListeners::AddListener(ButtonSwitcher *listener)
+void ButtonListeners::addListener(ButtonSwitcher *listener)
 {
-	Listeners.insert(Listeners.begin(), listener);
+	this->listeners.insert(this->listeners.begin(), listener);
 }
 
-void ButtonListeners::Check()
+void ButtonListeners::check()
 {
-	for (int i = 0; i < (int) Listeners.size(); i++)
+	for (int i = 0; i < (int) this->listeners.size(); i++)
 	{
-		Listeners[i]->Check();
+		this->listeners[i]->check();
 	}
 }
 
-bool ButtonListeners::GetActive(int key)
+bool ButtonListeners::isActive(int key)
 {
-	for (int i = 0; i < (int) Listeners.size(); i++)
+	for (int i = 0; i < (int) this->listeners.size(); i++)
 	{
-		if (Listeners[i]->GetKey() == key)
+		if (this->listeners[i]->getKey() == key)
 		{
-			return Listeners[i]->IsActive();
+			return this->listeners[i]->isActive();
 		}
 	}
 
 	return false;
 }
 
-void ButtonListeners::Destruct()
+void ButtonListeners::destruct()
 {
-	for (std::vector<ButtonSwitcher*>::iterator it = Listeners.begin(); it != Listeners.end(); it++)
+	for (std::vector<ButtonSwitcher*>::iterator it = this->listeners.begin(); it != this->listeners.end(); it++)
 	{
 		delete (*it);
 		(*it) = NULL;

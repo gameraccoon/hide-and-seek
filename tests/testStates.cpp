@@ -3,7 +3,7 @@
 #include "..\src\States.h"
 
 int TestValueForTestState;
-class testStates : public cfixcc::TestFixture
+class TestStates : public cfixcc::TestFixture
 {
 private:
 	
@@ -14,9 +14,9 @@ private:
 		{
 		}
 
-		void Process()
+		void process()
 		{
-			TestValueForTestState = 1;
+			::TestValueForTestState = 1;
 		}
 	};
 
@@ -26,9 +26,10 @@ private:
 		~TestStateB()
 		{
 		}
-		void Process()
+		
+		void process()
 		{
-			TestValueForTestState = 2;
+			::TestValueForTestState = 2;
 		}
 	};
 
@@ -38,54 +39,51 @@ private:
 		~TestStateC()
 		{
 		}
-		void Process()
+		
+		void process()
 		{
-			TestValueForTestState = 3;
+			::TestValueForTestState = 3;
 		}
 	};
 public:
-	
-	
 
 	void testStatesStackOneState()
 	{
 		// Test processing statestack with one state
-		TestValueForTestState = 0;
-		StatesStack Stack;
-		Stack.Push(new TestStateA());
-		Stack.Process();
-		CFIXCC_ASSERT_EQUALS(TestValueForTestState, 1);
+		::TestValueForTestState = 0;
+		StatesStack stack;
+		stack.push(new TestStateA());
+		stack.process();
+		CFIXCC_ASSERT_EQUALS(::TestValueForTestState, 1);
 	}
 
 	void testStatesStackMultiplyState()
 	{
 		// Test processing statestack with one state
-		TestValueForTestState = 0;
-		StatesStack Stack;
-		Stack.Push(new TestStateA());	// A <-
-		Stack.Push(new TestStateB());	// A B <-
-		Stack.Process();				// Run B->Process()
-		CFIXCC_ASSERT_EQUALS(TestValueForTestState, 2);
-		TestValueForTestState = 0;
-		Stack.Push(new TestStateC());	// A B C <-
-		Stack.Process();				// Run C->Process()
-		CFIXCC_ASSERT_EQUALS(TestValueForTestState, 3);
-		TestValueForTestState = 0;
-		Stack.Pop();					// A B <-
-		Stack.Process();				// Run B->Process()
-		CFIXCC_ASSERT_EQUALS(TestValueForTestState, 2);
-		TestValueForTestState = 0;
-		Stack.Pop();					// A <-
-		Stack.Process();				// Run A->Process()
-		CFIXCC_ASSERT_EQUALS(TestValueForTestState, 1);
-		TestValueForTestState = 0;
-		Stack.Pop();					// Nothing in stack
+		::TestValueForTestState = 0;
+		StatesStack stack;
+		stack.push(new TestStateA());	// A <-
+		stack.push(new TestStateB());	// A B <-
+		stack.process();				// Run B->Process()
+		CFIXCC_ASSERT_EQUALS(::TestValueForTestState, 2);
+		::TestValueForTestState = 0;
+		stack.push(new TestStateC());	// A B C <-
+		stack.process();				// Run C->Process()
+		CFIXCC_ASSERT_EQUALS(::TestValueForTestState, 3);
+		::TestValueForTestState = 0;
+		stack.pop();					// A B <-
+		stack.process();				// Run B->Process()
+		CFIXCC_ASSERT_EQUALS(::TestValueForTestState, 2);
+		::TestValueForTestState = 0;
+		stack.pop();					// A <-
+		stack.process();				// Run A->Process()
+		CFIXCC_ASSERT_EQUALS(::TestValueForTestState, 1);
+		::TestValueForTestState = 0;
+		stack.pop();					// Nothing in stack
 	}
-
 };
 
-CFIXCC_BEGIN_CLASS(testStates)
+CFIXCC_BEGIN_CLASS(TestStates)
 	CFIXCC_METHOD(testStatesStackOneState)
 	CFIXCC_METHOD(testStatesStackMultiplyState)
 CFIXCC_END_CLASS()
-

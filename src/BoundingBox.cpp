@@ -3,40 +3,40 @@
 
 BoundingBox::BoundingBox(float minX, float minY, float maxX, float maxY)
 {
-	MinX = minX;
-	MinY = minY;
-	MaxX = maxX;
-	MaxY = maxY;
+	this->minX = minX;
+	this->minY = minY;
+	this->maxX = maxX;
+	this->maxY = maxY;
 }
 
 BoundingBox::BoundingBox(Vector2D minPoint, Vector2D maxPoint)
 {
-	MinX = minPoint.X;
-	MinY = minPoint.Y;
-	MaxX = maxPoint.X;
-	MaxY = maxPoint.Y;
+	this->minX = minPoint.x;
+	this->minY = minPoint.y;
+	this->maxX = maxPoint.x;
+	this->maxY = maxPoint.y;
 }
 
 BoundingBox::~BoundingBox(void)
 {
 }
 
-Vector2D BoundingBox::GetFirst()
+Vector2D BoundingBox::getFirst()
 {
-	return Vector2D(MinX, MinY);
+	return Vector2D(this->minX, this->minY);
 }
 
-Vector2D BoundingBox::GetThird()
+Vector2D BoundingBox::getThird()
 {
-	return Vector2D(MaxX, MaxY);
+	return Vector2D(this->maxX, this->maxY);
 }
 
-Vector2D BoundingBox::GetSecond()
+Vector2D BoundingBox::getSecond()
 {
-	return Vector2D(MaxX, MinY);
+	return Vector2D(this->maxX, this->minY);
 }
 
-Vector2D BoundingBox::GetFourth()
+Vector2D BoundingBox::getFourth()
 {
-	return Vector2D(MinX, MaxY);
+	return Vector2D(this->minX, this->maxY);
 }

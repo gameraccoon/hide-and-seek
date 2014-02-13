@@ -10,12 +10,12 @@ Hull::~Hull(void)
 {
 }
 
-void Hull::Generate()
+void Hull::generate()
 {
-	Borders.clear();
-	int count = Points.size();
+	this->borders.clear();
+	int count = this->points.size();
 	for (int i = 0; i < count; i++)
 	{
-		Borders.insert(Borders.end(), Border(Points[i], Points[(i + 1) % count]));
+		this->borders.insert(this->borders.end(), Border(this->points[i], this->points[(i + 1) % count]));
 	}
 }
