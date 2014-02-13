@@ -32,7 +32,7 @@ Man::~Man(void)
 {
 }
 
-void Man::Update(float deltaTime)
+void Man::Update(float deltatime)
 {
 	if (DestinationPoint == Location)
 	{
@@ -40,7 +40,7 @@ void Man::Update(float deltaTime)
 		Direction = (DestinationPoint - Location).GetRotation();
 	}
 
-	float stepSize = Speed * deltaTime;
+	float stepSize = Speed * deltatime;
 	if (stepSize > (DestinationPoint - Location).Size())
 	{
 		Location = DestinationPoint;
@@ -77,6 +77,9 @@ void Man::Update(float deltaTime)
 	}
 	
 	UpdateCollision();
+
+	// use superclass method
+	DummyMan::Update(deltatime);
 }
 
 void Man::TakeDamage(float damageValue,Vector2D impulse)

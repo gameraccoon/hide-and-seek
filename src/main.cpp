@@ -97,7 +97,6 @@ public:
 	void Pressed() { MainCamera->ShowPaths(bActive); }
 };
 
-
 class BtnShoot : public ButtonSwitcher
 {
 public:

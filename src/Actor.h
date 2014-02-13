@@ -33,9 +33,13 @@ public:
 	/** Get actor's scale */
 	Vector2D GetScale();
 	/** Process moving and other actions of the Actor */
-	void Update(float deltaTime);
+	void Update(float deltatime);
 	/** Render the actor in the current location */
 	void Render(Vector2D shift, Rotator angle);
+	/** Say to actor, that it mast be destroyed now */
+	void Destroy();
+	/** Is actor wait to be automatically destroyed? */
+	bool IsWaitDestruction();
 	/** Get actor type */
 	EActorType GetType();
 	/** Get axis-aligned bounding box */
@@ -68,6 +72,10 @@ protected:
 	Hull Geometry;
 	/** Specific class identificator */
 	std::string ClassID;
+	/** Is actor wait automatically destruction? */
+	bool bWaitDestruction;
+	/** Time that actor live */
+	float Lifetime;
 };
 
 #endif

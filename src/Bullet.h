@@ -12,7 +12,7 @@ public:
 	Bullet(World *ownerWorld, Vector2D location, Vector2D targetLocation);
 	~Bullet(void);
 	/** Process moving and other actions of the Actor */
-	void Update(float deltaTime);
+	void Update(float deltatime);
 	/** Render the actor in the current location */
 	void Render(Vector2D shift, Rotator angle);
 	bool Destroyed;

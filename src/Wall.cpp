@@ -51,8 +51,9 @@ Wall::~Wall(void)
 	Hge->Texture_Free(WallTexture);
 }
 
-void Wall::Update(float deltaTime)
+void Wall::Update(float deltatime)
 {
+	Actor::Update(deltatime);
 }
 
 void Wall::UpdateCollision()

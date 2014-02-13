@@ -21,7 +21,7 @@ public:
 	~Man();
 
 	/** Process moving and other actions of the man */
-	virtual void Update(float deltaTime);
+	virtual void Update(float deltatime);
 
 	/** Try to take some damage to the man =) */
 	virtual void TakeDamage(float damageValue,Vector2D impulse);

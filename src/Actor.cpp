@@ -13,6 +13,8 @@ Actor::Actor(World *ownerWorld, Vector2D location, Rotator rotation) : Location(
 	Type = AT_Ghost;
 
 	ClassID = "Actor";
+
+	bWaitDestruction = false;
 }
 
 Actor::~Actor(void)
@@ -72,10 +74,24 @@ std::string Actor::GetClassID()
 	return ClassID;
 }
 
-void Actor::Update(float deltaTime)
+void Actor::Update(float deltatime)
 {
+	Lifetime += deltatime;
 }
 
 void Actor::Render(Vector2D shift, Rotator angle)
 {
+}
+
+void Actor::Destroy()
+{
+	if (!bWaitDestruction)
+	{
+		bWaitDestruction = true;
+	}
+}
+
+bool Actor::IsWaitDestruction()
+{
+	return bWaitDestruction;
 }

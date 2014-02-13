@@ -29,9 +29,9 @@ Bullet::~Bullet(void)
 	Hge->Texture_Free(BulletTexture);
 }
 
-void Bullet::Update(float deltaTime)
+void Bullet::Update(float deltatime)
 {
-	Vector2D newLocation = Location + deltaTime * Speed * Vector2D(Direction);
+	Vector2D newLocation = Location + deltatime * Speed * Vector2D(Direction);
 	
 	WARN_IF(!OwnerWorld, "Not assigned OwnerWorld for bullet");
 
@@ -46,8 +46,14 @@ void Bullet::Update(float deltaTime)
 	else
 	{
 		trasedActor->TakeDamage(10, Vector2D(Direction) * Speed);
-		Location = Vector2D(350.f, 250.f);// ToDo: destruct bullet
 		Speed = 0.0f;
+		this->Destroy();
+	}
+
+	// bullet will be destroyed after 10 second
+	if (Lifetime > 10.f)
+	{
+		this->Destroy();
 	}
 }
 
@@ -62,7 +68,6 @@ void Bullet::Render(Vector2D shift, Rotator angle)
 void Bullet::UpdateCollision()
 {
 }
-
 
 void Bullet::TakeDamage(float damageValue,Vector2D impulse)
 {

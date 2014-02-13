@@ -15,7 +15,7 @@ public:
 	~Hero();
 
 	/** Process moving and other actions of the man */
-	virtual void Update(float deltaTime);
+	virtual void Update(float deltatime);
 	
 	/** Say that we want to move the man on this step */
 	virtual void Move(Vector2D step);

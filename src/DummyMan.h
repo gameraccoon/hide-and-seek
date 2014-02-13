@@ -21,8 +21,6 @@ public:
 	/** Say that we want to move the man on this step */
 	virtual void Move(Vector2D step);
 
-	/** Process moving and other actions of the man */
-	virtual void Update(float deltaTime) = 0;
 	/** Render the actor in the current location */
 	void Render(Vector2D shift, Rotator angle);
 

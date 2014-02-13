@@ -19,9 +19,9 @@ void Hero::Move(Vector2D step)
 	Step += step;
 }
 
-void Hero::Update(float deltaTime)
+void Hero::Update(float deltatime)
 {
-	Vector2D newLocation = Location + Step * deltaTime;
+	Vector2D newLocation = Location + Step * deltatime;
 	bool bFree = true;
 
 	// for each actors in the world
@@ -41,6 +41,9 @@ void Hero::Update(float deltaTime)
 				bFree = false;
 			}
 		}
+		
+		// use superclass method
+		DummyMan::Update(deltatime);
 	}
 
 	// if actor's path is free

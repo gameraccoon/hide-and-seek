@@ -38,9 +38,13 @@ public:
 	/** Get actor's scale */
 	virtual Vector2D GetScale() = 0;
 	/** Process moving and other actions of the Actor */
-	virtual void Update(float deltaTime) = 0;
+	virtual void Update(float deltatime) = 0;
 	/** Render the actor in the current location */
 	virtual void Render(Vector2D shift, Rotator angle) = 0;
+	/** Say to actor, that it mast be destroyed now */
+	virtual void Destroy() = 0;
+	/** Is actor wait to be automatically destroyed? */
+	virtual bool IsWaitDestruction() = 0;
 	/** Get actor type */
 	virtual EActorType GetType() = 0;
 	/** Get axis-aligned bounding box */

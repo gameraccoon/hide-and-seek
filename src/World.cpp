@@ -3,12 +3,11 @@
 World::World(HGE* hge)
 {
 	Hge = hge;
-	std::set<IActor*> AllActors;
 }
 
 World::~World(void)
 {
-	std::set<IActor*>::iterator it, next = AllActors.begin(), end = AllActors.end();
+	ActorsSet::iterator it, next = AllActors.begin(), end = AllActors.end();
 
 	while (next != end)
 	{
@@ -36,12 +35,14 @@ void World::Delete(IActor* actor)
 	AllActors.erase(actor);
 }
 
-void World::Update(float deltaTime)
+void World::Update(float deltatime)
 {
-	for (std::set<IActor*>::iterator it = AllActors.begin(); it != AllActors.end(); it++)
+	for (ActorsSet::iterator it = AllActors.begin(), end = AllActors.end(); it != end; it++)
 	{
-		(*it)->Update(deltaTime);
+		(*it)->Update(deltatime);
 	}
+
+	CleanDestroyedActors();
 }
 
 HGE* World::GetHge()
@@ -56,8 +57,21 @@ void World::AddPathPoint(PathPoint* newPoint)
 
 void World::RemoveAllPathPoints()
 {
-	for (std::set<PathPoint*>::iterator it = NavigationMap.begin(), end = NavigationMap.end(); it != end; it++)
+	for (PathPointsSet::iterator it = NavigationMap.begin(), end = NavigationMap.end(); it != end; it++)
 	{
 		delete (*it);
+	}
+}
+
+void World::CleanDestroyedActors()
+{
+	for (ActorsSet::iterator it = AllActors.begin(), end = AllActors.end(); it != end; it++)
+	{
+		if ((*it)->IsWaitDestruction())
+		{
+			IActor* actorToDelete = (*it);
+			AllActors.erase(actorToDelete);
+			delete actorToDelete;
+		}
 	}
 }

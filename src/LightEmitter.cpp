@@ -31,8 +31,9 @@ LightEmitter::~LightEmitter(void)
 {
 }
 
-void LightEmitter::Update(float deltaTime)
+void LightEmitter::Update(float deltatime)
 {
+	Actor::Update(deltatime);
 }
 
 void LightEmitter::Render(Vector2D shift, Rotator angle)

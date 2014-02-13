@@ -11,6 +11,9 @@
 class World
 {
 public:
+	typedef std::set<IActor*> ActorsSet;
+	typedef std::set<PathPoint*> PathPointsSet;
+
 	World(HGE *hge);
 	~World(void);
 	/** Add Actor to the World. */
@@ -18,20 +21,22 @@ public:
 	/** Delete actor from the World. */
 	void Delete(IActor* actor);
 	/** Update all Actors in the World */
-	void Update(float deltaTime);
+	void Update(float deltatime);
 	/** Get a pointer to the Hge subsystem */
 	HGE* GetHge();
-	/** Add nwe PathPoint to the navigation map*/
+	/** Add a new PathPoint to the navigation map*/
 	void AddPathPoint(PathPoint* newPoint);
 	/** All actors in the World. */
-	std::set<IActor*> AllActors;
+	ActorsSet AllActors;
 	/** All pathpoints of this world */
-	std::set<PathPoint*> NavigationMap;
+	PathPointsSet NavigationMap;
 private:
 	/** Pointer to the Hge subsystem */
 	HGE *Hge;
 	/** Free memory of path points */
 	void RemoveAllPathPoints();
+	/** Destroy actors that waits to be destroyed */
+	void CleanDestroyedActors();
 };
 
 #endif
