@@ -255,28 +255,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		Listeners.AddListener(new BtnShoot(Hge));
 		Listeners.AddListener(new BtnAddLight(Hge));
 
-		{ // namespace shows that we don't save pointers
-			PathPoint *a, *b, *c, *d;
-			GameWorld->AddPathPoint(d = new PathPoint(Vector2D(200.f, 50.f)));
-			GameWorld->AddPathPoint(a = new PathPoint(Vector2D(100.f, 200.f)));
-			ConnectTwoPoints(a, d);
-			GameWorld->AddPathPoint(b = new PathPoint(Vector2D(100.f, 300.f)));
-			ConnectTwoPoints(a, b);
-			GameWorld->AddPathPoint(a = new PathPoint(Vector2D(200.f, 450.f)));
-			ConnectTwoPoints(a, b);
-			GameWorld->AddPathPoint(c = new PathPoint(Vector2D(350.f, 450.f)));
-			ConnectTwoPoints(a, c);
-			GameWorld->AddPathPoint(a = new PathPoint(Vector2D(600.f, 450.f)));
-			ConnectTwoPoints(a, c);
-			GameWorld->AddPathPoint(b = new PathPoint(Vector2D(600.f, 50.f)));
-			ConnectTwoPoints(a, b);
-			GameWorld->AddPathPoint(a = new PathPoint(Vector2D(350.f, 50.f)));
-			ConnectTwoPoints(a, b);
-			c->Connect(a); // c -> a
-			ConnectTwoPoints(a, d);
-		}
-
 		LevelLoader::Load(GameWorld, std::string("test"));
+		//LevelLoader::Save(GameWorld, std::string("test"));
 
 		// Let's rock now!
 		Hge->System_Start();
