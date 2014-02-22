@@ -159,7 +159,7 @@ bool RenderFunc()
 	::hge->Gfx_BeginScene();
 	::hge->Gfx_Clear(0);
 	
-	//-- Start renders graphics
+	//-- Start graphics render
 
 	cameraRenderSprite->Render(0, 0);
 

@@ -7,19 +7,17 @@ World::World(HGE* hge)
 
 World::~World(void)
 {
-	ActorsSet::iterator i, iNext = this->allActors.begin(), iEnd = this->allActors.end();
+	ActorsSet::iterator i = this->allActors.begin(), iEnd = this->allActors.end();
 
-	while (iNext != iEnd)
+	while (i != iEnd)
 	{
-		i = iNext;
-		iNext++;
+		IActor* actorToDelete = (*i);
+		i++;
 		
-		this->allActors.erase(i);
+		this->allActors.erase(actorToDelete);
 
-		delete (*i);
+		delete (actorToDelete);
 	}
-
-	delete (*iEnd);
 
 	this->allActors.clear();
 	this->removeAllPathPoints();
@@ -65,13 +63,16 @@ void World::removeAllPathPoints()
 
 void World::cleanDestroyedActors()
 {
-	for (ActorsSet::iterator i = this->allActors.begin(), iEnd = this->allActors.end(); i != iEnd; i++)
+	ActorsSet::iterator i = this->allActors.begin(), iEnd = this->allActors.end(); i != iEnd;
+	while (i != iEnd)
 	{
-		if ((*i)->isWaitDestruction())
+		IActor* currentActor = (*i);
+		i++;
+
+		if (currentActor->isWaitDestruction())
 		{
-			IActor* actorToDelete = (*i);
-			this->allActors.erase(actorToDelete);
-			delete actorToDelete;
+			this->removeActor(currentActor);
+			delete currentActor;
 		}
 	}
 }
