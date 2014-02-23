@@ -25,6 +25,8 @@ Man::Man(World *ownerWorld, Vector2D location) : DummyMan(ownerWorld, location),
 
 	this->speed = 50.0f;
 
+	this->target = NULL;
+
 	this->classID = MAN_ID;
 }
 
@@ -36,8 +38,7 @@ void Man::update(float deltatime)
 {
 	if (this->destinationPoint == this->location)
 	{
-		this->destinationPoint = this->navigator.getNextPoint();
-		this->direction = (this->destinationPoint - this->location).rotation();
+		this->findNextPathPoint();
 	}
 
 	float stepSize = this->speed * deltatime;
@@ -65,6 +66,7 @@ void Man::update(float deltatime)
 			{
 				// actor's path is not free
 				bFree = false;
+				break;
 			}
 		}
 	}
@@ -75,6 +77,10 @@ void Man::update(float deltatime)
 		// accept new position of the man
 		this->location = newLocation;
 	}
+	else
+	{
+		findNextPathPoint();
+	}
 	
 	this->updateCollision();
 
@@ -82,16 +88,41 @@ void Man::update(float deltatime)
 	DummyMan::update(deltatime);
 }
 
-void Man::takeDamage(float damageValue,Vector2D impulse)
+void Man::takeDamage(float damageValue, Vector2D impulse)
 {
 	for (std::set<IActor*>::iterator i = this->ownerWorld->allActors.begin(), iEnd = this->ownerWorld->allActors.end(); i != iEnd; i++)
 	{
-		if ((*i)->getType() == AT_Living && (*i) != this)
+		IActor* foundActor = (*i);
+		if (foundActor->getType() == AT_Living && foundActor != this)
 		{
-			this->navigator.createNewPath(this->location, (*i)->getLocation());
+			this->target = foundActor;
+			findNextPathPoint();
+			break;
 		}
 	}
-	
-	this->destinationPoint = this->navigator.getNextPoint();
-	this->direction = (this->destinationPoint - this->location).rotation();
+}
+
+void Man::findNextPathPoint()
+{
+	if (this->target != NULL)
+	{
+		RayTrace ray(this->ownerWorld, this->getLocation(), this->target->getLocation());
+		IActor* tracedActor = ray.trace();
+
+		if (tracedActor == this->target || tracedActor == NULL)
+		{
+			this->destinationPoint = target->getLocation();
+		}
+		else
+		{
+			this->navigator.createNewPath(this->getLocation(), this->target->getLocation());
+			this->destinationPoint = this->navigator.getNextPoint();
+			if (this->destinationPoint == this->getLocation())
+			{
+				this->destinationPoint = this->navigator.getNextPoint();
+			}
+		}
+		
+		this->direction = (this->destinationPoint - this->getLocation()).rotation();
+	}
 }

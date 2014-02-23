@@ -26,10 +26,14 @@ public:
 	/** Try to take some damage to the man =) */
 	virtual void takeDamage(float damageValue,Vector2D impulse);
 protected:
+	/** */
+	void findNextPathPoint();
 	/**  */
 	PathFinder navigator;
 	/** Point to which this man aspire */
 	Vector2D destinationPoint;
+	/** */
+	IActor* target;
 };
 
 #endif
