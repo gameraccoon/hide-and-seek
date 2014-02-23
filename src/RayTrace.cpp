@@ -207,15 +207,23 @@ bool RayTrace::fastTrace()
 
 IActor* RayTrace::trace(Vector2D *outPoint, Vector2D *outNormal)
 {
-	IActor *itActor;
+	IActor *currentActor = NULL;
+
+	// nearest actor that intersects ray
+	IActor *nearestActor = NULL;
+	// hitpoint of nearest actor
+	Vector2D nearestHitPoint(ZERO_VECTOR);
+	Vector2D nearestNormal(ZERO_VECTOR);
+	float minRayLength = (this->startPoint - this->endPoint).size() + 20.0f;
+
 	// for each actor in the world
 	for (std::set<IActor*>::iterator i = this->ownerWorld->allActors.begin(), iEnd = this->ownerWorld->allActors.end(); i != iEnd; i++)
 	{
-		itActor = *i;
-		if (itActor->getType() != AT_Light && itActor->getType() != AT_Special)
+		currentActor = *i;
+		if (currentActor->getType() != AT_Light && currentActor->getType() != AT_Special)
 		{
 			// get bounding box of current actor
-			BoundingBox box = itActor->getBoundingBox();
+			BoundingBox box = currentActor->getBoundingBox();
 			// get cohen's code for start point
 			byte a = this->getDotCode(&box, &this->startPoint);
 			// get cohen's code for end point
@@ -237,36 +245,47 @@ IActor* RayTrace::trace(Vector2D *outPoint, Vector2D *outNormal)
 			{
 				//return true;
 				// get hull of current actor
-                Hull *hull = itActor->getHull();
+                Hull *hull = currentActor->getHull();
 
 				// for each border
 				for (std::vector<Border>::iterator j = hull->borders.begin(), jEnd = hull->borders.end(); j != jEnd; j++)
 				{
-					Vector2D actorsLocation(itActor->getLocation());
+					Vector2D actorsLocation(currentActor->getLocation());
 					// if ray have different direction with normal
 					if (abs((j->getNormal().rotation() - (this->endPoint - this->startPoint).rotation()).getValue()) > PI/2)
 					{
 						// if raytrace intersect this border
 						if (this->checkIntersect2Lines(actorsLocation + j->getA(), actorsLocation + j->getB(), this->startPoint, this->endPoint))
 						{
-							// return all values
-							if (outPoint != NULL)
+							Vector2D hitLocation = this->getPointIntersect2Lines(actorsLocation + j->getA(), actorsLocation + j->getB(),
+								this->startPoint, this->endPoint);
+							
+							rayLength = (this->startPoint - hitLocation).size();
+							// if currentActor nearer than last
+							if (rayLength < minRayLength)
 							{
-								*outPoint = this->getPointIntersect2Lines(actorsLocation + j->getA(), actorsLocation + j->getB(),
-									this->startPoint, this->endPoint);
+								minRayLength = rayLength;
+								nearestActor = currentActor;
+								nearestHitPoint = hitLocation;
+								nearestNormal = j->getNormal();
 							}
-
-							if (outNormal != NULL)
-							{
-								*outNormal = j->getNormal();
-							}
-
-							return itActor;
 						}
 					}
 				}
 			}
 		}
 	}
-	return NULL;
+
+	// return all values
+	if (outPoint != NULL)
+	{
+		*outPoint = nearestHitPoint;
+	}
+
+	if (outNormal != NULL)
+	{
+		*outNormal = nearestNormal;
+	}
+
+	return nearestActor;
 }
