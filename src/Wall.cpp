@@ -1,6 +1,9 @@
 #include "Wall.h"
 
+#include "../src/GraphicLoader.h"
+
 #include "../src/ActorFactory.h"
+
 
 // unnamed namespase to hide from another places
 namespace
@@ -34,21 +37,11 @@ Wall::Wall(World *ownerWorld, Vector2D location, Vector2D scale) : Actor(ownerWo
 
 	this->updateCollision();
 
-	this->wallTexture = this->hge->Texture_Load("testTexture.png");
-
-	WARN_IF(!this->wallTexture, "Texture 'testTexture.png' not found!");
-
-	this->sprite = new hgeSprite(this->wallTexture, 0, 0, (float)spritelSize, (float)spritelSize);
-	this->sprite->SetColor(0xFFFFFFFF);
-	this->sprite->SetHotSpot(spritelSize/2 + 1, spritelSize/2 + 1);
-
 	this->classID = WALL_ID;
 }
 
 Wall::~Wall(void)
 {
-	delete this->sprite;
-	this->hge->Texture_Free(this->wallTexture);
 }
 
 void Wall::update(float deltatime)
@@ -59,15 +52,6 @@ void Wall::update(float deltatime)
 void Wall::updateCollision()
 {
 	this->colideBox = BoundingBox(this->location - this->calculatedSize/2, this->location + this->calculatedSize/2);
-}
-
-void Wall::render(Vector2D shift, Rotator angle)
-{
-	if (this->sprite != NULL)
-	{
-		this->sprite->RenderEx(shift.x, shift.y,
-			(this->direction + angle).getValue(), this->calculatedSize.x/126.0f, this->calculatedSize.y/126.0f);
-	}
 }
 
 void Wall::takeDamage(float damageValue, Vector2D impulse)

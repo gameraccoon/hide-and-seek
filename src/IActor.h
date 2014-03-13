@@ -39,8 +39,6 @@ public:
 	virtual Vector2D getScale() = 0;
 	/** Process moving and other actions of the Actor */
 	virtual void update(float deltatime) = 0;
-	/** Render the actor in the current location */
-	virtual void render(Vector2D shift, Rotator angle) = 0;
 	/** Say to actor, that it mast be destroyed now */
 	virtual void destroy() = 0;
 	/** Is actor wait to be automatically destroyed? */

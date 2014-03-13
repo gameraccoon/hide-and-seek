@@ -34,8 +34,6 @@ public:
 	Vector2D getScale();
 	/** Process moving and other actions of the Actor */
 	void update(float deltatime);
-	/** Render the actor in the current location */
-	void render(Vector2D shift, Rotator angle);
 	/** Say to actor, that it mast be destroyed now */
 	void destroy();
 	/** Is actor wait to be automatically destroyed? */
@@ -51,8 +49,6 @@ public:
 protected:
 	/** */
 	virtual void updateCollision() = 0;
-	/** Pointer of the HGE subsystem */
-	HGE *hge;
 	/** Pointer to the owner World */
 	World* ownerWorld;
 	/** Type of the actor */
@@ -64,8 +60,6 @@ protected:
 	Vector2D calculatedSize;
 	/** Angle between world's x-axis and actor's x-axis */
 	Rotator direction;
-	/** Sprite of the actor */
-	hgeSprite *sprite;
 	/** Bounding box */
 	BoundingBox colideBox;
 	/** Geometry for physics and shadows calculation */

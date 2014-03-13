@@ -14,7 +14,7 @@ public:
 	typedef std::set<IActor*> ActorsSet;
 	typedef std::set<PathPoint*> PathPointsSet;
 
-	World(HGE *hge);
+	World(void);
 	~World(void);
 	/** Add Actor to the World. */
 	void spawnActor(IActor* actor);
@@ -22,8 +22,6 @@ public:
 	void removeActor(IActor* actor);
 	/** Update all Actors in the World */
 	void update(float deltatime);
-	/** Get a pointer to the Hge subsystem */
-	HGE* getHge();
 	/** Add a new PathPoint to the navigation map*/
 	void addPathPoint(PathPoint* pathPoint);
 	/** All actors in the World. */
@@ -31,8 +29,6 @@ public:
 	/** All pathpoints of this world */
 	PathPointsSet navigationMap;
 private:
-	/** Pointer to the Hge subsystem */
-	HGE *hge;
 	/** Free memory of path points */
 	void removeAllPathPoints();
 	/** Destroy actors that waits to be destroyed */

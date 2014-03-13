@@ -36,10 +36,6 @@ void LightEmitter::update(float deltatime)
 	Actor::update(deltatime);
 }
 
-void LightEmitter::render(Vector2D shift, Rotator angle)
-{
-}
-
 void LightEmitter::updateCollision()
 {
 }

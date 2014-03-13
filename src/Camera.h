@@ -4,15 +4,18 @@
 #include <hge.h>
 #include <hgeresource.h>
 
+#include <map>
+
 #include "../src/Globals.h"
 #include "../src/Vector2D.h"
 #include "../src/Actor.h"
 #include "../src/World.h"
+#include "../src/GraphicLoader.h"
 
 class Camera
 {
 public:
-	Camera(World* world, Vector2D resolution, Vector2D location);
+	Camera(HGE* hge, World* world, Vector2D resolution, Vector2D location);
 	virtual ~Camera(void);
 	/** Get pointer to the texture which will be used to render */
 	HTEXTURE getRenderTexture();
@@ -79,6 +82,8 @@ protected:
 	HTARGET renderTarget;
 	/** Sprite of fog */
 	hgeSprite *fogSprite;
+	/** */
+	GraphicLoader graphicLoader;
 	/** Is camera shows AABB? */
 	bool bShowAABB;
 	/** Maximum distans of renderable objects from camera */

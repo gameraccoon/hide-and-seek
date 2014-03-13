@@ -13,6 +13,7 @@ public:
 	RayTrace(World * world, Vector2D start, Vector2D end);
 	RayTrace(World * world, Vector2D start, Rotator rotation, float length);
 	~RayTrace(void);
+	void setThickness(float thickness);
 	bool fastTrace();
 	IActor* trace(Vector2D *outPoint = NULL, Vector2D *outNormal = NULL);
 protected:
@@ -32,6 +33,8 @@ protected:
 	Rotator angle;
 	/** Length of ray (ray can't be infinite in this discrete system) */
 	float rayLength;
+	/** */
+	float thickness;
 	// helpers constaints
 	static const byte LEFT_BIT;
 	static const byte RIGHT_BIT;

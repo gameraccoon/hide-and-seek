@@ -3,11 +3,10 @@
 Actor::Actor(World *ownerWorld, Vector2D location, Rotator rotation) : location(location),
 	colideBox(location, location),
 	direction(rotation),
-	scale(0.f, 0.f),
+	scale(1.f, 1.f),
 	originalSize(1.f, 1.f),
 	calculatedSize(1.f, 1.f)
 {
-	this->hge = ownerWorld->getHge();
 	this->ownerWorld = ownerWorld;
 	this->ownerWorld->spawnActor(this);
 	this->type = AT_Ghost;
@@ -77,10 +76,6 @@ std::string Actor::getClassID()
 void Actor::update(float deltatime)
 {
 	this->lifetime += deltatime;
-}
-
-void Actor::render(Vector2D shift, Rotator angle)
-{
 }
 
 void Actor::destroy()

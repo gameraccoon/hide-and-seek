@@ -21,9 +21,6 @@ public:
 	/** Say that we want to move the man on this step */
 	virtual void move(Vector2D step);
 
-	/** Render the actor in the current location */
-	void render(Vector2D shift, Rotator angle);
-
 	void giveWeapon(Weapon *weap);
 	
 	/** Start shoting if the man have a weapon */
@@ -39,8 +36,6 @@ protected:
 	float speed;
 	/** */
 	Vector2D size;
-	/** Texture of all man's sprites */
-	HTEXTURE manTexture;
 	/** Inventory */
 	std::vector<InventoryItem*> Inventory;
 	/** */

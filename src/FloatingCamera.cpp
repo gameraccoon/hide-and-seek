@@ -1,7 +1,7 @@
 #include "FloatingCamera.h"
 
 
-FloatingCamera::FloatingCamera(World* world, Vector2D resolution, Vector2D location) : Camera(world, resolution, location), 
+FloatingCamera::FloatingCamera(HGE* hge, World* world, Vector2D resolution, Vector2D location) : Camera(hge, world, resolution, location), 
 	shift(ZERO_VECTOR)
 {
 }

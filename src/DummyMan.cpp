@@ -14,20 +14,10 @@ DummyMan::DummyMan(World *ownerWorld, Vector2D location) : Actor(ownerWorld, loc
 	this->geometry.generate();
 	
 	this->updateCollision();
-
-	this->manTexture = this->hge->Texture_Load("hero.png");
-
-	WARN_IF(!this->manTexture, "Texture 'hero.png' not found!");
-		
-	this->sprite = new hgeSprite(this->manTexture, 0, 0, 32, 32);
-	this->sprite->SetColor(0xFFFFFFFF);
-	this->sprite->SetHotSpot(16, 16);
 }
 
 DummyMan::~DummyMan(void)
 {
-	delete this->sprite;
-	this->hge->Texture_Free(this->manTexture);
 }
 
 void DummyMan::move(Vector2D step)
@@ -39,14 +29,6 @@ void DummyMan::move(Vector2D step)
 void DummyMan::updateCollision()
 {
 	this->colideBox = BoundingBox(this->location - this->size/2, this->location + this->size/2);
-}
-
-void DummyMan::render(Vector2D shift, Rotator angle)
-{
-	if (this->sprite != NULL)
-	{
-		this->sprite->RenderEx(shift.x, shift.y, (this->direction + angle).getValue());
-	}
 }
 
 void DummyMan::startShoting(Vector2D targetLocation)

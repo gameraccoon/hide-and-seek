@@ -27,12 +27,17 @@ RayTrace::~RayTrace(void)
 {
 }
 
+void RayTrace::setThickness(float thickness)
+{
+	this->thickness = thickness;
+}
+
 byte RayTrace::getDotCode(const BoundingBox *box, const Vector2D *dot)
 {
-	return (((dot->x < box->minX) ? LEFT_BIT : 0)
-		| ((dot->x > box->maxX) ? RIGHT_BIT : 0)
-		| ((dot->y < box->minY) ? BOTTOM_BIT : 0)
-		| ((dot->y > box->maxY) ? TOP_BIT : 0));
+	return (((dot->x < box->minX) ? this->LEFT_BIT : 0)
+		  | ((dot->x > box->maxX) ? this->RIGHT_BIT : 0)
+		  | ((dot->y < box->minY) ? this->BOTTOM_BIT : 0)
+		  | ((dot->y > box->maxY) ? this->TOP_BIT : 0));
 }
 
 inline float SignedArea(Vector2D a, Vector2D b, Vector2D c)

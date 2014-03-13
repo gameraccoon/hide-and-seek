@@ -13,8 +13,6 @@ public:
 	~Bullet(void);
 	/** Process moving and other actions of the Actor */
 	void update(float deltatime);
-	/** Render the actor in the current location */
-	void render(Vector2D shift, Rotator angle);
 	/** Take some damage to the bullet */
 	virtual void takeDamage(float damageValue, Vector2D impulse);
 protected:
@@ -22,7 +20,6 @@ protected:
 	Rotator direction;
 	World* ownerWorld;
 	float speed;
-	HTEXTURE bulletTexture;
 };
 
 #endif

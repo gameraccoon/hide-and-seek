@@ -1,8 +1,7 @@
 #include "World.h"
 
-World::World(HGE* hge)
+World::World(void)
 {
-	this->hge = hge;
 }
 
 World::~World(void)
@@ -41,11 +40,6 @@ void World::update(float deltatime)
 	}
 
 	this->cleanDestroyedActors();
-}
-
-HGE* World::getHge()
-{
-	return this->hge;
 }
 
 void World::addPathPoint(PathPoint* pathPoint)

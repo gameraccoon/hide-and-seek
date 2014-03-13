@@ -94,12 +94,12 @@ void LevelLoader::load(World* world, const std::string levelName)
 
 	while (!mapFile.eof())
 	{
-		std::string ClassName;
+		std::string className;
 		
 		float xPos, yPos;
 		float xScale, yScale;
 		float angle;
-		mapFile >> ClassName;
+		mapFile >> className;
 		mapFile >> xPos;
 		mapFile >> yPos;
 		mapFile >> xScale;
@@ -108,7 +108,7 @@ void LevelLoader::load(World* world, const std::string levelName)
 
 		try
 		{
-			ActorFactory::createActor(ClassName, world, Vector2D(xPos, yPos), Vector2D(xScale, yScale), Rotator(angle));
+			ActorFactory::createActor(className, world, Vector2D(xPos, yPos), Vector2D(xScale, yScale), Rotator(angle));
 		}
 		catch (std::runtime_error)
 		{

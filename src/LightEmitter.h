@@ -9,7 +9,6 @@ public:
 	LightEmitter(World *ownerWorld, Vector2D location);
 	~LightEmitter(void);
 	void update(float deltatime);
-	void render(Vector2D shift, Rotator angle);
 	virtual void takeDamage(float damageValue,Vector2D impulse);
 protected:
 	void updateCollision();

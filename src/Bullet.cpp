@@ -12,19 +12,19 @@ Bullet::Bullet(World *ownerWorld, Vector2D location, Vector2D targetLocation) :
 
 	this->ownerWorld = ownerWorld;
 
-	this->bulletTexture = this->hge->Texture_Load("bullet.png");
+	//this->bulletTexture = this->hge->Texture_Load("bullet.png");
 
-	WARN_IF(!this->bulletTexture, "Texture 'bullet.png' not found!");
+	//WARN_IF(!this->bulletTexture, "Texture 'bullet.png' not found!");
 	
-	this->sprite = new hgeSprite(this->bulletTexture, 0, 0, 32, 32);
-	this->sprite->SetColor(0xFFFFFFFF);
-	this->sprite->SetHotSpot(16, 16);
+	//this->sprite = new hgeSprite(this->bulletTexture, 0, 0, 32, 32);
+	//this->sprite->SetColor(0xFFFFFFFF);
+	//this->sprite->SetHotSpot(16, 16);
 }
 
 Bullet::~Bullet(void)
 {
-	delete this->sprite;
-	this->hge->Texture_Free(this->bulletTexture);
+	//delete this->sprite;
+	//this->hge->Texture_Free(this->bulletTexture);
 }
 
 void Bullet::update(float deltatime)
@@ -37,11 +37,12 @@ void Bullet::update(float deltatime)
 	Vector2D traceLocation(ZERO_VECTOR);
 	IActor *trasedActor = ray.trace(&traceLocation);
 
+	// if there nothing to hit
 	if (trasedActor == NULL)
 	{
 		this->location = newLocation;
 	}
-	else
+	else // bullet is hiting some actor
 	{
 		trasedActor->takeDamage(10, Vector2D(this->direction) * this->speed);
 		this->speed = 0.0f;
@@ -52,14 +53,6 @@ void Bullet::update(float deltatime)
 	if (this->lifetime > 10.f)
 	{
 		this->destroy();
-	}
-}
-
-void Bullet::render(Vector2D shift, Rotator angle)
-{
-	if (this->sprite != NULL)
-	{
-		this->sprite->RenderEx(shift.x, shift.y, (this->direction + angle).getValue(), 0.3f, 0.3f);
 	}
 }
 

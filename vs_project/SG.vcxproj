@@ -20,6 +20,7 @@
     <ClCompile Include="..\src\DirectionArrow.cpp" />
     <ClCompile Include="..\src\DummyMan.cpp" />
     <ClCompile Include="..\src\FloatingCamera.cpp" />
+    <ClCompile Include="..\src\GraphicLoader.cpp" />
     <ClCompile Include="..\src\Hero.cpp" />
     <ClCompile Include="..\src\Hull.cpp" />
     <ClCompile Include="..\src\InventoryItem.cpp" />
@@ -50,6 +51,7 @@
     <ClInclude Include="..\src\DummyMan.h" />
     <ClInclude Include="..\src\FloatingCamera.h" />
     <ClInclude Include="..\src\Globals.h" />
+    <ClInclude Include="..\src\GraphicLoader.h" />
     <ClInclude Include="..\src\Hero.h" />
     <ClInclude Include="..\src\Hull.h" />
     <ClInclude Include="..\src\IActor.h" />

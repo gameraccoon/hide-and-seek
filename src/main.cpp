@@ -231,9 +231,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		::crosshair->SetBlendMode(BLEND_COLORMUL | BLEND_ALPHAADD | BLEND_NOZWRITE);
 		::crosshair->SetHotSpot(16, 16);
 
-		::gameWorld = new World(::hge);
+		::gameWorld = new World();
 
-		::mainCamera = new FloatingCamera(::gameWorld, SCREEN_CENTER * 2, Vector2D(0.0f, 0.0f));
+		::mainCamera = new FloatingCamera(::hge, ::gameWorld, SCREEN_CENTER * 2, Vector2D(0.0f, 0.0f));
 
 		// hero will be deleted automaticaly as other actors
 		::ourHero = new Hero(::gameWorld, Vector2D(0.0f, 350.0f));

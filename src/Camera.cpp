@@ -1,14 +1,15 @@
 #include "Camera.h"
 
 
-Camera::Camera(World* world, Vector2D resolution, Vector2D location) : location(location),
+Camera::Camera(HGE* hge, World* world, Vector2D resolution, Vector2D location) : location(location),
 	resolution(resolution),
-	centerPos(resolution/2)
+	centerPos(resolution / 2),
+	graphicLoader(hge, std::string("./configs/asd.txt"), "./")
 {
 	this->browsableWorld = world;
 	this->angle = 0;
 
-	this->hge = world->getHge();
+	this->hge = hge;
 
 	// Set max distantion (on screen) where we draw actors
 	this->shownSize = 512.0f;
@@ -146,18 +147,32 @@ void Camera::renderActors(Vector2D lightPos)
 	// for each actors in the world
 	for (std::set<IActor*>::iterator i = this->browsableWorld->allActors.begin(), iEnd = this->browsableWorld->allActors.end(); i != iEnd; i++)
 	{
+		IActor* actorToRender = *i;
+
 		// Get actor's camera local location
-		Vector2D screenLoc((*i)->getLocation() - lightPos);
+		Vector2D screenLoc(actorToRender->getLocation() - lightPos);
 		// Get distance from center of screen
 		float distanceFromCamera = screenLoc.size();
+
 		// if actor is not far of drawing zone
-		if (distanceFromCamera < this->shownSize)
-		{
-			// calc actor screen location
-			Vector2D newScreenLoc(Vector2D(screenLoc.rotation() + this->angle) * distanceFromCamera);
-			// render actor
-			(*i)->render(newScreenLoc + Vector2D(this->shownSize/2, this->shownSize/2), this->angle);
-		}
+		if (distanceFromCamera >= this->shownSize)
+			continue;
+
+		// Get sprite
+		hgeSprite* sprite = this->graphicLoader.getSprite(actorToRender->getClassID());
+
+		// if there no sprite for this actor then go to the next actor
+		if (sprite == NULL)
+			continue;
+
+		// calc actor screen location
+		Vector2D newScreenLoc(Vector2D(screenLoc.rotation() + this->angle) * distanceFromCamera);
+		// get scaled localtion
+		Vector2D scaledLocation(newScreenLoc + Vector2D(this->shownSize/2, this->shownSize/2));
+
+		// render actor
+		sprite->RenderEx(scaledLocation.x, scaledLocation.y,
+			(actorToRender->getRotation() + this->angle).getValue(), actorToRender->getScale().x, actorToRender->getScale().y);
 	}
 }
 
