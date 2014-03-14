@@ -1,11 +1,13 @@
 #include "DummyMan.h"
 
-DummyMan::DummyMan(World *ownerWorld, Vector2D location) : Actor(ownerWorld, location, Rotator(0.f)),
+DummyMan::DummyMan(World *ownerWorld, Vector2D location) : Actor(ownerWorld, location, Rotator(0.0f)),
 														size(32.0f, 32.0f)
 {
 	this->type = AT_Living;
 
 	this->speed = 12.0f;
+	
+	this->healthValue = 100.0f;
 
 	this->geometry.points.insert(this->geometry.points.end(), -this->size / 2);
 	this->geometry.points.insert(this->geometry.points.end(), (this->size / 2).mirrorV());
@@ -56,5 +58,13 @@ void DummyMan::giveWeapon(Weapon *weap)
 
 void DummyMan::takeDamage(float damageValue,Vector2D impulse)
 {
+	this->healthValue -= damageValue;
+
+	if (this->healthValue <= 0.0f)
+	{
+		this->healthValue = 0.0f;
+		this->speed = 0.0f;
+	}
+	
 	this->move(impulse);
 }

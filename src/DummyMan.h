@@ -36,6 +36,8 @@ protected:
 	float speed;
 	/** */
 	Vector2D size;
+	/** */
+	float healthValue;
 	/** Inventory */
 	std::vector<InventoryItem*> Inventory;
 	/** */

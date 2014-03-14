@@ -100,6 +100,8 @@ void Man::takeDamage(float damageValue, Vector2D impulse)
 			break;
 		}
 	}
+
+	DummyMan::takeDamage(damageValue, impulse);
 }
 
 void Man::findNextPathPoint()

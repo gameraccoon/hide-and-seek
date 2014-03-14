@@ -1,9 +1,24 @@
 #include "Bullet.h"
 
+#include "../src/ActorFactory.h"
 
-Bullet::Bullet(World *ownerWorld, Vector2D location, Vector2D targetLocation) :
-	Actor(ownerWorld, location, (targetLocation - location).rotation()),
-	direction((targetLocation - location).rotation())
+// unnamed namespase to hide from another places
+namespace
+{
+	// specific factory
+	IActor* CreateBullet(World *world, const Vector2D location, const Vector2D scale, const Rotator rotation)
+	{
+		return new Bullet(world, location, rotation);
+	}
+
+	const std::string BULLET_ID = "Bullet";
+
+	// register specific factory in actor factory
+	const bool registered = ActorFactory::registerActor(BULLET_ID, CreateBullet);
+}
+
+Bullet::Bullet(World *ownerWorld, Vector2D location, Rotator rotation) :
+	Actor(ownerWorld, location, rotation)
 {
 	this->speed = 10.0f;	
 	this->type = AT_Bullet;
@@ -12,19 +27,11 @@ Bullet::Bullet(World *ownerWorld, Vector2D location, Vector2D targetLocation) :
 
 	this->ownerWorld = ownerWorld;
 
-	//this->bulletTexture = this->hge->Texture_Load("bullet.png");
-
-	//WARN_IF(!this->bulletTexture, "Texture 'bullet.png' not found!");
-	
-	//this->sprite = new hgeSprite(this->bulletTexture, 0, 0, 32, 32);
-	//this->sprite->SetColor(0xFFFFFFFF);
-	//this->sprite->SetHotSpot(16, 16);
+	this->classID = BULLET_ID;
 }
 
 Bullet::~Bullet(void)
 {
-	//delete this->sprite;
-	//this->hge->Texture_Free(this->bulletTexture);
 }
 
 void Bullet::update(float deltatime)
@@ -44,7 +51,7 @@ void Bullet::update(float deltatime)
 	}
 	else // bullet is hiting some actor
 	{
-		trasedActor->takeDamage(10, Vector2D(this->direction) * this->speed);
+		trasedActor->takeDamage(10.f, Vector2D(this->direction) * this->speed * 0.01f);
 		this->speed = 0.0f;
 		this->destroy();
 	}

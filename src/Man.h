@@ -10,8 +10,6 @@
 #include "../src/PathFinder.h"
 #include "../src/DummyMan.h"
 
-class Weapon;
-
 class Man:public DummyMan
 {
 public:

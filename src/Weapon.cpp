@@ -12,7 +12,7 @@ Weapon::~Weapon(void)
 
 void Weapon::startShooting(Vector2D currentLocation, Vector2D targetLocation)
 {
-	this->ownerWorld->spawnActor(new Bullet(this->ownerWorld, currentLocation, targetLocation));
+	this->ownerWorld->spawnActor(new Bullet(this->ownerWorld, currentLocation, (targetLocation - currentLocation).rotation()));
 }
 
 void Weapon::stopShooting()
