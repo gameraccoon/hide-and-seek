@@ -4,7 +4,7 @@
 Camera::Camera(HGE* hge, World* world, Vector2D resolution, Vector2D location) : location(location),
 	resolution(resolution),
 	centerPos(resolution / 2),
-	graphicLoader(hge, std::string("./configs/asd.txt"), "./")
+	graphicLoader(hge, std::string("./configs/textures.conf"), "./")
 {
 	this->browsableWorld = world;
 	this->angle = 0;

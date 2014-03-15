@@ -46,6 +46,8 @@ public:
 	Hull* getHull();
 	/** Returns class identificator of this actor */
 	std::string getClassID();
+	/** Take some damage to the actor */
+	virtual void takeDamage(float damageValue, Vector2D impulse) = 0;
 protected:
 	/** */
 	virtual void updateCollision() = 0;

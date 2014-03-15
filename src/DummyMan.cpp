@@ -1,5 +1,7 @@
 #include "DummyMan.h"
 
+#include "../src/Corpse.h"
+
 DummyMan::DummyMan(World *ownerWorld, Vector2D location) : Actor(ownerWorld, location, Rotator(0.0f)),
 														size(32.0f, 32.0f)
 {
@@ -59,12 +61,14 @@ void DummyMan::giveWeapon(Weapon *weap)
 void DummyMan::takeDamage(float damageValue,Vector2D impulse)
 {
 	this->healthValue -= damageValue;
+	
+	this->move(impulse);
 
 	if (this->healthValue <= 0.0f)
 	{
 		this->healthValue = 0.0f;
 		this->speed = 0.0f;
+		this->ownerWorld->spawnActor(new Corpse(this->ownerWorld, this->getLocation(), this->getRotation()));
+		this->destroy();
 	}
-	
-	this->move(impulse);
 }

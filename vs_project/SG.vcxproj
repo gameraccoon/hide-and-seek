@@ -17,6 +17,7 @@
     <ClCompile Include="..\src\BoundingBox.cpp" />
     <ClCompile Include="..\src\Bullet.cpp" />
     <ClCompile Include="..\src\Camera.cpp" />
+    <ClCompile Include="..\src\Corpse.cpp" />
     <ClCompile Include="..\src\DirectionArrow.cpp" />
     <ClCompile Include="..\src\DummyMan.cpp" />
     <ClCompile Include="..\src\FloatingCamera.cpp" />
@@ -47,6 +48,7 @@
     <ClInclude Include="..\src\BoundingBox.h" />
     <ClInclude Include="..\src\Bullet.h" />
     <ClInclude Include="..\src\Camera.h" />
+    <ClInclude Include="..\src\Corpse.h" />
     <ClInclude Include="..\src\DirectionArrow.h" />
     <ClInclude Include="..\src\DummyMan.h" />
     <ClInclude Include="..\src\FloatingCamera.h" />
