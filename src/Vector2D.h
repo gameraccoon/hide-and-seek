@@ -43,29 +43,24 @@ public:
 	/** Get angle between vector and OX axis */
 	Rotator rotation(void);
 
-	friend Vector2D operator-(const Vector2D& vector);
-
 	friend bool operator==(const Vector2D& left, const Vector2D& right);
-
 	friend bool operator!=(const Vector2D& left, const Vector2D& right);
 
+	friend Vector2D operator-(const Vector2D& vector);
+
 	friend Vector2D operator+(const Vector2D& left, const Vector2D& right);
+	friend Vector2D operator+=(Vector2D& left, const Vector2D& right);
 
-    friend Vector2D operator+=(Vector2D& left, const Vector2D& right);
-
-    friend Vector2D operator-(const Vector2D& left, const Vector2D& right);
-
-    friend Vector2D operator-=(Vector2D& left, const Vector2D& right);
+	friend Vector2D operator-(const Vector2D& left, const Vector2D& right);
+	friend Vector2D operator-=(Vector2D& left, const Vector2D& right);
 
 	friend Vector2D operator*(const Vector2D& vector, float scalar);
 	friend Vector2D operator*(float scalar, const Vector2D& vector);
-
-    friend Vector2D operator*=(Vector2D& vector, float scalar);
+	friend Vector2D operator*=(Vector2D& vector, float scalar);
 	friend Vector2D operator*=(float scalar, Vector2D& vector);
 
 	friend Vector2D operator/(const Vector2D& vector, float scalar);
-
-    friend Vector2D operator/=(Vector2D& vector, float scalar);
+	friend Vector2D operator/=(Vector2D& vector, float scalar);
 
 	friend float DotProduct(const Vector2D& left, const Vector2D& right);
 };

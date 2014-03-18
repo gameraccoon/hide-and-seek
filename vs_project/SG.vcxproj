@@ -28,6 +28,7 @@
     <ClCompile Include="..\src\KeyListeners.cpp" />
     <ClCompile Include="..\src\LevelLoader.cpp" />
     <ClCompile Include="..\src\LightEmitter.cpp" />
+    <ClCompile Include="..\src\LuaScript.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\Man.cpp" />
     <ClCompile Include="..\src\PathFinder.cpp" />
@@ -61,6 +62,7 @@
     <ClInclude Include="..\src\KeyListeners.h" />
     <ClInclude Include="..\src\LevelLoader.h" />
     <ClInclude Include="..\src\LightEmitter.h" />
+    <ClInclude Include="..\src\LuaScript.h" />
     <ClInclude Include="..\src\Man.h" />
     <ClInclude Include="..\src\PathFinder.h" />
     <ClInclude Include="..\src\PathPoint.h" />
@@ -108,8 +110,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IntDir>.\Release\</IntDir>
-    <IncludePath>D:\Libs\hge\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Libs\hge\lib\vc;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\Libs\lua\Include;D:\Libs\hge\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Libs\lua\Lib;D:\Libs\hge\lib\vc;$(LibraryPath)</LibraryPath>
     <OutDir>..\build\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -166,7 +168,7 @@
     </Bscmake>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>hge.lib;hgehelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>hge.lib;hgehelp.lib;lua.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>..\build\$(TargetName)$(TargetExt)</OutputFile>
     </Link>
   </ItemDefinitionGroup>
