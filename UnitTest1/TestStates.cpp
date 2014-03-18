@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
 
-#include "../src/States.cpp"
+#include "../src/Engine/Modules/States.cpp"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 

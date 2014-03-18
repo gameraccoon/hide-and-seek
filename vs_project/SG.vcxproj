@@ -11,69 +11,70 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\Actor.cpp" />
-    <ClCompile Include="..\src\ActorFactory.cpp" />
-    <ClCompile Include="..\src\Border.cpp" />
-    <ClCompile Include="..\src\BoundingBox.cpp" />
-    <ClCompile Include="..\src\Bullet.cpp" />
-    <ClCompile Include="..\src\Camera.cpp" />
-    <ClCompile Include="..\src\Corpse.cpp" />
-    <ClCompile Include="..\src\DirectionArrow.cpp" />
-    <ClCompile Include="..\src\DummyMan.cpp" />
-    <ClCompile Include="..\src\FloatingCamera.cpp" />
-    <ClCompile Include="..\src\GraphicLoader.cpp" />
-    <ClCompile Include="..\src\Hero.cpp" />
-    <ClCompile Include="..\src\Hull.cpp" />
-    <ClCompile Include="..\src\InventoryItem.cpp" />
-    <ClCompile Include="..\src\KeyListeners.cpp" />
-    <ClCompile Include="..\src\LevelLoader.cpp" />
-    <ClCompile Include="..\src\LightEmitter.cpp" />
-    <ClCompile Include="..\src\LuaScript.cpp" />
+    <ClCompile Include="..\src\Engine\Actors\Actor.cpp" />
+    <ClCompile Include="..\src\Engine\Actors\LightEmitter.cpp" />
+    <ClCompile Include="..\src\Engine\Core\Rotator.cpp" />
+    <ClCompile Include="..\src\Engine\Core\Vector2D.cpp" />
+    <ClCompile Include="..\src\Engine\Core\World.cpp" />
+    <ClCompile Include="..\src\Engine\Graphics\Camera.cpp" />
+    <ClCompile Include="..\src\Engine\Graphics\DirectionArrow.cpp" />
+    <ClCompile Include="..\src\Engine\Graphics\FloatingCamera.cpp" />
+    <ClCompile Include="..\src\Engine\Graphics\GraphicLoader.cpp" />
+    <ClCompile Include="..\src\Engine\Input\KeyListeners.cpp" />
+    <ClCompile Include="..\src\Engine\Lua\LuaScript.cpp" />
+    <ClCompile Include="..\src\Engine\Modules\ActorFactory.cpp" />
+    <ClCompile Include="..\src\Engine\Modules\LevelLoader.cpp" />
+    <ClCompile Include="..\src\Engine\Modules\PathFinder.cpp" />
+    <ClCompile Include="..\src\Engine\Modules\Processes.cpp" />
+    <ClCompile Include="..\src\Engine\Modules\RayTrace.cpp" />
+    <ClCompile Include="..\src\Engine\Modules\States.cpp" />
+    <ClCompile Include="..\src\Engine\Structures\Border.cpp" />
+    <ClCompile Include="..\src\Engine\Structures\BoundingBox.cpp" />
+    <ClCompile Include="..\src\Engine\Structures\Hull.cpp" />
+    <ClCompile Include="..\src\Engine\Structures\InventoryItem.cpp" />
+    <ClCompile Include="..\src\Engine\Structures\PathPoint.cpp" />
+    <ClCompile Include="..\src\Game\Actors\Bullet.cpp" />
+    <ClCompile Include="..\src\Game\Actors\Corpse.cpp" />
+    <ClCompile Include="..\src\Game\Actors\DummyMan.cpp" />
+    <ClCompile Include="..\src\Game\Actors\Hero.cpp" />
+    <ClCompile Include="..\src\Game\Actors\Man.cpp" />
+    <ClCompile Include="..\src\Game\Actors\Wall.cpp" />
+    <ClCompile Include="..\src\Game\Inventory\Weapon.cpp" />
     <ClCompile Include="..\src\main.cpp" />
-    <ClCompile Include="..\src\Man.cpp" />
-    <ClCompile Include="..\src\PathFinder.cpp" />
-    <ClCompile Include="..\src\PathPoint.cpp" />
-    <ClCompile Include="..\src\Processes.cpp" />
-    <ClCompile Include="..\src\RayTrace.cpp" />
-    <ClCompile Include="..\src\Rotator.cpp" />
-    <ClCompile Include="..\src\States.cpp" />
-    <ClCompile Include="..\src\Vector2D.cpp" />
-    <ClCompile Include="..\src\Wall.cpp" />
-    <ClCompile Include="..\src\Weapon.cpp" />
-    <ClCompile Include="..\src\World.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\Actor.h" />
-    <ClInclude Include="..\src\ActorFactory.h" />
-    <ClInclude Include="..\src\Border.h" />
-    <ClInclude Include="..\src\BoundingBox.h" />
-    <ClInclude Include="..\src\Bullet.h" />
-    <ClInclude Include="..\src\Camera.h" />
-    <ClInclude Include="..\src\Corpse.h" />
-    <ClInclude Include="..\src\DirectionArrow.h" />
-    <ClInclude Include="..\src\DummyMan.h" />
-    <ClInclude Include="..\src\FloatingCamera.h" />
-    <ClInclude Include="..\src\Globals.h" />
-    <ClInclude Include="..\src\GraphicLoader.h" />
-    <ClInclude Include="..\src\Hero.h" />
-    <ClInclude Include="..\src\Hull.h" />
-    <ClInclude Include="..\src\IActor.h" />
-    <ClInclude Include="..\src\InventoryItem.h" />
-    <ClInclude Include="..\src\KeyListeners.h" />
-    <ClInclude Include="..\src\LevelLoader.h" />
-    <ClInclude Include="..\src\LightEmitter.h" />
-    <ClInclude Include="..\src\LuaScript.h" />
-    <ClInclude Include="..\src\Man.h" />
-    <ClInclude Include="..\src\PathFinder.h" />
-    <ClInclude Include="..\src\PathPoint.h" />
-    <ClInclude Include="..\src\Processes.h" />
-    <ClInclude Include="..\src\RayTrace.h" />
-    <ClInclude Include="..\src\Rotator.h" />
-    <ClInclude Include="..\src\States.h" />
-    <ClInclude Include="..\src\Vector2D.h" />
-    <ClInclude Include="..\src\Wall.h" />
-    <ClInclude Include="..\src\Weapon.h" />
-    <ClInclude Include="..\src\World.h" />
+    <ClInclude Include="..\src\Engine\Actors\Actor.h" />
+    <ClInclude Include="..\src\Engine\Actors\LightEmitter.h" />
+    <ClInclude Include="..\src\Engine\Configs\DebugMethods.h" />
+    <ClInclude Include="..\src\Engine\Core\IActor.h" />
+    <ClInclude Include="..\src\Engine\Core\Rotator.h" />
+    <ClInclude Include="..\src\Engine\Core\Vector2D.h" />
+    <ClInclude Include="..\src\Engine\Core\World.h" />
+    <ClInclude Include="..\src\Engine\Graphics\Camera.h" />
+    <ClInclude Include="..\src\Engine\Graphics\DirectionArrow.h" />
+    <ClInclude Include="..\src\Engine\Graphics\FloatingCamera.h" />
+    <ClInclude Include="..\src\Engine\Graphics\GraphicLoader.h" />
+    <ClInclude Include="..\src\Engine\Hge\HgeIncludes.h" />
+    <ClInclude Include="..\src\Engine\Input\KeyListeners.h" />
+    <ClInclude Include="..\src\Engine\Lua\LuaScript.h" />
+    <ClInclude Include="..\src\Engine\Modules\ActorFactory.h" />
+    <ClInclude Include="..\src\Engine\Modules\LevelLoader.h" />
+    <ClInclude Include="..\src\Engine\Modules\PathFinder.h" />
+    <ClInclude Include="..\src\Engine\Modules\Processes.h" />
+    <ClInclude Include="..\src\Engine\Modules\RayTrace.h" />
+    <ClInclude Include="..\src\Engine\Modules\States.h" />
+    <ClInclude Include="..\src\Engine\Structures\Border.h" />
+    <ClInclude Include="..\src\Engine\Structures\BoundingBox.h" />
+    <ClInclude Include="..\src\Engine\Structures\Hull.h" />
+    <ClInclude Include="..\src\Engine\Structures\InventoryItem.h" />
+    <ClInclude Include="..\src\Engine\Structures\PathPoint.h" />
+    <ClInclude Include="..\src\Game\Actors\Bullet.h" />
+    <ClInclude Include="..\src\Game\Actors\Corpse.h" />
+    <ClInclude Include="..\src\Game\Actors\DummyMan.h" />
+    <ClInclude Include="..\src\Game\Actors\Hero.h" />
+    <ClInclude Include="..\src\Game\Actors\Man.h" />
+    <ClInclude Include="..\src\Game\Actors\Wall.h" />
+    <ClInclude Include="..\src\Game\Inventory\Weapon.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <SccProjectName />
@@ -104,9 +105,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>.\Debug\</OutDir>
     <IntDir>.\Debug\</IntDir>
-    <IncludePath>C:\Other\hge\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Other\hge\lib\vc;$(LibraryPath)</LibraryPath>
-    <SourcePath>E:\test\tests;E:\test\src;$(SourcePath)</SourcePath>
+    <IncludePath>D:\Libs\hge\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Libs\hge\lib\vc;$(LibraryPath)</LibraryPath>
+    <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IntDir>.\Release\</IntDir>
@@ -120,7 +121,7 @@
       <Optimization>MaxSpeed</Optimization>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;DEBUG;NOMINMAX;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
       <ObjectFileName>.\Debug\</ObjectFileName>
       <ProgramDataBaseFileName>.\Debug\</ProgramDataBaseFileName>
@@ -153,6 +154,7 @@
       <ObjectFileName>.\Release\</ObjectFileName>
       <ProgramDataBaseFileName>.\Release\</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Midl>
       <TypeLibraryName>.\Release\SG.tlb</TypeLibraryName>

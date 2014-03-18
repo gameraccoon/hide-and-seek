@@ -1,13 +1,13 @@
-#include "../src/Globals.h"
-#include "../src/Hero.h"
-#include "../src/DirectionArrow.h"
-#include "../src/World.h"
-#include "../src/Wall.h"
-#include "../src/FloatingCamera.h"
-#include "../src/KeyListeners.h"
-#include "../src/LightEmitter.h"
-#include "../src/PathPoint.h"
-#include "../src/LevelLoader.h"
+#include "Engine/Hge/HgeIncludes.h"
+#include "Engine/Core/World.h"
+#include "Engine/Structures/PathPoint.h"
+#include "Engine/Input/KeyListeners.h"
+#include "Engine/Modules/LevelLoader.h"
+#include "Engine/Actors/LightEmitter.h"
+#include "Engine/Graphics/FloatingCamera.h"
+#include "Engine/Graphics/DirectionArrow.h"
+#include "Game/Actors/Wall.h"
+#include "Game/Actors/Hero.h"
 #include <vector>
 
 // Hge subsystem
