@@ -8,6 +8,8 @@
  * Factory that allows to create any type of registered actor by their name identifier.
  *
  * Based on pattern Factory in book Andrei Alexandrescu "Modern C++ Design: Generic Programming and Design Patterns Applied"
+ *
+ * ActorFactory is a singleton.
  */
 class ActorFactory
 {
@@ -17,23 +19,38 @@ private:
 	typedef std::map<std::string, CreateActorCallback> CallbackMap;
 public:
 	/**
-	 * register new actor class by identifier and "create" function
+	 * @return the single instance of the ActorFactory
+	 */
+	static ActorFactory& Factory();
+
+	/**
+	 * register new actor class by an identifier and a "create" function
 	 * @return true if class was not registered earlier
 	 */
-	static bool registerActor(std::string actorId, CreateActorCallback createFn);
+	bool registerActor(std::string actorId, CreateActorCallback createFn);
 
 	/**
 	 * unregister already registred class
 	 * @return true if class was unregistered
 	 */ 
-	static bool unregisterActor(std::string actorID);
+	bool unregisterActor(std::string actorID);
 
 	/**
 	 * Create actor by identifier.
 	 */
-	static IActor* createActor(std::string actorID, World *world, const Vector2D location, const Vector2D size, const Rotator rotation);
+	IActor* createActor(std::string actorID, World *world, const Vector2D location, const Vector2D size, const Rotator rotation);
 private:
-	static CallbackMap callbacks;
+	CallbackMap callbacks;
+
+	static ActorFactory* singleInstance;
+
+	/*
+	 * Turn off unusable operations
+	 */
+	ActorFactory();
+	ActorFactory(const ActorFactory&);
+	~ActorFactory();
+	ActorFactory& operator=(const ActorFactory&);
 };
 
 #endif

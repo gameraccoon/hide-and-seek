@@ -108,7 +108,7 @@ void LevelLoader::load(World* world, const std::string levelName)
 
 		try
 		{
-			ActorFactory::createActor(className, world, Vector2D(xPos, yPos), Vector2D(xScale, yScale), Rotator(angle));
+			ActorFactory::Factory().createActor(className, world, Vector2D(xPos, yPos), Vector2D(xScale, yScale), Rotator(angle));
 		}
 		catch (std::runtime_error)
 		{

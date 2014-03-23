@@ -1,6 +1,24 @@
 #include "ActorFactory.h"
 
-ActorFactory::CallbackMap ActorFactory::callbacks = CallbackMap();
+ActorFactory* ActorFactory::singleInstance = NULL;
+
+ActorFactory::ActorFactory() {}
+ActorFactory::ActorFactory(const ActorFactory&) {}
+ActorFactory::~ActorFactory() {}
+ActorFactory& ActorFactory::operator=(const ActorFactory&)
+{
+	return *ActorFactory::singleInstance;
+};
+
+ActorFactory& ActorFactory::Factory()
+{
+	if (ActorFactory::singleInstance == NULL)
+	{
+		ActorFactory::singleInstance = new ActorFactory();
+	}
+
+	return *ActorFactory::singleInstance;
+}
 
 bool ActorFactory::registerActor(std::string actorId, CreateActorCallback createFn)
 {

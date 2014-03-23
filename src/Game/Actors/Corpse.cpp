@@ -15,7 +15,7 @@ namespace
 	const std::string CORPSE_ID = "Corpse";
 
 	// register specific factory in actor factory
-	const bool registered = ActorFactory::registerActor(CORPSE_ID, CreateCorpse);
+	const bool registered = ActorFactory::Factory().registerActor(CORPSE_ID, CreateCorpse);
 }
 
 Corpse::Corpse(World *ownerWorld, Vector2D location, Rotator rotation) :

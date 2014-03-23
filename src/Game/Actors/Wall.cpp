@@ -15,7 +15,7 @@ namespace
 	const std::string WALL_ID = "Wall";
 
 	// register specific factory in actor factory
-	const bool registered = ActorFactory::registerActor(WALL_ID, CreateWall);
+	const bool registered = ActorFactory::Factory().registerActor(WALL_ID, CreateWall);
 }
 
 Wall::Wall(World *ownerWorld, Vector2D location, Vector2D scale) : Actor(ownerWorld, location, Rotator(0.f))

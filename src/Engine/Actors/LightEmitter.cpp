@@ -14,7 +14,7 @@ namespace
 	const std::string LIGHT_EMITTER_ID = "LightEmitter";
 
 	// register specific factory in actor factory
-	const bool registered = ActorFactory::registerActor(LIGHT_EMITTER_ID, CreateLightEmitter);
+	const bool registered = ActorFactory::Factory().registerActor(LIGHT_EMITTER_ID, CreateLightEmitter);
 }
 
 LightEmitter::LightEmitter(World *ownerWorld, Vector2D location) : Actor(ownerWorld, location, Rotator(0.f))

@@ -14,7 +14,7 @@ namespace
 	const std::string MAN_ID = "Man";
 
 	// register specific factory in actor factory
-	const bool registered = ActorFactory::registerActor(MAN_ID, CreateMan);
+	const bool registered = ActorFactory::Factory().registerActor(MAN_ID, CreateMan);
 }
 
 Man::Man(World *ownerWorld, Vector2D location) : DummyMan(ownerWorld, location),

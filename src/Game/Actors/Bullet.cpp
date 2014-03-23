@@ -23,7 +23,7 @@ namespace
 	const std::string BULLET_ID = "Bullet";
 
 	// register specific factory in actor factory
-	const bool registered = ActorFactory::registerActor(BULLET_ID, CreateBullet);
+	const bool registered = ActorFactory::Factory().registerActor(BULLET_ID, CreateBullet);
 }
 
 Bullet::Bullet(World *ownerWorld, Vector2D location, Rotator rotation) :
