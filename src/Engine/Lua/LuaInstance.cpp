@@ -1,8 +1,6 @@
-#include "LuaScript.h"
+#include "LuaInstance.h"
 
-using namespace lua;
-
-LuaScript::LuaScript()
+LuaInstance::LuaInstance()
 {
     this->luaState = luaL_newstate();
     
@@ -20,97 +18,97 @@ LuaScript::LuaScript()
     }
 }
 
-LuaScript::~LuaScript()
+LuaInstance::~LuaInstance()
 {
     lua_close(this->luaState);
 }
 
-int LuaScript::execScript(const char* script)
+int LuaInstance::execScript(const char* script)
 {
 	luaL_dostring(this->luaState, script);
 
     return lua_tointeger(this->luaState, lua_gettop(this->luaState));
 }
 
-int LuaScript::execScriptFromFile(const char* ScriptFileName)
+int LuaInstance::execScriptFromFile(const char* ScriptFileName)
 {
     luaL_dofile(this->luaState, ScriptFileName);
 
     return lua_tointeger(this->luaState, lua_gettop(this->luaState));
 }
 
-int LuaScript::getArgumentsCount()
+int LuaInstance::getArgumentsCount()
 {
     return lua_gettop(this->luaState);
 }
 
 template<>
-int LuaScript::getArgument<int>(int index)
+int LuaInstance::getArgument<int>(int index)
 {
     return lua_tointeger(this->luaState, index);
 }
 
 template<>
-double LuaScript::getArgument<double>(int index)
+double LuaInstance::getArgument<double>(int index)
 {
     return lua_tonumber(this->luaState, index);
 }
 
 template<>
-char* LuaScript::getArgument<char*>(int index)
+char* LuaInstance::getArgument<char*>(int index)
 {
     return (char*)lua_tostring(this->luaState, index);
 }
 
 template<>
-bool LuaScript::getArgument<bool>(int index)
+bool LuaInstance::getArgument<bool>(int index)
 {
     return lua_toboolean(this->luaState, index) != 0;
 }
 
 
 template<>
-void LuaScript::sendToLua<int>(int value)
+void LuaInstance::sendToLua<int>(int value)
 {
     lua_pushinteger(this->luaState, value);
 }
 
 template<>
-void LuaScript::sendToLua<double>(double value)
+void LuaInstance::sendToLua<double>(double value)
 {
     lua_pushnumber(this->luaState, value);
 }
 
 template<>
-void LuaScript::sendToLua<char*>(char* value)
+void LuaInstance::sendToLua<char*>(char* value)
 {
     lua_pushstring(this->luaState, value);
 }
 
 template<>
-void LuaScript::sendToLua<bool>(bool value)
+void LuaInstance::sendToLua<bool>(bool value)
 {
     lua_pushboolean(this->luaState, value);
 }
 
 template<>
-void LuaScript::sendToLua<lua_CFunction>(lua_CFunction value)
+void LuaInstance::sendToLua<lua_CFunction>(lua_CFunction value)
 {
 	lua_pushcfunction(this->luaState, value);
 }
 
-void LuaScript::beginInitializeTable()
+void LuaInstance::beginInitializeTable()
 {
 	lua_createtable(luaState, 2, 0);
 	this->luaState = luaState;
 }
 
-void LuaScript::endInitializeTable(const char* arrayName)
+void LuaInstance::endInitializeTable(const char* arrayName)
 {
 	lua_setglobal(this->luaState, arrayName);
 }
 
-void LuaScript::registerFunction(const char* functionName, lua_CFunction function)
+void LuaInstance::registerFunction(const char* functionName, lua_CFunction function)
 {
 	this->registerConstant<lua_CFunction>(functionName, function);
 }

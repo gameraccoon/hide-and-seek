@@ -70,3 +70,8 @@ void World::cleanDestroyedActors()
 		}
 	}
 }
+
+LuaInstance* World::getLuaInstance()
+{
+	return &this->luaInstance;
+}

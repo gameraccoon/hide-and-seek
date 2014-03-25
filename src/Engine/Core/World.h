@@ -5,6 +5,7 @@
 
 #include "IActor.h"
 #include "../Structures/PathPoint.h"
+#include "../Lua/LuaInstance.h"
 
 #include <string>
 
@@ -28,7 +29,11 @@ public:
 	ActorsSet allActors;
 	/** All pathpoints of this world */
 	PathPointsSet navigationMap;
+	/** */
+	LuaInstance* getLuaInstance();
 private:
+	/** */
+	LuaInstance luaInstance;
 	/** Free memory of path points */
 	void removeAllPathPoints();
 	/** Destroy actors that waits to be destroyed */

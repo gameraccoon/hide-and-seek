@@ -1,8 +1,8 @@
-#include "States.h"
+#include "StatesStack.h"
 
 #include <cstdlib>
 
-#include "../Helpers/DebugMethods.h"
+#include "../../Helpers/DebugMethods.h"
 
 // dummy for debugging methods
 #if (!defined DEBUG) && (!defined RELEASE)
@@ -11,28 +11,17 @@
   	#define WARN_IF(condition, message)
 #endif
 
-void State::process()
-{
-	WARN("Function 'Process' not redefined in some state");
-}
-
-State::~State()
-{
-}
-
 /**
- * Итератор состояния для стека состояний
+ * State iterator for StatesStack
  *
- * Нужен для скрытия деталей реализации стека состояний
+ * Used to hide implementation details
  */
 class StateIterator
 {
 public:
 	/**
-	 * Стандартный конструктор
-	 *
-	 * @param prewState итератор стейта который мы заменяем этим
-	 * @param state стейт, для которого создаётся итератор
+     * @param prewState state iterator which was last
+     * @param state state which we pushed into stack
 	 */
 	StateIterator(StateIterator *prewState, State *state)
 	{
@@ -47,7 +36,7 @@ public:
 	}
 
 	/**
-	 * Выполнить код состояния
+     * Process state code
 	 */
 	void process()
 	{
@@ -56,7 +45,7 @@ public:
 	}
 
 	/**
-	 * @return Предыдущее состояние
+     * @return iterator of a previous state
 	 */
 	StateIterator* ReturnLast()
 	{
@@ -65,14 +54,15 @@ public:
 
 private:
 	/**
-	 * Состояние, за которым закреплён итератор
+     * State that stored in this iterator
 	 */
 	State *currentState;
 
 	/**
-	 * Предыдущее состояние
+     * Previous state
 	 *
-	 * Оно будет установлено, когда текущее состояние будет удалено.
+     * It will become the current when this state
+     * will replased from stack
 	 */
 	StateIterator *prewState;
 };
@@ -89,10 +79,10 @@ void StatesStack::push(State *newState)
 
 void StatesStack::pop()
 {
-	// запоминаем ссылку на старое состояние
+    // save pointer to state which we will delete
 	StateIterator* oldHead = this->head;
 	WARN_IF(!this->head, "Trying to 'Pop' from empty StatesStack. It is a fatal error.");
-	// устонавливаем новое состояние
+    // set new head
 	this->head = this->head->ReturnLast();      
 	delete oldHead;
 }
