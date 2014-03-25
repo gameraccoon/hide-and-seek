@@ -1,24 +1,19 @@
 
 // Standart structures e.g. NULL
-#include <stdio.h>
-#include <iostream>
+#include "Log.h"
 
 // Debugging methods
 #if defined(DEBUG)
-	#define WARN(message)					\
-	{										\
-		std::cout << "ERROR: " << message;	\
-		std::cout << std::endl;				\
-		exit(1);							\
+	#define WARN(message)						\
+	{											\
+		Log::WriteError(std::string(message));	\
+		exit(1);								\
 	}
 
 	#define WARN_IF(condition, message)		\
 	{										\
 		if (condition)						\
 		{									\
-			std::cout << "On assertion ";	\
-			std::cout << condition;			\
-			std::cout << std::endl;			\
 			WARN(message);					\
 		}									\
 	}

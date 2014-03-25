@@ -2,15 +2,16 @@
 #define ROLE_H
 
 #include "../Core/IActor.h"
+#include "../Core/World.h"
 #include "../Modules/States/StatesStack.h"
 
 class Role
 {
 public:
-	Role(IActor *body);
+	Role(World* world, IActor *body);
 	~Role(void);
 
-	void Update(float deltaTime);
+	void update(float deltaTime);
 private:
 	StatesStack states;
 };

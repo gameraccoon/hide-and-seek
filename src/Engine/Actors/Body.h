@@ -1,11 +1,12 @@
 #ifndef BODY_H
 #define BODY_H
 
-#include "../../Engine/Core/Vector2D.h"
-#include "../../Engine/Core/World.h"
-#include "../../Engine/Actors/Actor.h"
-#include "../../Engine/Structures/InventoryItem.h"
+#include "../Core/Vector2D.h"
+#include "../Core/World.h"
+#include "../Actors/Actor.h"
+#include "../Structures/InventoryItem.h"
 #include "../Inventory/Weapon.h"
+#include "../AI/Role.h"
 
 class Weapon;
 
@@ -26,6 +27,8 @@ public:
 	void startShoting(Vector2D targetLocation);
 	void stopShoting();
 
+	void update(float deltatime);
+
 	/** Try to take some damage to the man =) */
 	virtual void takeDamage(float damageValue,Vector2D impulse);
 protected:
@@ -43,6 +46,8 @@ protected:
 	Weapon *armedWeapon;
 	/** Is we shooting */
 	bool bShooting;
+	/** AI */
+	Role *role;
 };
 
 #endif

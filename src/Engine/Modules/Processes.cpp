@@ -56,7 +56,11 @@ public:
 
 	~ProcessContainer()
 	{
-		delete this->currentProcess;
+		if (this->currentProcess != NULL)
+		{
+			delete this->currentProcess;
+			this->currentProcess = NULL;
+		}
 	}
 
     /**

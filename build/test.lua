@@ -1,0 +1,3 @@
+--Log.Log("1")
+--Log.Warning("2")
+--Log.Error("3")

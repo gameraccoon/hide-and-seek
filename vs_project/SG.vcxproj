@@ -12,6 +12,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\Engine\Actors\Actor.cpp" />
+    <ClCompile Include="..\src\Engine\Actors\Body.cpp" />
+    <ClCompile Include="..\src\Engine\Actors\Bullet.cpp" />
     <ClCompile Include="..\src\Engine\Actors\LightEmitter.cpp" />
     <ClCompile Include="..\src\Engine\AI\AiState.cpp" />
     <ClCompile Include="..\src\Engine\AI\Role.cpp" />
@@ -24,6 +26,7 @@
     <ClCompile Include="..\src\Engine\Graphics\GraphicLoader.cpp" />
     <ClCompile Include="..\src\Engine\Helpers\Log.cpp" />
     <ClCompile Include="..\src\Engine\Input\KeyListeners.cpp" />
+    <ClCompile Include="..\src\Engine\Inventory\Weapon.cpp" />
     <ClCompile Include="..\src\Engine\Lua\LuaInstance.cpp" />
     <ClCompile Include="..\src\Engine\Modules\ActorFactory.cpp" />
     <ClCompile Include="..\src\Engine\Modules\LevelLoader.cpp" />
@@ -37,21 +40,18 @@
     <ClCompile Include="..\src\Engine\Structures\Hull.cpp" />
     <ClCompile Include="..\src\Engine\Structures\InventoryItem.cpp" />
     <ClCompile Include="..\src\Engine\Structures\PathPoint.cpp" />
-    <ClCompile Include="..\src\Game\Actors\Bullet.cpp" />
     <ClCompile Include="..\src\Game\Actors\Corpse.cpp" />
-    <ClCompile Include="..\src\Game\Actors\Body.cpp" />
     <ClCompile Include="..\src\Game\Actors\Hero.cpp" />
     <ClCompile Include="..\src\Game\Actors\Man.cpp" />
     <ClCompile Include="..\src\Game\Actors\Wall.cpp" />
-    <ClCompile Include="..\src\Game\Inventory\Weapon.cpp" />
     <ClCompile Include="..\src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Engine\Actors\Actor.h" />
+    <ClInclude Include="..\src\Engine\Actors\Body.h" />
     <ClInclude Include="..\src\Engine\Actors\LightEmitter.h" />
     <ClInclude Include="..\src\Engine\AI\AiState.h" />
     <ClInclude Include="..\src\Engine\AI\Role.h" />
-    <ClInclude Include="..\src\Engine\Configs\DebugMethods.h" />
     <ClInclude Include="..\src\Engine\Core\IActor.h" />
     <ClInclude Include="..\src\Engine\Core\Rotator.h" />
     <ClInclude Include="..\src\Engine\Core\Vector2D.h" />
@@ -60,9 +60,11 @@
     <ClInclude Include="..\src\Engine\Graphics\DirectionArrow.h" />
     <ClInclude Include="..\src\Engine\Graphics\FloatingCamera.h" />
     <ClInclude Include="..\src\Engine\Graphics\GraphicLoader.h" />
+    <ClInclude Include="..\src\Engine\Helpers\DebugMethods.h" />
     <ClInclude Include="..\src\Engine\Helpers\Log.h" />
     <ClInclude Include="..\src\Engine\Hge\HgeIncludes.h" />
     <ClInclude Include="..\src\Engine\Input\KeyListeners.h" />
+    <ClInclude Include="..\src\Engine\Inventory\Weapon.h" />
     <ClInclude Include="..\src\Engine\Lua\LuaInstance.h" />
     <ClInclude Include="..\src\Engine\Modules\ActorFactory.h" />
     <ClInclude Include="..\src\Engine\Modules\LevelLoader.h" />
@@ -76,13 +78,10 @@
     <ClInclude Include="..\src\Engine\Structures\Hull.h" />
     <ClInclude Include="..\src\Engine\Structures\InventoryItem.h" />
     <ClInclude Include="..\src\Engine\Structures\PathPoint.h" />
-    <ClInclude Include="..\src\Game\Actors\Bullet.h" />
     <ClInclude Include="..\src\Game\Actors\Corpse.h" />
-    <ClInclude Include="..\src\Game\Actors\Body.h" />
     <ClInclude Include="..\src\Game\Actors\Hero.h" />
     <ClInclude Include="..\src\Game\Actors\Man.h" />
     <ClInclude Include="..\src\Game\Actors\Wall.h" />
-    <ClInclude Include="..\src\Game\Inventory\Weapon.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <SccProjectName />

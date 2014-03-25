@@ -1,9 +1,9 @@
 #ifndef BULLET_H
 #define BULLET_H
 
-#include "../../Engine/Core/World.h"
-#include "../../Engine/Actors/Actor.h"
-#include "../../Engine/Modules/RayTrace.h"
+#include "../Core/World.h"
+#include "../Actors/Actor.h"
+#include "../Modules/RayTrace.h"
 
 class Bullet : public Actor
 {

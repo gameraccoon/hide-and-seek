@@ -11,7 +11,7 @@
 
 void State::process()
 {
-    WARN("Function 'Process' not redefined in some state");
+    WARN("Function 'process' not redefined in some state");
 }
 
 State::~State()

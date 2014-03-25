@@ -15,6 +15,7 @@ private:
 
 public:
 	LuaInstance();
+	LuaInstance(lua_State *luaState);
 	virtual ~LuaInstance();
 		
 	int execScript(const char* script);
@@ -35,6 +36,7 @@ public:
 	void beginInitializeTable();
 	template<typename T1, typename T2>
 	void registerTableConstant(T1 key, T2 value);
+	void registerTableFunction(const char* functionName, lua_CFunction function);
 	void endInitializeTable(const char* arrayName);
 };
 

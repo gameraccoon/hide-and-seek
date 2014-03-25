@@ -6,8 +6,8 @@
 #include "../../Engine/Actors/Actor.h"
 #include "../../Engine/Structures/InventoryItem.h"
 #include "../../Engine/Modules/PathFinder.h"
-#include "../Inventory/Weapon.h"
-#include "Body.h"
+#include "../../Engine/Inventory/Weapon.h"
+#include "../../Engine/Actors/Body.h"
 
 class Man:public Body
 {

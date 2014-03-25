@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
 
-#include "../src/Engine/Modules/States.cpp"
+#include "../src/Engine/Modules/States/State.cpp"
+#include "../src/Engine/Modules/States/StatesStack.cpp"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -15,6 +16,7 @@ namespace TestStates
 		public:
 			~TestStateA()
 			{
+				TestValueForTestState = 0;
 			}
 
 			void process()
@@ -29,6 +31,7 @@ namespace TestStates
 			~TestStateB()
 			{
 			}
+
 			void process()
 			{
 				TestValueForTestState = 2;
@@ -41,6 +44,7 @@ namespace TestStates
 			~TestStateC()
 			{
 			}
+
 			void process()
 			{
 				TestValueForTestState = 3;
@@ -55,11 +59,6 @@ namespace TestStates
 			Stack.push(new TestStateA());
 			Stack.process();
 			Assert::AreEqual(TestValueForTestState, 1);
-		}
-
-		void testStatesStackOneState()
-		{
-			
 		}
 
 		TEST_METHOD(TestStatesStackMultiplyState)
@@ -86,6 +85,5 @@ namespace TestStates
 			TestValueForTestState = 0;
 			Stack.pop();					// Nothing in stack
 		}
-
-		};
+	};
 }

@@ -18,6 +18,11 @@ LuaInstance::LuaInstance()
     }
 }
 
+LuaInstance::LuaInstance(lua_State *luaState)
+{
+	this->luaState = luaState;
+}
+
 LuaInstance::~LuaInstance()
 {
     lua_close(this->luaState);
@@ -80,7 +85,7 @@ void LuaInstance::sendToLua<double>(double value)
 }
 
 template<>
-void LuaInstance::sendToLua<char*>(char* value)
+void LuaInstance::sendToLua<const char*>(const char* value)
 {
     lua_pushstring(this->luaState, value);
 }
@@ -111,4 +116,9 @@ void LuaInstance::endInitializeTable(const char* arrayName)
 void LuaInstance::registerFunction(const char* functionName, lua_CFunction function)
 {
 	this->registerConstant<lua_CFunction>(functionName, function);
+}
+
+void LuaInstance::registerTableFunction(const char* functionName, lua_CFunction function)
+{
+	this->registerTableConstant<const char*, lua_CFunction>(functionName, function);
 }

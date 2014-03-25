@@ -6,6 +6,7 @@
 #include "Engine/Actors/LightEmitter.h"
 #include "Engine/Graphics/FloatingCamera.h"
 #include "Engine/Graphics/DirectionArrow.h"
+#include "Engine/Helpers/Log.h"
 #include "Game/Actors/Wall.h"
 #include "Game/Actors/Hero.h"
 #include <vector>
@@ -193,6 +194,43 @@ bool RenderFunc()
 	return false;
 }
 
+// -- lua functions
+
+namespace luafunc
+{
+	int cmdLogLog(lua_State* state)
+	{
+		LuaInstance *luaInstance = new LuaInstance(state);
+
+		for(int i = 1; i < luaInstance->getArgumentsCount() + 1; i++)
+			Log::WriteLog(luaInstance->getArgument<char*>(i));
+			
+		return 0;
+	}
+
+	int cmdLogWarning(lua_State* state)
+	{
+		LuaInstance *luaInstance = new LuaInstance(state);
+
+		for(int i = 1; i < luaInstance->getArgumentsCount() + 1; i++)
+			Log::WriteWarning(luaInstance->getArgument<char*>(i));
+
+		return 0;
+	}
+	
+	int cmdLogError(lua_State* state)
+	{
+		LuaInstance *luaInstance = new LuaInstance(state);
+
+		for(int i = 1; i < luaInstance->getArgumentsCount() + 1; i++)
+			Log::WriteError(luaInstance->getArgument<char*>(i));
+
+		return 0;
+	}
+}
+
+// -- end: lua functions
+
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
 	::hge = hgeCreate(HGE_VERSION);
@@ -216,7 +254,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		{
 			// If one of the data files is not found, display
 			// an error message and shutdown.
-			MessageBox(NULL, "Can't load one of the following files:\nFONT1.FNT, FONT1.PNG, PARTICLES.PNG", "Error", MB_OK | MB_ICONERROR | MB_APPLMODAL);
+			Log::WriteError("Can't load one of the following files: FONT1.FNT, FONT1.PNG, PARTICLES.PNG");
 			::hge->System_Shutdown();
 			::hge->Release();
 			return 0;
@@ -232,6 +270,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		::crosshair->SetHotSpot(16, 16);
 
 		::gameWorld = new World();
+
+		// register lua functions
+		LuaInstance *lua = ::gameWorld->getLuaInstance();
+		
+		lua->beginInitializeTable();
+		lua->registerTableFunction("Log", luafunc::cmdLogLog);
+		lua->registerTableFunction("Warning", luafunc::cmdLogWarning);
+		lua->registerTableFunction("Error", luafunc::cmdLogError);
+		lua->endInitializeTable("Log");
+
+		// end: register lua functions
 
 		::mainCamera = new FloatingCamera(::hge, ::gameWorld, SCREEN_CENTER * 2, Vector2D(0.0f, 0.0f));
 

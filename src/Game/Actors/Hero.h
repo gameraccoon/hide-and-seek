@@ -3,7 +3,7 @@
 
 #include "../../Engine/Core/World.h"
 #include "../../Engine/Core/Vector2D.h"
-#include "Body.h"
+#include "../../Engine/Actors/Body.h"
 
 class Hero:public Body
 {

@@ -17,6 +17,7 @@ class StatesStack
 {
 public:
 	StatesStack();
+	~StatesStack();
 
 	/**
      * Set new state

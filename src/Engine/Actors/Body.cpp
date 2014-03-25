@@ -1,7 +1,5 @@
 #include "Body.h"
 
-#include "Corpse.h"
-
 Body::Body(World *ownerWorld, Vector2D location) : Actor(ownerWorld, location, Rotator(0.0f)),
 														size(32.0f, 32.0f)
 {
@@ -18,10 +16,13 @@ Body::Body(World *ownerWorld, Vector2D location) : Actor(ownerWorld, location, R
 	this->geometry.generate();
 	
 	this->updateCollision();
+
+	role = new Role(ownerWorld, this);
 }
 
 Body::~Body(void)
 {
+	delete this->role;
 }
 
 void Body::move(Vector2D step)
@@ -68,7 +69,14 @@ void Body::takeDamage(float damageValue,Vector2D impulse)
 	{
 		this->healthValue = 0.0f;
 		this->speed = 0.0f;
-		this->ownerWorld->spawnActor(new Corpse(this->ownerWorld, this->getLocation(), this->getRotation()));
+		//this->ownerWorld->spawnActor(new Corpse(this->ownerWorld, this->getLocation(), this->getRotation()));
 		this->destroy();
 	}
+}
+
+void Body::update(float deltatime)
+{
+	this->role->update(deltatime);
+
+	Actor::update(deltatime);
 }

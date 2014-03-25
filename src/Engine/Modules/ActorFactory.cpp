@@ -8,7 +8,7 @@ ActorFactory::~ActorFactory() {}
 ActorFactory& ActorFactory::operator=(const ActorFactory&)
 {
 	return *ActorFactory::singleInstance;
-};
+}
 
 ActorFactory& ActorFactory::Factory()
 {

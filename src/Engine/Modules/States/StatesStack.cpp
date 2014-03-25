@@ -31,8 +31,11 @@ public:
 
 	~StateIterator()
 	{
-		WARN_IF(!this->currentState, "Trying to destruct StateIterator which has no State");
-		delete this->currentState;
+		if (this->currentState != NULL)
+		{
+			delete this->currentState;
+			this->currentState = NULL;
+		}
 	}
 
 	/**
@@ -70,6 +73,14 @@ private:
 StatesStack::StatesStack()
 {
 	this->head = NULL;
+}
+
+StatesStack::~StatesStack()
+{
+	while (this->head != NULL)
+	{
+		this->pop();
+	}
 }
 
 void StatesStack::push(State *newState)
