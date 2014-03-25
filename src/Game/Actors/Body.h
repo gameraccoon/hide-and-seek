@@ -1,5 +1,5 @@
-#ifndef DUMMYMAN_H
-#define DUMMYMAN_H
+#ifndef BODY_H
+#define BODY_H
 
 #include "../../Engine/Core/Vector2D.h"
 #include "../../Engine/Core/World.h"
@@ -9,13 +9,13 @@
 
 class Weapon;
 
-class DummyMan:public Actor
+class Body:public Actor
 {
 public:
 	/** Initialization of a new man standing at a given point */
-	DummyMan(World *ownerWorld, Vector2D location);
+	Body(World *ownerWorld, Vector2D location);
 
-	virtual ~DummyMan();
+	virtual ~Body();
 
 	/** Say that we want to move the man on this step */
 	virtual void move(Vector2D step);

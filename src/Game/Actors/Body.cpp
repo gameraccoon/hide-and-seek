@@ -1,8 +1,8 @@
-#include "DummyMan.h"
+#include "Body.h"
 
 #include "Corpse.h"
 
-DummyMan::DummyMan(World *ownerWorld, Vector2D location) : Actor(ownerWorld, location, Rotator(0.0f)),
+Body::Body(World *ownerWorld, Vector2D location) : Actor(ownerWorld, location, Rotator(0.0f)),
 														size(32.0f, 32.0f)
 {
 	this->type = AT_Living;
@@ -20,22 +20,22 @@ DummyMan::DummyMan(World *ownerWorld, Vector2D location) : Actor(ownerWorld, loc
 	this->updateCollision();
 }
 
-DummyMan::~DummyMan(void)
+Body::~Body(void)
 {
 }
 
-void DummyMan::move(Vector2D step)
+void Body::move(Vector2D step)
 {
 	this->location += step;
 	this->updateCollision();
 }
 
-void DummyMan::updateCollision()
+void Body::updateCollision()
 {
 	this->colideBox = BoundingBox(this->location - this->size/2, this->location + this->size/2);
 }
 
-void DummyMan::startShoting(Vector2D targetLocation)
+void Body::startShoting(Vector2D targetLocation)
 {
 	if (this->armedWeapon != NULL)
 	{
@@ -43,7 +43,7 @@ void DummyMan::startShoting(Vector2D targetLocation)
 	}
 }
 
-void DummyMan::stopShoting()
+void Body::stopShoting()
 {
 	if (this->armedWeapon != NULL)
 	{
@@ -51,14 +51,14 @@ void DummyMan::stopShoting()
 	}
 }
 
-void DummyMan::giveWeapon(Weapon *weap)
+void Body::giveWeapon(Weapon *weap)
 {
 	this->armedWeapon = weap;
 	weap->setOwnerWorld(this->ownerWorld);
 	this->armedWeapon->setEquipped(true);
 }
 
-void DummyMan::takeDamage(float damageValue,Vector2D impulse)
+void Body::takeDamage(float damageValue,Vector2D impulse)
 {
 	this->healthValue -= damageValue;
 	

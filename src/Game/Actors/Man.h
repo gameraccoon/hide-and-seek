@@ -7,9 +7,9 @@
 #include "../../Engine/Structures/InventoryItem.h"
 #include "../../Engine/Modules/PathFinder.h"
 #include "../Inventory/Weapon.h"
-#include "DummyMan.h"
+#include "Body.h"
 
-class Man:public DummyMan
+class Man:public Body
 {
 public:
 	/** Initialization of a new man standing at a given point */

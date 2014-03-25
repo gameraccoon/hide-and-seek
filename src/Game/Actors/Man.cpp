@@ -17,7 +17,7 @@ namespace
 	const bool registered = ActorFactory::Factory().registerActor(MAN_ID, CreateMan);
 }
 
-Man::Man(World *ownerWorld, Vector2D location) : DummyMan(ownerWorld, location),
+Man::Man(World *ownerWorld, Vector2D location) : Body(ownerWorld, location),
 												navigator(ownerWorld),
 												destinationPoint(location)
 {
@@ -85,7 +85,7 @@ void Man::update(float deltatime)
 	this->updateCollision();
 
 	// use superclass method
-	DummyMan::update(deltatime);
+	Body::update(deltatime);
 }
 
 void Man::takeDamage(float damageValue, Vector2D impulse)
@@ -101,7 +101,7 @@ void Man::takeDamage(float damageValue, Vector2D impulse)
 		}
 	}
 
-	DummyMan::takeDamage(damageValue, impulse);
+	Body::takeDamage(damageValue, impulse);
 }
 
 void Man::findNextPathPoint()

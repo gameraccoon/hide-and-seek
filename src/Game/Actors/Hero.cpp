@@ -2,7 +2,7 @@
 
 #include "../../Engine/Modules/ActorFactory.h"
 
-Hero::Hero(World *ownerWorld, Vector2D location) : DummyMan(ownerWorld, location),
+Hero::Hero(World *ownerWorld, Vector2D location) : Body(ownerWorld, location),
 	step(ZERO_VECTOR)
 {
 	this->speed = 1.f;
@@ -43,7 +43,7 @@ void Hero::update(float deltatime)
 		}
 		
 		// use superclass method
-		DummyMan::update(deltatime);
+		Body::update(deltatime);
 	}
 
 	// if actor's path is free

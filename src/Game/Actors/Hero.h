@@ -3,9 +3,9 @@
 
 #include "../../Engine/Core/World.h"
 #include "../../Engine/Core/Vector2D.h"
-#include "DummyMan.h"
+#include "Body.h"
 
-class Hero:public DummyMan
+class Hero:public Body
 {
 public:
 	/** Initialization of a new Hero standing at a given point */
