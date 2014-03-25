@@ -271,16 +271,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		::gameWorld = new World();
 
-		// register lua functions
+		// -- register lua functions
 		LuaInstance *lua = ::gameWorld->getLuaInstance();
 		
 		lua->beginInitializeTable();
 		lua->registerTableFunction("Log", luafunc::cmdLogLog);
-		lua->registerTableFunction("Warning", luafunc::cmdLogWarning);
+		lua->registerTableFunction("Warn", luafunc::cmdLogWarning);
 		lua->registerTableFunction("Error", luafunc::cmdLogError);
 		lua->endInitializeTable("Log");
 
-		// end: register lua functions
+		// -- end: register lua functions
 
 		::mainCamera = new FloatingCamera(::hge, ::gameWorld, SCREEN_CENTER * 2, Vector2D(0.0f, 0.0f));
 

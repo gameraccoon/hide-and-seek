@@ -16,10 +16,9 @@ namespace TestStates
 		public:
 			~TestStateA()
 			{
-				TestValueForTestState = 0;
 			}
 
-			void process()
+			void process(float deltatime)
 			{
 				TestValueForTestState = 1;
 			}
@@ -32,7 +31,7 @@ namespace TestStates
 			{
 			}
 
-			void process()
+			void process(float deltatime)
 			{
 				TestValueForTestState = 2;
 			}
@@ -45,7 +44,7 @@ namespace TestStates
 			{
 			}
 
-			void process()
+			void process(float deltatime)
 			{
 				TestValueForTestState = 3;
 			}
@@ -57,7 +56,7 @@ namespace TestStates
 			TestValueForTestState = 0;
 			StatesStack Stack;
 			Stack.push(new TestStateA());
-			Stack.process();
+			Stack.process(1.f);
 			Assert::AreEqual(TestValueForTestState, 1);
 		}
 
@@ -68,19 +67,19 @@ namespace TestStates
 			StatesStack Stack;
 			Stack.push(new TestStateA());	// A <-
 			Stack.push(new TestStateB());	// A B <-
-			Stack.process();				// Run B->Process()
+			Stack.process(1.f);				// Run B->Process()
 			Assert::AreEqual(TestValueForTestState, 2);
 			TestValueForTestState = 0;
 			Stack.push(new TestStateC());	// A B C <-
-			Stack.process();				// Run C->Process()
+			Stack.process(1.f);				// Run C->Process()
 			Assert::AreEqual(TestValueForTestState, 3);
 			TestValueForTestState = 0;
 			Stack.pop();					// A B <-
-			Stack.process();				// Run B->Process()
+			Stack.process(1.f);				// Run B->Process()
 			Assert::AreEqual(TestValueForTestState, 2);
 			TestValueForTestState = 0;
 			Stack.pop();					// A <-
-			Stack.process();				// Run A->Process()
+			Stack.process(1.f);				// Run A->Process()
 			Assert::AreEqual(TestValueForTestState, 1);
 			TestValueForTestState = 0;
 			Stack.pop();					// Nothing in stack

@@ -14,6 +14,7 @@ public:
 	void update(float deltaTime);
 private:
 	StatesStack states;
+	IActor *body;
 };
 
 #endif

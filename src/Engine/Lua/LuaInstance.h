@@ -17,10 +17,12 @@ public:
 	LuaInstance();
 	LuaInstance(lua_State *luaState);
 	virtual ~LuaInstance();
-		
+
+	lua_State *getLuaState();
+	
 	int execScript(const char* script);
 	int execScriptFromFile(const char* scriptFileName);
-		
+	
 	int getArgumentsCount();
 
 	template<typename T>
@@ -37,7 +39,10 @@ public:
 	template<typename T1, typename T2>
 	void registerTableConstant(T1 key, T2 value);
 	void registerTableFunction(const char* functionName, lua_CFunction function);
-	void endInitializeTable(const char* arrayName);
+	void endInitializeTable(const char* tableName);
+	void endInitializeSubtable(const char* tableName);
+
+	void removeSymbol(const char* symbolName);
 };
 
 template<typename T>

@@ -28,6 +28,11 @@ LuaInstance::~LuaInstance()
     lua_close(this->luaState);
 }
 
+lua_State* LuaInstance::getLuaState()
+{
+	return this->luaState;
+}
+
 int LuaInstance::execScript(const char* script)
 {
 	luaL_dostring(this->luaState, script);
@@ -104,13 +109,19 @@ void LuaInstance::sendToLua<lua_CFunction>(lua_CFunction value)
 
 void LuaInstance::beginInitializeTable()
 {
-	lua_createtable(luaState, 2, 0);
-	this->luaState = luaState;
+	lua_newtable(luaState);
 }
 
-void LuaInstance::endInitializeTable(const char* arrayName)
+void LuaInstance::endInitializeTable(const char* tableName)
 {
-	lua_setglobal(this->luaState, arrayName);
+	lua_setglobal(this->luaState, tableName);
+}
+
+void LuaInstance::endInitializeSubtable(const char* tableName)
+{
+	lua_pushstring(this->luaState, "pos");
+    lua_insert(this->luaState, -2);
+    lua_settable(this->luaState, -3);
 }
 
 void LuaInstance::registerFunction(const char* functionName, lua_CFunction function)
@@ -121,4 +132,10 @@ void LuaInstance::registerFunction(const char* functionName, lua_CFunction funct
 void LuaInstance::registerTableFunction(const char* functionName, lua_CFunction function)
 {
 	this->registerTableConstant<const char*, lua_CFunction>(functionName, function);
+}
+
+void LuaInstance::removeSymbol(const char* symbolName)
+{
+	lua_pushnil(this->luaState);
+	lua_setglobal(this->luaState, symbolName);
 }

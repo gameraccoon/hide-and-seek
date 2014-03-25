@@ -9,7 +9,7 @@
   	#define WARN_IF(condition, message)
 #endif
 
-void State::process()
+void State::process(float deltatime)
 {
     WARN("Function 'process' not redefined in some state");
 }

@@ -13,7 +13,7 @@ public:
      *
      * This method must be overriden in child-calsses
      */
-    virtual void process();
+    virtual void process(float deltatime);
 };
 
 #endif

@@ -37,7 +37,7 @@ public:
 	/**
      * Process the code of the current state
 	 */
-	void process();
+	void process(float deltatime);
 
 private:
     /** Stack head */

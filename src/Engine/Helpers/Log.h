@@ -1,5 +1,5 @@
-#ifndef CHRONICLER_H
-#define CHRONICLER_H
+#ifndef LOG_H
+#define LOG_H
 
 #include <string>
 

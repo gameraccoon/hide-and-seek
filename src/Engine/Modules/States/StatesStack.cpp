@@ -41,10 +41,10 @@ public:
 	/**
      * Process state code
 	 */
-	void process()
+	void process(float deltatime)
 	{
 		WARN_IF(!this->currentState, "Trying to process State which not exist in StateIterator");
-		this->currentState->process();
+		this->currentState->process(deltatime);
 	}
 
 	/**
@@ -98,10 +98,10 @@ void StatesStack::pop()
 	delete oldHead;
 }
 
-void StatesStack::process()
+void StatesStack::process(float deltatime)
 {
 	if (this->head != NULL)
 	{
-		this->head->process();
+		this->head->process(deltatime);
 	}
 }
