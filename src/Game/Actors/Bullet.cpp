@@ -2,7 +2,7 @@
 
 #include "../../Engine/Modules/ActorFactory.h"
 
-#include "../../Engine/Configs/DebugMethods.h"
+#include "../../Engine/Helpers/DebugMethods.h"
 
 // dummy for debugging methods
 #if (!defined DEBUG) && (!defined RELEASE)

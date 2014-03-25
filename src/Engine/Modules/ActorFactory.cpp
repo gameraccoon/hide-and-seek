@@ -22,19 +22,19 @@ ActorFactory& ActorFactory::Factory()
 
 bool ActorFactory::registerActor(std::string actorId, CreateActorCallback createFn)
 {
-	return callbacks.insert(CallbackMap::value_type(actorId, createFn)).second;
+	return this->callbacks.insert(CallbackMap::value_type(actorId, createFn)).second;
 }
 
-bool ActorFactory::unregisterActor(std::string actorID)
+bool ActorFactory::unregisterActor(std::string actorId)
 {
-	return callbacks.erase(actorID) == 1;
+	return this->callbacks.erase(actorId) == 1;
 }
 
-IActor* ActorFactory::createActor(std::string actorID, World *world, const Vector2D location, const Vector2D scale, const Rotator rotation)
+IActor* ActorFactory::createActor(std::string actorId, World *world, const Vector2D location, const Vector2D scale, const Rotator rotation)
 {
-	CallbackMap::const_iterator it = callbacks.find(actorID);
+	CallbackMap::const_iterator it = this->callbacks.find(actorId);
 	
-	if (it == callbacks.end())
+	if (it == this->callbacks.end())
 	{
 		throw std::runtime_error("Unknown actor identefier");
 	}

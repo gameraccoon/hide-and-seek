@@ -20,6 +20,7 @@
     <ClCompile Include="..\src\Engine\Graphics\DirectionArrow.cpp" />
     <ClCompile Include="..\src\Engine\Graphics\FloatingCamera.cpp" />
     <ClCompile Include="..\src\Engine\Graphics\GraphicLoader.cpp" />
+    <ClCompile Include="..\src\Engine\Helpers\Log.cpp" />
     <ClCompile Include="..\src\Engine\Input\KeyListeners.cpp" />
     <ClCompile Include="..\src\Engine\Lua\LuaScript.cpp" />
     <ClCompile Include="..\src\Engine\Modules\ActorFactory.cpp" />
@@ -54,6 +55,7 @@
     <ClInclude Include="..\src\Engine\Graphics\DirectionArrow.h" />
     <ClInclude Include="..\src\Engine\Graphics\FloatingCamera.h" />
     <ClInclude Include="..\src\Engine\Graphics\GraphicLoader.h" />
+    <ClInclude Include="..\src\Engine\Helpers\Log.h" />
     <ClInclude Include="..\src\Engine\Hge\HgeIncludes.h" />
     <ClInclude Include="..\src\Engine\Input\KeyListeners.h" />
     <ClInclude Include="..\src\Engine\Lua\LuaScript.h" />

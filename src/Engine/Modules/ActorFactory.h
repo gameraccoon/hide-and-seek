@@ -33,12 +33,14 @@ public:
 	 * unregister already registred class
 	 * @return true if class was unregistered
 	 */ 
-	bool unregisterActor(std::string actorID);
+	bool unregisterActor(std::string actorId);
 
 	/**
 	 * Create actor by identifier.
+	 *
+	 * @throws runtime_error when actorId is unknown
 	 */
-	IActor* createActor(std::string actorID, World *world, const Vector2D location, const Vector2D size, const Rotator rotation);
+	IActor* createActor(std::string actorId, World *world, const Vector2D location, const Vector2D size, const Rotator rotation);
 private:
 	CallbackMap callbacks;
 

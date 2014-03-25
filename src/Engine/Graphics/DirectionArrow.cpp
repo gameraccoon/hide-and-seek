@@ -1,6 +1,6 @@
 #include "DirectionArrow.h"
 
-#include "../Configs/DebugMethods.h"
+#include "../Helpers/DebugMethods.h"
 
 // dummy for debugging methods
 #if (!defined DEBUG) && (!defined RELEASE)
