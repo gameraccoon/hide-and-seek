@@ -1,13 +1,13 @@
 #include "Actor.h"
 
-Actor::Actor(World *ownerWorld, Vector2D location, Rotator rotation) : location(location),
+Actor::Actor(World *world, Vector2D location, Rotator rotation) : location(location),
 	colideBox(location, location),
 	direction(rotation),
 	scale(1.f, 1.f),
 	originalSize(1.f, 1.f),
 	calculatedSize(1.f, 1.f)
 {
-	this->ownerWorld = ownerWorld;
+	this->ownerWorld = world;
 	this->ownerWorld->spawnActor(this);
 	this->type = AT_Ghost;
 

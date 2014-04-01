@@ -13,7 +13,7 @@ class Man:public Body
 {
 public:
 	/** Initialization of a new man standing at a given point */
-	Man(World *ownerWorld, Vector2D location);
+	Man(World *world, Vector2D location, Vector2D scale, Rotator rotation);
 
 	~Man();
 

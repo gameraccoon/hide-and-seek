@@ -1,24 +1,27 @@
 #include "Wall.h"
 
+
+// ## This is automatic generated text. Pleace do not change it.
+// ## Registration in ActorFactory
 #include "../../Engine/Modules/ActorFactory.h"
-
-
 // unnamed namespase to hide from another places
 namespace
 {
 	// specific factory
 	IActor* CreateWall(World *world, const Vector2D location, const Vector2D scale, const Rotator rotation)
 	{
-		return new Wall(world, location, scale);
+		return new Wall(world, location, scale, rotation);
 	}
 
-	const std::string WALL_ID = "Wall";
+	const std::string CLASS_ID = "Wall";
 
 	// register specific factory in actor factory
-	const bool registered = ActorFactory::Factory().registerActor(WALL_ID, CreateWall);
+	const bool registered = ActorFactory::Factory().registerActor(CLASS_ID, CreateWall);
 }
+// ## End of automatic generated text
 
-Wall::Wall(World *ownerWorld, Vector2D location, Vector2D scale) : Actor(ownerWorld, location, Rotator(0.f))
+
+Wall::Wall(World *world, Vector2D location, Vector2D scale, Rotator rotation) : Actor(world, location, rotation)
 {
 	this->type = AT_Static;
 
@@ -35,7 +38,7 @@ Wall::Wall(World *ownerWorld, Vector2D location, Vector2D scale) : Actor(ownerWo
 
 	this->updateCollision();
 
-	this->classID = WALL_ID;
+	this->classID = CLASS_ID;
 }
 
 Wall::~Wall(void)

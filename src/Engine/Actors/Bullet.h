@@ -8,7 +8,7 @@
 class Bullet : public Actor
 {
 public:
-	Bullet(World *ownerWorld, Vector2D location, Rotator rotation);
+	Bullet(World *world, Vector2D location, Vector2D scale, Rotator rotation);
 	~Bullet(void);
 	/** Process moving and other actions of the Actor */
 	void update(float deltatime);
@@ -16,7 +16,6 @@ public:
 	virtual void takeDamage(float damageValue, Vector2D impulse);
 protected:
 	void updateCollision();
-	World* ownerWorld;
 	float speed;
 };
 

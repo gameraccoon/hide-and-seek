@@ -6,7 +6,7 @@
 class Wall : public Actor
 {
 public:
-	Wall(World *ownerWorld, Vector2D location, Vector2D size);
+	Wall(World *world, Vector2D location, Vector2D scale, Rotator rotation);
 	~Wall(void);
 	/** Dummy (wall do nothing) */
 	void update(float deltatime);

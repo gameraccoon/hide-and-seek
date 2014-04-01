@@ -1,8 +1,6 @@
 #include "Hero.h"
 
-#include "../../Engine/Modules/ActorFactory.h"
-
-Hero::Hero(World *ownerWorld, Vector2D location) : Body(ownerWorld, location),
+Hero::Hero(World *world, Vector2D location, Vector2D scale, Rotator rotation) : Body(world, location),
 	step(ZERO_VECTOR)
 {
 	this->speed = 1.f;

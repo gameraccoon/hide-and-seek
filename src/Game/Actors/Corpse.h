@@ -6,7 +6,7 @@
 class Corpse : public Actor
 {
 public:
-	Corpse(World *ownerWorld, Vector2D location, Rotator rotation);
+	Corpse(World *world, Vector2D location, Vector2D scale, Rotator rotation);
 	~Corpse(void);
 	
 	virtual void takeDamage(float damageValue, Vector2D impulse);

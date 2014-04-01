@@ -9,7 +9,7 @@ class Hero:public Body
 {
 public:
 	/** Initialization of a new Hero standing at a given point */
-	Hero(World *ownerWorld, Vector2D location);
+	Hero(World *world, Vector2D location, Vector2D scale, Rotator rotation);
 
 	~Hero();
 

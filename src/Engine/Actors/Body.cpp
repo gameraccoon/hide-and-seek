@@ -1,6 +1,6 @@
 #include "Body.h"
 
-Body::Body(World *ownerWorld, Vector2D location) : Actor(ownerWorld, location, Rotator(0.0f)),
+Body::Body(World *world, Vector2D location) : Actor(world, location, Rotator(0.0f)),
 														size(32.0f, 32.0f)
 {
 	this->type = AT_Living;
@@ -17,7 +17,9 @@ Body::Body(World *ownerWorld, Vector2D location) : Actor(ownerWorld, location, R
 	
 	this->updateCollision();
 
-	role = new Role(ownerWorld, this);
+	this->role = new Role(world, this);
+
+	this->armedWeapon = NULL;
 }
 
 Body::~Body(void)

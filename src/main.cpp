@@ -1,3 +1,5 @@
+
+
 #include "Engine/Hge/HgeIncludes.h"
 #include "Engine/Core/World.h"
 #include "Engine/Structures/PathPoint.h"
@@ -107,7 +109,7 @@ class BtnAddLight : public ButtonSwitcher
 {
 public:
 	BtnAddLight(HGE *hge) : ButtonSwitcher(hge, HGEK_RBUTTON, true) { };
-	void pressed() { new LightEmitter(::gameWorld, ::mainCamera->deProject(::mousePos)); }
+	void pressed() { new LightEmitter(::gameWorld, ::mainCamera->deProject(::mousePos), Vector2D(1.f, 1.f), Rotator(0.f)); }
 };
 
 bool FrameFunc()
@@ -285,7 +287,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		::mainCamera = new FloatingCamera(::hge, ::gameWorld, SCREEN_CENTER * 2, Vector2D(0.0f, 0.0f));
 
 		// hero will be deleted automaticaly as other actors
-		::ourHero = new Hero(::gameWorld, Vector2D(0.0f, 350.0f));
+		::ourHero = new Hero(::gameWorld, Vector2D(0.0f, 350.0f), Vector2D(1.f, 1.f), Rotator(0.f));
 
 		::ourHero->giveWeapon(new Weapon());
 

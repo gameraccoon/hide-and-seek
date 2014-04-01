@@ -1,24 +1,28 @@
 #include "Man.h"
 
-#include "../../Engine/Modules/ActorFactory.h"
 
+// ## This is automatic generated text. Pleace do not change it.
+// ## Registration in ActorFactory
+#include "../../Engine/Modules/ActorFactory.h"
 // unnamed namespase to hide from another places
 namespace
 {
 	// specific factory
 	IActor* CreateMan(World *world, const Vector2D location, const Vector2D scale, const Rotator rotation)
 	{
-		return new Man(world, location);
+		return new Man(world, location, scale, rotation);
 	}
 
-	const std::string MAN_ID = "Man";
+	const std::string CLASS_ID = "Man";
 
 	// register specific factory in actor factory
-	const bool registered = ActorFactory::Factory().registerActor(MAN_ID, CreateMan);
+	const bool registered = ActorFactory::Factory().registerActor(CLASS_ID, CreateMan);
 }
+// ## End of automatic generated text
 
-Man::Man(World *ownerWorld, Vector2D location) : Body(ownerWorld, location),
-												navigator(ownerWorld),
+
+Man::Man(World *world, Vector2D location, Vector2D scale, Rotator rotation) : Body(world, location),
+												navigator(world),
 												destinationPoint(location)
 {
 	this->type = AT_Living;
@@ -27,7 +31,7 @@ Man::Man(World *ownerWorld, Vector2D location) : Body(ownerWorld, location),
 
 	this->target = NULL;
 
-	this->classID = MAN_ID;
+	this->classID = CLASS_ID;
 }
 
 Man::~Man(void)

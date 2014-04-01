@@ -6,7 +6,7 @@
 class LightEmitter : public Actor
 {
 public:
-	LightEmitter(World *ownerWorld, Vector2D location);
+	LightEmitter(World *world, Vector2D location, Vector2D scale, Rotator rotation);
 	~LightEmitter(void);
 	void update(float deltatime);
 	virtual void takeDamage(float damageValue,Vector2D impulse);

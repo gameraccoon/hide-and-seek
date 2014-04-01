@@ -14,7 +14,7 @@ class Body:public Actor
 {
 public:
 	/** Initialization of a new man standing at a given point */
-	Body(World *ownerWorld, Vector2D location);
+	Body(World *world, Vector2D location);
 
 	virtual ~Body();
 

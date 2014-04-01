@@ -23,7 +23,7 @@ public:
 class PathFinder
 {
 public:
-	PathFinder(World* ownerWorld);
+	PathFinder(World* world);
 	~PathFinder(void);
 	
 	/** Find and save path from startPoint to endPoint in owner world */

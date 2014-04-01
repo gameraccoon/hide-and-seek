@@ -7,3 +7,5 @@ Release
 *.user
 *.log
 log.txt
+*_log.txt
+*.sdf

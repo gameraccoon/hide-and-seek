@@ -1,6 +1,25 @@
 #include "Bullet.h"
 
+
+// ## This is automatic generated text. Pleace do not change it.
+// ## Registration in ActorFactory
 #include "../../Engine/Modules/ActorFactory.h"
+// unnamed namespase to hide from another places
+namespace
+{
+	// specific factory
+	IActor* CreateBullet(World *world, const Vector2D location, const Vector2D scale, const Rotator rotation)
+	{
+		return new Bullet(world, location, scale, rotation);
+	}
+
+	const std::string CLASS_ID = "Bullet";
+
+	// register specific factory in actor factory
+	const bool registered = ActorFactory::Factory().registerActor(CLASS_ID, CreateBullet);
+}
+// ## End of automatic generated text
+
 
 #include "../../Engine/Helpers/DebugMethods.h"
 
@@ -11,32 +30,16 @@
   	#define WARN_IF(condition, message)
 #endif
 
-// unnamed namespase to hide from another places
-namespace
-{
-	// specific factory
-	IActor* CreateBullet(World *world, const Vector2D location, const Vector2D scale, const Rotator rotation)
-	{
-		return new Bullet(world, location, rotation);
-	}
 
-	const std::string BULLET_ID = "Bullet";
-
-	// register specific factory in actor factory
-	const bool registered = ActorFactory::Factory().registerActor(BULLET_ID, CreateBullet);
-}
-
-Bullet::Bullet(World *ownerWorld, Vector2D location, Rotator rotation) :
-	Actor(ownerWorld, location, rotation)
+Bullet::Bullet(World *world, Vector2D location, Vector2D scale, Rotator rotation) :
+	Actor(world, location, rotation)
 {
 	this->speed = 10.0f;	
 	this->type = AT_Bullet;
 
 	this->speed = 450.0f;
 
-	this->ownerWorld = ownerWorld;
-
-	this->classID = BULLET_ID;
+	this->classID = CLASS_ID;
 }
 
 Bullet::~Bullet(void)
@@ -70,6 +73,8 @@ void Bullet::update(float deltatime)
 	{
 		this->destroy();
 	}
+
+	Actor::update(deltatime);
 }
 
 void Bullet::updateCollision()
