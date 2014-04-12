@@ -1,7 +1,7 @@
 Log.Log("Start script")
 
-function OnTakeDamage(damageValue)
-	Log.Log('TakeDamage', damageValue)
+function OnTakeDamage()
+	Log.Lo1g('TakeDamage')
 	return 1
 end
 --[[

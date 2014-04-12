@@ -36,8 +36,8 @@ void AiState::process(float deltatime)
 		
 		LuaFunction luaFunction;
 		luaFunction.readyToRunFunction(this->script, "OnTakeDamage");
-		this->script->sendToLua<double>(10.0);
-		luaFunction.runFunction(1, 1);
+		//this->script->sendToLua<double>(10.0);
+		luaFunction.runFunction(0, 1);
 		int z1 = (int)this->script->getFromLua<double>(-1);
 		luaFunction.clearAfterFunction();
 

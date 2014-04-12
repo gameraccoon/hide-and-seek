@@ -8,6 +8,7 @@ LuaInstance::LuaInstance()
     {
         {"base", luaopen_base},
         {"io", luaopen_io},
+		{"debug", luaopen_debug},
         {NULL, NULL}
     };
 
