@@ -27,8 +27,10 @@
     <ClCompile Include="..\src\Engine\Helpers\Log.cpp" />
     <ClCompile Include="..\src\Engine\Input\KeyListeners.cpp" />
     <ClCompile Include="..\src\Engine\Inventory\Weapon.cpp" />
+    <ClCompile Include="..\src\Engine\Lua\LuaFunction.cpp" />
     <ClCompile Include="..\src\Engine\Lua\LuaTypeActor.cpp" />
     <ClCompile Include="..\src\Engine\Lua\LuaInstance.cpp" />
+    <ClCompile Include="..\src\Engine\Lua\LuaTypeLog.cpp" />
     <ClCompile Include="..\src\Engine\Lua\LuaTypeRole.cpp" />
     <ClCompile Include="..\src\Engine\Lua\LuaTypeVector2D.cpp" />
     <ClCompile Include="..\src\Engine\Modules\ActorFactory.cpp" />
@@ -69,8 +71,10 @@
     <ClInclude Include="..\src\Engine\Hge\HgeIncludes.h" />
     <ClInclude Include="..\src\Engine\Input\KeyListeners.h" />
     <ClInclude Include="..\src\Engine\Inventory\Weapon.h" />
+    <ClInclude Include="..\src\Engine\Lua\LuaFunction.h" />
     <ClInclude Include="..\src\Engine\Lua\LuaInstance.h" />
     <ClInclude Include="..\src\Engine\Lua\LuaType.h" />
+    <ClInclude Include="..\src\Engine\Lua\LuaTypeLog.h" />
     <ClInclude Include="..\src\Engine\Modules\ActorFactory.h" />
     <ClInclude Include="..\src\Engine\Modules\LevelLoader.h" />
     <ClInclude Include="..\src\Engine\Modules\PathFinder.h" />

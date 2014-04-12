@@ -53,25 +53,25 @@ int LuaInstance::getArgumentsCount()
 }
 
 template<>
-int LuaInstance::getArgument<int>(int index)
+int LuaInstance::getFromLua<int>(int index)
 {
     return lua_tointeger(this->luaState, index);
 }
 
 template<>
-double LuaInstance::getArgument<double>(int index)
+double LuaInstance::getFromLua<double>(int index)
 {
     return lua_tonumber(this->luaState, index);
 }
 
 template<>
-char* LuaInstance::getArgument<char*>(int index)
+char* LuaInstance::getFromLua<char*>(int index)
 {
     return (char*)lua_tostring(this->luaState, index);
 }
 
 template<>
-bool LuaInstance::getArgument<bool>(int index)
+bool LuaInstance::getFromLua<bool>(int index)
 {
     return lua_toboolean(this->luaState, index) != 0;
 }

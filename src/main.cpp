@@ -196,43 +196,6 @@ bool RenderFunc()
 	return false;
 }
 
-// -- lua functions
-
-namespace luafunc
-{
-	int cmdLogLog(lua_State* state)
-	{
-		LuaInstance *luaInstance = new LuaInstance(state);
-
-		for(int i = 1; i < luaInstance->getArgumentsCount() + 1; i++)
-			Log::WriteLog(luaInstance->getArgument<char*>(i));
-			
-		return 0;
-	}
-
-	int cmdLogWarning(lua_State* state)
-	{
-		LuaInstance *luaInstance = new LuaInstance(state);
-
-		for(int i = 1; i < luaInstance->getArgumentsCount() + 1; i++)
-			Log::WriteWarning(luaInstance->getArgument<char*>(i));
-
-		return 0;
-	}
-	
-	int cmdLogError(lua_State* state)
-	{
-		LuaInstance *luaInstance = new LuaInstance(state);
-
-		for(int i = 1; i < luaInstance->getArgumentsCount() + 1; i++)
-			Log::WriteError(luaInstance->getArgument<char*>(i));
-
-		return 0;
-	}
-}
-
-// -- end: lua functions
-
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
 	::hge = hgeCreate(HGE_VERSION);
@@ -272,15 +235,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		::crosshair->SetHotSpot(16, 16);
 
 		::gameWorld = new World();
-
-		// -- register lua functions
-		LuaInstance *lua = ::gameWorld->getLuaInstance();
-		
-		lua->beginInitializeTable();
-		lua->registerTableFunction("Log", luafunc::cmdLogLog);
-		lua->registerTableFunction("Warn", luafunc::cmdLogWarning);
-		lua->registerTableFunction("Error", luafunc::cmdLogError);
-		lua->endInitializeTable("Log");
 
 		// -- end: register lua functions
 

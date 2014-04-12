@@ -1,4 +1,5 @@
-#pragma once
+#ifndef AI_STATE
+#define AI_STATE
 
 #include "../Modules/States/State.h"
 #include "../Lua/LuaInstance.h"
@@ -22,3 +23,4 @@ private:
 	float lastExecutionTime;
 };
 
+#endif

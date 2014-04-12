@@ -8,6 +8,8 @@ extern "C"
     #include <lauxlib.h>
 }
 
+#include <list>
+
 class LuaInstance
 {
 private:
@@ -22,18 +24,12 @@ public:
 	
 	int execScript(const char* script);
 	int execScriptFromFile(const char* scriptFileName);
-	
-	int getArgumentsCount();
 
 	template<typename T>
 	void registerConstant(const char* constantname, T value);
 	void registerFunction(const char* functionName, lua_CFunction function);
-
-	template<typename T>
-	T getArgument(int index);
-
-	template<typename T>
-	void sendToLua(T value);
+	
+	int getArgumentsCount();
 
 	void beginInitializeTable();
 	template<typename T1, typename T2>
@@ -43,6 +39,11 @@ public:
 	void endInitializeSubtable(const char* tableName);
 
 	void removeSymbol(const char* symbolName);
+
+	template<typename T>
+	T getFromLua(int index);
+	template<typename T>
+	void sendToLua(T value);
 };
 
 template<typename T>

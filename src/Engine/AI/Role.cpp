@@ -17,3 +17,8 @@ void Role::update(float deltaTime)
 {
 	this->states.process(deltaTime);
 }
+
+IActor* Role::getBody()
+{
+	return this->body;
+}

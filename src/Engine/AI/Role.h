@@ -12,6 +12,7 @@ public:
 	~Role(void);
 
 	void update(float deltaTime);
+	IActor* getBody();
 private:
 	StatesStack states;
 	IActor *body;

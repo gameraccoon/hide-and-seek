@@ -10,8 +10,6 @@ extern "C"
 
 #include "LuaInstance.h"
 
-#include "../Core/Vector2D.h"
-
 namespace LuaType
 {
 	template<typename T>
@@ -35,7 +33,7 @@ namespace LuaType
 	}
 
 	template<typename T>
-	void registerField<Vector2D>(LuaInstance *instance, const char* name, T* value)
+	void registerField<T>(LuaInstance *instance, const char* name, T* value)
 	{
 		instance->beginInitializeTable();
 		registerValue<T>(instance, value);
