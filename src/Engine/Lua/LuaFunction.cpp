@@ -37,6 +37,8 @@ void LuaFunction::readyToRunFunction(LuaInstance *instance, const char* function
 {
 	this->luaState = instance->getLuaState();
 
+	this->stackState = lua_gettop(this->luaState);
+
 	lua_getglobal(this->luaState, functionName);
 }
 
@@ -74,4 +76,5 @@ void LuaFunction::runFunction(int paramsCount, int resultsCount)
 void LuaFunction::clearAfterFunction()
 {
 	lua_pop(this->luaState, 1);
+	lua_settop(this->luaState, this->stackState);
 }

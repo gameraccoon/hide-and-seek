@@ -1,7 +1,8 @@
 Log.Log("Start script")
 
 function OnTakeDamage(damage)
-	Logf('TakeDamage ' .. body.id .. ' ' .. body.pos.x .. ' ' .. body.pos.y)
+	Log.Log('TakeDamage ' .. body.id .. ' ' .. damage ..
+		' ' .. body.pos.x .. ' ' .. body.pos.y)
 	if body.id == 'Hero1' then
 		--Test(body.pos)
 	end

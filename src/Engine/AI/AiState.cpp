@@ -19,8 +19,6 @@ AiState::AiState(World *world, IActor *body, Role *role)
 
 	// dummies for events
 	this->script->execScript("function OnTakeDamage(damage) end");
-	
-	this->script->registerFunction("moveTo", luafunc::cmdMoveTo);
 
 	this->script->execScriptFromFile("test.lua");
 
