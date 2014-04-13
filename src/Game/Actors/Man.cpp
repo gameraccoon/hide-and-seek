@@ -31,7 +31,7 @@ Man::Man(World *world, Vector2D location, Vector2D scale, Rotator rotation) : Bo
 
 	this->target = NULL;
 
-	this->classID = CLASS_ID;
+	this->updateActorId(CLASS_ID);
 }
 
 Man::~Man(void)
@@ -46,46 +46,48 @@ void Man::update(float deltatime)
 	}
 
 	float stepSize = this->speed * deltatime;
-	if (stepSize > (this->destinationPoint - this->location).size())
-	{
-		this->location = this->destinationPoint;
-		this->updateCollision();
-		return;
-	}
-	Vector2D newLocation = this->location + (this->destinationPoint - this->location).ort() * stepSize;
-	bool bFree = true;
 
-	// for each actors in the world
-	for (std::set<IActor*>::iterator i = this->ownerWorld->allActors.begin(), iEnd = this->ownerWorld->allActors.end(); i != iEnd; i++)
+	if (stepSize < (this->destinationPoint - this->location).size())
 	{
-		// if the actor is not this man // test: and it is a static actor
-		if ((*i) != this && ((*i)->getType() != AT_Light && (*i)->getType() != AT_Special && (*i)->getType() != AT_Bullet))
+		Vector2D newLocation = this->location + (this->destinationPoint - this->location).ort() * stepSize;
+		bool bFree = true;
+
+		// for each actors in the world
+		for (std::set<IActor*>::iterator i = this->ownerWorld->allActors.begin(), iEnd = this->ownerWorld->allActors.end(); i != iEnd; i++)
 		{
-			// get an actor's AABB (axis-aligned bounding box)
-			BoundingBox box = (*i)->getBoundingBox();
-			// if the actor's AABB intersects with the Man's AABB (in new Man location)
-			if ((box.minX < newLocation.x + this->size.x/2 && newLocation.x - this->size.x/2 < box.maxX)
-				&&
-				(box.minY < newLocation.y + this->size.y/2 && newLocation.y - this->size.y/2 < box.maxY))
+			// if the actor is not this man // test: and it is a static actor
+			if ((*i) != this && ((*i)->getType() != AT_Light && (*i)->getType() != AT_Special && (*i)->getType() != AT_Bullet))
 			{
-				// actor's path is not free
-				bFree = false;
-				break;
+				// get an actor's AABB (axis-aligned bounding box)
+				BoundingBox box = (*i)->getBoundingBox();
+				// if the actor's AABB intersects with the Man's AABB (in new Man location)
+				if ((box.minX < newLocation.x + this->size.x/2 && newLocation.x - this->size.x/2 < box.maxX)
+					&&
+					(box.minY < newLocation.y + this->size.y/2 && newLocation.y - this->size.y/2 < box.maxY))
+				{
+					// actor's path is not free
+					bFree = false;
+					break;
+				}
 			}
 		}
-	}
 
-	// if actor's path is free
-	if (bFree)
-	{
-		// accept new position of the man
-		this->location = newLocation;
+		// if actor's path is free
+		if (bFree)
+		{
+			// accept new position of the man
+			this->location = newLocation;
+		}
+		else
+		{
+			findNextPathPoint();
+		}
 	}
 	else
 	{
-		findNextPathPoint();
+		this->location = this->destinationPoint;
 	}
-	
+
 	this->updateCollision();
 
 	// use superclass method

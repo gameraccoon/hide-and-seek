@@ -38,7 +38,7 @@ Wall::Wall(World *world, Vector2D location, Vector2D scale, Rotator rotation) : 
 
 	this->updateCollision();
 
-	this->classID = CLASS_ID;
+	this->updateActorId(CLASS_ID);
 }
 
 Wall::~Wall(void)

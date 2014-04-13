@@ -50,8 +50,10 @@ public:
 	virtual Hull* getHull() = 0;
 	/** Take some damage to the actor */
 	virtual void takeDamage(float damageValue, Vector2D impulse) = 0;
-	/** Returns class identificator of this actor */
+	/** Returns the class identificator of this actor's class */
 	virtual std::string getClassID() = 0;
+	/** Returns the specific identificator of current object */
+	virtual std::string getActorId() = 0;
 };
 
 #endif

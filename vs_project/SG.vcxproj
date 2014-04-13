@@ -40,6 +40,7 @@
     <ClCompile Include="..\src\Engine\Modules\RayTrace.cpp" />
     <ClCompile Include="..\src\Engine\Modules\States\State.cpp" />
     <ClCompile Include="..\src\Engine\Modules\States\StatesStack.cpp" />
+    <ClCompile Include="..\src\Engine\Modules\WorldsContainer.cpp" />
     <ClCompile Include="..\src\Engine\Structures\Border.cpp" />
     <ClCompile Include="..\src\Engine\Structures\BoundingBox.cpp" />
     <ClCompile Include="..\src\Engine\Structures\Hull.cpp" />
@@ -82,6 +83,7 @@
     <ClInclude Include="..\src\Engine\Modules\RayTrace.h" />
     <ClInclude Include="..\src\Engine\Modules\States\State.h" />
     <ClInclude Include="..\src\Engine\Modules\States\StatesStack.h" />
+    <ClInclude Include="..\src\Engine\Modules\WorldsContainer.h" />
     <ClInclude Include="..\src\Engine\Structures\Border.h" />
     <ClInclude Include="..\src\Engine\Structures\BoundingBox.h" />
     <ClInclude Include="..\src\Engine\Structures\Hull.h" />

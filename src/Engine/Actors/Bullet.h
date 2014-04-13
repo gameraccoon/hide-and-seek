@@ -15,6 +15,8 @@ public:
 	/** Take some damage to the bullet */
 	virtual void takeDamage(float damageValue, Vector2D impulse);
 protected:
+	/** Update classId and actorId */
+	void updateActorId(std::string classId);
 	void updateCollision();
 	float speed;
 };

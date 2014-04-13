@@ -27,7 +27,7 @@ LightEmitter::LightEmitter(World *world, Vector2D location, Vector2D scale, Rota
 	this->brightness = 1.f;
 	this->color = 0xFFFFFFFF;
 
-	this->classID = CLASS_ID;
+	this->updateActorId(CLASS_ID);
 }
 
 

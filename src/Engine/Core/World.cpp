@@ -70,3 +70,14 @@ void World::cleanDestroyedActors()
 		}
 	}
 }
+
+IActor* World::getActorById(std::string id)
+{
+	for (ActorsSet::iterator i = this->allActors.begin(), iEnd = this->allActors.end(); i != iEnd; i++)
+	{
+		if (id == (*i)->getActorId())
+		{
+			return (*i);
+		}
+	}
+}

@@ -24,7 +24,7 @@ namespace
 Corpse::Corpse(World *world, Vector2D location, Vector2D scale, Rotator rotation) :
 	Actor(world, location, rotation)
 {
-	this->classID = CLASS_ID;
+	this->updateActorId(CLASS_ID);
 }
 
 

@@ -17,7 +17,7 @@ namespace LuaType
 	
 	template<typename T>
 	void registerField(LuaInstance *instance, const char* name, T* value);
-	
+
 	template<typename T>
 	void startRegistration(LuaInstance *instance, T* value);
 

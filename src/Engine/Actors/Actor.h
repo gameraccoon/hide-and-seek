@@ -45,13 +45,17 @@ public:
 	BoundingBox getBoundingBox();
 	/** Get actor's hull */
 	Hull* getHull();
-	/** Returns class identificator of this actor */
+	/** Returns the class identificator of this actor's class */
 	std::string getClassID();
+	/** Returns the specific identificator of current object */
+	std::string getActorId();
 	/** Take some damage to the actor */
 	virtual void takeDamage(float damageValue, Vector2D impulse) = 0;
 protected:
 	/** */
 	virtual void updateCollision() = 0;
+	/** Update classId and actorId */
+	void updateActorId(std::string classId);
 	/** Pointer to the owner World */
 	World* ownerWorld;
 	/** Type of the actor */
@@ -69,6 +73,8 @@ protected:
 	Hull geometry;
 	/** Specific class identificator */
 	std::string classID;
+	/** Actor's identificator */
+	std::string actorId;
 	/** Is actor wait automatically destruction? */
 	bool bWaitDestruction;
 	/** Time that actor live */

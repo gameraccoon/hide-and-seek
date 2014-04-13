@@ -39,7 +39,7 @@ Bullet::Bullet(World *world, Vector2D location, Vector2D scale, Rotator rotation
 
 	this->speed = 450.0f;
 
-	this->classID = CLASS_ID;
+	this->updateActorId(CLASS_ID);
 }
 
 Bullet::~Bullet(void)
@@ -84,4 +84,10 @@ void Bullet::updateCollision()
 void Bullet::takeDamage(float damageValue,Vector2D impulse)
 {
 	// do nothing for now
+}
+
+void Bullet::updateActorId(std::string classId)
+{
+	this->classID = classId;
+	this->actorId = "some" + classId;
 }

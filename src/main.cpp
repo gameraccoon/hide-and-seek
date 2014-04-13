@@ -5,6 +5,7 @@
 #include "Engine/Structures/PathPoint.h"
 #include "Engine/Input/KeyListeners.h"
 #include "Engine/Modules/LevelLoader.h"
+#include "Engine/Modules/WorldsContainer.h"
 #include "Engine/Actors/LightEmitter.h"
 #include "Engine/Graphics/FloatingCamera.h"
 #include "Engine/Graphics/DirectionArrow.h"
@@ -235,6 +236,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		::crosshair->SetHotSpot(16, 16);
 
 		::gameWorld = new World();
+		WorldsContainer::Container().insertWorld(::gameWorld, "mainWorld");
 
 		// -- end: register lua functions
 

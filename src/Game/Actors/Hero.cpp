@@ -5,7 +5,7 @@ Hero::Hero(World *world, Vector2D location, Vector2D scale, Rotator rotation) : 
 {
 	this->speed = 1.f;
 
-	this->classID = "Hero";
+	this->updateActorId("Hero");
 }
 
 Hero::~Hero(void)
@@ -39,9 +39,6 @@ void Hero::update(float deltatime)
 				bFree = false;
 			}
 		}
-		
-		// use superclass method
-		Body::update(deltatime);
 	}
 
 	// if actor's path is free
@@ -53,4 +50,7 @@ void Hero::update(float deltatime)
 	
 	this->updateCollision();
 	this->step = ZERO_VECTOR;
+
+	// use superclass method
+	Body::update(deltatime);
 }

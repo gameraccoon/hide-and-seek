@@ -25,6 +25,8 @@ public:
 	void update(float deltatime);
 	/** Add a new PathPoint to the navigation map*/
 	void addPathPoint(PathPoint* pathPoint);
+	/** */
+	IActor* getActorById(std::string id);
 	/** All actors in the World. */
 	ActorsSet allActors;
 	/** All pathpoints of this world */

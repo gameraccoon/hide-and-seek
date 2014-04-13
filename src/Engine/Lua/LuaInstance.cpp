@@ -1,5 +1,7 @@
 #include "LuaInstance.h"
 
+#include "../Helpers/Log.h"
+
 LuaInstance::LuaInstance()
 {
     this->luaState = luaL_newstate();
@@ -12,11 +14,7 @@ LuaInstance::LuaInstance()
         {NULL, NULL}
     };
 
-    for(const luaL_Reg *lib = lualibs; lib->func != NULL; lib++)
-    {
-        luaL_requiref(luaState, lib->name, lib->func, 1);
-        lua_settop(luaState, 0);
-    }
+	this->registerLibs(lualibs);
 }
 
 LuaInstance::LuaInstance(lua_State *luaState)
@@ -34,18 +32,39 @@ lua_State* LuaInstance::getLuaState()
 	return this->luaState;
 }
 
+void LuaInstance::registerLibs(const luaL_Reg lualibs[])
+{
+    for(const luaL_Reg *lib = lualibs; lib->func != NULL; lib++)
+    {
+        luaL_requiref(this->luaState, lib->name, lib->func, 1);
+        lua_settop(this->luaState, 0);
+    }
+}
+
 int LuaInstance::execScript(const char* script)
 {
-	luaL_dostring(this->luaState, script);
+	int res = luaL_dostring(this->luaState, script);
 
-    return lua_tointeger(this->luaState, lua_gettop(this->luaState));
+	if (res != 0)
+	{
+		Log::WriteWarning(lua_tostring(this->luaState, -1));
+		return res;
+	}
+
+	return 0;
 }
 
 int LuaInstance::execScriptFromFile(const char* ScriptFileName)
 {
-    luaL_dofile(this->luaState, ScriptFileName);
+	int res = luaL_dofile(this->luaState, ScriptFileName);
+	
+	if (res != 0)
+	{
+		Log::WriteWarning(lua_tostring(this->luaState, -1));
+		return res;
+	}
 
-    return lua_tointeger(this->luaState, lua_gettop(this->luaState));
+	return 0;
 }
 
 int LuaInstance::getArgumentsCount()
@@ -69,6 +88,12 @@ template<>
 char* LuaInstance::getFromLua<char*>(int index)
 {
     return (char*)lua_tostring(this->luaState, index);
+}
+
+template<>
+const char* LuaInstance::getFromLua<const char*>(int index)
+{
+    return (const char*)lua_tostring(this->luaState, index);
 }
 
 template<>
@@ -106,6 +131,12 @@ template<>
 void LuaInstance::sendToLua<lua_CFunction>(lua_CFunction value)
 {
 	lua_pushcfunction(this->luaState, value);
+}
+
+template<>
+void LuaInstance::sendToLua<void*>(void* value)
+{
+	lua_pushlightuserdata(this->luaState, value);
 }
 
 void LuaInstance::beginInitializeTable()

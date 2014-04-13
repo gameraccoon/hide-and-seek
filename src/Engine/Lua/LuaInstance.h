@@ -21,6 +21,8 @@ public:
 	virtual ~LuaInstance();
 
 	lua_State *getLuaState();
+
+	void registerLibs(const luaL_Reg lualibs[]);
 	
 	int execScript(const char* script);
 	int execScriptFromFile(const char* scriptFileName);

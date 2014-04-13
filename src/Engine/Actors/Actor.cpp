@@ -1,5 +1,12 @@
 #include "Actor.h"
 
+#include <sstream>
+
+namespace
+{
+	int ClassIndex = 0;
+}
+
 Actor::Actor(World *world, Vector2D location, Rotator rotation) : location(location),
 	colideBox(location, location),
 	direction(rotation),
@@ -11,7 +18,7 @@ Actor::Actor(World *world, Vector2D location, Rotator rotation) : location(locat
 	this->ownerWorld->spawnActor(this);
 	this->type = AT_Ghost;
 
-	this->classID = "Actor";
+	this->updateActorId("Actor");
 
 	this->bWaitDestruction = false;
 }
@@ -71,6 +78,19 @@ Hull* Actor::getHull()
 std::string Actor::getClassID()
 {
 	return this->classID;
+}
+
+std::string Actor::getActorId()
+{
+	return this->actorId;
+}
+
+void Actor::updateActorId(std::string classId)
+{
+	this->classID = classId;
+	std::ostringstream s;
+	s << ::ClassIndex++;
+	this->actorId = classId + s.str();
 }
 
 void Actor::update(float deltatime)
