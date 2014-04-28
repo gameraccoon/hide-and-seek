@@ -12,7 +12,7 @@ public:
 	AiState(World *world, IActor *body, Role *role);
 	~AiState(void);
 
-	void process(float deltatime);
+	virtual void process(float deltatime);
 private:
 	LuaInstance *script;
 

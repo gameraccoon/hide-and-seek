@@ -11,13 +11,13 @@ public:
 	Bullet(World *world, Vector2D location, Vector2D scale, Rotator rotation);
 	~Bullet(void);
 	/** Process moving and other actions of the Actor */
-	void update(float deltatime);
+	virtual void update(float deltatime) override;
 	/** Take some damage to the bullet */
-	virtual void takeDamage(float damageValue, Vector2D impulse);
+	virtual void takeDamage(float damageValue, Vector2D impulse) override;
 protected:
 	/** Update classId and actorId */
-	void updateActorId(std::string classId);
-	void updateCollision();
+	virtual void updateActorId(std::string classId) override;
+	virtual void updateCollision() override;
 	float speed;
 };
 

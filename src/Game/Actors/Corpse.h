@@ -9,9 +9,9 @@ public:
 	Corpse(World *world, Vector2D location, Vector2D scale, Rotator rotation);
 	~Corpse(void);
 	
-	virtual void takeDamage(float damageValue, Vector2D impulse);
+	virtual void takeDamage(float damageValue, Vector2D impulse) override;
 protected:
-	virtual void updateCollision();
+	virtual void updateCollision() override;
 };
 
 #endif

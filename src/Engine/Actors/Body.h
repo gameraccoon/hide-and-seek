@@ -18,22 +18,22 @@ public:
 
 	virtual ~Body();
 
-	void moveTo(Vector2D step);
-	void follow(IActor *target);
+	virtual void moveTo(Vector2D step) override;
+	virtual void follow(IActor *target);
 
-	void giveWeapon(Weapon *weap);
+	virtual void giveWeapon(Weapon *weap) override;
 	
 	/** Start shoting if the man have a weapon */
-	void startShoting(Vector2D targetLocation);
-	void stopShoting();
+	virtual void startShoting(Vector2D targetLocation) override;
+	virtual void stopShoting() override;
 
-	void update(float deltatime);
+	virtual void update(float deltatime) override;
 
 	/** Try to take some damage to the man =) */
 	virtual void takeDamage(float damageValue,Vector2D impulse);
 protected:
 	/** */
-	void updateCollision();
+	virtual void updateCollision() override;
 	/** */
 	void findNextPathPoint();
 	void clearTargets();

@@ -22,40 +22,40 @@ public:
 	virtual ~Actor(void);
 	
 	/** Set new location of the actor in the World */
-	void setLocation(const Vector2D& newLocations);
+	virtual void setLocation(const Vector2D& newLocations) override final;
 	/** Get actor's world location */
-	Vector2D getLocation();
+	virtual Vector2D getLocation() override final;
 	/** Set actor's rotation */
-	void setRotation(const Rotator& newRotation);
+	virtual void setRotation(const Rotator& newRotation) override final;
 	/** Get actor's rotation */
-	Rotator getRotation();
+	virtual Rotator getRotation() override final;
 	/** Set actor's scale */
-	void setScale(const Vector2D& newScale);
+	virtual void setScale(const Vector2D& newScale) override final;
 	/** Get actor's scale */
-	Vector2D getScale();
+	virtual Vector2D getScale() override final;
 	/** Process moving and other actions of the Actor */
-	void update(float deltatime);
+	virtual void update(float deltatime) override;
 	/** Say to actor, that it mast be destroyed now */
-	void destroy();
+	virtual void destroy() override final;
 	/** Is actor wait to be automatically destroyed? */
-	bool isWaitDestruction();
+	virtual bool isWaitDestruction() override final;
 	/** Get actor type */
-	EActorType getType();
+	virtual EActorType getType() override final;
 	/** Get axis-aligned bounding box */
-	BoundingBox getBoundingBox();
+	virtual BoundingBox getBoundingBox() override final;
 	/** Get actor's hull */
-	Hull* getHull();
+	virtual Hull* getHull() override final;
 	/** Returns the class identificator of this actor's class */
-	std::string getClassID();
+	virtual std::string getClassID() override final;
 	/** Returns the specific identificator of current object */
-	std::string getActorId();
+	virtual std::string getActorId() override final;
 	/** Take some damage to the actor */
 	virtual void takeDamage(float damageValue, Vector2D impulse) = 0;
 protected:
 	/** */
 	virtual void updateCollision() = 0;
 	/** Update classId and actorId */
-	void updateActorId(std::string classId);
+	virtual void updateActorId(std::string classId);
 	/** Pointer to the owner World */
 	World* ownerWorld;
 	/** Type of the actor */

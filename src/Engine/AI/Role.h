@@ -11,7 +11,7 @@ public:
 	Role(World* world, IActor *body);
 	~Role(void);
 
-	void update(float deltaTime);
+	virtual void update(float deltaTime);
 	IActor* getBody();
 private:
 	StatesStack states;
