@@ -1,9 +1,6 @@
 #include "LuaType.h"
 
 #include "../Core/IActor.h"
-#include "../Modules/WorldsContainer.h"
-
-#include "../Helpers/Log.h"
 
 namespace LuaType
 {
@@ -17,7 +14,7 @@ namespace LuaType
 	int cmdSetRotation(lua_State* luaState)
 	{
 		IActor* actor = (IActor*) lua_touserdata(luaState, 1);
-		actor->setRotation(lua_tonumber(luaState, 2));
+		actor->setRotation((float)lua_tonumber(luaState, 2));
 		return 0;
 	}
 

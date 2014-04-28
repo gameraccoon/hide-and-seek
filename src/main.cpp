@@ -1,5 +1,3 @@
-
-
 #include "Engine/Hge/HgeIncludes.h"
 #include "Engine/Core/World.h"
 #include "Engine/Structures/PathPoint.h"
@@ -34,7 +32,7 @@ hgeFont*	font;
 
 const Vector2D SCREEN_CENTER(SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
 
-const float MAX_CAMERA_RANGE = std::min(SCREEN_HEIGHT, SCREEN_WIDTH) / 4.0f;
+const float MAX_CAMERA_RANGE = (float)std::min(SCREEN_HEIGHT, SCREEN_WIDTH) / 4.0f;
 
 Vector2D mousePos = ZERO_VECTOR;
 

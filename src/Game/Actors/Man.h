@@ -5,7 +5,6 @@
 #include "../../Engine/Core/World.h"
 #include "../../Engine/Actors/Actor.h"
 #include "../../Engine/Structures/InventoryItem.h"
-#include "../../Engine/Modules/PathFinder.h"
 #include "../../Engine/Inventory/Weapon.h"
 #include "../../Engine/Actors/Body.h"
 
@@ -22,15 +21,6 @@ public:
 
 	/** Try to take some damage to the man =) */
 	virtual void takeDamage(float damageValue,Vector2D impulse);
-protected:
-	/** */
-	void findNextPathPoint();
-	/**  */
-	PathFinder navigator;
-	/** Point to which this man aspire */
-	Vector2D destinationPoint;
-	/** */
-	IActor* target;
 };
 
 #endif

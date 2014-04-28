@@ -1,7 +1,9 @@
 #include "Body.h"
 
 Body::Body(World *world, Vector2D location) : Actor(world, location, Rotator(0.0f)),
-														size(32.0f, 32.0f)
+																		size(32.0f, 32.0f),
+																		navigator(world),
+																		tempLocation(location)
 {
 	this->type = AT_Living;
 
@@ -20,6 +22,9 @@ Body::Body(World *world, Vector2D location) : Actor(world, location, Rotator(0.0
 	this->role = new Role(world, this);
 
 	this->armedWeapon = NULL;
+
+	this->followingTarget = NULL;
+	this->movingToLocation = NULL;
 }
 
 Body::~Body(void)
@@ -27,10 +32,33 @@ Body::~Body(void)
 	delete this->role;
 }
 
-void Body::move(Vector2D step)
+void Body::moveTo(Vector2D step)
 {
-	this->location += step;
-	this->updateCollision();
+	this->clearTargets();
+
+	this->movingToLocation = new Vector2D(step);
+}
+
+void Body::follow(IActor *target)
+{
+	this->clearTargets();
+
+	this->followingTarget = target;
+}
+
+void Body::clearTargets()
+{
+	if (this->followingTarget != NULL)
+	{
+		delete this->followingTarget;
+		this->followingTarget = NULL;
+	}
+
+	if (this->movingToLocation != NULL)
+	{
+		delete this->movingToLocation;
+		this->movingToLocation = NULL;
+	}
 }
 
 void Body::updateCollision()
@@ -65,7 +93,7 @@ void Body::takeDamage(float damageValue,Vector2D impulse)
 {
 	this->healthValue -= damageValue;
 	
-	this->move(impulse);
+	this->moveTo(impulse);
 
 	if (this->healthValue <= 0.0f)
 	{
@@ -81,4 +109,29 @@ void Body::update(float deltatime)
 	this->role->update(deltatime);
 
 	Actor::update(deltatime);
+}
+
+void Body::findNextPathPoint()
+{
+	if (this->followingTarget != NULL)
+	{
+		RayTrace ray(this->ownerWorld, this->getLocation(), this->followingTarget->getLocation());
+		IActor* tracedActor = ray.trace();
+
+		if (tracedActor == this->followingTarget || tracedActor == NULL)
+		{
+			this->tempLocation = followingTarget->getLocation();
+		}
+		else
+		{
+			this->navigator.createNewPath(this->getLocation(), this->followingTarget->getLocation());
+			this->tempLocation = this->navigator.getNextPoint();
+			if (this->tempLocation == this->getLocation())
+			{
+				this->tempLocation = this->navigator.getNextPoint();
+			}
+		}
+
+		this->direction = (this->tempLocation - this->getLocation()).rotation();
+	}
 }

@@ -31,6 +31,7 @@ Actor::~Actor(void)
 void Actor::setLocation(const Vector2D& location)
 {
 	this->location = Vector2D(location);
+	this->updateCollision();
 }
 
 Vector2D Actor::getLocation()
@@ -41,6 +42,7 @@ Vector2D Actor::getLocation()
 void Actor::setRotation(const Rotator& rotation)
 {
 	this->direction = Rotator(rotation);
+	this->updateCollision();
 }
 
 Rotator Actor::getRotation()

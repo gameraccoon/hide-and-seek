@@ -80,4 +80,6 @@ IActor* World::getActorById(std::string id)
 			return (*i);
 		}
 	}
+
+	return NULL;
 }

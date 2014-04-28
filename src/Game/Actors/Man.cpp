@@ -21,15 +21,11 @@ namespace
 // ## End of automatic generated text
 
 
-Man::Man(World *world, Vector2D location, Vector2D scale, Rotator rotation) : Body(world, location),
-												navigator(world),
-												destinationPoint(location)
+Man::Man(World *world, Vector2D location, Vector2D scale, Rotator rotation) : Body(world, location)
 {
 	this->type = AT_Living;
 
 	this->speed = 50.0f;
-
-	this->target = NULL;
 
 	this->updateActorId(CLASS_ID);
 }
@@ -40,16 +36,16 @@ Man::~Man(void)
 
 void Man::update(float deltatime)
 {
-	if (this->destinationPoint == this->location)
+	if (this->tempLocation == this->location)
 	{
 		this->findNextPathPoint();
 	}
 
 	float stepSize = this->speed * deltatime;
 
-	if (stepSize < (this->destinationPoint - this->location).size())
+	if (stepSize < (this->tempLocation - this->location).size())
 	{
-		Vector2D newLocation = this->location + (this->destinationPoint - this->location).ort() * stepSize;
+		Vector2D newLocation = this->location + (this->tempLocation - this->location).ort() * stepSize;
 		bool bFree = true;
 
 		// for each actors in the world
@@ -76,7 +72,7 @@ void Man::update(float deltatime)
 		if (bFree)
 		{
 			// accept new position of the man
-			this->location = newLocation;
+			this->setLocation(newLocation);
 		}
 		else
 		{
@@ -85,7 +81,7 @@ void Man::update(float deltatime)
 	}
 	else
 	{
-		this->location = this->destinationPoint;
+		this->setLocation(this->tempLocation);
 	}
 
 	this->updateCollision();
@@ -101,36 +97,10 @@ void Man::takeDamage(float damageValue, Vector2D impulse)
 		IActor* foundActor = (*i);
 		if (foundActor->getType() == AT_Living && foundActor != this)
 		{
-			this->target = foundActor;
-			findNextPathPoint();
+			//this->follow(foundActor);
 			break;
 		}
 	}
 
 	Body::takeDamage(damageValue, impulse);
-}
-
-void Man::findNextPathPoint()
-{
-	if (this->target != NULL)
-	{
-		RayTrace ray(this->ownerWorld, this->getLocation(), this->target->getLocation());
-		IActor* tracedActor = ray.trace();
-
-		if (tracedActor == this->target || tracedActor == NULL)
-		{
-			this->destinationPoint = target->getLocation();
-		}
-		else
-		{
-			this->navigator.createNewPath(this->getLocation(), this->target->getLocation());
-			this->destinationPoint = this->navigator.getNextPoint();
-			if (this->destinationPoint == this->getLocation())
-			{
-				this->destinationPoint = this->navigator.getNextPoint();
-			}
-		}
-		
-		this->direction = (this->destinationPoint - this->getLocation()).rotation();
-	}
 }
