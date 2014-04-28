@@ -157,7 +157,7 @@ bool RayTrace::fastTrace()
 {
 	for (auto const &itActor : this->ownerWorld->allActors)
 	{
-		if (itActor->getType() != AT_Light && itActor->getType() != AT_Special)
+		if (itActor->getType() != ActorType::Light && itActor->getType() != ActorType::Special)
 		{
 			// get bounding box of current actor
 			BoundingBox box = itActor->getBoundingBox();
@@ -217,7 +217,7 @@ IActor* RayTrace::trace(Vector2D *outPoint, Vector2D *outNormal)
 	// for each actor in the world
 	for (auto const &currentActor : this->ownerWorld->allActors)
 	{
-		if (currentActor->getType() != AT_Light && currentActor->getType() != AT_Special)
+		if (currentActor->getType() != ActorType::Light && currentActor->getType() != ActorType::Special)
 		{
 			// get bounding box of current actor
 			BoundingBox box = currentActor->getBoundingBox();

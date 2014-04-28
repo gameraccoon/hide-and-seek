@@ -26,7 +26,7 @@ void Hero::update(float deltatime)
 	for (auto const &actor : this->ownerWorld->allActors)
 	{
 		// if the actor is not this man // test: and it is a static actor
-		if (actor != this && (actor->getType() != AT_Light && actor->getType() != AT_Special && actor->getType() != AT_Bullet))
+		if (actor != this && (actor->getType() != ActorType::Light && actor->getType() != ActorType::Special && actor->getType() != ActorType::Bullet))
 		{
 			// get an actor's AABB (axis-aligned bounding box)
 			BoundingBox box = actor->getBoundingBox();

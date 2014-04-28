@@ -23,7 +23,7 @@ namespace
 
 LightEmitter::LightEmitter(World *world, Vector2D location, Vector2D scale, Rotator rotation) : Actor(world, location, rotation)
 {
-	this->type = AT_Light;
+	this->type = ActorType::Light;
 	this->brightness = 1.f;
 	this->color = 0xFFFFFFFF;
 

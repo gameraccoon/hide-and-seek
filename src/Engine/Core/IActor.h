@@ -7,15 +7,15 @@
 #include "../Structures/Hull.h"
 
 /** Types of an actors */
-enum EActorType
+enum class ActorType
 {
-	AT_Ghost,	// haven't collision, may not be shown
-	AT_Static,	// static objects like wall			// added in collisions list
-	AT_Dynamic,	// movable objects like barrel		// added in collisions list and check collisions only on moving
-	AT_Living,	// player or NPC					// added in collisions list and check collisions always
-	AT_Bullet,	// basic bullets					// check collisions all life cycle but not be added in collisions list
-	AT_Special,	// doors, rockets, turrels, etc.
-	AT_Light
+	Ghost,		// haven't collision, may not be shown
+	Static,		// static objects like wall			// added in collisions list
+	Dynamic,	// movable objects like barrel		// added in collisions list and check collisions only on moving
+	Living,		// player or NPC					// added in collisions list and check collisions always
+	Bullet,		// basic bullets					// check collisions all life cycle but not be added in collisions list
+	Special,	// doors, rockets, turrels, etc.
+	Light
 };
 
 /**
@@ -43,7 +43,7 @@ public:
 	/** Is actor wait to be automatically destroyed? */
 	virtual bool isWaitDestruction() = 0;
 	/** Get actor type */
-	virtual EActorType getType() = 0;
+	virtual ActorType getType() = 0;
 	/** Get axis-aligned bounding box */
 	virtual BoundingBox getBoundingBox() = 0;
 	/** Get hull of this actor */

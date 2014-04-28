@@ -72,7 +72,7 @@ void Camera::render()
 	// for each light on the scene
 	for (auto const &actor : this->browsableWorld->allActors)
 	{
-		if (actor->getType() == AT_Light)
+		if (actor->getType() == ActorType::Light)
 		{
 			this->hge->Gfx_BeginScene(this->zone);
 			this->hge->Gfx_Clear(0xFFFFFF);
@@ -298,7 +298,7 @@ void Camera::renderLightShadows(Vector2D lightPos)
 	for (auto const &actor : this->browsableWorld->allActors)
 	{
 		// if actor - static
-		if (actor->getType() == AT_Static)
+		if (actor->getType() == ActorType::Static)
 		{
 			// get actors geometry
 			Hull *hull = actor->getHull();
@@ -333,7 +333,7 @@ void Camera::renderShadows()
 	for (auto const &actor : this->browsableWorld->allActors)
 	{
 		// if actor - static
-		if (actor->getType() == AT_Static)
+		if (actor->getType() == ActorType::Static)
 		{
 			// get actors geometry
 			Hull *hull = actor->getHull();
@@ -370,7 +370,7 @@ void Camera::renderHulls()
 	for (auto const &actor : this->browsableWorld->allActors)
 	{
 		// if actor - static
-		if (actor->getType() != AT_Light && actor->getType() != AT_Special)
+		if (actor->getType() != ActorType::Light && actor->getType() != ActorType::Special)
 		{
 			// get actors geometry
 			Hull *hull = actor->getHull();
@@ -403,7 +403,7 @@ void Camera::renderLights()
 	for (auto const &actor : this->browsableWorld->allActors)
 	{
 		// if actor - static
-		if (actor->getType() == AT_Light)
+		if (actor->getType() == ActorType::Light)
 		{
 			Vector2D lightLocation(this->project(actor->getLocation()));
 			this->hge->Gfx_RenderLine(lightLocation.x - 5, lightLocation.y, lightLocation.x + 5, lightLocation.y, 0xFFAA6600, 0);

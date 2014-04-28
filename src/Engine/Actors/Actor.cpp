@@ -16,7 +16,7 @@ Actor::Actor(World *world, Vector2D location, Rotator rotation) : location(locat
 {
 	this->ownerWorld = world;
 	this->ownerWorld->spawnActor(this);
-	this->type = AT_Ghost;
+	this->type = ActorType::Ghost;
 
 	this->updateActorId("Actor");
 
@@ -62,7 +62,7 @@ Vector2D Actor::getScale()
 	return this->scale;
 }
 
-EActorType Actor::getType()
+ActorType Actor::getType()
 {
 	return this->type;
 }

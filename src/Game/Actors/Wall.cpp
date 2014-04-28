@@ -23,7 +23,7 @@ namespace
 
 Wall::Wall(World *world, Vector2D location, Vector2D scale, Rotator rotation) : Actor(world, location, rotation)
 {
-	this->type = AT_Static;
+	this->type = ActorType::Static;
 
 	const int spritelSize = 126;
 

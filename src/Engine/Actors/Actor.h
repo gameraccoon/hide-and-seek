@@ -40,7 +40,7 @@ public:
 	/** Is actor wait to be automatically destroyed? */
 	virtual bool isWaitDestruction() override final;
 	/** Get actor type */
-	virtual EActorType getType() override final;
+	virtual ActorType getType() override final;
 	/** Get axis-aligned bounding box */
 	virtual BoundingBox getBoundingBox() override final;
 	/** Get actor's hull */
@@ -59,7 +59,7 @@ protected:
 	/** Pointer to the owner World */
 	World* ownerWorld;
 	/** Type of the actor */
-	EActorType type;
+	ActorType type;
 	/** Location of the actor in the world */
 	Vector2D location;
 	Vector2D scale;

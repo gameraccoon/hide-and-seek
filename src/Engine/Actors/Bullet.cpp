@@ -35,7 +35,7 @@ Bullet::Bullet(World *world, Vector2D location, Vector2D scale, Rotator rotation
 	Actor(world, location, rotation)
 {
 	this->speed = 10.0f;	
-	this->type = AT_Bullet;
+	this->type = ActorType::Bullet;
 
 	this->speed = 450.0f;
 

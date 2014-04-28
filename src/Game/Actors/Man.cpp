@@ -23,7 +23,7 @@ namespace
 
 Man::Man(World *world, Vector2D location, Vector2D scale, Rotator rotation) : Body(world, location)
 {
-	this->type = AT_Living;
+	this->type = ActorType::Living;
 
 	this->speed = 50.0f;
 
@@ -52,7 +52,7 @@ void Man::update(float deltatime)
 		for (auto const &actor : this->ownerWorld->allActors)
 		{
 			// if the actor is not this man // test: and it is a static actor
-			if (actor != this && (actor->getType() != AT_Light && actor->getType() != AT_Special && actor->getType() != AT_Bullet))
+			if (actor != this && (actor->getType() != ActorType::Light && actor->getType() != ActorType::Special && actor->getType() != ActorType::Bullet))
 			{
 				// get an actor's AABB (axis-aligned bounding box)
 				BoundingBox box = actor->getBoundingBox();
@@ -94,7 +94,7 @@ void Man::takeDamage(float damageValue, Vector2D impulse)
 {
 	for (auto const &actor : this->ownerWorld->allActors)
 	{
-		if (actor->getType() == AT_Living && actor != this)
+		if (actor->getType() == ActorType::Living && actor != this)
 		{
 			//this->follow(foundActor);
 			break;

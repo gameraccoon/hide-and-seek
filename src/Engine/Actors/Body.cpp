@@ -5,7 +5,7 @@ Body::Body(World *world, Vector2D location) : Actor(world, location, Rotator(0.0
 																		navigator(world),
 																		tempLocation(location)
 {
-	this->type = AT_Living;
+	this->type = ActorType::Living;
 
 	this->speed = 12.0f;
 	
