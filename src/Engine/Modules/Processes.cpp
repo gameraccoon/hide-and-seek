@@ -56,10 +56,10 @@ public:
 
 	~ProcessContainer()
 	{
-		if (this->currentProcess != NULL)
+		if (this->currentProcess != nullptr)
 		{
 			delete this->currentProcess;
-			this->currentProcess = NULL;
+			this->currentProcess = nullptr;
 		}
 	}
 
@@ -85,7 +85,7 @@ public:
     void run()
     {
         this->currentProcess->run();
-        if (this->next != NULL)
+        if (this->next != nullptr)
         {
             this->next->run();
         }
@@ -97,7 +97,7 @@ public:
 	void remove(int id)
     {
         // если это не последний процесс в цепочке
-        if (this->next != NULL && id >= 0)
+        if (this->next != nullptr && id >= 0)
         {
             // если следующий процесс - то что мы хотим удалить
 			if (this->next->getId() == id)
@@ -121,7 +121,7 @@ public:
 
 ProcessManager::ProcessManager()
 {
-	this->first = NULL;
+	this->first = nullptr;
 }
 
 void ProcessManager::add(Process *process)
@@ -140,7 +140,7 @@ void ProcessManager::run()
 void ProcessManager::remove(int id)
 {
     // если есть что удалять
-    if (this->first != NULL && id >= 0)
+    if (this->first != nullptr && id >= 0)
     {
         // если следующий процесс - то что мы хотим удалить
         if (this->first->getId() == id)

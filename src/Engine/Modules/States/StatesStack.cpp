@@ -31,10 +31,10 @@ public:
 
 	~StateIterator()
 	{
-		if (this->currentState != NULL)
+		if (this->currentState != nullptr)
 		{
 			delete this->currentState;
-			this->currentState = NULL;
+			this->currentState = nullptr;
 		}
 	}
 
@@ -72,12 +72,12 @@ private:
 
 StatesStack::StatesStack()
 {
-	this->head = NULL;
+	this->head = nullptr;
 }
 
 StatesStack::~StatesStack()
 {
-	while (this->head != NULL)
+	while (this->head != nullptr)
 	{
 		this->pop();
 	}
@@ -100,7 +100,7 @@ void StatesStack::pop()
 
 void StatesStack::process(float deltatime)
 {
-	if (this->head != NULL)
+	if (this->head != nullptr)
 	{
 		this->head->process(deltatime);
 	}

@@ -12,9 +12,6 @@
 class World
 {
 public:
-	typedef std::set<IActor*> ActorsSet;
-	typedef std::set<PathPoint*> PathPointsSet;
-
 	World(void);
 	~World(void);
 	/** Add Actor to the World. */
@@ -28,9 +25,9 @@ public:
 	/** */
 	IActor* getActorById(std::string id);
 	/** All actors in the World. */
-	ActorsSet allActors;
+	std::set<IActor*> allActors;
 	/** All pathpoints of this world */
-	PathPointsSet navigationMap;
+	std::set<PathPoint*> navigationMap;
 private:
 	/** Free memory of path points */
 	void removeAllPathPoints();

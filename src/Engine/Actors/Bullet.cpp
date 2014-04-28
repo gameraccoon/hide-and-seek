@@ -57,7 +57,7 @@ void Bullet::update(float deltatime)
 	IActor *trasedActor = ray.trace(&traceLocation);
 
 	// if there nothing to hit
-	if (trasedActor == NULL)
+	if (trasedActor == nullptr)
 	{
 		this->location = newLocation;
 	}

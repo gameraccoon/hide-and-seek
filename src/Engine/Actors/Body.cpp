@@ -21,10 +21,10 @@ Body::Body(World *world, Vector2D location) : Actor(world, location, Rotator(0.0
 
 	this->role = new Role(world, this);
 
-	this->armedWeapon = NULL;
+	this->armedWeapon = nullptr;
 
-	this->followingTarget = NULL;
-	this->movingToLocation = NULL;
+	this->followingTarget = nullptr;
+	this->movingToLocation = nullptr;
 }
 
 Body::~Body(void)
@@ -48,16 +48,16 @@ void Body::follow(IActor *target)
 
 void Body::clearTargets()
 {
-	if (this->followingTarget != NULL)
+	if (this->followingTarget != nullptr)
 	{
 		delete this->followingTarget;
-		this->followingTarget = NULL;
+		this->followingTarget = nullptr;
 	}
 
-	if (this->movingToLocation != NULL)
+	if (this->movingToLocation != nullptr)
 	{
 		delete this->movingToLocation;
-		this->movingToLocation = NULL;
+		this->movingToLocation = nullptr;
 	}
 }
 
@@ -68,7 +68,7 @@ void Body::updateCollision()
 
 void Body::startShoting(Vector2D targetLocation)
 {
-	if (this->armedWeapon != NULL)
+	if (this->armedWeapon != nullptr)
 	{
 		this->armedWeapon->startShooting(this->location ,targetLocation);
 	}
@@ -76,7 +76,7 @@ void Body::startShoting(Vector2D targetLocation)
 
 void Body::stopShoting()
 {
-	if (this->armedWeapon != NULL)
+	if (this->armedWeapon != nullptr)
 	{
 		this->armedWeapon->stopShooting();
 	}
@@ -113,12 +113,12 @@ void Body::update(float deltatime)
 
 void Body::findNextPathPoint()
 {
-	if (this->followingTarget != NULL)
+	if (this->followingTarget != nullptr)
 	{
 		RayTrace ray(this->ownerWorld, this->getLocation(), this->followingTarget->getLocation());
 		IActor* tracedActor = ray.trace();
 
-		if (tracedActor == this->followingTarget || tracedActor == NULL)
+		if (tracedActor == this->followingTarget || tracedActor == nullptr)
 		{
 			this->tempLocation = followingTarget->getLocation();
 		}

@@ -1,6 +1,6 @@
 #include "ActorFactory.h"
 
-ActorFactory* ActorFactory::singleInstance = NULL;
+ActorFactory* ActorFactory::singleInstance = nullptr;
 
 ActorFactory::ActorFactory() {}
 ActorFactory::ActorFactory(const ActorFactory&) {}
@@ -12,7 +12,7 @@ ActorFactory& ActorFactory::operator=(const ActorFactory&)
 
 ActorFactory& ActorFactory::Factory()
 {
-	if (ActorFactory::singleInstance == NULL)
+	if (ActorFactory::singleInstance == nullptr)
 	{
 		ActorFactory::singleInstance = new ActorFactory();
 	}

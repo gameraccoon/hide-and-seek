@@ -17,7 +17,7 @@ public:
 	~RayTrace(void);
 	void setThickness(float thickness);
 	bool fastTrace();
-	IActor* trace(Vector2D *outPoint = NULL, Vector2D *outNormal = NULL);
+	IActor* trace(Vector2D *outPoint = nullptr, Vector2D *outNormal = nullptr);
 protected:
 	int getDotCode(const BoundingBox *box, const Vector2D *dot);
 	bool checkIntersectAABBLine(const BoundingBox* box, const Vector2D* first, const Vector2D* last);

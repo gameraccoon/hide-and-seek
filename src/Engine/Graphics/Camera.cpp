@@ -70,20 +70,20 @@ void Camera::render()
 	this->hge->Gfx_EndScene();
 
 	// for each light on the scene
-	for (std::set<IActor*>::iterator i = this->browsableWorld->allActors.begin(), iEnd = this->browsableWorld->allActors.end(); i != iEnd; i++)
+	for (auto const &actor : this->browsableWorld->allActors)
 	{
-		if ((*i)->getType() == AT_Light)
+		if (actor->getType() == AT_Light)
 		{
 			this->hge->Gfx_BeginScene(this->zone);
 			this->hge->Gfx_Clear(0xFFFFFF);
 			
 			// Actors beside this light
-			this->renderActors((*i)->getLocation());
+			this->renderActors(actor->getLocation());
 
 			// Shadows for this light
 			if (this->bRenderShadows)
 			{
-				this->renderLightShadows((*i)->getLocation());
+				this->renderLightShadows(actor->getLocation());
 			}
 
 			// Fog of this light
@@ -100,7 +100,7 @@ void Camera::render()
 			light->SetColor(0xFF777777);
 
 			this->hge->Gfx_BeginScene(this->renderTarget);
-			light->Render(this->project((*i)->getLocation()).x-this->shownSize/2, this->project((*i)->getLocation()).y - this->shownSize/2);
+			light->Render(this->project(actor->getLocation()).x-this->shownSize/2, this->project(actor->getLocation()).y - this->shownSize/2);
 			this->hge->Gfx_EndScene();
 
 			delete light;
@@ -153,10 +153,8 @@ void Camera::render()
 void Camera::renderActors(Vector2D lightPos)
 {
 	// for each actors in the world
-	for (std::set<IActor*>::iterator i = this->browsableWorld->allActors.begin(), iEnd = this->browsableWorld->allActors.end(); i != iEnd; i++)
+	for (auto const &actorToRender : this->browsableWorld->allActors)
 	{
-		IActor* actorToRender = *i;
-
 		// Get actor's camera local location
 		Vector2D screenLoc(actorToRender->getLocation() - lightPos);
 		// Get distance from center of screen
@@ -170,7 +168,7 @@ void Camera::renderActors(Vector2D lightPos)
 		hgeSprite* sprite = this->graphicLoader.getSprite(actorToRender->getClassID());
 
 		// if there no sprite for this actor then go to the next actor
-		if (sprite == NULL)
+		if (sprite == nullptr)
 			continue;
 
 		// calc actor screen location
@@ -187,11 +185,11 @@ void Camera::renderActors(Vector2D lightPos)
 void Camera::renderCollisionBoxes()
 {
 	// for each actors in the world
-	for (std::set<IActor*>::iterator i = this->browsableWorld->allActors.begin(), iEnd = this->browsableWorld->allActors.end(); i != iEnd; i++)
+	for (auto const &actor : this->browsableWorld->allActors)
 	{
 		// get location and size of actor's AABB (axis-aligned bounding box)
-		Vector2D min = (*i)->getBoundingBox().getFirst();
-		Vector2D size = (*i)->getBoundingBox().getThird() - min;
+		Vector2D min = actor->getBoundingBox().getFirst();
+		Vector2D size = actor->getBoundingBox().getThird() - min;
 
 		// project location on the screen
 		Vector2D shift = this->project(min);
@@ -297,25 +295,25 @@ void Camera::renderLightShadows(Vector2D lightPos)
 {
 	Vector2D lightCenterPos(this->shownSize/2, this->shownSize/2);
 	// for each actors in the world
-	for (std::set<IActor*>::iterator i = this->browsableWorld->allActors.begin(), iEnd = this->browsableWorld->allActors.end(); i != iEnd; i++)
+	for (auto const &actor : this->browsableWorld->allActors)
 	{
 		// if actor - static
-		if ((*i)->getType() == AT_Static)
+		if (actor->getType() == AT_Static)
 		{
 			// get actors geometry
-			Hull *hull = (*i)->getHull();
+			Hull *hull = actor->getHull();
 			// for each border of actor's geometry
 			for (int j = 0; j < (int) hull->borders.size(); j++)
 			{
 				// if border's normal and camera view on border have different directions (angle > PI/2)
 				if (abs((
 						hull->borders[j].getNormal().rotation()
-						- ((*i)->getLocation() + (hull->borders[j].getA() + hull->borders[j].getB())/2 - lightPos).rotation()
+						- (actor->getLocation() + (hull->borders[j].getA() + hull->borders[j].getB())/2 - lightPos).rotation()
 					).getValue()) < PI/2)
 				{
 					// Get border's points
-					Vector2D a((*i)->getLocation() + hull->borders[j].getA());
-					Vector2D b((*i)->getLocation() + hull->borders[j].getB());
+					Vector2D a(actor->getLocation() + hull->borders[j].getA());
+					Vector2D b(actor->getLocation() + hull->borders[j].getB());
 
 					// project them on screen
 					a = this->projectFrom(a, lightPos);
@@ -332,25 +330,25 @@ void Camera::renderLightShadows(Vector2D lightPos)
 void Camera::renderShadows()
 {
 	// for each actors in the world
-	for (std::set<IActor*>::iterator i = this->browsableWorld->allActors.begin(), iEnd = this->browsableWorld->allActors.end(); i != iEnd; i++)
+	for (auto const &actor : this->browsableWorld->allActors)
 	{
 		// if actor - static
-		if ((*i)->getType() == AT_Static)
+		if (actor->getType() == AT_Static)
 		{
 			// get actors geometry
-			Hull *hull = (*i)->getHull();
+			Hull *hull = actor->getHull();
 			// for each border of actor's geometry
 			for (int j = 0; j < (int) hull->borders.size(); j++)
 			{
 				// if border's normal and camera view on border have different directions (angle > PI/2)
 				if (abs((
 						hull->borders[j].getNormal().rotation()
-						- ((*i)->getLocation() + (hull->borders[j].getA() + hull->borders[j].getB())/2 - this->location).rotation()
+						- (actor->getLocation() + (hull->borders[j].getA() + hull->borders[j].getB())/2 - this->location).rotation()
 					).getValue()) < PI/2)
 				{
 					// Get border's points
-					Vector2D a((*i)->getLocation() + hull->borders[j].getA());
-					Vector2D b((*i)->getLocation() + hull->borders[j].getB());
+					Vector2D a(actor->getLocation() + hull->borders[j].getA());
+					Vector2D b(actor->getLocation() + hull->borders[j].getB());
 
 					// project them on screen
 					a = this->project(a);
@@ -369,25 +367,25 @@ void Camera::renderHulls()
 	const int normal_length = 10;
 
 	// for each actors in the world
-	for (std::set<IActor*>::iterator i = this->browsableWorld->allActors.begin(), iEnd = this->browsableWorld->allActors.end(); i != iEnd; i++)
+	for (auto const &actor : this->browsableWorld->allActors)
 	{
 		// if actor - static
-		if ((*i)->getType() != AT_Light && (*i)->getType() != AT_Special)
+		if (actor->getType() != AT_Light && actor->getType() != AT_Special)
 		{
 			// get actors geometry
-			Hull *hull = (*i)->getHull();
+			Hull *hull = actor->getHull();
 			// for each border of actor's geometry
 			for (int j = 0; j < (int) hull->borders.size(); j++)
 			{
 				// draw border
-				Vector2D A((*i)->getLocation() + hull->borders[j].getA()), B((*i)->getLocation() + hull->borders[j].getB());
+				Vector2D A(actor->getLocation() + hull->borders[j].getA()), B(actor->getLocation() + hull->borders[j].getB());
 				A = this->project(A);
 				B = this->project(B);
 				
 				this->hge->Gfx_RenderLine(A.x, A.y, B.x, B.y, 0xFFFF00FF);
 
 				// draw normal
-				Vector2D LinePos((*i)->getLocation() + (hull->borders[j].getA() + hull->borders[j].getB()) / 2);
+				Vector2D LinePos(actor->getLocation() + (hull->borders[j].getA() + hull->borders[j].getB()) / 2);
 				Vector2D Norm(LinePos + hull->borders[j].getNormal() * normal_length);
 
 				LinePos = this->project(LinePos);
@@ -402,12 +400,12 @@ void Camera::renderHulls()
 void Camera::renderLights()
 {
 	// for each actors in the world
-	for (std::set<IActor*>::iterator i = this->browsableWorld->allActors.begin(), iEnd = this->browsableWorld->allActors.end(); i != iEnd; i++)
+	for (auto const &actor : this->browsableWorld->allActors)
 	{
 		// if actor - static
-		if ((*i)->getType() == AT_Light)
+		if (actor->getType() == AT_Light)
 		{
-			Vector2D lightLocation(this->project((*i)->getLocation()));
+			Vector2D lightLocation(this->project(actor->getLocation()));
 			this->hge->Gfx_RenderLine(lightLocation.x - 5, lightLocation.y, lightLocation.x + 5, lightLocation.y, 0xFFAA6600, 0);
 			this->hge->Gfx_RenderLine(lightLocation.x, lightLocation.y - 5, lightLocation.x, lightLocation.y + 5, 0xFFAA6600, 0);
 		}
@@ -417,10 +415,9 @@ void Camera::renderLights()
 void Camera::renderPaths()
 {
 	// for each actors in the world
-	for (std::set<PathPoint*>::iterator i = this->browsableWorld->navigationMap.begin(),
-		iEnd = this->browsableWorld->navigationMap.end(); i != iEnd; i++)
+	for (auto const &point1 : this->browsableWorld->navigationMap)
 	{
-		Vector2D pathPointLocation(this->project((*i)->location));
+		Vector2D pathPointLocation(this->project(point1->location));
 		
 		// render green diamond
 		this->hge->Gfx_RenderLine(pathPointLocation.x - 5, pathPointLocation.y, pathPointLocation.x, pathPointLocation.y - 5, 0xFF00FF00, 0);
@@ -429,9 +426,10 @@ void Camera::renderPaths()
 		this->hge->Gfx_RenderLine(pathPointLocation.x, pathPointLocation.y + 5, pathPointLocation.x - 5, pathPointLocation.y, 0xFF00FF00, 0);
 
 		// render path arrow
-		for (std::set<PathPoint*>::iterator j = (*i)->legalPoints.begin(), jEnd = (*i)->legalPoints.end(); j != jEnd; j++)
+		for (auto const &point2 : point1->legalPoints)
 		{
-			Vector2D nextPointLocation(this->project((*j)->location));
+			Vector2D nextPointLocation(this->project(point2->location));
+
 			this->hge->Gfx_RenderLine(pathPointLocation.x, pathPointLocation.y, nextPointLocation.x, nextPointLocation.y, 0xFF00FF00, 0);
 			Vector2D thirdPoint = pathPointLocation + (nextPointLocation - pathPointLocation)/3;
 

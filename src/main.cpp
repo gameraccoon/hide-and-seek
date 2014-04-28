@@ -13,7 +13,7 @@
 #include <vector>
 
 // Hge subsystem
-HGE *hge = NULL;
+HGE *hge = nullptr;
 
 // Pointers to the HGE objects we will use
 hgeSprite*	crosshair;

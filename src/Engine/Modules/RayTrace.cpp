@@ -155,11 +155,8 @@ bool RayTrace::checkIntersectHoryLineWithLine(Vector2D A1, Vector2D A2, float y,
 
 bool RayTrace::fastTrace()
 {
-	IActor *itActor;
-	// for each actor in the world
-	for (std::set<IActor*>::iterator i = this->ownerWorld->allActors.begin(), iEnd = this->ownerWorld->allActors.end(); i != iEnd; i++)
+	for (auto const &itActor : this->ownerWorld->allActors)
 	{
-		itActor = *i;
 		if (itActor->getType() != AT_Light && itActor->getType() != AT_Special)
 		{
 			// get bounding box of current actor
@@ -188,14 +185,14 @@ bool RayTrace::fastTrace()
                 Hull *hull = itActor->getHull();
 
 				// for each border
-				for (std::vector<Border>::iterator it2 = hull->borders.begin(); it2 != hull->borders.end(); it2++)
+				for (auto &border : hull->borders)
 				{
 					Vector2D actorsLocation(itActor->getLocation());
 					// if ray have different direction with normal
-					if (abs((it2->getNormal().rotation() - (this->endPoint - this->startPoint).rotation()).getValue()) > PI/2)
+					if (abs((border.getNormal().rotation() - (this->endPoint - this->startPoint).rotation()).getValue()) > PI/2)
 					{
 						// if raytrace intersect this border
-						if (this->checkIntersect2Lines(actorsLocation + it2->getA(), actorsLocation + it2->getB(),
+						if (this->checkIntersect2Lines(actorsLocation + border.getA(), actorsLocation + border.getB(),
 							this->startPoint, this->endPoint))
 						{
 							return true;
@@ -210,19 +207,16 @@ bool RayTrace::fastTrace()
 
 IActor* RayTrace::trace(Vector2D *outPoint, Vector2D *outNormal)
 {
-	IActor *currentActor = NULL;
-
 	// nearest actor that intersects ray
-	IActor *nearestActor = NULL;
+	IActor *nearestActor = nullptr;
 	// hitpoint of nearest actor
 	Vector2D nearestHitPoint(ZERO_VECTOR);
 	Vector2D nearestNormal(ZERO_VECTOR);
 	float minRayLength = (this->startPoint - this->endPoint).size() + 20.0f;
 
 	// for each actor in the world
-	for (std::set<IActor*>::iterator i = this->ownerWorld->allActors.begin(), iEnd = this->ownerWorld->allActors.end(); i != iEnd; i++)
+	for (auto const &currentActor : this->ownerWorld->allActors)
 	{
-		currentActor = *i;
 		if (currentActor->getType() != AT_Light && currentActor->getType() != AT_Special)
 		{
 			// get bounding box of current actor
@@ -251,16 +245,16 @@ IActor* RayTrace::trace(Vector2D *outPoint, Vector2D *outNormal)
                 Hull *hull = currentActor->getHull();
 
 				// for each border
-				for (std::vector<Border>::iterator j = hull->borders.begin(), jEnd = hull->borders.end(); j != jEnd; j++)
+				for (auto &border : hull->borders)
 				{
 					Vector2D actorsLocation(currentActor->getLocation());
 					// if ray have different direction with normal
-					if (abs((j->getNormal().rotation() - (this->endPoint - this->startPoint).rotation()).getValue()) > PI/2)
+					if (abs((border.getNormal().rotation() - (this->endPoint - this->startPoint).rotation()).getValue()) > PI/2)
 					{
 						// if raytrace intersect this border
-						if (this->checkIntersect2Lines(actorsLocation + j->getA(), actorsLocation + j->getB(), this->startPoint, this->endPoint))
+						if (this->checkIntersect2Lines(actorsLocation +border.getA(), actorsLocation + border.getB(), this->startPoint, this->endPoint))
 						{
-							Vector2D hitLocation = this->getPointIntersect2Lines(actorsLocation + j->getA(), actorsLocation + j->getB(),
+							Vector2D hitLocation = this->getPointIntersect2Lines(actorsLocation + border.getA(), actorsLocation + border.getB(),
 								this->startPoint, this->endPoint);
 							
 							rayLength = (this->startPoint - hitLocation).size();
@@ -270,7 +264,7 @@ IActor* RayTrace::trace(Vector2D *outPoint, Vector2D *outNormal)
 								minRayLength = rayLength;
 								nearestActor = currentActor;
 								nearestHitPoint = hitLocation;
-								nearestNormal = j->getNormal();
+								nearestNormal = border.getNormal();
 							}
 						}
 					}
@@ -280,12 +274,12 @@ IActor* RayTrace::trace(Vector2D *outPoint, Vector2D *outNormal)
 	}
 
 	// return all values
-	if (outPoint != NULL)
+	if (outPoint != nullptr)
 	{
 		*outPoint = nearestHitPoint;
 	}
 
-	if (outNormal != NULL)
+	if (outNormal != nullptr)
 	{
 		*outNormal = nearestNormal;
 	}

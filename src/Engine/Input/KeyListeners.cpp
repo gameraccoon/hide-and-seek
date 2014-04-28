@@ -79,6 +79,6 @@ void ButtonListeners::destruct()
 	for (std::vector<ButtonSwitcher*>::iterator it = this->listeners.begin(); it != this->listeners.end(); it++)
 	{
 		delete (*it);
-		(*it) = NULL;
+		(*it) = nullptr;
 	}
 }

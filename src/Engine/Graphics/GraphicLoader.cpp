@@ -36,7 +36,7 @@ hgeSprite* GraphicLoader::getSprite(std::string classId)
 		// get sprite info from outer source
 		SpriteInfo spriteInfo = this->loadSpriteInfo(spriteId);
 		// get existed texture or load from file
-		hgeSprite* sprite = NULL;
+		hgeSprite* sprite = nullptr;
 		
 		if (spriteInfo.loaded)
 		{

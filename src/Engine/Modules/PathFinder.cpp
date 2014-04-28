@@ -32,7 +32,7 @@ void PathFinder::reconstructPath(CalculationPoint* start, CalculationPoint* end)
 {
 	this->path.clear();
 	CalculationPoint *currentPoint = end;
-	while (currentPoint != NULL)
+	while (currentPoint != nullptr)
 	{
 		this->path.insert(this->path.begin(), currentPoint->point); // back order
 		currentPoint = currentPoint->cameFrom;
@@ -42,10 +42,10 @@ void PathFinder::reconstructPath(CalculationPoint* start, CalculationPoint* end)
 	while (this->closedSet.size() > 0)
 	{
 		CalculationPoint* pointToDelete = *this->closedSet.begin();
-		WARN_IF(pointToDelete == NULL, "PATHFINDER: Error in pathfinding! NULL or duplicated PathPoint");
+		WARN_IF(pointToDelete == nullptr, "PATHFINDER: Error in pathfinding! NULL or duplicated PathPoint");
 		this->closedSet.erase(pointToDelete);
 		delete pointToDelete;
-		pointToDelete = NULL;
+		pointToDelete = nullptr;
 	}
 }
 
@@ -56,19 +56,19 @@ bool PathFinder::createNewPath(Vector2D startPoint, Vector2D endPoint)
 	// find first and last path points
 	float minDistStart = 1000000.f;
 	float minDistEnd = minDistStart;
-	PathPoint *firstPoint = NULL, *lastPoint = NULL;
+	PathPoint *firstPoint = nullptr, *lastPoint = nullptr;
 
-	for (std::set<PathPoint*>::iterator i = this->ownerWorld->navigationMap.begin(), iEnd = ownerWorld->navigationMap.end(); i != iEnd; i++)
+	for (auto const pathPoint : this->ownerWorld->navigationMap)
 	{
-		if (((*i)->location - startPoint).size() < minDistStart)
+		if ((pathPoint->location - startPoint).size() < minDistStart)
 		{
-			firstPoint = (*i);
+			firstPoint = pathPoint;
 			minDistStart = (firstPoint->location - startPoint).size();
 		}
 
-		if (((*i)->location - endPoint).size() < minDistEnd)
+		if ((pathPoint->location - endPoint).size() < minDistEnd)
 		{
-			lastPoint = (*i);
+			lastPoint = pathPoint;
 			minDistEnd = (lastPoint->location - endPoint).size();
 		}
 	}
@@ -79,7 +79,7 @@ bool PathFinder::createNewPath(Vector2D startPoint, Vector2D endPoint)
 	std::set<CalculationPoint*> OpenSet;
 
 	// insert first point
-	CalculationPoint *cFirstPoint = new CalculationPoint(firstPoint, 0.f, (firstPoint->location - endPoint).size(), NULL);
+	CalculationPoint *cFirstPoint = new CalculationPoint(firstPoint, 0.f, (firstPoint->location - endPoint).size(), nullptr);
 	OpenSet.insert(cFirstPoint);
 
 	// while open set is not empty
@@ -88,13 +88,12 @@ bool PathFinder::createNewPath(Vector2D startPoint, Vector2D endPoint)
 		float minF = 1000000.0;
 		CalculationPoint *currentPoint;
 		// find point with minimal heuristic
-		for (std::set<CalculationPoint*>::iterator i = OpenSet.begin(), iEnd = OpenSet.end(); i != iEnd; i++)
+		for (auto const &openSetPoint : OpenSet)
 		{
-			WARN_IF(*i == NULL, "PATHFINDER: NULL pointer in OpenSet");
-			if ((*i)->f < minF)
+			if (openSetPoint->f < minF)
 			{
-				minF = (*i)->f;
-				currentPoint = (*i);
+				minF = openSetPoint->f;
+				currentPoint = openSetPoint;
 			}
 		}
 
@@ -109,10 +108,10 @@ bool PathFinder::createNewPath(Vector2D startPoint, Vector2D endPoint)
 			while (OpenSet.size() > 0)
 			{
 				CalculationPoint* pointToDelete = *OpenSet.begin();
-				WARN_IF(pointToDelete == NULL, "Error in pathfinding! NULL PathPoint in OpenSet");
+				WARN_IF(pointToDelete == nullptr, "Error in pathfinding! NULL PathPoint in OpenSet");
 				OpenSet.erase(pointToDelete);
 				delete pointToDelete;
-				pointToDelete = NULL;
+				pointToDelete = nullptr;
 			}
 
 			WARN_IF(!cFirstPoint, "PATHFINDER: NULL pointer 'cFirstPoint'");
@@ -123,15 +122,12 @@ bool PathFinder::createNewPath(Vector2D startPoint, Vector2D endPoint)
 			return true;
 		}
 
-		for (std::set<PathPoint*>::iterator i = currentPoint->point->legalPoints.begin(),
-			iEnd = currentPoint->point->legalPoints.end(); i != iEnd; i++)
+		for (auto const &neighbor : currentPoint->point->legalPoints)
 		{
 			bool bPointInClosedSet = false;
-			PathPoint* neighbor = (*i);
-			WARN_IF(!neighbor, "PATHFINDER: NULL pointer 'neightbor'");
-			for (std::set<CalculationPoint*>::iterator j = this->closedSet.begin(), jEnd = this->closedSet.end(); j != jEnd; j++)
+			for (auto const &alreadyFound : this->closedSet)
 			{
-				if ((*j)->point == neighbor)
+				if (neighbor == alreadyFound->point)
 				{
 					bPointInClosedSet = true;
 					break;
@@ -149,13 +145,12 @@ bool PathFinder::createNewPath(Vector2D startPoint, Vector2D endPoint)
 			float f = g + h;
 			bool bPointInOpenSet = false;
 			CalculationPoint* openPoint;
-			for (std::set<CalculationPoint*>::iterator j = OpenSet.begin(), jEnd = OpenSet.end(); j != jEnd; j++)
+			for (auto const &openSetPoint : OpenSet)
 			{
-				WARN_IF(*j == NULL, "PATHFINDER: NULL pointer in OpenSet");
-				if ((*j)->point == neighbor)
+				if (openSetPoint->point == neighbor)
 				{
 					bPointInOpenSet = true;
-					openPoint = (*j);
+					openPoint = openSetPoint;
 					break;
 				}
 			}
@@ -182,20 +177,20 @@ bool PathFinder::createNewPath(Vector2D startPoint, Vector2D endPoint)
 	while (OpenSet.size() > 0)
 	{
 		CalculationPoint* pointToDelete = *OpenSet.begin();
-		WARN_IF(pointToDelete == NULL, "PATHFINDER: Error in pathfinding! NULL PathPoint in OpenSet");
+		WARN_IF(pointToDelete == nullptr, "PATHFINDER: Error in pathfinding! NULL PathPoint in OpenSet");
 		OpenSet.erase(pointToDelete);
 		delete pointToDelete;
-		pointToDelete = NULL;
+		pointToDelete = nullptr;
 	}
 
 	// free closed set
 	while (this->closedSet.size() > 0)
 	{
 		CalculationPoint* pointToDelete = *this->closedSet.begin();
-		WARN_IF(pointToDelete == NULL, "PATHFINDER: Error in pathfinding! NULL or duplicated PathPoint");
+		WARN_IF(pointToDelete == nullptr, "PATHFINDER: Error in pathfinding! NULL or duplicated PathPoint");
 		this->closedSet.erase(pointToDelete);
 		delete pointToDelete;
-		pointToDelete = NULL;
+		pointToDelete = nullptr;
 	}
 
 	return false;

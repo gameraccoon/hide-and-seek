@@ -23,13 +23,13 @@ void Hero::update(float deltatime)
 	bool bFree = true;
 
 	// for each actors in the world
-	for (std::set<IActor*>::iterator it = this->ownerWorld->allActors.begin(); it != this->ownerWorld->allActors.end(); it++)
+	for (auto const &actor : this->ownerWorld->allActors)
 	{
 		// if the actor is not this man // test: and it is a static actor
-		if ((*it) != this && ((*it)->getType() != AT_Light && (*it)->getType() != AT_Special && (*it)->getType() != AT_Bullet))
+		if (actor != this && (actor->getType() != AT_Light && actor->getType() != AT_Special && actor->getType() != AT_Bullet))
 		{
 			// get an actor's AABB (axis-aligned bounding box)
-			BoundingBox box = (*it)->getBoundingBox();
+			BoundingBox box = actor->getBoundingBox();
 			// if the actor's AABB intersects with the Man's AABB (in new Man location)
 			if ((box.minX < newLocation.x + this->size.x/2 && newLocation.x - this->size.x/2 < box.maxX)
 				&&

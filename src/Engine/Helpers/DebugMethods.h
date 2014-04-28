@@ -1,5 +1,4 @@
 
-// Standart structures e.g. NULL
 #include "Log.h"
 
 // Debugging methods

@@ -49,13 +49,13 @@ void Man::update(float deltatime)
 		bool bFree = true;
 
 		// for each actors in the world
-		for (std::set<IActor*>::iterator i = this->ownerWorld->allActors.begin(), iEnd = this->ownerWorld->allActors.end(); i != iEnd; i++)
+		for (auto const &actor : this->ownerWorld->allActors)
 		{
 			// if the actor is not this man // test: and it is a static actor
-			if ((*i) != this && ((*i)->getType() != AT_Light && (*i)->getType() != AT_Special && (*i)->getType() != AT_Bullet))
+			if (actor != this && (actor->getType() != AT_Light && actor->getType() != AT_Special && actor->getType() != AT_Bullet))
 			{
 				// get an actor's AABB (axis-aligned bounding box)
-				BoundingBox box = (*i)->getBoundingBox();
+				BoundingBox box = actor->getBoundingBox();
 				// if the actor's AABB intersects with the Man's AABB (in new Man location)
 				if ((box.minX < newLocation.x + this->size.x/2 && newLocation.x - this->size.x/2 < box.maxX)
 					&&
@@ -92,10 +92,9 @@ void Man::update(float deltatime)
 
 void Man::takeDamage(float damageValue, Vector2D impulse)
 {
-	for (std::set<IActor*>::iterator i = this->ownerWorld->allActors.begin(), iEnd = this->ownerWorld->allActors.end(); i != iEnd; i++)
+	for (auto const &actor : this->ownerWorld->allActors)
 	{
-		IActor* foundActor = (*i);
-		if (foundActor->getType() == AT_Living && foundActor != this)
+		if (actor->getType() == AT_Living && actor != this)
 		{
 			//this->follow(foundActor);
 			break;

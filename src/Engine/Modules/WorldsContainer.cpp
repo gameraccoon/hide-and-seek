@@ -1,6 +1,6 @@
 #include "WorldsContainer.h"
 
-WorldsContainer* WorldsContainer::singleInstance = NULL;
+WorldsContainer* WorldsContainer::singleInstance = nullptr;
 
 WorldsContainer::WorldsContainer() {}
 WorldsContainer::WorldsContainer(const WorldsContainer&) {}
@@ -12,7 +12,7 @@ WorldsContainer& WorldsContainer::operator=(const WorldsContainer&)
 
 WorldsContainer& WorldsContainer::Container()
 {
-	if (WorldsContainer::singleInstance == NULL)
+	if (WorldsContainer::singleInstance == nullptr)
 	{
 		WorldsContainer::singleInstance = new WorldsContainer();
 	}
@@ -28,7 +28,7 @@ void WorldsContainer::insertWorld(World* world, std::string name)
 
 World* WorldsContainer::getWorldByName(std::string name)
 {
-	WorldsMap::const_iterator it = this->worlds.find(name);
+	auto it = this->worlds.find(name);
 	
 	if (it == this->worlds.end())
 	{
