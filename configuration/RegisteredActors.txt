@@ -1,5 +1,0 @@
-Bullet
-LightEmitter
-Corpse
-Man
-Wall

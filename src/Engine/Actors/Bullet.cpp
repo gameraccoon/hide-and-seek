@@ -1,8 +1,5 @@
 #include "Bullet.h"
 
-
-// ## This is automatic generated text. Pleace do not change it.
-// ## Registration in ActorFactory
 #include "../../Engine/Modules/ActorFactory.h"
 // unnamed namespase to hide from another places
 namespace
@@ -18,7 +15,6 @@ namespace
 	// register specific factory in actor factory
 	const bool registered = ActorFactory::Factory().registerActor(CLASS_ID, CreateBullet);
 }
-// ## End of automatic generated text
 
 
 #include "../../Engine/Helpers/DebugMethods.h"
