@@ -12,7 +12,7 @@ namespace Microsoft
 	{
 		namespace CppUnitTestFramework
 		{
-			template<> static std::wstring ToString<Vector2D>(const Vector2D& t) { RETURN_WIDE_STRING(t.x + t.x); }
+			template<> static std::wstring ToString<Vector2D>(const Vector2D& t) { RETURN_WIDE_STRING(t.x); }
 		}
 	}
 }
@@ -41,12 +41,12 @@ namespace TestVector2D
 			Rotator angle = 0.0f;
 			Vector2D testVectorA(angle);
 
-			Assert::AreEqual(testVectorA, Vector2D(1.0, 0.0));
+			Assert::AreEqual(Vector2D(1.0, 0.0), testVectorA);
 
 			angle = PI/2;
 			testVectorA = Vector2D(angle);
 
-			Assert::AreEqual(testVectorA, Vector2D(0.0, 1.0));
+			Assert::AreEqual(Vector2D(0.0, 1.0), testVectorA);
 		}
 
 		TEST_METHOD(TestVectorComparison)
@@ -69,8 +69,8 @@ namespace TestVector2D
 			Vector2D testVectorB = testVectorA;
 			testVectorB.x = 30.0f;
 
-			Assert::AreEqual(testVectorB.x, 30.0f);
-			Assert::AreEqual(testVectorA.x, 5.2f);
+			Assert::AreEqual(30.0f, testVectorB.x);
+			Assert::AreEqual(5.2f, testVectorA.x);
 		}
 
 		TEST_METHOD(TestVectorSize)
@@ -79,7 +79,7 @@ namespace TestVector2D
 
 			float testVectorSize = testVectorA.size();
 
-			Assert::AreEqual(testVectorSize, 5.2146f, 0.0001f);
+			Assert::AreEqual(5.2146f, testVectorSize, 0.0001f);
 		}
 
 		TEST_METHOD(TestVectorQSize)
@@ -88,7 +88,7 @@ namespace TestVector2D
 
 			float testVectorSize = testVectorA.qSize();
 
-			Assert::AreEqual(testVectorSize, 27.1921f, 0.0001f);
+			Assert::AreEqual(27.1921f, testVectorSize, 0.0001f);
 		}
 
 		TEST_METHOD(TestVectorNegation)
@@ -97,12 +97,12 @@ namespace TestVector2D
 
 			Vector2D testVectorB = -testVectorA;
 
-			Assert::AreEqual(testVectorB, Vector2D(-5.2f, 0.39f));
+			Assert::AreEqual(Vector2D(-5.2f, 0.39f), testVectorB);
 
 			testVectorB.y = 70.0f;
 
-			Assert::AreEqual(testVectorA, Vector2D(5.2f, -0.39f));
-			Assert::AreEqual(testVectorA.x, 5.2f);
+			Assert::AreEqual(Vector2D(5.2f, -0.39f), testVectorA);
+			Assert::AreEqual(5.2f, testVectorA.x);
 		}
 
 		TEST_METHOD(TestVectorAddition)
@@ -114,9 +114,9 @@ namespace TestVector2D
 			testVectorA = testVectorB + testVectorC;
 			testVectorB += testVectorB;
 
-			Assert::AreEqual(testVectorC, Vector2D(22.1f, 802.88f));
-			Assert::AreEqual(testVectorA, Vector2D(39, 1606.15f));
-			Assert::AreEqual(testVectorB, Vector2D(33.8f, 1606.54f));
+			Assert::AreEqual(Vector2D(22.1f, 802.88f), testVectorC);
+			Assert::AreEqual(Vector2D(39, 1606.15f), testVectorA);
+			Assert::AreEqual(Vector2D(33.8f, 1606.54f), testVectorB);
 		}
 
 		TEST_METHOD(TestVectorSubstraction)
@@ -128,9 +128,9 @@ namespace TestVector2D
 			testVectorA = testVectorB - testVectorC;
 			testVectorB -= testVectorB;
 
-			Assert::AreEqual(testVectorC, Vector2D(-11.7f, -803.66f));
-			Assert::AreEqual(testVectorA, Vector2D(28.6f, 1606.9301f));
-			Assert::AreEqual(testVectorB, Vector2D(0.0f, 0.0f));
+			Assert::AreEqual(Vector2D(-11.7f, -803.66f), testVectorC);
+			Assert::AreEqual(Vector2D(28.6f, 1606.9301f), testVectorA);
+			Assert::AreEqual(Vector2D(0.0f, 0.0f), testVectorB);
 		}
 
 		TEST_METHOD(TestVectorMultiplication)
@@ -141,8 +141,8 @@ namespace TestVector2D
 			Vector2D testVectorB = testVectorA * testScalar;
 			testVectorA *= -testScalar;
 
-			Assert::AreEqual(testVectorB, Vector2D(95.16f, -7.137f));
-			Assert::AreEqual(testVectorA, Vector2D(-95.16f, 7.137f));
+			Assert::AreEqual(Vector2D(95.16f, -7.137f), testVectorB);
+			Assert::AreEqual(Vector2D(-95.16f, 7.137f), testVectorA);
 			Assert::AreEqual(testVectorA, -testVectorB);
 		}
 
@@ -154,9 +154,9 @@ namespace TestVector2D
 			testVectorA /= testScalar;
 			Vector2D testVectorB = testVectorA / testVectorA.size();	// B = ort(A);
 
-			Assert::AreEqual(testVectorA, Vector2D(0.2841f, -0.0213f));
-			Assert::AreEqual(testVectorB, Vector2D(0.9972f, -0.07476377f));
-			Assert::AreEqual(testVectorB.size(), 1.0f);				// ort size is only 1.0
+			Assert::AreEqual(Vector2D(0.2841f, -0.0213f), testVectorA);
+			Assert::AreEqual(Vector2D(0.9972f, -0.07476377f), testVectorB);
+			Assert::AreEqual(1.0f, testVectorB.size());					// ort size is only 1.0
 		}
 
 		TEST_METHOD(TestVectorOrt)
@@ -165,11 +165,11 @@ namespace TestVector2D
 
 			testVectorA = testVectorA.ort();
 		
-			Assert::AreEqual(testVectorA, Vector2D(0.9972f, -0.07476377f));
-			Assert::AreEqual(testVectorA.size(), 1.0f);				// ort size is only 1.0
+			Assert::AreEqual(Vector2D(0.9972f, -0.07476377f), testVectorA);
+			Assert::AreEqual(1.0f, testVectorA.size());				// ort size is only 1.0
 
 			testVectorA = Vector2D(0.0f, 0.0f);
-			Assert::AreEqual(testVectorA.ort(), Vector2D(0.0f, 0.0f));
+			Assert::AreEqual(Vector2D(0.0f, 0.0f), testVectorA.ort());
 		}
 
 		TEST_METHOD(TestVectorGetRotation)
@@ -180,11 +180,11 @@ namespace TestVector2D
 			Vector2D testVectorD(0.0f, -1.0f);
 			Vector2D testVectorE(0.0f, 0.0f);
 		
-			Assert::AreEqual(testVectorA.rotation().getValue(), 0.0f);
-			Assert::AreEqual(testVectorB.rotation().getValue(), PI);
-			Assert::AreEqual(testVectorC.rotation().getValue(), PI/2);
-			Assert::AreEqual(testVectorD.rotation().getValue(), -PI/2);
-			Assert::AreEqual(testVectorE.rotation().getValue(), 0.0f);		//Invalid parameter should not cause errors
+			Assert::AreEqual(0.0f, testVectorA.rotation().getValue());
+			Assert::AreEqual(PI, testVectorB.rotation().getValue());
+			Assert::AreEqual(PI/2, testVectorC.rotation().getValue());
+			Assert::AreEqual(-PI/2, testVectorD.rotation().getValue());
+			Assert::AreEqual(0.0f, testVectorE.rotation().getValue());		//Invalid parameter should not cause errors
 		}
 
 		TEST_METHOD(TestVectorDotProduct)
@@ -192,7 +192,7 @@ namespace TestVector2D
 			Vector2D testVectorA(5.2f, -0.39f);
 			Vector2D testVectorB(16.9f, 803.27f);
 
-			Assert::AreEqual(DotProduct(testVectorA, testVectorB), -225.3953f);
+			Assert::AreEqual(-225.3953f, DotProduct(testVectorA, testVectorB));
 		}
 
 		TEST_METHOD(TestVectorProject)
@@ -206,12 +206,12 @@ namespace TestVector2D
 			// Another (slowlest) way to calc projection vector
 			Vector2D projectAB = testVectorA.ort() * testVectorB.size() * cos((testVectorA.rotation() - testVectorB.rotation()).getValue());
 
-			Assert::AreEqual(testVectorA.project(oX), Vector2D(5.2f, 0.0f));
-			Assert::AreEqual(testVectorB.project(oYxFive), Vector2D(0.0f, 803.27f));
-			Assert::AreEqual(oYxFive.project(oX), Vector2D(0.0f, 0.0f));
+			Assert::AreEqual(Vector2D(5.2f, 0.0f), testVectorA.project(oX));
+			Assert::AreEqual(Vector2D(0.0f, 803.27f), testVectorB.project(oYxFive));
+			Assert::AreEqual(Vector2D(0.0f, 0.0f), oYxFive.project(oX));
 			Assert::AreEqual(testVectorA.project(oX) + testVectorA.project(oYxFive), testVectorA);
 		
-			Assert::AreEqual(testVectorB.project(testVectorA), projectAB);
+			Assert::AreEqual(projectAB, testVectorB.project(testVectorA));
 		}
 	};
 }

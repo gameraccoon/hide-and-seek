@@ -99,6 +99,7 @@
     <ClCompile Include="TestProcesses.cpp" />
     <ClCompile Include="TestStates.cpp" />
     <ClCompile Include="TestVector2D.cpp" />
+    <ClCompile Include="TestWorld.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

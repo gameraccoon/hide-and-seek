@@ -18,7 +18,7 @@ namespace TestStates
 			{
 			}
 
-			void process(float deltatime)
+			virtual void process(float deltatime) override final
 			{
 				TestValueForTestState = 1;
 			}
@@ -31,7 +31,7 @@ namespace TestStates
 			{
 			}
 
-			void process(float deltatime)
+			virtual void process(float deltatime) override final
 			{
 				TestValueForTestState = 2;
 			}
@@ -44,7 +44,7 @@ namespace TestStates
 			{
 			}
 
-			void process(float deltatime)
+			virtual void process(float deltatime) override final
 			{
 				TestValueForTestState = 3;
 			}
@@ -57,7 +57,7 @@ namespace TestStates
 			StatesStack Stack;
 			Stack.push(new TestStateA());
 			Stack.process(1.f);
-			Assert::AreEqual(TestValueForTestState, 1);
+			Assert::AreEqual(1, TestValueForTestState);
 		}
 
 		TEST_METHOD(TestStatesStackMultiplyState)
@@ -68,19 +68,19 @@ namespace TestStates
 			Stack.push(new TestStateA());	// A <-
 			Stack.push(new TestStateB());	// A B <-
 			Stack.process(1.f);				// Run B->Process()
-			Assert::AreEqual(TestValueForTestState, 2);
+			Assert::AreEqual(2, TestValueForTestState);
 			TestValueForTestState = 0;
 			Stack.push(new TestStateC());	// A B C <-
 			Stack.process(1.f);				// Run C->Process()
-			Assert::AreEqual(TestValueForTestState, 3);
+			Assert::AreEqual(3, TestValueForTestState);
 			TestValueForTestState = 0;
 			Stack.pop();					// A B <-
 			Stack.process(1.f);				// Run B->Process()
-			Assert::AreEqual(TestValueForTestState, 2);
+			Assert::AreEqual(2, TestValueForTestState);
 			TestValueForTestState = 0;
 			Stack.pop();					// A <-
 			Stack.process(1.f);				// Run A->Process()
-			Assert::AreEqual(TestValueForTestState, 1);
+			Assert::AreEqual(1, TestValueForTestState);
 			TestValueForTestState = 0;
 			Stack.pop();					// Nothing in stack
 		}

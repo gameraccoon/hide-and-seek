@@ -1,95 +1,117 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
 
-
-#include <hge.h>
-
-#include "../src/World.cpp"
-#include "../src/Actor.cpp"
-#include "../src/IActor.cpp"
-#include "../src/BoundingBox.cpp"
-#include "../src/Hull.cpp"
-#include "../src/Border.cpp"
+#include "../src/Engine/Core/IActor.h"
+#include "../src/Engine/Core/World.cpp"
+#include "../src/Engine/Actors/Actor.cpp"
+#include "../src/Engine/Structures/Hull.cpp"
+#include "../src/Engine/Structures/BoundingBox.cpp"
+#include "../src/Engine/Structures/Border.cpp"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace UnitTests
 {
-	
-	HGE *TestWorldHge;
-	World *TestedWorld;
 	int TestValue;
+	int DestructionFlag;
 
 	TEST_CLASS(TestWorld)
 	{
 	private:
-	class TestActor : public Actor
-	{
-	public:
-		TestActor(World * world) : Actor (world, ZeroVector) { }
-		~TestActor() { };
-
-		void Update(float deltaTime)
+		class TestActor : public Actor
 		{
-			TestValue += (int)deltaTime;
-		}
+		public:
+			TestActor(World * world) : Actor(world, ZERO_VECTOR, Rotator(0.f)) { }
+			
+			~TestActor()
+			{
+				DestructionFlag += 1;
+			}
+
+			virtual void update(float deltaTime) override final
+			{
+				TestValue += (int)deltaTime;
+			}
 		
-		void Render(Vector2D shift, Rotator angle) { }
-	protected:
-		void UpdateCollision() { }
-	};
+			void Render(Vector2D shift, Rotator angle) { }
+		protected:
+			virtual void takeDamage(float damageValue, Vector2D impulse) override final { };
+			virtual void updateCollision() override final { }
+		};
 	public:
 		TEST_CLASS_INITIALIZE(Init)
 		{
-			TestWorldHge = hgeCreate(HGE_VERSION);
-			TestedWorld = new World(TestWorldHge);
 			TestValue = 0;
 		}
 
 		TEST_CLASS_CLEANUP(Exit)
 		{
-			delete TestedWorld;
-			TestWorldHge->Release();
 		}
 
 		TEST_METHOD(TestWorldAddingStaticActor)
 		{
-			TestActor actor1(TestedWorld);
+			World *testWorld = new World();
+
+			TestActor actor1(testWorld);
 
 			TestValue = 0;
 
-			TestedWorld->Update(1.f);
+			testWorld->update(1.f);
 
-			Assert::AreEqual(TestValue, 1);
+			Assert::AreEqual(1, TestValue);
+
+			delete testWorld;
 		}
 
 		TEST_METHOD(TestWorldDeletionStaticActor)
 		{
+			World *testWorld = new World();
+
 			TestValue = 0;
 
-			TestedWorld->Update(1.f);
+			testWorld->update(1.f);
 
-			Assert::AreEqual(TestValue, 0);
+			Assert::AreEqual(0, TestValue);
+
+			delete testWorld;
 		}
 
 		TEST_METHOD(TestWorldAdditionAndDeletionNonStaticActor)
 		{
-			TestActor *actor1 = new TestActor(TestedWorld);
+			World *testWorld = new World();
+
+			IActor *actor1 = new TestActor(testWorld);
 
 			TestValue = 0;
 
-			TestedWorld->Update(1.f);
+			testWorld->update(1.f);
 
-			Assert::AreEqual(TestValue, 1);
+			Assert::AreEqual(1, TestValue);
 
-			delete actor1;
+			actor1->destroy();
 
 			TestValue = 0;
 
-			TestedWorld->Update(1.f);
+			testWorld->update(1.f);
 
-			Assert::AreEqual(TestValue, 0);
+			Assert::AreEqual(0, TestValue);
 
+			delete testWorld;
+		}
+
+		TEST_METHOD(TestCleaningUpAWorld)
+		{
+			World *testWorld = new World();
+
+			IActor *actor1 = new TestActor(testWorld);
+
+			IActor *actor2 = new TestActor(testWorld);
+
+			DestructionFlag = 0;
+
+			delete testWorld;
+
+			Assert::AreEqual(2, DestructionFlag);
 		}
 	};
 }
