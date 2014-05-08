@@ -2,7 +2,7 @@
 
 #include "..\src\Vector2D.h"
 
-class testVector : public cfixcc::TestFixture
+class TestVector : public cfixcc::TestFixture
 {
 private:
 
@@ -12,10 +12,10 @@ public:
 		Vector2D testVectorA(5.2f, -0.39f);
 		Vector2D testVectorB(testVectorA);
 		
-		CFIXCC_ASSERT(testVectorA.X == 5.2f
-				&& testVectorA.Y == -0.39f);
-		CFIXCC_ASSERT(testVectorB.X == 5.2f
-				&& testVectorB.Y == -0.39f);
+		CFIXCC_ASSERT(testVectorA.x == 5.2f
+				&& testVectorA.y == -0.39f);
+		CFIXCC_ASSERT(testVectorB.x == 5.2f
+				&& testVectorB.y == -0.39f);
 	}
 
 	void testVectorInitializationFromAngle()
@@ -23,9 +23,9 @@ public:
 		Rotator angle = 0.0f;
 		Vector2D testVectorA(angle);
 
-		CFIXCC_ASSERT_EQUALS(testVectorA, Vector2D(1.0, 0.0));
+		CFIXCC_ASSERT_EQUALS(testVectorA, Vector2D(1.0f, 0.0f));
 
-		angle = PI/2;
+		angle = PI / 2;
 		testVectorA = Vector2D(angle);
 
 		CFIXCC_ASSERT_EQUALS(testVectorA, Vector2D(0.0, 1.0));
@@ -49,17 +49,17 @@ public:
 		Vector2D testVectorA(5.2f, -0.39f);
 
 		Vector2D testVectorB = testVectorA;
-		testVectorB.X = 30.0f;
+		testVectorB.x = 30.0f;
 
-		CFIXCC_ASSERT_EQUALS(testVectorB.X, 30.0f);
-		CFIXCC_ASSERT_EQUALS(testVectorA.X, 5.2f);
+		CFIXCC_ASSERT_EQUALS(testVectorB.x, 30.0f);
+		CFIXCC_ASSERT_EQUALS(testVectorA.x, 5.2f);
 	}
 
 	void testVectorSize()
 	{
 		Vector2D testVectorA(5.2f, -0.39f);
 
-		float testVectorSize = testVectorA.Size();
+		float testVectorSize = testVectorA.size();
 
 		CFIXCC_ASSERT_EQUALS(testVectorSize, 5.2146f);
 	}
@@ -68,7 +68,7 @@ public:
 	{
 		Vector2D testVectorA(5.2f, -0.39f);
 
-		float testVectorSize = testVectorA.QSize();
+		float testVectorSize = testVectorA.qSize();
 
 		CFIXCC_ASSERT_EQUALS(testVectorSize, 27.1921f);
 	}
@@ -81,10 +81,10 @@ public:
 
 		CFIXCC_ASSERT_EQUALS(testVectorB, Vector2D(-5.2f, 0.39f));
 
-		testVectorB.Y = 70.0f;
+		testVectorB.y = 70.0f;
 
 		CFIXCC_ASSERT_EQUALS(testVectorA, Vector2D(5.2f, -0.39f));
-		CFIXCC_ASSERT_EQUALS(testVectorA.X, 5.2f);
+		CFIXCC_ASSERT_EQUALS(testVectorA.x, 5.2f);
 	}
 
 	void testVectorAddition()
@@ -145,13 +145,13 @@ public:
 	{
 		Vector2D testVectorA(5.2f, -0.39f);
 
-		testVectorA = testVectorA.Ort();
+		testVectorA = testVectorA.ort();
 		
 		CFIXCC_ASSERT_EQUALS(testVectorA, Vector2D(0.9972f, -0.07476377f));
-		CFIXCC_ASSERT_EQUALS(testVectorA.Size(), 1.0f);				// ort size is only 1.0
+		CFIXCC_ASSERT_EQUALS(testVectorA.size(), 1.0f);				// ort size is only 1.0
 
 		testVectorA = Vector2D(0.0f, 0.0f);
-		CFIXCC_ASSERT_EQUALS(testVectorA.Ort(), Vector2D(0.0f, 0.0f));
+		CFIXCC_ASSERT_EQUALS(testVectorA.ort(), Vector2D(0.0f, 0.0f));
 	}
 
 	void testVectorGetRotation()
@@ -162,11 +162,11 @@ public:
 		Vector2D testVectorD(0.0f, -1.0f);
 		Vector2D testVectorE(0.0f, 0.0f);
 		
-		CFIXCC_ASSERT_EQUALS(testVectorA.GetRotation().GetValue(), 0.0f);
-		CFIXCC_ASSERT_EQUALS(testVectorB.GetRotation().GetValue(), PI);
-		CFIXCC_ASSERT_EQUALS(testVectorC.GetRotation().GetValue(), PI/2);
-		CFIXCC_ASSERT_EQUALS(testVectorD.GetRotation().GetValue(), -PI/2);
-		CFIXCC_ASSERT_EQUALS(testVectorE.GetRotation().GetValue(), 0.0f);		//Invalid parameter should not cause errors
+		CFIXCC_ASSERT_EQUALS(testVectorA.rotation().getValue(), 0.0f);
+		CFIXCC_ASSERT_EQUALS(testVectorB.rotation().getValue(), PI);
+		CFIXCC_ASSERT_EQUALS(testVectorC.rotation().getValue(), PI / 2);
+		CFIXCC_ASSERT_EQUALS(testVectorD.rotation().getValue(), -PI / 2);
+		CFIXCC_ASSERT_EQUALS(testVectorE.rotation().getValue(), 0.0f);		//Invalid parameter should not cause errors
 	}
 
 	void testVectorDotProduct()
@@ -188,16 +188,16 @@ public:
 		// Another (slowlest) way to calc projection vector
 		Vector2D projectAB = testVectorA.Ort() * testVectorB.Size() * cos((testVectorA.GetRotation() - testVectorB.GetRotation()).GetValue());
 
-		CFIXCC_ASSERT_EQUALS(testVectorA.Project(oX), Vector2D(5.2f, 0.0f));
-		CFIXCC_ASSERT_EQUALS(testVectorB.Project(oYxFive), Vector2D(0.0f, 803.27f));
-		CFIXCC_ASSERT_EQUALS(oYxFive.Project(oX), Vector2D(0.0f, 0.0f));
-		CFIXCC_ASSERT_EQUALS(testVectorA.Project(oX) + testVectorA.Project(oYxFive), testVectorA);
+		CFIXCC_ASSERT_EQUALS(testVectorA.project(oX), Vector2D(5.2f, 0.0f));
+		CFIXCC_ASSERT_EQUALS(testVectorB.project(oYxFive), Vector2D(0.0f, 803.27f));
+		CFIXCC_ASSERT_EQUALS(oYxFive.project(oX), Vector2D(0.0f, 0.0f));
+		CFIXCC_ASSERT_EQUALS(testVectorA.project(oX) + testVectorA.project(oYxFive), testVectorA);
 		
-		CFIXCC_ASSERT_EQUALS(testVectorB.Project(testVectorA), projectAB);
+		CFIXCC_ASSERT_EQUALS(testVectorB.project(testVectorA), projectAB);
 	}
 };
 
-CFIXCC_BEGIN_CLASS(testVector)
+CFIXCC_BEGIN_CLASS(TestVector)
 	CFIXCC_METHOD(testVectorCreation)
 	CFIXCC_METHOD(testVectorInitializationFromAngle)
 	CFIXCC_METHOD(testVectorComparison)

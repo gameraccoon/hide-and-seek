@@ -11,53 +11,89 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\Actor.cpp" />
-    <ClCompile Include="..\src\Border.cpp" />
-    <ClCompile Include="..\src\BoundingBox.cpp" />
-    <ClCompile Include="..\src\Bullet.cpp" />
-    <ClCompile Include="..\src\Camera.cpp" />
-    <ClCompile Include="..\src\DirectionArrow.cpp" />
-    <ClCompile Include="..\src\FloatingCamera.cpp" />
-    <ClCompile Include="..\src\Globals.cpp" />
-    <ClCompile Include="..\src\Hero.cpp" />
-    <ClCompile Include="..\src\Hull.cpp" />
-    <ClCompile Include="..\src\IActor.cpp" />
-    <ClCompile Include="..\src\InventoryItem.cpp" />
-    <ClCompile Include="..\src\KeyListeners.cpp" />
-    <ClCompile Include="..\src\LightEmitter.cpp" />
+    <ClCompile Include="..\src\Engine\Actors\Actor.cpp" />
+    <ClCompile Include="..\src\Engine\Actors\Body.cpp" />
+    <ClCompile Include="..\src\Engine\Actors\Bullet.cpp" />
+    <ClCompile Include="..\src\Engine\Actors\LightEmitter.cpp" />
+    <ClCompile Include="..\src\Engine\AI\AiState.cpp" />
+    <ClCompile Include="..\src\Engine\AI\Role.cpp" />
+    <ClCompile Include="..\src\Engine\Core\Rotator.cpp" />
+    <ClCompile Include="..\src\Engine\Core\Vector2D.cpp" />
+    <ClCompile Include="..\src\Engine\Core\World.cpp" />
+    <ClCompile Include="..\src\Engine\Graphics\Camera.cpp" />
+    <ClCompile Include="..\src\Engine\Graphics\DirectionArrow.cpp" />
+    <ClCompile Include="..\src\Engine\Graphics\FloatingCamera.cpp" />
+    <ClCompile Include="..\src\Engine\Graphics\GraphicLoader.cpp" />
+    <ClCompile Include="..\src\Engine\Helpers\Log.cpp" />
+    <ClCompile Include="..\src\Engine\Input\KeyListeners.cpp" />
+    <ClCompile Include="..\src\Engine\Inventory\Weapon.cpp" />
+    <ClCompile Include="..\src\Engine\Lua\LuaFunction.cpp" />
+    <ClCompile Include="..\src\Engine\Lua\LuaTypeActor.cpp" />
+    <ClCompile Include="..\src\Engine\Lua\LuaInstance.cpp" />
+    <ClCompile Include="..\src\Engine\Lua\LuaTypeLog.cpp" />
+    <ClCompile Include="..\src\Engine\Lua\LuaTypeRole.cpp" />
+    <ClCompile Include="..\src\Engine\Lua\LuaTypeVector2D.cpp" />
+    <ClCompile Include="..\src\Engine\Modules\ActorFactory.cpp" />
+    <ClCompile Include="..\src\Engine\Modules\LevelLoader.cpp" />
+    <ClCompile Include="..\src\Engine\Modules\PathFinder.cpp" />
+    <ClCompile Include="..\src\Engine\Modules\Processes.cpp" />
+    <ClCompile Include="..\src\Engine\Modules\RayTrace.cpp" />
+    <ClCompile Include="..\src\Engine\Modules\States\State.cpp" />
+    <ClCompile Include="..\src\Engine\Modules\States\StatesStack.cpp" />
+    <ClCompile Include="..\src\Engine\Modules\WorldsContainer.cpp" />
+    <ClCompile Include="..\src\Engine\Structures\Border.cpp" />
+    <ClCompile Include="..\src\Engine\Structures\BoundingBox.cpp" />
+    <ClCompile Include="..\src\Engine\Structures\Hull.cpp" />
+    <ClCompile Include="..\src\Engine\Structures\InventoryItem.cpp" />
+    <ClCompile Include="..\src\Engine\Structures\PathPoint.cpp" />
+    <ClCompile Include="..\src\Game\Actors\Corpse.cpp" />
+    <ClCompile Include="..\src\Game\Actors\Hero.cpp" />
+    <ClCompile Include="..\src\Game\Actors\Man.cpp" />
+    <ClCompile Include="..\src\Game\Actors\Wall.cpp" />
     <ClCompile Include="..\src\main.cpp" />
-    <ClCompile Include="..\src\Processes.cpp" />
-    <ClCompile Include="..\src\RayTrace.cpp" />
-    <ClCompile Include="..\src\Rotator.cpp" />
-    <ClCompile Include="..\src\States.cpp" />
-    <ClCompile Include="..\src\Vector2D.cpp" />
-    <ClCompile Include="..\src\Wall.cpp" />
-    <ClCompile Include="..\src\Weapon.cpp" />
-    <ClCompile Include="..\src\World.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\Actor.h" />
-    <ClInclude Include="..\src\Border.h" />
-    <ClInclude Include="..\src\BoundingBox.h" />
-    <ClInclude Include="..\src\Bullet.h" />
-    <ClInclude Include="..\src\Camera.h" />
-    <ClInclude Include="..\src\DirectionArrow.h" />
-    <ClInclude Include="..\src\FloatingCamera.h" />
-    <ClInclude Include="..\src\Globals.h" />
-    <ClInclude Include="..\src\Hero.h" />
-    <ClInclude Include="..\src\Hull.h" />
-    <ClInclude Include="..\src\IActor.h" />
-    <ClInclude Include="..\src\InventoryItem.h" />
-    <ClInclude Include="..\src\KeyListeners.h" />
-    <ClInclude Include="..\src\LightEmitter.h" />
-    <ClInclude Include="..\src\Processes.h" />
-    <ClInclude Include="..\src\RayTrace.h" />
-    <ClInclude Include="..\src\Rotator.h" />
-    <ClInclude Include="..\src\States.h" />
-    <ClInclude Include="..\src\Vector2D.h" />
-    <ClInclude Include="..\src\Wall.h" />
-    <ClInclude Include="..\src\Weapon.h" />
-    <ClInclude Include="..\src\World.h" />
+    <ClInclude Include="..\src\Engine\Actors\Actor.h" />
+    <ClInclude Include="..\src\Engine\Actors\Body.h" />
+    <ClInclude Include="..\src\Engine\Actors\Bullet.h" />
+    <ClInclude Include="..\src\Engine\Actors\LightEmitter.h" />
+    <ClInclude Include="..\src\Engine\AI\AiState.h" />
+    <ClInclude Include="..\src\Engine\AI\IBody.h" />
+    <ClInclude Include="..\src\Engine\AI\Role.h" />
+    <ClInclude Include="..\src\Engine\Core\IActor.h" />
+    <ClInclude Include="..\src\Engine\Core\Rotator.h" />
+    <ClInclude Include="..\src\Engine\Core\Vector2D.h" />
+    <ClInclude Include="..\src\Engine\Core\World.h" />
+    <ClInclude Include="..\src\Engine\Graphics\Camera.h" />
+    <ClInclude Include="..\src\Engine\Graphics\DirectionArrow.h" />
+    <ClInclude Include="..\src\Engine\Graphics\FloatingCamera.h" />
+    <ClInclude Include="..\src\Engine\Graphics\GraphicLoader.h" />
+    <ClInclude Include="..\src\Engine\Helpers\DebugMethods.h" />
+    <ClInclude Include="..\src\Engine\Helpers\Log.h" />
+    <ClInclude Include="..\src\Engine\Hge\HgeIncludes.h" />
+    <ClInclude Include="..\src\Engine\Input\KeyListeners.h" />
+    <ClInclude Include="..\src\Engine\Inventory\Weapon.h" />
+    <ClInclude Include="..\src\Engine\Lua\LuaFunction.h" />
+    <ClInclude Include="..\src\Engine\Lua\LuaInstance.h" />
+    <ClInclude Include="..\src\Engine\Lua\LuaType.h" />
+    <ClInclude Include="..\src\Engine\Lua\LuaTypeLog.h" />
+    <ClInclude Include="..\src\Engine\Modules\ActorFactory.h" />
+    <ClInclude Include="..\src\Engine\Modules\LevelLoader.h" />
+    <ClInclude Include="..\src\Engine\Modules\PathFinder.h" />
+    <ClInclude Include="..\src\Engine\Modules\Processes.h" />
+    <ClInclude Include="..\src\Engine\Modules\RayTrace.h" />
+    <ClInclude Include="..\src\Engine\Modules\States\State.h" />
+    <ClInclude Include="..\src\Engine\Modules\States\StatesStack.h" />
+    <ClInclude Include="..\src\Engine\Modules\WorldsContainer.h" />
+    <ClInclude Include="..\src\Engine\Structures\Border.h" />
+    <ClInclude Include="..\src\Engine\Structures\BoundingBox.h" />
+    <ClInclude Include="..\src\Engine\Structures\Hull.h" />
+    <ClInclude Include="..\src\Engine\Structures\InventoryItem.h" />
+    <ClInclude Include="..\src\Engine\Structures\PathPoint.h" />
+    <ClInclude Include="..\src\Game\Actors\Corpse.h" />
+    <ClInclude Include="..\src\Game\Actors\Hero.h" />
+    <ClInclude Include="..\src\Game\Actors\Man.h" />
+    <ClInclude Include="..\src\Game\Actors\Wall.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <SccProjectName />
@@ -88,15 +124,15 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>.\Debug\</OutDir>
     <IntDir>.\Debug\</IntDir>
-    <IncludePath>C:\Other\hge\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Other\hge\lib\vc;$(LibraryPath)</LibraryPath>
-    <SourcePath>E:\test\tests;E:\test\src;$(SourcePath)</SourcePath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>.\Release\</OutDir>
-    <IntDir>.\Release\</IntDir>
     <IncludePath>D:\Libs\hge\include;$(IncludePath)</IncludePath>
     <LibraryPath>D:\Libs\hge\lib\vc;$(LibraryPath)</LibraryPath>
+    <SourcePath>$(SourcePath)</SourcePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IntDir>.\Release\</IntDir>
+    <IncludePath>D:\Libs\lua\Include;D:\Libs\hge\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Libs\lua\Lib;D:\Libs\hge\lib\vc;$(LibraryPath)</LibraryPath>
+    <OutDir>..\build\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -104,7 +140,7 @@
       <Optimization>MaxSpeed</Optimization>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;DEBUG;NOMINMAX;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
       <ObjectFileName>.\Debug\</ObjectFileName>
       <ProgramDataBaseFileName>.\Debug\</ProgramDataBaseFileName>
@@ -132,11 +168,12 @@
       <Optimization>MaxSpeed</Optimization>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NOMINMAX;WIN32;NDEBUG;_WINDOWS;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Release\</AssemblerListingLocation>
       <ObjectFileName>.\Release\</ObjectFileName>
       <ProgramDataBaseFileName>.\Release\</ProgramDataBaseFileName>
       <BrowseInformation>true</BrowseInformation>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Midl>
       <TypeLibraryName>.\Release\SG.tlb</TypeLibraryName>
@@ -152,7 +189,8 @@
     </Bscmake>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>hge.lib;hgehelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>hge.lib;hgehelp.lib;lua.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>..\build\$(TargetName)$(TargetExt)</OutputFile>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
 
-#include "../src/States.cpp"
+#include "../src/Engine/Modules/States/State.cpp"
+#include "../src/Engine/Modules/States/StatesStack.cpp"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -17,7 +18,7 @@ namespace TestStates
 			{
 			}
 
-			void Process()
+			void process(float deltatime)
 			{
 				TestValueForTestState = 1;
 			}
@@ -29,7 +30,8 @@ namespace TestStates
 			~TestStateB()
 			{
 			}
-			void Process()
+
+			void process(float deltatime)
 			{
 				TestValueForTestState = 2;
 			}
@@ -41,7 +43,8 @@ namespace TestStates
 			~TestStateC()
 			{
 			}
-			void Process()
+
+			void process(float deltatime)
 			{
 				TestValueForTestState = 3;
 			}
@@ -52,14 +55,9 @@ namespace TestStates
 			// Test processing statestack with one state
 			TestValueForTestState = 0;
 			StatesStack Stack;
-			Stack.Push(new TestStateA());
-			Stack.Process();
+			Stack.push(new TestStateA());
+			Stack.process(1.f);
 			Assert::AreEqual(TestValueForTestState, 1);
-		}
-
-		void testStatesStackOneState()
-		{
-			
 		}
 
 		TEST_METHOD(TestStatesStackMultiplyState)
@@ -67,25 +65,24 @@ namespace TestStates
 			// Test processing statestack with one state
 			TestValueForTestState = 0;
 			StatesStack Stack;
-			Stack.Push(new TestStateA());	// A <-
-			Stack.Push(new TestStateB());	// A B <-
-			Stack.Process();				// Run B->Process()
+			Stack.push(new TestStateA());	// A <-
+			Stack.push(new TestStateB());	// A B <-
+			Stack.process(1.f);				// Run B->Process()
 			Assert::AreEqual(TestValueForTestState, 2);
 			TestValueForTestState = 0;
-			Stack.Push(new TestStateC());	// A B C <-
-			Stack.Process();				// Run C->Process()
+			Stack.push(new TestStateC());	// A B C <-
+			Stack.process(1.f);				// Run C->Process()
 			Assert::AreEqual(TestValueForTestState, 3);
 			TestValueForTestState = 0;
-			Stack.Pop();					// A B <-
-			Stack.Process();				// Run B->Process()
+			Stack.pop();					// A B <-
+			Stack.process(1.f);				// Run B->Process()
 			Assert::AreEqual(TestValueForTestState, 2);
 			TestValueForTestState = 0;
-			Stack.Pop();					// A <-
-			Stack.Process();				// Run A->Process()
+			Stack.pop();					// A <-
+			Stack.process(1.f);				// Run A->Process()
 			Assert::AreEqual(TestValueForTestState, 1);
 			TestValueForTestState = 0;
-			Stack.Pop();					// Nothing in stack
+			Stack.pop();					// Nothing in stack
 		}
-
-		};
+	};
 }

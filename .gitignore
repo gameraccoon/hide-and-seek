@@ -1,3 +1,11 @@
-/build
+*.exe
+*.exe.*
 /res
 /vs_project
+Release
+*.filters
+*.user
+*.log
+log.txt
+*_log.txt
+*.sdf
