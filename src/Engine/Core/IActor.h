@@ -1,6 +1,8 @@
 #ifndef IACTOR_H
 #define IACTOR_H
 
+#include <string>
+
 #include "../Core/Vector2D.h"
 #include "../Core/Rotator.h"
 #include "../Structures/BoundingBox.h"
@@ -24,6 +26,7 @@ enum class ActorType
 class IActor
 {
 public:
+	virtual ~IActor() {};
 	/** Set new location of the actor in the World */
 	virtual void setLocation(const Vector2D& location) = 0;
 	/** Get actor's world location */

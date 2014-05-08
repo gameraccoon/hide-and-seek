@@ -8,8 +8,6 @@ extern "C"
     #include <lauxlib.h>
 }
 
-#include <list>
-
 class LuaInstance
 {
 private:

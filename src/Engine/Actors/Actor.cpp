@@ -8,11 +8,11 @@ namespace
 }
 
 Actor::Actor(World *world, Vector2D location, Rotator rotation) : location(location),
-	colideBox(location, location),
-	direction(rotation),
-	scale(1.f, 1.f),
-	originalSize(1.f, 1.f),
-	calculatedSize(1.f, 1.f)
+    scale(1.f, 1.f),
+    originalSize(1.f, 1.f),
+    calculatedSize(1.f, 1.f),
+    direction(rotation),
+    colideBox(location, location)
 {
 	this->ownerWorld = world;
 	this->ownerWorld->spawnActor(this);

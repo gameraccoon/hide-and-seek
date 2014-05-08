@@ -22,8 +22,6 @@ Wall::Wall(World *world, Vector2D location, Vector2D scale, Rotator rotation) : 
 {
 	this->type = ActorType::Static;
 
-	const int spritelSize = 126;
-
 	this->originalSize = Vector2D(20, 20);
 	this->setScale(scale);
 

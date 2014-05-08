@@ -1,13 +1,6 @@
 #ifndef LUA_TYPE_H
 #define LUA_TYPE_H
 
-extern "C"
-{
-    #include <lua.h>
-    #include <lualib.h>
-    #include <lauxlib.h>
-}
-
 #include "LuaInstance.h"
 
 namespace LuaType

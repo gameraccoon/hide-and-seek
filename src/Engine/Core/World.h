@@ -5,7 +5,6 @@
 
 #include "IActor.h"
 #include "../Structures/PathPoint.h"
-#include "../Lua/LuaInstance.h"
 
 #include <string>
 

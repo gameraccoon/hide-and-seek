@@ -1,9 +1,9 @@
 #include "Body.h"
 
 Body::Body(World *world, Vector2D location) : Actor(world, location, Rotator(0.0f)),
-																		size(32.0f, 32.0f),
-																		navigator(world),
-																		tempLocation(location)
+	navigator(world),
+	size(32.0f, 32.0f),
+	tempLocation(location)
 {
 	this->type = ActorType::Living;
 

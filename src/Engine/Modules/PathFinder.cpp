@@ -9,8 +9,8 @@
   	#define WARN_IF(condition, message)
 #endif
 
-PathFinder::PathFinder(World* world) : ownerWorld(world),
-	destinationPoint(ZERO_VECTOR)
+PathFinder::PathFinder(World* world) : destinationPoint(ZERO_VECTOR),
+    ownerWorld(world)
 {
 }
 
