@@ -5,7 +5,8 @@
 #include "..\Core\World.h"
 
 /**
- *
+ * Container for created worlds.
+ * Is singletone.
  */
 class WorldsContainer
 {

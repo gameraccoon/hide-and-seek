@@ -24,13 +24,16 @@ public:
 	static ActorFactory& Factory();
 
 	/**
-	 * register new actor class by an identifier and a "create" function
-	 * @return true if class was not registered earlier
+	 * Register new actor class by an identifier and a "create" function.
+	 * If identifier already exists, factory will not be registered.
+	 *
+	 * @return true if class wasn't registered earlier
 	 */
 	bool registerActor(std::string actorId, CreateActorCallback createFn);
 
 	/**
-	 * unregister already registred class
+	 * Unregister already registred class.
+	 *
 	 * @return true if class was unregistered
 	 */ 
 	bool unregisterActor(std::string actorId);

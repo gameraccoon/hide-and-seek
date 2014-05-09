@@ -2,6 +2,7 @@
 #include "CppUnitTest.h"
 
 #include "../src/Engine/Core/IActor.h"
+
 #include "../src/Engine/Core/World.cpp"
 #include "../src/Engine/Actors/Actor.cpp"
 #include "../src/Engine/Structures/Hull.cpp"
@@ -10,7 +11,7 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-namespace UnitTests
+namespace TestWorld
 {
 	int TestValue;
 	int DestructionFlag;
@@ -39,15 +40,6 @@ namespace UnitTests
 			virtual void updateCollision() override final { }
 		};
 	public:
-		TEST_CLASS_INITIALIZE(Init)
-		{
-			TestValue = 0;
-		}
-
-		TEST_CLASS_CLEANUP(Exit)
-		{
-		}
-
 		TEST_METHOD(TestWorldAddingStaticActor)
 		{
 			World *testWorld = new World();
@@ -99,7 +91,7 @@ namespace UnitTests
 			delete testWorld;
 		}
 
-		TEST_METHOD(TestCleaningUpAWorld)
+		TEST_METHOD(TestWorldCleaningUp)
 		{
 			World *testWorld = new World();
 
