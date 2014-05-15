@@ -1,14 +1,11 @@
 #include "AiState.h"
 
-#include "../Helpers/Log.h"
 #include "../Lua/LuaType.h"
 #include "../Lua/LuaTypeLog.h"
 #include "../Lua/LuaFunction.h"
-#include "../Modules/WorldsContainer.h"
-#include "../Actors/LightEmitter.h"
 
 
-AiState::AiState(World *world, IActor *body, Role *role)
+AiState::AiState(World *world, IBody *body, Role *role)
 {
 	scriptUpdateInterval = 0.01f;
 	lastExecutionTime = 0.f;
@@ -18,7 +15,7 @@ AiState::AiState(World *world, IActor *body, Role *role)
 	LuaType::registerLog(this->script, "Log");
 
 	// dummies for events
-	this->script->execScript("function OnTakeDamage(damage) end");
+	this->script->execScript("function OnTakeDamage(instigator, damage) end");
 
 	this->script->execScriptFromFile("test.lua");
 
@@ -31,7 +28,7 @@ AiState::~AiState(void)
 	delete this->script;
 }
 
-void AiState::process(float deltatime)
+/*void AiState::process(float deltatime)
 {
 	lastExecutionTime += deltatime;
 
@@ -39,16 +36,20 @@ void AiState::process(float deltatime)
 	{
 		this->script->registerConstant<double>("deltatime", lastExecutionTime);
 		
-		LuaType::registerConstant<IActor>(this->script, "body", this->body);
-		
-		LuaFunction luaFunction;
-		luaFunction.readyToRunFunction(this->script, "OnTakeDamage");
-		this->script->sendToLua<double>(10.0);
-		luaFunction.runFunction(1, 0);
-		luaFunction.clearAfterFunction();
+		LuaType::registerConstant<IBody>(this->script, "body", this->body);
 
 		this->script->removeSymbol("body");
 
 		lastExecutionTime = 0.f;
 	}
+}*/
+
+void AiState::onTakeDamage(IActor* instigator, float damageValue)
+{
+	LuaFunction luaFunction;
+	luaFunction.readyToRunFunction(this->script, "OnTakeDamage");
+	LuaType::registerValue<IActor>(this->script, instigator);
+	this->script->sendToLua<double>(10.0);
+	luaFunction.runFunction(1, 0);
+	luaFunction.clearAfterFunction();
 }

@@ -1,8 +1,8 @@
-#include "StatesStack.h"
+#include "AiStatesStack.h"
 
 #include <cstdlib>
 
-#include "../../Helpers/DebugMethods.h"
+#include "../Helpers/DebugMethods.h"
 
 // dummy for debugging methods
 #if (!defined DEBUG) && (!defined RELEASE)
@@ -16,20 +16,20 @@
  *
  * Used to hide implementation details
  */
-class StateIterator
+class AiStateIterator
 {
 public:
 	/**
      * @param prewState state iterator which was last
      * @param state state which we pushed into stack
 	 */
-	StateIterator(StateIterator *prewState, State *state)
+	AiStateIterator(AiStateIterator *prewState, IAiState *state)
 	{
 		this->prewState = prewState;
 		this->currentState = state;
 	}
 
-	~StateIterator()
+	~AiStateIterator()
 	{
 		if (this->currentState != nullptr)
 		{
@@ -41,16 +41,15 @@ public:
 	/**
      * Process state code
 	 */
-	void process(float deltatime)
+	void onTakeDamage(IActor *instigator, float damageValue)
 	{
-		WARN_IF(!this->currentState, "Trying to process State which not exist in StateIterator");
-		this->currentState->process(deltatime);
+		this->currentState->onTakeDamage(instigator, damageValue);
 	}
 
 	/**
      * @return iterator of a previous state
 	 */
-	StateIterator* ReturnLast()
+	AiStateIterator* ReturnLast()
 	{
 		return this->prewState;
 	}
@@ -59,7 +58,7 @@ private:
 	/**
      * State that stored in this iterator
 	 */
-	State *currentState;
+	IAiState *currentState;
 
 	/**
      * Previous state
@@ -67,15 +66,15 @@ private:
      * It will become the current when this state
      * will replased from stack
 	 */
-	StateIterator *prewState;
+	AiStateIterator *prewState;
 };
 
-StatesStack::StatesStack()
+AiStatesStack::AiStatesStack()
 {
 	this->head = nullptr;
 }
 
-StatesStack::~StatesStack()
+AiStatesStack::~AiStatesStack()
 {
 	while (this->head != nullptr)
 	{
@@ -83,25 +82,24 @@ StatesStack::~StatesStack()
 	}
 }
 
-void StatesStack::push(State *newState)
+void AiStatesStack::push(IAiState *newState)
 {
-	this->head = new StateIterator(this->head, newState);
+	this->head = new AiStateIterator(this->head, newState);
 }
 
-void StatesStack::pop()
+void AiStatesStack::pop()
 {
     // save pointer to state which we will delete
-	StateIterator* oldHead = this->head;
-	WARN_IF(!this->head, "Trying to 'Pop' from empty StatesStack. It is a fatal error.");
+	AiStateIterator* oldHead = this->head;
     // set new head
 	this->head = this->head->ReturnLast();      
 	delete oldHead;
 }
 
-void StatesStack::process(float deltatime)
+void AiStatesStack::onTakeDamage(IActor *instigator, float damageValue)
 {
 	if (this->head != nullptr)
 	{
-		this->head->process(deltatime);
+		this->head->onTakeDamage(instigator, damageValue);
 	}
 }

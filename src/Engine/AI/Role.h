@@ -1,21 +1,25 @@
 #ifndef ROLE_H
 #define ROLE_H
 
+#include "../AI/IBody.h"
 #include "../Core/IActor.h"
 #include "../Core/World.h"
-#include "../Modules/States/StatesStack.h"
+#include "../AI/AiStatesStack.h"
 
 class Role
 {
 public:
-	Role(World* world, IActor *body);
-	~Role(void);
+	Role(World* world, IBody *body);
+	virtual ~Role(void);
 
 	virtual void update(float deltaTime);
-	IActor* getBody();
+
+	virtual void onTakeDamage(IActor* instigator, float damageValue);
+
+	IBody* getBody();
 private:
-	StatesStack states;
-	IActor *body;
+	AiStatesStack states;
+	IBody *body;
 };
 
 #endif

@@ -16,6 +16,7 @@
     <ClCompile Include="..\src\Engine\Actors\Bullet.cpp" />
     <ClCompile Include="..\src\Engine\Actors\LightEmitter.cpp" />
     <ClCompile Include="..\src\Engine\AI\AiState.cpp" />
+    <ClCompile Include="..\src\Engine\AI\AiStatesStack.cpp" />
     <ClCompile Include="..\src\Engine\AI\Role.cpp" />
     <ClCompile Include="..\src\Engine\Core\Rotator.cpp" />
     <ClCompile Include="..\src\Engine\Core\Vector2D.cpp" />
@@ -30,6 +31,7 @@
     <ClCompile Include="..\src\Engine\Lua\LuaFunction.cpp" />
     <ClCompile Include="..\src\Engine\Lua\LuaTypeActor.cpp" />
     <ClCompile Include="..\src\Engine\Lua\LuaInstance.cpp" />
+    <ClCompile Include="..\src\Engine\Lua\LuaTypeBody.cpp" />
     <ClCompile Include="..\src\Engine\Lua\LuaTypeLog.cpp" />
     <ClCompile Include="..\src\Engine\Lua\LuaTypeRole.cpp" />
     <ClCompile Include="..\src\Engine\Lua\LuaTypeVector2D.cpp" />
@@ -38,8 +40,6 @@
     <ClCompile Include="..\src\Engine\Modules\PathFinder.cpp" />
     <ClCompile Include="..\src\Engine\Modules\Processes.cpp" />
     <ClCompile Include="..\src\Engine\Modules\RayTrace.cpp" />
-    <ClCompile Include="..\src\Engine\Modules\States\State.cpp" />
-    <ClCompile Include="..\src\Engine\Modules\States\StatesStack.cpp" />
     <ClCompile Include="..\src\Engine\Modules\WorldsContainer.cpp" />
     <ClCompile Include="..\src\Engine\Structures\Border.cpp" />
     <ClCompile Include="..\src\Engine\Structures\BoundingBox.cpp" />
@@ -58,6 +58,8 @@
     <ClInclude Include="..\src\Engine\Actors\Bullet.h" />
     <ClInclude Include="..\src\Engine\Actors\LightEmitter.h" />
     <ClInclude Include="..\src\Engine\AI\AiState.h" />
+    <ClInclude Include="..\src\Engine\AI\AiStatesStack.h" />
+    <ClInclude Include="..\src\Engine\AI\IAiState.h" />
     <ClInclude Include="..\src\Engine\AI\IBody.h" />
     <ClInclude Include="..\src\Engine\AI\Role.h" />
     <ClInclude Include="..\src\Engine\Core\IActor.h" />
@@ -82,8 +84,6 @@
     <ClInclude Include="..\src\Engine\Modules\PathFinder.h" />
     <ClInclude Include="..\src\Engine\Modules\Processes.h" />
     <ClInclude Include="..\src\Engine\Modules\RayTrace.h" />
-    <ClInclude Include="..\src\Engine\Modules\States\State.h" />
-    <ClInclude Include="..\src\Engine\Modules\States\StatesStack.h" />
     <ClInclude Include="..\src\Engine\Modules\WorldsContainer.h" />
     <ClInclude Include="..\src\Engine\Structures\Border.h" />
     <ClInclude Include="..\src\Engine\Structures\BoundingBox.h" />

@@ -14,7 +14,7 @@ public:
 	/** Initialization of a new man standing at a given point */
 	Man(World *world, Vector2D location, Vector2D scale, Rotator rotation);
 
-	~Man();
+	virtual ~Man() override;
 
 	/** Process moving and other actions of the man */
 	virtual void update(float deltatime) override;

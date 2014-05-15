@@ -17,7 +17,7 @@ namespace TestActorFactory
 	{
 	public:
 		TestFactoryActor1(World * world) : Actor(world, ZERO_VECTOR, Rotator(0.f)) { }
-			
+		
 		~TestFactoryActor1() { }
 
 		virtual void update(float deltaTime) override final

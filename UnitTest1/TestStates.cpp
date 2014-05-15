@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
 
-#include "../src/Engine/Modules/States/State.cpp"
-#include "../src/Engine/Modules/States/StatesStack.cpp"
+#include "../src/Engine/Ai/AiState.cpp"
+#include "../src/Engine/Ai/AiStatesStack.cpp"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -11,40 +11,54 @@ namespace TestStates
 	int TestValueForTestState;
 	TEST_CLASS(TestStates)
 	{
-		class TestStateA:public State
+		class TestStateA:public AiState
 		{
 		public:
+			TestStateA(World *world, IBody *body, Role *role) : AiState(world, body, role)
+			{
+
+			}
 			~TestStateA()
 			{
 			}
 
-			virtual void process(float deltatime) override final
+			virtual void onTakeDamage(IActor *instigator, float damageValue) override final
 			{
 				TestValueForTestState = 1;
 			}
 		};
 
-		class TestStateB:public State
+		class TestStateB:public AiState
 		{
 		public:
+			TestStateB(World *world, IBody *body, Role *role) : AiState(world, body, role)
+			{
+
+			}
+
 			~TestStateB()
 			{
 			}
 
-			virtual void process(float deltatime) override final
+			virtual void onTakeDamage(IActor *instigator, float damageValue) override final
 			{
 				TestValueForTestState = 2;
 			}
 		};
 
-		class TestStateC:public State
+		class TestStateC:public AiState
 		{
 		public:
+			TestStateC(World *world, IBody *body, Role *role) : AiState(world, body, role)
+			{
+
+			}
+
 			~TestStateC()
 			{
 			}
 
-			virtual void process(float deltatime) override final
+			virtual void onTakeDamage(IActor *instigator, float damageValue) override final
 			{
 				TestValueForTestState = 3;
 			}
@@ -54,9 +68,9 @@ namespace TestStates
 		{
 			// Test processing statestack with one state
 			TestValueForTestState = 0;
-			StatesStack Stack;
-			Stack.push(new TestStateA());
-			Stack.process(1.f);
+			AiStatesStack Stack;
+			Stack.push(new TestStateA(nullptr, nullptr, nullptr));
+			Stack.onTakeDamage(nullptr, 1.f);
 			Assert::AreEqual(1, TestValueForTestState);
 		}
 
@@ -64,22 +78,22 @@ namespace TestStates
 		{
 			// Test processing statestack with one state
 			TestValueForTestState = 0;
-			StatesStack Stack;
-			Stack.push(new TestStateA());	// A <-
-			Stack.push(new TestStateB());	// A B <-
-			Stack.process(1.f);				// Run B->Process()
+			AiStatesStack Stack;
+			Stack.push(new TestStateA(nullptr, nullptr, nullptr));	// A <-
+			Stack.push(new TestStateB(nullptr, nullptr, nullptr));	// A B <-
+			Stack.onTakeDamage(nullptr, 1.f);				// Run B->Process()
 			Assert::AreEqual(2, TestValueForTestState);
 			TestValueForTestState = 0;
-			Stack.push(new TestStateC());	// A B C <-
-			Stack.process(1.f);				// Run C->Process()
+			Stack.push(new TestStateC(nullptr, nullptr, nullptr));	// A B C <-
+			Stack.onTakeDamage(nullptr, 1.f);				// Run C->Process()
 			Assert::AreEqual(3, TestValueForTestState);
 			TestValueForTestState = 0;
 			Stack.pop();					// A B <-
-			Stack.process(1.f);				// Run B->Process()
+			Stack.onTakeDamage(nullptr, 1.f);				// Run B->Process()
 			Assert::AreEqual(2, TestValueForTestState);
 			TestValueForTestState = 0;
 			Stack.pop();					// A <-
-			Stack.process(1.f);				// Run A->Process()
+			Stack.onTakeDamage(nullptr, 1.f);				// Run A->Process()
 			Assert::AreEqual(1, TestValueForTestState);
 			TestValueForTestState = 0;
 			Stack.pop();					// Nothing in stack

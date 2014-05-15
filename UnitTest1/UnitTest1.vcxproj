@@ -47,8 +47,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\Develop\StealthGame\src;D:\Libs\hge\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Libs\hge\lib\vc;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\Develop\StealthGame\src;D:\Libs\lua\Include;D:\Libs\hge\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Libs\hge\lib\vc;D:\Libs\lua\Lib;$(LibraryPath)</LibraryPath>
     <SourcePath>D:\Develop\StealthGame\src;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

@@ -1,23 +1,23 @@
-#ifndef STATES_H
-#define STATES_H
+#ifndef AI_STATES_STACK_H
+#define AI_STATES_STACK_H
 
-#include "State.h"
+#include "IAiState.h"
 
 /**
  * State iterator in a states stack
  *
  * Helps hidding inner realizations of the StatesStack class
  */
-class StateIterator;
+class AiStateIterator;
 
 /**
  * Stack of states
  */
-class StatesStack
+class AiStatesStack
 {
 public:
-	StatesStack();
-	~StatesStack();
+	AiStatesStack();
+	~AiStatesStack();
 
 	/**
      * Set new state
@@ -25,7 +25,7 @@ public:
      * @param newState is a new state which becomes
      * the current state
 	 */
-	void push(State *newState);
+	void push(IAiState *newState);
 	
 	/**
      * Delete the current state
@@ -37,11 +37,11 @@ public:
 	/**
      * Process the code of the current state
 	 */
-	void process(float deltatime);
+	void onTakeDamage(IActor *instigator, float damageValue);
 
 private:
     /** Stack head */
-	StateIterator *head;
+	AiStateIterator *head;
 };
 
 #endif

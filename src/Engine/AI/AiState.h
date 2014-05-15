@@ -1,22 +1,25 @@
 #ifndef AI_STATE
 #define AI_STATE
 
-#include "../Modules/States/State.h"
-#include "../Lua/LuaInstance.h"
-#include "../Core/World.h"
 #include "Role.h"
+#include "../Core/World.h"
+#include "../AI/IAiState.h"
+#include "../Lua/LuaInstance.h"
 
-class AiState : public State
+class AiState : public IAiState
 {
 public:
-	AiState(World *world, IActor *body, Role *role);
-	~AiState(void);
+	AiState(World *world, IBody *body, Role *role);
+	virtual ~AiState(void);
 
-	virtual void process(float deltatime);
+	/**
+	 * Event that executed when body takes damage
+	 */
+	virtual void onTakeDamage(IActor* instigator, float damageValue) override;
 private:
 	LuaInstance *script;
 
-	IActor *body;
+	IBody *body;
 	Role *role;
 
 	float scriptUpdateInterval;

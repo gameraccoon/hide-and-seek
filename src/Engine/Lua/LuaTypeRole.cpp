@@ -1,13 +1,13 @@
 #include "LuaType.h"
 
 #include "../AI/Role.h"
-#include "../Core/Vector2D.h"
+#include "../AI/IBody.h"
 
 namespace LuaType
 {
 	template<>
 	void registerValue<Role>(LuaInstance *instance, Role* value)
 	{
-		registerField<Vector2D>(instance, "body", &value->getBody()->getLocation());
+		registerField<IBody>(instance, "body", value->getBody());
 	}
 }
