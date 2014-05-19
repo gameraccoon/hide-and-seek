@@ -49,8 +49,3 @@ void Wall::updateCollision()
 {
 	this->colideBox = BoundingBox(this->location - this->calculatedSize/2, this->location + this->calculatedSize/2);
 }
-
-void Wall::takeDamage(float damageValue, Vector2D impulse)
-{
-	// do nothing
-}

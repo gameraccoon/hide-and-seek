@@ -31,15 +31,6 @@ LightEmitter::~LightEmitter(void)
 {
 }
 
-void LightEmitter::update(float deltatime)
-{
-	Actor::update(deltatime);
-}
-
 void LightEmitter::updateCollision()
-{
-}
-
-void LightEmitter::takeDamage(float damageValue,Vector2D impulse)
 {
 }

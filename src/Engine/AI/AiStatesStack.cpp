@@ -38,12 +38,9 @@ public:
 		}
 	}
 
-	/**
-     * Process state code
-	 */
-	void onTakeDamage(IActor *instigator, float damageValue)
+	IAiState* getCurrentState()
 	{
-		this->currentState->onTakeDamage(instigator, damageValue);
+		return currentState;
 	}
 
 	/**
@@ -96,10 +93,27 @@ void AiStatesStack::pop()
 	delete oldHead;
 }
 
-void AiStatesStack::onTakeDamage(IActor *instigator, float damageValue)
+void AiStatesStack::onTakeDamage(IActor *instigator, float damageValue, Vector2D impulse)
 {
 	if (this->head != nullptr)
 	{
-		this->head->onTakeDamage(instigator, damageValue);
+		this->head->getCurrentState()->onTakeDamage(instigator, damageValue, impulse);
+	}
+}
+
+
+void AiStatesStack::onSeeEnemy(IActor *enemy)
+{
+	if (this->head != nullptr)
+	{
+		this->head->getCurrentState()->onSeeEnemy(enemy);
+	}
+}
+
+void AiStatesStack::onHearNoise(SoundVolume *sound)
+{
+	if (this->head != nullptr)
+	{
+		this->head->getCurrentState()->onHearNoise(sound);
 	}
 }

@@ -4,7 +4,6 @@
 #include "Role.h"
 #include "../Core/World.h"
 #include "../AI/IAiState.h"
-#include "../Lua/LuaInstance.h"
 
 class AiState : public IAiState
 {
@@ -15,14 +14,14 @@ public:
 	/**
 	 * Event that executed when body takes damage
 	 */
-	virtual void onTakeDamage(IActor* instigator, float damageValue) override;
-private:
-	LuaInstance *script;
+	virtual void onTakeDamage(IActor *instigator, float damageValue, Vector2D impulse) override = 0;
+	virtual void onSeeEnemy(IActor *enemy) override = 0;
+	virtual void onHearNoise(SoundVolume *sound) override = 0;
+protected:
 
 	IBody *body;
 	Role *role;
 
-	float scriptUpdateInterval;
 	float lastExecutionTime;
 };
 

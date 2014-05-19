@@ -6,7 +6,7 @@
 /**
  * State iterator in a states stack
  *
- * Helps hidding inner realizations of the StatesStack class
+ * Helps hidding inner realizations of the AiStatesStack class
  */
 class AiStateIterator;
 
@@ -37,7 +37,9 @@ public:
 	/**
      * Process the code of the current state
 	 */
-	void onTakeDamage(IActor *instigator, float damageValue);
+	void onTakeDamage(IActor *instigator, float damageValue, Vector2D impulse);
+	void onSeeEnemy(IActor *enemy);
+	void onHearNoise(SoundVolume *sound);
 
 private:
     /** Stack head */

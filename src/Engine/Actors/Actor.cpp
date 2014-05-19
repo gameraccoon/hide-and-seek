@@ -112,3 +112,7 @@ bool Actor::isWaitDestruction()
 {
 	return this->bWaitDestruction;
 }
+
+void Actor::hit(IActor *instigator, float damageValue, Vector2D impulse)
+{
+}

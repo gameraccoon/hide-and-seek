@@ -10,8 +10,6 @@ public:
 	~Wall(void);
 	/** Dummy (wall do nothing) */
 	virtual void update(float deltatime) override;
-	/** Try to take some damage to the wall =) */
-	virtual void takeDamage(float damageValue, Vector2D impulse) override;
 private:
 	/** */
 	void updateCollision();

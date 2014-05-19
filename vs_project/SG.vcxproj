@@ -15,6 +15,7 @@
     <ClCompile Include="..\src\Engine\Actors\Body.cpp" />
     <ClCompile Include="..\src\Engine\Actors\Bullet.cpp" />
     <ClCompile Include="..\src\Engine\Actors\LightEmitter.cpp" />
+    <ClCompile Include="..\src\Engine\Actors\SoundVolume.cpp" />
     <ClCompile Include="..\src\Engine\AI\AiState.cpp" />
     <ClCompile Include="..\src\Engine\AI\AiStatesStack.cpp" />
     <ClCompile Include="..\src\Engine\AI\Role.cpp" />
@@ -28,6 +29,7 @@
     <ClCompile Include="..\src\Engine\Helpers\Log.cpp" />
     <ClCompile Include="..\src\Engine\Input\KeyListeners.cpp" />
     <ClCompile Include="..\src\Engine\Inventory\Weapon.cpp" />
+    <ClCompile Include="..\src\Engine\Lua\LuaAiState.cpp" />
     <ClCompile Include="..\src\Engine\Lua\LuaFunction.cpp" />
     <ClCompile Include="..\src\Engine\Lua\LuaTypeActor.cpp" />
     <ClCompile Include="..\src\Engine\Lua\LuaInstance.cpp" />
@@ -57,6 +59,7 @@
     <ClInclude Include="..\src\Engine\Actors\Body.h" />
     <ClInclude Include="..\src\Engine\Actors\Bullet.h" />
     <ClInclude Include="..\src\Engine\Actors\LightEmitter.h" />
+    <ClInclude Include="..\src\Engine\Actors\SoundVolume.h" />
     <ClInclude Include="..\src\Engine\AI\AiState.h" />
     <ClInclude Include="..\src\Engine\AI\AiStatesStack.h" />
     <ClInclude Include="..\src\Engine\AI\IAiState.h" />
@@ -75,6 +78,7 @@
     <ClInclude Include="..\src\Engine\Hge\HgeIncludes.h" />
     <ClInclude Include="..\src\Engine\Input\KeyListeners.h" />
     <ClInclude Include="..\src\Engine\Inventory\Weapon.h" />
+    <ClInclude Include="..\src\Engine\Lua\LuaAiState.h" />
     <ClInclude Include="..\src\Engine\Lua\LuaFunction.h" />
     <ClInclude Include="..\src\Engine\Lua\LuaInstance.h" />
     <ClInclude Include="..\src\Engine\Lua\LuaType.h" />

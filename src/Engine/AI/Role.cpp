@@ -1,10 +1,10 @@
 #include "Role.h"
 
-#include "AiState.h"
+#include "../Lua/LuaAiState.h"
 
 Role::Role(World* world, IBody *body)
 {
-	this->states.push(new AiState(world, body, this));
+	this->states.push(new LuaAiState(world, body, this));
 	this->body = body;
 }
 
@@ -18,9 +18,17 @@ void Role::update(float deltaTime)
 	//this->states.process(deltaTime);
 }
 
-void Role::onTakeDamage(IActor* instigator, float damageValue)
+void Role::onTakeDamage(IActor* instigator, float damageValue, Vector2D impulse)
 {
-	this->states.onTakeDamage(instigator, damageValue);
+	this->states.onTakeDamage(instigator, damageValue, impulse);
+}
+
+void Role::onSeeEnemy(IActor *enemy)
+{
+}
+
+void Role::onHearNoise(SoundVolume *sound)
+{
 }
 
 IBody* Role::getBody()

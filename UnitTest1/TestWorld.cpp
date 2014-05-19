@@ -36,7 +36,7 @@ namespace TestWorld
 		
 			void Render(Vector2D shift, Rotator angle) { }
 		protected:
-			virtual void takeDamage(float damageValue, Vector2D impulse) override final { };
+			virtual void hit(IActor *instigator, float damageValue, Vector2D impulse) override final { };
 			virtual void updateCollision() override final { }
 		};
 	public:

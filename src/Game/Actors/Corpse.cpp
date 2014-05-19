@@ -29,10 +29,6 @@ Corpse::~Corpse(void)
 {
 }
 
-void Corpse::takeDamage(float damageValue, Vector2D impulse)
-{
-}
-
 void Corpse::updateCollision()
 {
 }

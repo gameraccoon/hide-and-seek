@@ -6,7 +6,7 @@ namespace LuaType
 {
 	int cmdMoveTo(lua_State* luaState)
 	{
-		IBody* body = (IBody*)lua_touserdata(luaState, 1);
+		IBody* body = (IBody*) lua_touserdata(luaState, 1);
 		body->moveTo(Vector2D(0.0, 5.5));
 		return 0;
 	}

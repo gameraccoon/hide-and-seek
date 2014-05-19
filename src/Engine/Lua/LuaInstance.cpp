@@ -102,6 +102,12 @@ bool LuaInstance::getFromLua<bool>(int index)
     return lua_toboolean(this->luaState, index) != 0;
 }
 
+template<>
+void* LuaInstance::getFromLua<void*>(int index)
+{
+	return lua_touserdata(this->luaState, index);
+}
+
 
 template<>
 void LuaInstance::sendToLua<int>(int value)

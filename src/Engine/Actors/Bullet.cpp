@@ -59,7 +59,7 @@ void Bullet::update(float deltatime)
 	}
 	else // bullet is hiting some actor
 	{
-		trasedActor->takeDamage(10.f, Vector2D(this->direction) * this->speed * 0.01f);
+		trasedActor->hit(this, 10.f, Vector2D(this->direction) * this->speed * 0.01f);
 		this->speed = 0.0f;
 		this->destroy();
 	}
@@ -75,11 +75,6 @@ void Bullet::update(float deltatime)
 
 void Bullet::updateCollision()
 {
-}
-
-void Bullet::takeDamage(float damageValue,Vector2D impulse)
-{
-	// do nothing for now
 }
 
 void Bullet::updateActorId(std::string classId)

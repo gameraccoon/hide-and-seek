@@ -14,7 +14,9 @@ public:
 
 	virtual void update(float deltaTime);
 
-	virtual void onTakeDamage(IActor* instigator, float damageValue);
+	virtual void onTakeDamage(IActor *instigator, float damageValue, Vector2D impulse);
+	virtual void onSeeEnemy(IActor *enemy);
+	virtual void onHearNoise(SoundVolume *sound);
 
 	IBody* getBody();
 private:

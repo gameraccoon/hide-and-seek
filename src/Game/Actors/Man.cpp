@@ -87,7 +87,7 @@ void Man::update(float deltatime)
 	Body::update(deltatime);
 }
 
-void Man::takeDamage(float damageValue, Vector2D impulse)
+void Man::hit(IActor *instigator, float damageValue, Vector2D impulse)
 {
 	for (auto const &actor : this->ownerWorld->allActors)
 	{
@@ -98,5 +98,5 @@ void Man::takeDamage(float damageValue, Vector2D impulse)
 		}
 	}
 
-	Body::takeDamage(damageValue, impulse);
+	Body::hit(instigator, damageValue, impulse);
 }

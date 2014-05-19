@@ -50,7 +50,7 @@ public:
 	/** Returns the specific identificator of current object */
 	virtual std::string getActorId() override final;
 	/** Take some damage to the actor */
-	virtual void takeDamage(float damageValue, Vector2D impulse) = 0;
+	virtual void hit(IActor *instigator, float damageValue, Vector2D impulse) override;
 protected:
 	/** */
 	virtual void updateCollision() = 0;

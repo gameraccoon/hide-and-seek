@@ -28,9 +28,10 @@ public:
 	virtual void stopShoting() override;
 
 	virtual void update(float deltatime) override;
-
-	/** Try to take some damage to the man =) */
-	virtual void takeDamage(float damageValue,Vector2D impulse);
+	
+	virtual void hit(IActor *instigator, float damageValue, Vector2D impulse) override;
+	virtual void onSeeEnemy(IActor *enemy);
+	virtual void onHearNoise(SoundVolume *sound);
 protected:
 	/** */
 	virtual void updateCollision() override;

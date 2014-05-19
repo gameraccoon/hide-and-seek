@@ -20,7 +20,7 @@ public:
 	virtual void update(float deltatime) override;
 
 	/** Try to take some damage to the man =) */
-	virtual void takeDamage(float damageValue,Vector2D impulse) override;
+	virtual void hit(IActor *instigator, float damageValue,Vector2D impulse) override;
 };
 
 #endif

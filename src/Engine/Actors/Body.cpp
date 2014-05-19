@@ -1,5 +1,7 @@
 #include "Body.h"
 
+#include "../Modules/ActorFactory.h"
+
 Body::Body(World *world, Vector2D location) : Actor(world, location, Rotator(0.0f)),
 	navigator(world),
 	size(32.0f, 32.0f),
@@ -89,7 +91,7 @@ void Body::giveWeapon(Weapon *weap)
 	this->armedWeapon->setEquipped(true);
 }
 
-void Body::takeDamage(float damageValue,Vector2D impulse)
+void Body::hit(IActor *instigator, float damageValue, Vector2D impulse)
 {
 	this->healthValue -= damageValue;
 	
@@ -99,9 +101,21 @@ void Body::takeDamage(float damageValue,Vector2D impulse)
 	{
 		this->healthValue = 0.0f;
 		this->speed = 0.0f;
-		//this->ownerWorld->spawnActor(new Corpse(this->ownerWorld, this->getLocation(), this->getRotation()));
+		ActorFactory::Factory().createActor("Corpse", this->ownerWorld, this->getLocation(), Vector2D(1.f, 1.f), this->getRotation());
 		this->destroy();
 	}
+
+	this->role->onTakeDamage(instigator, damageValue, impulse);
+}
+
+void Body::onSeeEnemy(IActor *enemy)
+{
+	this->role->onSeeEnemy(enemy);
+}
+
+void Body::onHearNoise(SoundVolume *sound)
+{
+	this->role->onHearNoise(sound);
 }
 
 void Body::update(float deltatime)

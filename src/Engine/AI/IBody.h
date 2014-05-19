@@ -2,6 +2,7 @@
 #define I_BODY_H
 
 #include "../Inventory/Weapon.h"
+#include "../Actors/SoundVolume.h"
 #include "../Core/Vector2D.h"
 #include "../Core/IActor.h"
 

@@ -52,7 +52,7 @@ public:
 	/** Get hull of this actor */
 	virtual Hull* getHull() = 0;
 	/** Take some damage to the actor */
-	virtual void takeDamage(float damageValue, Vector2D impulse) = 0;
+	virtual void hit(IActor *instigator, float damageValue, Vector2D impulse) = 0;
 	/** Returns the class identificator of this actor's class */
 	virtual std::string getClassID() = 0;
 	/** Returns the specific identificator of current object */
