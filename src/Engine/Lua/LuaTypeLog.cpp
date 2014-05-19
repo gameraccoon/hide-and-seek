@@ -7,30 +7,30 @@ namespace luafunc
 {
 	int cmdLogLog(lua_State* state)
 	{
-		LuaInstance *luaInstance = new LuaInstance(state);
+		LuaInstance luaInstance(state);
 
-		for(int i = 1; i < luaInstance->getArgumentsCount() + 1; i++)
-			Log::WriteLog(luaInstance->getFromLua<char*>(i));
+		for(int i = 1; i < luaInstance.getArgumentsCount() + 1; i++)
+			Log::WriteLog(luaInstance.getFromLua<char*>(i));
 			
 		return 0;
 	}
 
 	int cmdLogWarning(lua_State* state)
 	{
-		LuaInstance *luaInstance = new LuaInstance(state);
+		LuaInstance luaInstance(state);
 
-		for(int i = 1; i < luaInstance->getArgumentsCount() + 1; i++)
-			Log::WriteWarning(luaInstance->getFromLua<char*>(i));
+		for(int i = 1; i < luaInstance.getArgumentsCount() + 1; i++)
+			Log::WriteWarning(luaInstance.getFromLua<char*>(i));
 
 		return 0;
 	}
 	
 	int cmdLogError(lua_State* state)
 	{
-		LuaInstance *luaInstance = new LuaInstance(state);
+		LuaInstance luaInstance(state);
 
-		for(int i = 1; i < luaInstance->getArgumentsCount() + 1; i++)
-			Log::WriteError(luaInstance->getFromLua<char*>(i));
+		for(int i = 1; i < luaInstance.getArgumentsCount() + 1; i++)
+			Log::WriteError(luaInstance.getFromLua<char*>(i));
 
 		return 0;
 	}
@@ -43,9 +43,9 @@ namespace LuaType
 	void registerLog(LuaInstance *instance, const char* name)
 	{
 		instance->beginInitializeTable();
-		instance->registerTableFunction("Log", luafunc::cmdLogLog);
-		instance->registerTableFunction("Warn", luafunc::cmdLogWarning);
-		instance->registerTableFunction("Error", luafunc::cmdLogError);
+		instance->registerTableFunction("log", luafunc::cmdLogLog);
+		instance->registerTableFunction("warn", luafunc::cmdLogWarning);
+		instance->registerTableFunction("error", luafunc::cmdLogError);
 		instance->endInitializeTable(name);
 	}
 }

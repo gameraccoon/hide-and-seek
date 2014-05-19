@@ -15,7 +15,9 @@ LuaAiState::LuaAiState(World *world, IBody *body, Role *role) : AiState(world, b
 	LuaType::registerLog(this->script, "Log");
 
 	// dummies for events
-	this->script->execScript("function OnTakeDamage(damage) end");
+	this->script->execScript("function OnTakeDamage(instigator, damageValue) end\n"
+		"function OnSeeEnemy(enemy) end\n"
+		"function OnHearNoise(sound) end\n");
 
 	this->script->execScriptFromFile("test.lua");
 }
@@ -33,7 +35,7 @@ void LuaAiState::onTakeDamage(IActor* instigator, float damageValue, Vector2D im
 	luaFunction.readyToRunFunction(this->script, "OnTakeDamage");
 
 	this->script->sendToLua<void*>(instigator);
-	this->script->sendToLua<double>(10.0);
+	this->script->sendToLua<double>(damageValue);
 
 	luaFunction.runFunction(2, 0);
 	luaFunction.clearAfterFunction();
@@ -43,6 +45,17 @@ void LuaAiState::onTakeDamage(IActor* instigator, float damageValue, Vector2D im
 
 void LuaAiState::onSeeEnemy(IActor *enemy)
 {
+	LuaType::registerConstant<IBody>(this->script, "body", this->body);
+
+	LuaFunction luaFunction;
+	luaFunction.readyToRunFunction(this->script, "OnSeeEnemy");
+
+	this->script->sendToLua<void*>(enemy);
+
+	luaFunction.runFunction(1, 0);
+	luaFunction.clearAfterFunction();
+	
+	this->script->removeSymbol("body");
 }
 
 void LuaAiState::onHearNoise(SoundVolume *sound)

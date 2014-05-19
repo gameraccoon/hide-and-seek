@@ -15,16 +15,22 @@ LuaInstance::LuaInstance()
     };
 
 	this->registerLibs(lualibs);
+
+	isMainInstance = true;
 }
 
 LuaInstance::LuaInstance(lua_State *luaState)
 {
 	this->luaState = luaState;
+	isMainInstance = false;
 }
 
 LuaInstance::~LuaInstance()
 {
-    lua_close(this->luaState);
+	if (isMainInstance)
+	{
+		lua_close(this->luaState);
+	}
 }
 
 lua_State* LuaInstance::getLuaState()

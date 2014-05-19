@@ -21,6 +21,8 @@ public:
 	virtual void moveTo(Vector2D step) override;
 	virtual void follow(IActor *target);
 
+	virtual float getHealthValue() override;
+
 	virtual void giveWeapon(Weapon *weap) override;
 	
 	/** Start shoting if the man have a weapon */

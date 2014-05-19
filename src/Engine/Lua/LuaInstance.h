@@ -12,6 +12,7 @@ class LuaInstance
 {
 private:
 	lua_State *luaState;
+	bool isMainInstance;
 
 public:
 	LuaInstance();

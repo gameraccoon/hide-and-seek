@@ -15,6 +15,8 @@ public:
 	/** Say that the body must follow the target */
 	virtual void follow(IActor *target) = 0;
 
+	virtual float getHealthValue() = 0;
+
 	virtual void giveWeapon(Weapon *weap) = 0;
 
 	/** Start shoting if the man have a weapon */

@@ -2,6 +2,12 @@
 
 #include "../Core/IActor.h"
 
+template<>
+IActor* LuaInstance::getFromLua<IActor*>(int index)
+{
+	return (IActor*) lua_touserdata(this->luaState, index);
+}
+
 namespace LuaType
 {
 	int cmdGetRotation(lua_State* luaState)

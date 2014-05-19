@@ -48,6 +48,11 @@ void Body::follow(IActor *target)
 	this->followingTarget = target;
 }
 
+float Body::getHealthValue()
+{
+	return this->healthValue;
+}
+
 void Body::clearTargets()
 {
 	if (this->followingTarget != nullptr)
@@ -105,7 +110,7 @@ void Body::hit(IActor *instigator, float damageValue, Vector2D impulse)
 		this->destroy();
 	}
 
-	this->role->onTakeDamage(instigator, damageValue, impulse);
+	this->role->onTakeDamage(this, damageValue, impulse);
 }
 
 void Body::onSeeEnemy(IActor *enemy)
