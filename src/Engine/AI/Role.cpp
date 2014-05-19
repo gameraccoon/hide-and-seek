@@ -10,17 +10,19 @@ Role::Role(World* world, IBody *body)
 
 Role::~Role(void)
 {
+	IAiState *deletedState = this->states.top();
+	delete deletedState;
 	this->states.pop();
 }
 
 void Role::update(float deltaTime)
 {
-	//this->states.process(deltaTime);
+
 }
 
 void Role::onTakeDamage(IActor* instigator, float damageValue, Vector2D impulse)
 {
-	this->states.onTakeDamage(instigator, damageValue, impulse);
+	this->states.top()->onTakeDamage(instigator, damageValue, impulse);
 }
 
 void Role::onSeeEnemy(IActor *enemy)

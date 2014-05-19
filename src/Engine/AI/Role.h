@@ -1,10 +1,12 @@
 #ifndef ROLE_H
 #define ROLE_H
 
+#include <stack>
+
 #include "../AI/IBody.h"
 #include "../Core/IActor.h"
 #include "../Core/World.h"
-#include "../AI/AiStatesStack.h"
+#include "IAiState.h"
 
 class Role
 {
@@ -20,7 +22,7 @@ public:
 
 	IBody* getBody();
 private:
-	AiStatesStack states;
+	std::stack<IAiState*> states;
 	IBody *body;
 };
 

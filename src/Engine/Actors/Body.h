@@ -32,14 +32,14 @@ public:
 	virtual void update(float deltatime) override;
 	
 	virtual void hit(IActor *instigator, float damageValue, Vector2D impulse) override;
-	virtual void onSeeEnemy(IActor *enemy);
-	virtual void onHearNoise(SoundVolume *sound);
 protected:
 	/** */
 	virtual void updateCollision() override;
 	/** */
 	void findNextPathPoint();
 	void clearTargets();
+	/** */
+	void look();
 	/**  */
 	PathFinder navigator;
 	/** Body moving speed in Px/s */

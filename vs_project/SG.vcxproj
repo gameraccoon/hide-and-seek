@@ -17,7 +17,6 @@
     <ClCompile Include="..\src\Engine\Actors\LightEmitter.cpp" />
     <ClCompile Include="..\src\Engine\Actors\SoundVolume.cpp" />
     <ClCompile Include="..\src\Engine\AI\AiState.cpp" />
-    <ClCompile Include="..\src\Engine\AI\AiStatesStack.cpp" />
     <ClCompile Include="..\src\Engine\AI\Role.cpp" />
     <ClCompile Include="..\src\Engine\Core\Rotator.cpp" />
     <ClCompile Include="..\src\Engine\Core\Vector2D.cpp" />
@@ -61,7 +60,6 @@
     <ClInclude Include="..\src\Engine\Actors\LightEmitter.h" />
     <ClInclude Include="..\src\Engine\Actors\SoundVolume.h" />
     <ClInclude Include="..\src\Engine\AI\AiState.h" />
-    <ClInclude Include="..\src\Engine\AI\AiStatesStack.h" />
     <ClInclude Include="..\src\Engine\AI\IAiState.h" />
     <ClInclude Include="..\src\Engine\AI\IBody.h" />
     <ClInclude Include="..\src\Engine\AI\Role.h" />

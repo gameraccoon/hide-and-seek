@@ -98,7 +98,6 @@
     </ClCompile>
     <ClCompile Include="TestProcesses.cpp" />
     <ClCompile Include="TestRaytrace.cpp" />
-    <ClCompile Include="TestStates.cpp" />
     <ClCompile Include="TestVector2D.cpp" />
     <ClCompile Include="TestWorld.cpp" />
     <ClCompile Include="TestActorFactory.cpp" />

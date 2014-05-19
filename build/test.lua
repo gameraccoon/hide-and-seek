@@ -2,7 +2,6 @@ Log.log("Start script")
 
 function OnTakeDamage(instigator, damageValue)
 	Log.log("I'm damaged! My health is " .. body.getHealth(body.ptr));
-	body.follow(body.ptr, instigator);
 end
 
 function OnSeeEnemy(enemy)

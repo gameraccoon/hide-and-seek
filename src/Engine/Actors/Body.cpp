@@ -113,21 +113,25 @@ void Body::hit(IActor *instigator, float damageValue, Vector2D impulse)
 	this->role->onTakeDamage(this, damageValue, impulse);
 }
 
-void Body::onSeeEnemy(IActor *enemy)
-{
-	this->role->onSeeEnemy(enemy);
-}
-
-void Body::onHearNoise(SoundVolume *sound)
-{
-	this->role->onHearNoise(sound);
-}
-
 void Body::update(float deltatime)
 {
 	this->role->update(deltatime);
 
+	this->look();
+
 	Actor::update(deltatime);
+}
+
+void Body::look()
+{
+	for (auto actor : ownerWorld->allActors)
+	{
+		if (actor->getType() == ActorType::Living && actor != this && (this->getLocation() - actor->getLocation()).size() < 3000)
+		{
+			role->onSeeEnemy(actor);
+			break;
+		}
+	}
 }
 
 void Body::findNextPathPoint()
