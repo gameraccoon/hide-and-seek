@@ -21,17 +21,21 @@ Body::Body(World *world, Vector2D location) : Actor(world, location, Rotator(0.0
 	
 	this->updateCollision();
 
-	this->role = new Role(world, this);
-
 	this->armedWeapon = nullptr;
 
 	this->followingTarget = nullptr;
 	this->movingToLocation = nullptr;
+
+	this->role = nullptr;
 }
 
 Body::~Body(void)
 {
-	delete this->role;
+	if (this->role != nullptr)
+	{
+		delete this->role;
+		this->role = nullptr;
+	}
 }
 
 void Body::moveTo(Vector2D step)
@@ -126,7 +130,7 @@ void Body::look()
 {
 	for (auto actor : ownerWorld->allActors)
 	{
-		if (actor->getType() == ActorType::Living && actor != this && (this->getLocation() - actor->getLocation()).size() < 3000)
+		if (actor->getType() == ActorType::Living && actor != this && (this->getLocation() - actor->getLocation()).size() < 60)
 		{
 			role->onSeeEnemy(actor);
 			break;

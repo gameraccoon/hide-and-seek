@@ -1,5 +1,6 @@
 #include "Man.h"
 
+#include "../../Engine/AI/AiRole.h"
 
 #include "../../Engine/Modules/ActorFactory.h"
 // unnamed namespase to hide from another places
@@ -25,6 +26,10 @@ Man::Man(World *world, Vector2D location, Vector2D scale, Rotator rotation) : Bo
 	this->speed = 50.0f;
 
 	this->updateActorId(CLASS_ID);
+
+	if (this->role != nullptr)
+		delete this->role;
+	this->role = new AiRole(world, this);
 }
 
 Man::~Man(void)

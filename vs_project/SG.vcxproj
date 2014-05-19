@@ -16,7 +16,9 @@
     <ClCompile Include="..\src\Engine\Actors\Bullet.cpp" />
     <ClCompile Include="..\src\Engine\Actors\LightEmitter.cpp" />
     <ClCompile Include="..\src\Engine\Actors\SoundVolume.cpp" />
+    <ClCompile Include="..\src\Engine\AI\AiRole.cpp" />
     <ClCompile Include="..\src\Engine\AI\AiState.cpp" />
+    <ClCompile Include="..\src\Engine\AI\PlayerRole.cpp" />
     <ClCompile Include="..\src\Engine\AI\Role.cpp" />
     <ClCompile Include="..\src\Engine\Core\Rotator.cpp" />
     <ClCompile Include="..\src\Engine\Core\Vector2D.cpp" />
@@ -59,9 +61,11 @@
     <ClInclude Include="..\src\Engine\Actors\Bullet.h" />
     <ClInclude Include="..\src\Engine\Actors\LightEmitter.h" />
     <ClInclude Include="..\src\Engine\Actors\SoundVolume.h" />
+    <ClInclude Include="..\src\Engine\AI\AiRole.h" />
     <ClInclude Include="..\src\Engine\AI\AiState.h" />
     <ClInclude Include="..\src\Engine\AI\IAiState.h" />
     <ClInclude Include="..\src\Engine\AI\IBody.h" />
+    <ClInclude Include="..\src\Engine\AI\PlayerRole.h" />
     <ClInclude Include="..\src\Engine\AI\Role.h" />
     <ClInclude Include="..\src\Engine\Core\IActor.h" />
     <ClInclude Include="..\src\Engine\Core\Rotator.h" />
