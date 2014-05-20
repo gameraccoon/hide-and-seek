@@ -33,6 +33,9 @@ public:
 	
 	virtual void hit(IActor *instigator, float damageValue, Vector2D impulse) override;
 protected:
+	/* events */
+	virtual void onUpdateLocation() override;
+	virtual void onUpdateRotation() override;
 	/** */
 	virtual void updateCollision() override;
 	/** */

@@ -20,16 +20,18 @@ namespace
 
 Wall::Wall(World *world, Vector2D location, Vector2D scale, Rotator rotation) : Actor(world, location, rotation)
 {
-	this->type = ActorType::Static;
+	this->setType(ActorType::Static);
 
-	this->originalSize = Vector2D(20, 20);
+	this->setOriginalSize(Vector2D(20, 20));
 	this->setScale(scale);
 
-	this->geometry.points.insert(this->geometry.points.end(), -this->calculatedSize/2);
-	this->geometry.points.insert(this->geometry.points.end(), (this->calculatedSize/2).mirrorV());
-	this->geometry.points.insert(this->geometry.points.end(), this->calculatedSize/2);
-	this->geometry.points.insert(this->geometry.points.end(), (this->calculatedSize/2).mirrorH());
-	this->geometry.generate();
+	Hull geometry;
+	geometry.points.insert(geometry.points.end(), -this->getCalculatedSize()/2);
+	geometry.points.insert(geometry.points.end(), (this->getCalculatedSize()/2).mirrorV());
+	geometry.points.insert(geometry.points.end(), this->getCalculatedSize()/2);
+	geometry.points.insert(geometry.points.end(), (this->getCalculatedSize()/2).mirrorH());
+	geometry.generate();
+	this->setGeometry(geometry);
 
 	this->updateCollision();
 
@@ -47,5 +49,5 @@ void Wall::update(float deltatime)
 
 void Wall::updateCollision()
 {
-	this->colideBox = BoundingBox(this->location - this->calculatedSize/2, this->location + this->calculatedSize/2);
+	this->setColideBox(BoundingBox(this->getLocation() - this->getCalculatedSize()/2, this->getLocation() + this->getCalculatedSize()/2));
 }

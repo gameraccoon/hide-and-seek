@@ -301,7 +301,7 @@ void Camera::renderLightShadows(Vector2D lightPos)
 		if (actor->getType() == ActorType::Static)
 		{
 			// get actors geometry
-			Hull *hull = actor->getHull();
+			const Hull *hull = actor->getGeometry();
 			// for each border of actor's geometry
 			for (int j = 0; j < (int) hull->borders.size(); j++)
 			{
@@ -336,7 +336,7 @@ void Camera::renderShadows()
 		if (actor->getType() == ActorType::Static)
 		{
 			// get actors geometry
-			Hull *hull = actor->getHull();
+			const Hull *hull = actor->getGeometry();
 			// for each border of actor's geometry
 			for (int j = 0; j < (int) hull->borders.size(); j++)
 			{
@@ -373,7 +373,7 @@ void Camera::renderHulls()
 		if (actor->getType() != ActorType::Light && actor->getType() != ActorType::Special)
 		{
 			// get actors geometry
-			Hull *hull = actor->getHull();
+			const Hull *hull = actor->getGeometry();
 			// for each border of actor's geometry
 			for (int j = 0; j < (int) hull->borders.size(); j++)
 			{

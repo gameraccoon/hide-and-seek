@@ -171,7 +171,7 @@ bool RayTrace::fastTrace()
 		{
 			//return true;
 			// get hull of current actor
-            Hull *hull = currentActor->getHull();
+			const Hull *hull = currentActor->getGeometry();
 
 			// for each border
 			for (auto &border : hull->borders)
@@ -231,7 +231,7 @@ IActor* RayTrace::trace(Vector2D *outPoint, Vector2D *outNormal)
 		{
 			//return true;
 			// get hull of current actor
-            Hull *hull = currentActor->getHull();
+			const Hull *hull = currentActor->getGeometry();
 
 			// for each border
 			for (auto &border : hull->borders)
