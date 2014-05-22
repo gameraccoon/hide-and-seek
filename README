@@ -1,2 +1,12 @@
 Simple 2D game.
-Creating on C++ with HGE.
+Created on C++ with HGE.
+Used Lua as script language.
+
+Libraries
+DebugHelpers - base for debugging and logging.
+SGEngine - game engine (actor, world, AI, ...)
+HgeInterface - classes that works with HGE (camera, input, ...)
+LuaInterface - classes that works with Lua
+
+StealthGame - main application that also contains some actors and
+AI definitions
