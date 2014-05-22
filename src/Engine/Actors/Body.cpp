@@ -112,7 +112,7 @@ void Body::hit(IActor *instigator, float damageValue, Vector2D impulse)
 	{
 		this->healthValue = 0.0f;
 		this->speed = 0.0f;
-		ActorFactory::Factory().createActor("Corpse", this->getOwnerWorld(), this->getLocation(), Vector2D(1.f, 1.f), this->getRotation());
+		ActorFactory::Factory().placeActor("Corpse", this->getOwnerWorld(), this->getLocation(), Vector2D(1.f, 1.f), this->getRotation());
 		this->destroy();
 	}
 

@@ -14,7 +14,7 @@ LuaInstance::LuaInstance()
         {NULL, NULL}
     };
 
-	this->registerLibs(lualibs);
+	//this->registerLibs(lualibs);
 
 	isMainInstance = true;
 }
@@ -42,7 +42,7 @@ void LuaInstance::registerLibs(const luaL_Reg lualibs[])
 {
     for(const luaL_Reg *lib = lualibs; lib->func != NULL; lib++)
     {
-        luaL_requiref(this->luaState, lib->name, lib->func, 1);
+		luaL_requiref(this->luaState, lib->name, lib->func, 1); // <<<--- Error here!
         lua_settop(this->luaState, 0);
     }
 }

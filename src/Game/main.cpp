@@ -1,16 +1,19 @@
+#include <Log.h>
+
 #include <Input/KeyListeners.h>
 #include <Graphics/FloatingCamera.h>
 #include <Graphics/DirectionArrow.h>
 
-#include "Engine/Core/World.h"
-#include "Engine/Structures/PathPoint.h"
-#include "Engine/Modules/LevelLoader.h"
-#include "Engine/Modules/WorldsContainer.h"
-#include "Engine/Actors/LightEmitter.h"
-#include "Game/Actors/Wall.h"
-#include "Game/Actors/Hero.h"
+#include <Core/World.h>
+#include <Structures/PathPoint.h>
+#include <Modules/LevelLoader.h>
+#include <Modules/WorldsContainer.h>
+#include <Actors/LightEmitter.h>
+
+#include "Actors/Wall.h"
+#include "Actors/Hero.h"
+
 #include <vector>
-#include <Log.h>
 
 // Hge subsystem
 HGE *hge = nullptr;
@@ -258,7 +261,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		::listeners.addListener(new BtnAddLight(::hge));
 
 		LevelLoader::load(::gameWorld, std::string("test"));
-		//LevelLoader::save(GameWorld, std::string("test"));
+		//LevelLoader::save(::gameWorld, std::string("test"));
 
 		// Let's rock now!
 		::hge->System_Start();

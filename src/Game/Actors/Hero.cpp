@@ -1,6 +1,6 @@
 #include "Hero.h"
 
-#include "../../Engine/AI/PlayerRole.h"
+#include <AI/PlayerRole.h>
 
 Hero::Hero(World *world, Vector2D location, Vector2D scale, Rotator rotation) : Body(world, location),
 	step(ZERO_VECTOR)

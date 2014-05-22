@@ -2,6 +2,9 @@
 #define KEYLISTENERS_H
 
 #include <hge.h>
+#include <hgesprite.h>
+#include <hgefont.h>
+#include <hgeresource.h>
 
 #include <vector>
 

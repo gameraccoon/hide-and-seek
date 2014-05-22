@@ -2,7 +2,7 @@
 
 #include "../AI/AiRole.h"
 
-#include "../../Engine/Modules/ActorFactory.h"
+#include <Modules/ActorFactory.h>
 // unnamed namespase to hide from another places
 namespace
 {

@@ -1,12 +1,7 @@
 #ifndef LUA_SCRIPT_H
 #define LUA_SCRIPT_H
 
-extern "C"
-{
-    #include <lua.h>
-    #include <lualib.h>
-    #include <lauxlib.h>
-}
+#include <lua.hpp>
 
 class LuaInstance
 {

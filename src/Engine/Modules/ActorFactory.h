@@ -43,7 +43,7 @@ public:
 	 *
 	 * @throws runtime_error when actorId is unknown
 	 */
-	IActor* createActor(std::string actorId, World *world, const Vector2D location, const Vector2D size, const Rotator rotation);
+	IActor* placeActor(std::string actorId, World *world, const Vector2D location, const Vector2D size, const Rotator rotation);
 private:
 	CallbackMap callbacks;
 

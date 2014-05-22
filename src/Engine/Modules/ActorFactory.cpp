@@ -30,7 +30,7 @@ bool ActorFactory::unregisterActor(std::string actorId)
 	return this->callbacks.erase(actorId) == 1;
 }
 
-IActor* ActorFactory::createActor(std::string actorId, World *world, const Vector2D location, const Vector2D scale, const Rotator rotation)
+IActor* ActorFactory::placeActor(std::string actorId, World *world, const Vector2D location, const Vector2D scale, const Rotator rotation)
 {
 	CallbackMap::const_iterator it = this->callbacks.find(actorId);
 	
@@ -38,6 +38,6 @@ IActor* ActorFactory::createActor(std::string actorId, World *world, const Vecto
 	{
 		throw std::runtime_error("Unknown actor identefier");
 	}
-
+	
 	return (it->second)(world, location, scale, rotation);
 }

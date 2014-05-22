@@ -37,8 +37,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>D:\Develop\StealthGame\src\HgeInterface;D:\Develop\StealthGame\src\Debug;D:\Develop\StealthGame\src\Engine;D:\Develop\StealthGame\src\LuaInterface;D:\Libs\hge\include;D:\Libs\lua\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Libs\hge\lib\vc;D:\Develop\StealthGame\vs_project\HgeInterface\Release;D:\Develop\StealthGame\vs_project\DebugHelpers\Release;D:\Develop\StealthGame\vs_project\Release;D:\Develop\StealthGame\vs_project\SGEngine\Release;D:\Develop\StealthGame\vs_project\LuaInterface\Release;D:\Libs\lua\Lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\Develop\StealthGame\src\HgeInterface;D:\Develop\StealthGame\src\Debug;D:\Develop\StealthGame\src\Engine;D:\Develop\StealthGame\src\LuaInterface;D:\Libs\hge\include;D:\Libs\lua\5.2\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Libs\hge\lib\vc;D:\Develop\StealthGame\vs_project\HgeInterface\Release;D:\Develop\StealthGame\vs_project\DebugHelpers\Release;D:\Develop\StealthGame\vs_project\Release;D:\Develop\StealthGame\vs_project\SGEngine\Release;D:\Develop\StealthGame\vs_project\LuaInterface\Release;D:\Libs\lua\5.2;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)..\build\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -59,10 +59,11 @@
       <FavorSizeOrSpeed />
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FunctionLevelLinking>true</FunctionLevelLinking>
+      <DebugInformationFormat>None</DebugInformationFormat>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>DebugHelpers.lib;lua.lib;LuaInterface.lib;HgeInterface.lib;SGEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>DebugHelpers.lib;liblua52.a;LuaInterface.lib;HgeInterface.lib;SGEngine.lib;hge.lib;hgehelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Windows</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -72,7 +73,7 @@
     <ClCompile Include="..\..\src\Game\Actors\Man.cpp" />
     <ClCompile Include="..\..\src\Game\Actors\Wall.cpp" />
     <ClCompile Include="..\..\src\Game\AI\AiRole.cpp" />
-    <ClCompile Include="..\..\src\main.cpp" />
+    <ClCompile Include="..\..\src\Game\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\Game\Actors\Corpse.h" />
