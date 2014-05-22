@@ -32,9 +32,10 @@ void Actor::setLocation(const Vector2D& location)
 {
 	this->location = Vector2D(location);
 	this->updateCollision();
+	this->onUpdateLocation();
 }
 
-Vector2D Actor::getLocation()
+Vector2D Actor::getLocation() const
 {
 	return this->location;
 }
@@ -43,9 +44,10 @@ void Actor::setRotation(const Rotator& rotation)
 {
 	this->direction = Rotator(rotation);
 	this->updateCollision();
+	this->onUpdateRotation();
 }
 
-Rotator Actor::getRotation()
+Rotator Actor::getRotation() const
 {
 	return this->direction;
 }
@@ -55,41 +57,42 @@ void Actor::setScale(const Vector2D& scale)
 	this->scale = Vector2D(scale);
 	this->calculatedSize.x = this->originalSize.x * scale.x;
 	this->calculatedSize.y = this->originalSize.y * scale.y;
+	this->onUpdateSize();
 }
 
-Vector2D Actor::getScale()
+Vector2D Actor::getScale() const
 {
 	return this->scale;
 }
 
-ActorType Actor::getType()
+ActorType Actor::getType() const
 {
 	return this->type;
 }
 
-BoundingBox Actor::getBoundingBox()
+BoundingBox Actor::getBoundingBox() const
 {
 	return this->colideBox;
 }
 
-Hull* Actor::getHull()
+const Hull* Actor::getGeometry() const
 {
 	return &(this->geometry);
 }
 
-std::string Actor::getClassID()
+std::string Actor::getClassID() const
 {
-	return this->classID;
+	return this->classId;
 }
 
-std::string Actor::getActorId()
+std::string Actor::getActorId() const
 {
 	return this->actorId;
 }
 
 void Actor::updateActorId(std::string classId)
 {
-	this->classID = classId;
+	this->classId = classId;
 	std::ostringstream s;
 	s << ::ClassIndex++;
 	this->actorId = classId + s.str();
@@ -108,7 +111,60 @@ void Actor::destroy()
 	}
 }
 
-bool Actor::isWaitDestruction()
+bool Actor::isWaitDestruction() const
 {
 	return this->bWaitDestruction;
 }
+
+void Actor::hit(IActor *instigator, float damageValue, Vector2D impulse)
+{
+}
+
+World* Actor::getOwnerWorld() const
+{
+	return this->ownerWorld;
+}
+
+float Actor::getLifetime()
+{
+	return this->lifetime;
+}
+
+Vector2D Actor::getCalculatedSize() const
+{
+	return this->calculatedSize;
+}
+
+void Actor::setType(ActorType newType)
+{
+	this->type = newType;
+}
+
+void Actor::setOriginalSize(Vector2D newOriginalSize)
+{
+	this->originalSize = newOriginalSize;
+}
+
+void Actor::setColideBox(BoundingBox newColideBox)
+{
+	this->colideBox = newColideBox;
+}
+
+void Actor::setGeometry(Hull newGeometry)
+{
+	this->geometry = newGeometry;
+}
+
+void Actor::setClassId(std::string newClassId)
+{
+	this->classId = newClassId;
+}
+
+void Actor::setActorId(std::string newActorId)
+{
+	this->actorId = newActorId;
+}
+
+void Actor::onUpdateLocation() { }
+void Actor::onUpdateRotation() { }
+void Actor::onUpdateSize() { }

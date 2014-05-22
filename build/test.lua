@@ -1,11 +1,15 @@
-Log.Log("Start script")
+Log.log("Start script")
 
-function OnTakeDamage(damage)
-	Log.Log('TakeDamage ' .. body.id .. ' ' .. damage ..
-		' ' .. body.pos.x .. ' ' .. body.pos.y)
-	if body.id == 'Hero1' then
-		--Test(body.pos)
+function OnTakeDamage(instigator, damageValue)
+	Log.log("I'm damaged! My health is " .. body.getHealth(body.ptr))
+end
+
+local seen = 1
+
+function OnSeeEnemy(enemy)
+	if seen == 1 then
+		Log.log("I'm see you!")
+		body.follow(body.ptr, enemy)
+		seen = 2
 	end
-	
-	body.setRotation(body.ptr, body.getRotation(body.ptr) + 0.1)
 end

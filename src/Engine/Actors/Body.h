@@ -21,6 +21,8 @@ public:
 	virtual void moveTo(Vector2D step) override;
 	virtual void follow(IActor *target);
 
+	virtual float getHealthValue() override;
+
 	virtual void giveWeapon(Weapon *weap) override;
 	
 	/** Start shoting if the man have a weapon */
@@ -28,15 +30,19 @@ public:
 	virtual void stopShoting() override;
 
 	virtual void update(float deltatime) override;
-
-	/** Try to take some damage to the man =) */
-	virtual void takeDamage(float damageValue,Vector2D impulse);
+	
+	virtual void hit(IActor *instigator, float damageValue, Vector2D impulse) override;
 protected:
+	/* events */
+	virtual void onUpdateLocation() override;
+	virtual void onUpdateRotation() override;
 	/** */
 	virtual void updateCollision() override;
 	/** */
 	void findNextPathPoint();
 	void clearTargets();
+	/** */
+	void look();
 	/**  */
 	PathFinder navigator;
 	/** Body moving speed in Px/s */

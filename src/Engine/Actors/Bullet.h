@@ -12,8 +12,6 @@ public:
 	~Bullet(void);
 	/** Process moving and other actions of the Actor */
 	virtual void update(float deltatime) override;
-	/** Take some damage to the bullet */
-	virtual void takeDamage(float damageValue, Vector2D impulse) override;
 protected:
 	/** Update classId and actorId */
 	virtual void updateActorId(std::string classId) override;

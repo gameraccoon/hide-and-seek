@@ -1,11 +1,17 @@
 #include "Hero.h"
 
+#include <AI/PlayerRole.h>
+
 Hero::Hero(World *world, Vector2D location, Vector2D scale, Rotator rotation) : Body(world, location),
 	step(ZERO_VECTOR)
 {
 	this->speed = 1.f;
 
 	this->updateActorId("Hero");
+	
+	if (this->role != nullptr)
+		delete this->role;
+	this->role = new PlayerRole(world, this);
 }
 
 Hero::~Hero(void)
@@ -19,11 +25,11 @@ void Hero::move(Vector2D step)
 
 void Hero::update(float deltatime)
 {
-	Vector2D newLocation = this->location + this->step * deltatime;
+	Vector2D newLocation = this->getLocation() + this->step * deltatime;
 	bool bFree = true;
 
 	// for each actors in the world
-	for (auto const &actor : this->ownerWorld->allActors)
+	for (auto const &actor : this->getOwnerWorld()->allActors)
 	{
 		// if the actor is not this man // test: and it is a static actor
 		if (actor != this && (actor->getType() != ActorType::Light && actor->getType() != ActorType::Special && actor->getType() != ActorType::Bullet))
@@ -45,7 +51,7 @@ void Hero::update(float deltatime)
 	if (bFree)
 	{
 		// accept new position of the man
-		this->location = newLocation;
+		this->setLocation(newLocation);
 	}
 	
 	this->updateCollision();

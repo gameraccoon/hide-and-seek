@@ -1,7 +1,8 @@
 #include "Man.h"
 
+#include "../AI/AiRole.h"
 
-#include "../../Engine/Modules/ActorFactory.h"
+#include <Modules/ActorFactory.h>
 // unnamed namespase to hide from another places
 namespace
 {
@@ -20,11 +21,15 @@ namespace
 
 Man::Man(World *world, Vector2D location, Vector2D scale, Rotator rotation) : Body(world, location)
 {
-	this->type = ActorType::Living;
+	this->setType(ActorType::Living);
 
 	this->speed = 50.0f;
 
 	this->updateActorId(CLASS_ID);
+
+	if (this->role != nullptr)
+		delete this->role;
+	this->role = new AiRole(world, this);
 }
 
 Man::~Man(void)
@@ -33,20 +38,20 @@ Man::~Man(void)
 
 void Man::update(float deltatime)
 {
-	if (this->tempLocation == this->location)
+	if (this->tempLocation == this->getLocation())
 	{
 		this->findNextPathPoint();
 	}
 
 	float stepSize = this->speed * deltatime;
 
-	if (stepSize < (this->tempLocation - this->location).size())
+	if (stepSize < (this->tempLocation - this->getLocation()).size())
 	{
-		Vector2D newLocation = this->location + (this->tempLocation - this->location).ort() * stepSize;
+		Vector2D newLocation = this->getLocation() + (this->tempLocation - this->getLocation()).ort() * stepSize;
 		bool bFree = true;
 
 		// for each actors in the world
-		for (auto const &actor : this->ownerWorld->allActors)
+		for (auto const &actor : this->getOwnerWorld()->allActors)
 		{
 			// if the actor is not this man // test: and it is a static actor
 			if (actor != this && (actor->getType() != ActorType::Light && actor->getType() != ActorType::Special && actor->getType() != ActorType::Bullet))
@@ -87,16 +92,7 @@ void Man::update(float deltatime)
 	Body::update(deltatime);
 }
 
-void Man::takeDamage(float damageValue, Vector2D impulse)
+void Man::hit(IActor *instigator, float damageValue, Vector2D impulse)
 {
-	for (auto const &actor : this->ownerWorld->allActors)
-	{
-		if (actor->getType() == ActorType::Living && actor != this)
-		{
-			//this->follow(foundActor);
-			break;
-		}
-	}
-
-	Body::takeDamage(damageValue, impulse);
+	Body::hit(instigator, damageValue, impulse);
 }

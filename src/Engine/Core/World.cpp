@@ -34,9 +34,12 @@ void World::removeActor(IActor* actor)
 
 void World::update(float deltatime)
 {
-	for (auto i = this->allActors.begin(), iEnd = this->allActors.end(); i != iEnd; i++)
+	for (auto actor : this->allActors)
 	{
-		(*i)->update(deltatime);
+		if (!actor->isWaitDestruction())
+		{
+			actor->update(deltatime);
+		}
 	}
 
 	this->cleanDestroyedActors();

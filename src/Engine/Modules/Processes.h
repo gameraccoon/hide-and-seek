@@ -1,13 +1,6 @@
 #ifndef PROCESSES_H
 #define PROCESSES_H
 
-// dummy for debugging methods
-#if (!defined DEBUG) && (!defined RELEASE)
-	#define RELEASE
-	#define WARN(message)
-	#define WARN_IF(condition, message)
-#endif
-
 /**
  * Abstract class for some process
  */

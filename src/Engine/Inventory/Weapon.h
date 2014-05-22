@@ -11,12 +11,20 @@ class Weapon : public InventoryItem
 public:
 	Weapon(void);
 	~Weapon(void);
-	void startShooting(Vector2D currentLocation, Vector2D targetLocation);
+	void startShooting(Vector2D location, Rotator direction);
 	void stopShooting();
-	void changeDirection(Vector2D targetLocation);
+	void changeDirection(Rotator newDirection);
+	void setLocation(Vector2D newLocation);
+	void update(float deltaTime);
 	void setOwnerWorld(World *world);
 private:
 	World *ownerWorld;
+	bool isFiring;
+	float fireInterval;
+	float lastFireTime;
+	float startFireDelay;
+	Vector2D location;
+	Rotator direction;
 };
 
 #endif

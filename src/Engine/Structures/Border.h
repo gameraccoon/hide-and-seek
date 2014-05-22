@@ -9,11 +9,11 @@ public:
 	Border(Vector2D a, Vector2D b);
 	~Border(void);
 	/** Get normal-vector for this border */
-	Vector2D getNormal();
+	Vector2D getNormal() const;
 	/** Get first point of this segment */
-	Vector2D getA();
+	Vector2D getA() const;
 	/** Get second point of this segment */
-	Vector2D getB();
+	Vector2D getB() const;
 	/** Change first point of this segment (and recalculate normal) */
 	void setA(Vector2D a);
 	/** Change second point of this segment (and recalculate normal) */

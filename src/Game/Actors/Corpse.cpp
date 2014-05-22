@@ -1,7 +1,7 @@
 #include "Corpse.h"
 
 
-#include "../../Engine/Modules/ActorFactory.h"
+#include <Modules/ActorFactory.h>
 // unnamed namespase to hide from another places
 namespace
 {
@@ -26,10 +26,6 @@ Corpse::Corpse(World *world, Vector2D location, Vector2D scale, Rotator rotation
 
 
 Corpse::~Corpse(void)
-{
-}
-
-void Corpse::takeDamage(float damageValue, Vector2D impulse)
 {
 }
 

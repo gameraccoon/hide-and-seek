@@ -19,7 +19,7 @@ namespace
 
 LightEmitter::LightEmitter(World *world, Vector2D location, Vector2D scale, Rotator rotation) : Actor(world, location, rotation)
 {
-	this->type = ActorType::Light;
+	this->setType(ActorType::Light);
 	this->brightness = 1.f;
 	this->color = 0xFFFFFFFF;
 
@@ -31,15 +31,6 @@ LightEmitter::~LightEmitter(void)
 {
 }
 
-void LightEmitter::update(float deltatime)
-{
-	Actor::update(deltatime);
-}
-
 void LightEmitter::updateCollision()
-{
-}
-
-void LightEmitter::takeDamage(float damageValue,Vector2D impulse)
 {
 }
