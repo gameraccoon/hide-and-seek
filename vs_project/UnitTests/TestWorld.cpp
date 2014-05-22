@@ -1,13 +1,13 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
 
-#include "../src/Engine/Core/IActor.h"
+#include "../../src/Engine/Core/IActor.h"
 
-#include "../src/Engine/Core/World.cpp"
-#include "../src/Engine/Actors/Actor.cpp"
-#include "../src/Engine/Structures/Hull.cpp"
-#include "../src/Engine/Structures/BoundingBox.cpp"
-#include "../src/Engine/Structures/Border.cpp"
+#include <Engine/Core/World.h>
+#include <Engine/Actors/Actor.h>
+#include <Engine/Structures/Hull.h>
+#include <Engine/Structures/BoundingBox.h>
+#include <Engine/Structures/Border.h>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 

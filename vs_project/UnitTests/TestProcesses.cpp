@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
 
-#include "../src/Engine/Modules/Processes.cpp"
+#include <Engine/Modules/Processes.h>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 

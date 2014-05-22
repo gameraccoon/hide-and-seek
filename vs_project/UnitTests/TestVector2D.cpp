@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
 
-#include "../src/Engine/Core/Vector2D.cpp"
-#include "../src/Engine/Core/Rotator.cpp"
+#include <Engine/Core/Vector2D.h>
+#include <Engine/Core/Rotator.h>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 

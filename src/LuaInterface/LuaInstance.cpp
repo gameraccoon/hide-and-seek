@@ -1,6 +1,6 @@
 #include "LuaInstance.h"
 
-#include "../Helpers/Log.h"
+#include <Log.h>
 
 LuaInstance::LuaInstance()
 {

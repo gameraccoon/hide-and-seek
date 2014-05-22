@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
 
-#include "../src/Engine/Actors/Actor.h"
+#include <Engine/Actors/Actor.h>
 
-#include "../src/Engine/Modules/ActorFactory.cpp"
+#include <Engine/Modules/ActorFactory.h>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 

@@ -2,7 +2,7 @@
 
 #include "../Lua/LuaType.h"
 #include "../Lua/LuaTypeLog.h"
-#include "../Lua/LuaFunction.h"
+#include <LuaFunction.h>
 
 
 LuaAiState::LuaAiState(World *world, IBody *body, Role *role) : AiState(world, body, role)

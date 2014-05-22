@@ -1,12 +1,12 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
 
-#include "../src/Engine/Core/World.h"
-#include "../src/Engine/Actors/Actor.h"
+#include <Engine/Core/World.h>
+#include <Engine/Actors/Actor.h>
 
-#include "../src/Engine/Modules/RayTrace.cpp"
-#include "../src/Game/Actors/Wall.cpp"
-#include "../src/Engine/Helpers/Log.cpp"
+#include <Engine/Modules/RayTrace.h>
+
+#include "TestWall.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -21,7 +21,7 @@ namespace TestRaytrace
 		TEST_CLASS_INITIALIZE(Init)
 		{
 			TestWorld = new World();
-			Actor1 = new Wall(TestWorld, Vector2D(50.f, 30.f), Vector2D(1.f, 1.f), Rotator(0.f)); // size 20-20
+			Actor1 = new TestWall(TestWorld, Vector2D(50.f, 30.f), Vector2D(1.f, 1.f), Rotator(0.f)); // size 20-20
 		}
 
 		TEST_CLASS_CLEANUP(Exit)
@@ -63,7 +63,7 @@ namespace TestRaytrace
 			
 			Assert::IsTrue(traceActor == Actor1);
 
-			IActor *actor = new Wall(TestWorld, Vector2D(45.f, 25.f), Vector2D(1.f, 1.f), Rotator(0.f)); // size 20-20
+			IActor *actor = new TestWall(TestWorld, Vector2D(45.f, 25.f), Vector2D(1.f, 1.f), Rotator(0.f)); // size 20-20
 			traceActor = trace1.trace();
 
 			Assert::IsTrue(traceActor == actor);

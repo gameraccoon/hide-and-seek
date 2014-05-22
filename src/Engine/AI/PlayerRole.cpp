@@ -1,7 +1,5 @@
 #include "PlayerRole.h"
 
-#include "../Lua/LuaAiState.h"
-
 PlayerRole::PlayerRole(World* world, IBody *body) : Role(world, body)
 {
 }

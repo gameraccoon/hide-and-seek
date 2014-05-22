@@ -7,10 +7,10 @@
 #include "Engine/Actors/LightEmitter.h"
 #include "Engine/Graphics/FloatingCamera.h"
 #include "Engine/Graphics/DirectionArrow.h"
-#include "Engine/Helpers/Log.h"
 #include "Game/Actors/Wall.h"
 #include "Game/Actors/Hero.h"
 #include <vector>
+#include <Log.h>
 
 // Hge subsystem
 HGE *hge = nullptr;

@@ -3,7 +3,7 @@
 
 #include "../Core/World.h"
 #include "../AI/AiState.h"
-#include "../Lua/LuaInstance.h"
+#include <LuaInstance.h>
 
 class LuaAiState : public AiState
 {

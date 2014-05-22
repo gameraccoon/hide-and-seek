@@ -1,5 +1,5 @@
 #include "LuaType.h"
-#include "../Helpers/Log.h"
+#include <Log.h>
 
 // -- lua functions
 

@@ -14,6 +14,7 @@ Rotator::~Rotator()
 float Rotator::getValue()
 {
 	float normValue = this->value;
+
 	if (normValue <= -PI)
 	{
 		while (normValue <= -PI)

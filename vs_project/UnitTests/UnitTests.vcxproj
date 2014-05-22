@@ -13,7 +13,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{98529BCF-3852-48B1-A20B-464CDFCEA12F}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>UnitTest1</RootNamespace>
+    <RootNamespace>UnitTests</RootNamespace>
     <ProjectName>UnitTests</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -47,9 +47,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\Develop\StealthGame\src;D:\Libs\lua\Include;D:\Libs\hge\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Libs\hge\lib\vc;D:\Libs\lua\Lib;$(LibraryPath)</LibraryPath>
-    <SourcePath>D:\Develop\StealthGame\src;$(SourcePath)</SourcePath>
+    <IncludePath>D:\Develop\StealthGame\src\Debug;D:\Develop\StealthGame\src;D:\Libs\lua\Include;D:\Libs\hge\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Develop\StealthGame\vs_project\DebugHelpers\Release;D:\Develop\StealthGame\vs_project\Release;D:\Libs\hge\lib\vc;D:\Libs\lua\Lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -74,22 +73,24 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <AdditionalIncludeDirectories>$(VCInstallDir)UnitTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;DEBUG;NOMINMAX;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <WholeProgramOptimization>false</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(VCInstallDir)UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>DebugHelpers.lib;LuaInterface.lib;SGEngine.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="TestWall.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -99,6 +100,7 @@
     <ClCompile Include="TestProcesses.cpp" />
     <ClCompile Include="TestRaytrace.cpp" />
     <ClCompile Include="TestVector2D.cpp" />
+    <ClCompile Include="TestWall.cpp" />
     <ClCompile Include="TestWorld.cpp" />
     <ClCompile Include="TestActorFactory.cpp" />
   </ItemGroup>
