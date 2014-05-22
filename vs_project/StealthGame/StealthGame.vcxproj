@@ -37,9 +37,9 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>D:\Develop\StealthGame\src\HgeInterface;D:\Develop\StealthGame\src\Debug;D:\Develop\StealthGame\src\Engine;D:\Develop\StealthGame\src\LuaInterface;D:\Libs\hge\include;D:\Libs\lua\5.2\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Libs\hge\lib\vc;D:\Develop\StealthGame\vs_project\HgeInterface\Release;D:\Develop\StealthGame\vs_project\DebugHelpers\Release;D:\Develop\StealthGame\vs_project\Release;D:\Develop\StealthGame\vs_project\SGEngine\Release;D:\Develop\StealthGame\vs_project\LuaInterface\Release;D:\Libs\lua\5.2;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)..\..\src\Engine;$(ProjectDir)..\..\src\HgeInterface;$(ProjectDir)..\..\src\LuaInterface;$(ProjectDir)..\..\src\Debug;$(ProjectDir)..\..\used_libs\lua52\include;$(ProjectDir)..\..\used_libs\hge\include;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)..\build\</OutDir>
+    <LibraryPath>$(ProjectDir)..\Release;$(ProjectDir)..\..\used_libs\lua52\lib;$(ProjectDir)..\..\used_libs\hge\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

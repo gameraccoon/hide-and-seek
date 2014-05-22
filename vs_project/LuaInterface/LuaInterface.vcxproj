@@ -42,8 +42,8 @@
     <OutDir>$(SolutionDir)\libs</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>D:\Develop\StealthGame\src\Engine;D:\Develop\StealthGame\src\Debug;D:\Libs\lua\5.2\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Develop\StealthGame\vs_project\SGEngine\Release;D:\Develop\StealthGame\vs_project\DebugHelpers\Release;D:\Develop\StealthGame\vs_project\Release;D:\Libs\lua\5.2;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)..\..\src\Engine;$(ProjectDir)..\..\src\Debug;$(ProjectDir)..\..\used_libs\lua52\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)..\Release;$(ProjectDir)..\..\used_libs\lua52\libs;$(IncludePath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

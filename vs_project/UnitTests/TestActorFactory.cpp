@@ -81,7 +81,7 @@ namespace TestActorFactory
 
 			Assert::IsTrue(registered);
 
-			IActor *actor = ActorFactory::Factory().createActor("TestActor", TestWorld,
+			IActor *actor = ActorFactory::Factory().placeActor("TestActor", TestWorld,
 				ZERO_VECTOR, Vector2D(1.f, 1.f), Rotator(0.0));
 
 			TestValue = 0;
@@ -109,7 +109,7 @@ namespace TestActorFactory
 
 			try
 			{
-				IActor *actor = ActorFactory::Factory().createActor("TestActor", TestWorld,
+				IActor *actor = ActorFactory::Factory().placeActor("TestActor", TestWorld,
 					ZERO_VECTOR, Vector2D(1.f, 1.f), Rotator(0.0));
 			}
 			catch (std::runtime_error)
@@ -130,7 +130,7 @@ namespace TestActorFactory
 
 			Assert::IsFalse(registered);
 
-			IActor *actor = ActorFactory::Factory().createActor("TestActor", TestWorld,
+			IActor *actor = ActorFactory::Factory().placeActor("TestActor", TestWorld,
 				ZERO_VECTOR, Vector2D(1.f, 1.f), Rotator(0.0));
 			
 			TestValue = 0;
@@ -149,7 +149,7 @@ namespace TestActorFactory
 
 			try
 			{
-				IActor *actor = ActorFactory::Factory().createActor("TestActor", TestWorld,
+				IActor *actor = ActorFactory::Factory().placeActor("TestActor", TestWorld,
 					ZERO_VECTOR, Vector2D(1.f, 1.f), Rotator(0.0));
 			}
 			catch (std::runtime_error)

@@ -41,8 +41,8 @@
     <LibraryPath>D:\Develop\StealthGame\vs_project\libs;D:\Libs\lua\Lib;D:\Libs\hge\lib\vc;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>D:\Develop\StealthGame\src\Debug;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Develop\StealthGame\vs_project\DebugHelpers\Release;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)..\..\src\Engine;$(ProjectDir)..\..\src\Debug;$(ProjectDir)..\..\used_libs\hge\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)..\Release;$(IncludePath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
