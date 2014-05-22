@@ -5,13 +5,6 @@
 
 #include "Rotator.h"
 
-// dummy for debugging methods
-#if (!defined DEBUG) && (!defined RELEASE)
-	#define RELEASE
-	#define WARN(message)
-	#define WARN_IF(condition, message)
-#endif
-
 class Vector2D
 {
 public:
@@ -23,25 +16,25 @@ public:
 	float x, y;
 
 	/** Get vector length in units */
-	float size(void);
+	float size() const;
 
 	/** Get quarter of vector length (faster than Size()) */
-	float qSize(void);
+	float qSize(void) const;
 
 	/** Normalize vector */
-	Vector2D ort(void);
+	Vector2D ort(void) const;
 	/** Mirror horisontally */
-	Vector2D mirrorH();
+	Vector2D mirrorH() const;
 	/** Mirror vertically */
-	Vector2D mirrorV();
+	Vector2D mirrorV() const;
 	/** Get normal-vector */
-	Vector2D normal();
+	Vector2D normal() const;
 
 	/** Project this vector to line that parallel with the vector "base" */
-	Vector2D project(Vector2D base);
+	Vector2D project(Vector2D base) const;
 
 	/** Get angle between vector and OX axis */
-	Rotator rotation(void);
+	Rotator rotation(void) const;
 
 	friend bool operator==(const Vector2D& left, const Vector2D& right);
 	friend bool operator!=(const Vector2D& left, const Vector2D& right);

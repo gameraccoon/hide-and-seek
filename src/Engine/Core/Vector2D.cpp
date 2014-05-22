@@ -24,17 +24,17 @@ Vector2D::~Vector2D(void)
 {
 }
 
-float Vector2D::size(void)
+float Vector2D::size(void) const
 {
 	return sqrt((this->x * this->x) + (this->y * this->y));
 }
 
-float Vector2D::qSize(void)
+float Vector2D::qSize(void) const
 {
 	return (this->x * this->x) + (this->y * this->y);
 }
 
-Vector2D Vector2D::ort(void)
+Vector2D Vector2D::ort(void) const
 {
 	if (this->x == 0.0f && this->y == 0.0f)
 		return ZERO_VECTOR;
@@ -42,27 +42,27 @@ Vector2D Vector2D::ort(void)
 	return (*this) / this->size();
 }
 
-Rotator Vector2D::rotation(void)
+Rotator Vector2D::rotation(void) const
 {
 	return atan2(this->y, this->x);
 }
 
-Vector2D Vector2D::mirrorH()
+Vector2D Vector2D::mirrorH() const
 {
 	return Vector2D(-this->x, this->y);
 }
 
-Vector2D Vector2D::mirrorV()
+Vector2D Vector2D::mirrorV() const
 {
 	return Vector2D(this->x, -this->y);
 }
 
-Vector2D Vector2D::normal()
+Vector2D Vector2D::normal() const
 {
 	return this->rotation() - PI/2;
 }
 
-Vector2D Vector2D::project(Vector2D base)
+Vector2D Vector2D::project(Vector2D base) const
 {
 	float qSize = base.qSize();
 	Vector2D result(ZERO_VECTOR);

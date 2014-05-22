@@ -17,7 +17,7 @@ namespace
 }
 
 
-#include "../../Engine/Helpers/DebugMethods.h"
+#include <DebugMethods.h>
 
 // dummy for debugging methods
 #if (!defined DEBUG) && (!defined RELEASE)
@@ -31,7 +31,7 @@ Bullet::Bullet(World *world, Vector2D location, Vector2D scale, Rotator rotation
 	Actor(world, location, rotation)
 {
 	this->speed = 10.0f;	
-	this->type = ActorType::Bullet;
+	this->setType(ActorType::Bullet);
 
 	this->speed = 450.0f;
 
@@ -44,28 +44,28 @@ Bullet::~Bullet(void)
 
 void Bullet::update(float deltatime)
 {
-	Vector2D newLocation = this->location + deltatime * this->speed * Vector2D(this->direction);
+	Vector2D newLocation = this->getLocation() + deltatime * this->speed * Vector2D(this->getRotation());
 	
-	WARN_IF(!this->ownerWorld, "Not assigned OwnerWorld for bullet");
+	WARN_IF(!this->getOwnerWorld(), "Not assigned OwnerWorld for bullet");
 
-	RayTrace ray(this->ownerWorld, this->location, newLocation);
+	RayTrace ray(this->getOwnerWorld(), this->getLocation(), newLocation);
 	Vector2D traceLocation(ZERO_VECTOR);
 	IActor *trasedActor = ray.trace(&traceLocation);
 
 	// if there nothing to hit
 	if (trasedActor == nullptr)
 	{
-		this->location = newLocation;
+		this->setLocation(newLocation);
 	}
 	else // bullet is hiting some actor
 	{
-		trasedActor->takeDamage(10.f, Vector2D(this->direction) * this->speed * 0.01f);
+		trasedActor->hit(this, 10.f, Vector2D(this->getRotation()) * this->speed * 0.01f);
 		this->speed = 0.0f;
 		this->destroy();
 	}
 
 	// bullet will be destroyed after 10 second
-	if (this->lifetime > 10.f)
+	if (this->getLifetime() > 10.f)
 	{
 		this->destroy();
 	}
@@ -77,13 +77,8 @@ void Bullet::updateCollision()
 {
 }
 
-void Bullet::takeDamage(float damageValue,Vector2D impulse)
-{
-	// do nothing for now
-}
-
 void Bullet::updateActorId(std::string classId)
 {
-	this->classID = classId;
-	this->actorId = "some" + classId;
+	this->setClassId(classId);
+	this->setActorId("some" + classId);
 }

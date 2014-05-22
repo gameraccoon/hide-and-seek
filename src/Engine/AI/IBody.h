@@ -2,6 +2,7 @@
 #define I_BODY_H
 
 #include "../Inventory/Weapon.h"
+#include "../Actors/SoundVolume.h"
 #include "../Core/Vector2D.h"
 #include "../Core/IActor.h"
 
@@ -13,6 +14,8 @@ public:
 	virtual void moveTo(Vector2D location) = 0;
 	/** Say that the body must follow the target */
 	virtual void follow(IActor *target) = 0;
+
+	virtual float getHealthValue() = 0;
 
 	virtual void giveWeapon(Weapon *weap) = 0;
 

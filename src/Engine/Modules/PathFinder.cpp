@@ -1,6 +1,6 @@
 #include "PathFinder.h"
 
-#include "../Helpers/DebugMethods.h"
+#include <DebugMethods.h>
 
 // dummy for debugging methods
 #if (!defined DEBUG) && (!defined RELEASE)
@@ -144,7 +144,7 @@ bool PathFinder::createNewPath(Vector2D startPoint, Vector2D endPoint)
 			float h = (lastPoint->location - neighbor->location).size();
 			float f = g + h;
 			bool bPointInOpenSet = false;
-			CalculationPoint* openPoint;
+			CalculationPoint* openPoint = nullptr;
 			for (auto const &openSetPoint : OpenSet)
 			{
 				if (openSetPoint->point == neighbor)
@@ -154,6 +154,9 @@ bool PathFinder::createNewPath(Vector2D startPoint, Vector2D endPoint)
 					break;
 				}
 			}
+
+			if (openPoint == nullptr)
+				break;
 			
 			// skip if we have better path for this point
 			if (bPointInOpenSet)
