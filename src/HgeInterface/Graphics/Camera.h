@@ -3,11 +3,15 @@
 
 #include <map>
 
-#include "../Hge/HgeIncludes.h"
+#include <hge.h>
+#include <hgesprite.h>
+#include <hgefont.h>
+#include <hgeresource.h>
 
-#include "../Core/Vector2D.h"
-#include "../Core/World.h"
-#include "../Actors/Actor.h"
+#include <Core/Vector2D.h>
+#include <Core/World.h>
+#include <Actors/Actor.h>
+
 #include "GraphicLoader.h"
 
 class Camera

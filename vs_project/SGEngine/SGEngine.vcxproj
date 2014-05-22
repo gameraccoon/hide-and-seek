@@ -43,8 +43,8 @@
     <LibraryPath>D:\Develop\StealthGame\vs_project\libs;D:\Libs\lua\Lib;D:\Libs\hge\lib\vc;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>D:\Develop\StealthGame\src\Debug;D:\Develop\StealthGame\src\LuaInterface;D:\Libs\lua\Include;D:\Libs\hge\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Develop\StealthGame\vs_project\DebugHelpers\Release;D:\Develop\StealthGame\vs_project\LuaInterface\Release;D:\Libs\lua\Lib;D:\Libs\hge\lib\vc;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\Develop\StealthGame\src\Debug;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Develop\StealthGame\vs_project\DebugHelpers\Release;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -73,6 +73,7 @@
       <AdditionalDependencies>LuaInterface.lib;lua.lib;hge.lib;hgehelp.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib />
+    <Lib />
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\Engine\Actors\Actor.cpp" />
@@ -80,25 +81,13 @@
     <ClCompile Include="..\..\src\Engine\Actors\Bullet.cpp" />
     <ClCompile Include="..\..\src\Engine\Actors\LightEmitter.cpp" />
     <ClCompile Include="..\..\src\Engine\Actors\SoundVolume.cpp" />
-    <ClCompile Include="..\..\src\Engine\AI\AiRole.cpp" />
     <ClCompile Include="..\..\src\Engine\AI\AiState.cpp" />
     <ClCompile Include="..\..\src\Engine\AI\PlayerRole.cpp" />
     <ClCompile Include="..\..\src\Engine\AI\Role.cpp" />
     <ClCompile Include="..\..\src\Engine\Core\Rotator.cpp" />
     <ClCompile Include="..\..\src\Engine\Core\Vector2D.cpp" />
     <ClCompile Include="..\..\src\Engine\Core\World.cpp" />
-    <ClCompile Include="..\..\src\Engine\Graphics\Camera.cpp" />
-    <ClCompile Include="..\..\src\Engine\Graphics\DirectionArrow.cpp" />
-    <ClCompile Include="..\..\src\Engine\Graphics\FloatingCamera.cpp" />
-    <ClCompile Include="..\..\src\Engine\Graphics\GraphicLoader.cpp" />
-    <ClCompile Include="..\..\src\Engine\Input\KeyListeners.cpp" />
     <ClCompile Include="..\..\src\Engine\Inventory\Weapon.cpp" />
-    <ClCompile Include="..\..\src\Engine\Lua\LuaAiState.cpp" />
-    <ClCompile Include="..\..\src\Engine\Lua\LuaTypeActor.cpp" />
-    <ClCompile Include="..\..\src\Engine\Lua\LuaTypeBody.cpp" />
-    <ClCompile Include="..\..\src\Engine\Lua\LuaTypeLog.cpp" />
-    <ClCompile Include="..\..\src\Engine\Lua\LuaTypeRole.cpp" />
-    <ClCompile Include="..\..\src\Engine\Lua\LuaTypeVector2D.cpp" />
     <ClCompile Include="..\..\src\Engine\Modules\ActorFactory.cpp" />
     <ClCompile Include="..\..\src\Engine\Modules\LevelLoader.cpp" />
     <ClCompile Include="..\..\src\Engine\Modules\PathFinder.cpp" />
@@ -117,7 +106,6 @@
     <ClInclude Include="..\..\src\Engine\Actors\Bullet.h" />
     <ClInclude Include="..\..\src\Engine\Actors\LightEmitter.h" />
     <ClInclude Include="..\..\src\Engine\Actors\SoundVolume.h" />
-    <ClInclude Include="..\..\src\Engine\AI\AiRole.h" />
     <ClInclude Include="..\..\src\Engine\AI\AiState.h" />
     <ClInclude Include="..\..\src\Engine\AI\IAiState.h" />
     <ClInclude Include="..\..\src\Engine\AI\IBody.h" />
@@ -127,16 +115,8 @@
     <ClInclude Include="..\..\src\Engine\Core\Rotator.h" />
     <ClInclude Include="..\..\src\Engine\Core\Vector2D.h" />
     <ClInclude Include="..\..\src\Engine\Core\World.h" />
-    <ClInclude Include="..\..\src\Engine\Graphics\Camera.h" />
-    <ClInclude Include="..\..\src\Engine\Graphics\DirectionArrow.h" />
-    <ClInclude Include="..\..\src\Engine\Graphics\FloatingCamera.h" />
-    <ClInclude Include="..\..\src\Engine\Graphics\GraphicLoader.h" />
     <ClInclude Include="..\..\src\Engine\Hge\HgeIncludes.h" />
-    <ClInclude Include="..\..\src\Engine\Input\KeyListeners.h" />
     <ClInclude Include="..\..\src\Engine\Inventory\Weapon.h" />
-    <ClInclude Include="..\..\src\Engine\Lua\LuaAiState.h" />
-    <ClInclude Include="..\..\src\Engine\Lua\LuaType.h" />
-    <ClInclude Include="..\..\src\Engine\Lua\LuaTypeLog.h" />
     <ClInclude Include="..\..\src\Engine\Modules\ActorFactory.h" />
     <ClInclude Include="..\..\src\Engine\Modules\LevelLoader.h" />
     <ClInclude Include="..\..\src\Engine\Modules\PathFinder.h" />

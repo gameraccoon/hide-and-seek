@@ -1,7 +1,8 @@
 #ifndef KEYLISTENERS_H
 #define KEYLISTENERS_H
 
-#include "../Hge/HgeIncludes.h"
+#include <hge.h>
+
 #include <vector>
 
 class ButtonSwitcher

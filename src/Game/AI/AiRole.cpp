@@ -1,6 +1,6 @@
 #include "AiRole.h"
 
-#include "../Lua/LuaAiState.h"
+#include <LuaAiState.h>
 
 AiRole::AiRole(World* world, IBody *body) : Role(world, body)
 {

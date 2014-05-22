@@ -3,7 +3,7 @@
 
 #include <stack>
 
-#include "Role.h"
+#include <AI/Role.h>
 
 class AiRole : public Role
 {

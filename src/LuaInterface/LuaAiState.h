@@ -1,9 +1,10 @@
 #ifndef LUA_AI_STATE
 #define LUA_AI_STATE
 
-#include "../Core/World.h"
-#include "../AI/AiState.h"
-#include <LuaInstance.h>
+#include <Core/World.h>
+#include <AI/AiState.h>
+
+#include "LuaInstance.h"
 
 class LuaAiState : public AiState
 {

@@ -1,9 +1,13 @@
 #ifndef DIRECTIONARROW_H
 #define DIRECTIONARROW_H
 
-#include "../Hge/HgeIncludes.h"
-#include "../Core/Vector2D.h"
-#include "../Core/Rotator.h"
+#include <hge.h>
+#include <hgesprite.h>
+#include <hgefont.h>
+#include <hgeresource.h>
+
+#include <Core/Vector2D.h>
+#include <Core/Rotator.h>
 
 class DirectionArrow
 {

@@ -10,6 +10,20 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\HgeInterface\Graphics\Camera.cpp" />
+    <ClCompile Include="..\..\src\HgeInterface\Graphics\DirectionArrow.cpp" />
+    <ClCompile Include="..\..\src\HgeInterface\Graphics\FloatingCamera.cpp" />
+    <ClCompile Include="..\..\src\HgeInterface\Graphics\GraphicLoader.cpp" />
+    <ClCompile Include="..\..\src\HgeInterface\Input\KeyListeners.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\HgeInterface\Graphics\Camera.h" />
+    <ClInclude Include="..\..\src\HgeInterface\Graphics\DirectionArrow.h" />
+    <ClInclude Include="..\..\src\HgeInterface\Graphics\FloatingCamera.h" />
+    <ClInclude Include="..\..\src\HgeInterface\Graphics\GraphicLoader.h" />
+    <ClInclude Include="..\..\src\HgeInterface\Input\KeyListeners.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{6E6419A2-E632-45FE-ABF6-1D00854D54F2}</ProjectGuid>
     <RootNamespace>HgeInterface</RootNamespace>
@@ -38,7 +52,10 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>D:\Develop\StealthGame\src\Engine;D:\Develop\StealthGame\src\Debug;D:\Libs\hge\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Develop\StealthGame\vs_project\SGEngine\Release;D:\Develop\StealthGame\vs_project\DebugHelpers\Release;D:\Libs\hge\lib\vc;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -56,13 +73,14 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;DEBUG;NOMINMAX;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;DEBUG;NOMINMAX;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <Lib />
     <Lib />
     <Lib />
   </ItemDefinitionGroup>

@@ -1,6 +1,6 @@
 #include "Man.h"
 
-#include "../../Engine/AI/AiRole.h"
+#include "../AI/AiRole.h"
 
 #include "../../Engine/Modules/ActorFactory.h"
 // unnamed namespase to hide from another places

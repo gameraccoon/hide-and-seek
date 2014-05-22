@@ -44,8 +44,8 @@
     <OutDir>$(SolutionDir)\libs</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>D:\Develop\StealthGame\src\Debug;D:\Libs\lua\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Develop\StealthGame\vs_project\DebugHelpers\Release;D:\Develop\StealthGame\vs_project\Release;D:\Libs\lua\Lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\Develop\StealthGame\src\Engine;D:\Develop\StealthGame\src\Debug;D:\Libs\lua\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Develop\StealthGame\vs_project\SGEngine\Release;D:\Develop\StealthGame\vs_project\DebugHelpers\Release;D:\Develop\StealthGame\vs_project\Release;D:\Libs\lua\Lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -73,14 +73,24 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib />
+    <Lib />
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\LuaInterface\LuaAiState.cpp" />
     <ClCompile Include="..\..\src\LuaInterface\LuaFunction.cpp" />
     <ClCompile Include="..\..\src\LuaInterface\LuaInstance.cpp" />
+    <ClCompile Include="..\..\src\LuaInterface\LuaTypeActor.cpp" />
+    <ClCompile Include="..\..\src\LuaInterface\LuaTypeBody.cpp" />
+    <ClCompile Include="..\..\src\LuaInterface\LuaTypeLog.cpp" />
+    <ClCompile Include="..\..\src\LuaInterface\LuaTypeRole.cpp" />
+    <ClCompile Include="..\..\src\LuaInterface\LuaTypeVector2D.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\src\LuaInterface\LuaAiState.h" />
     <ClInclude Include="..\..\src\LuaInterface\LuaFunction.h" />
     <ClInclude Include="..\..\src\LuaInterface\LuaInstance.h" />
+    <ClInclude Include="..\..\src\LuaInterface\LuaType.h" />
+    <ClInclude Include="..\..\src\LuaInterface\LuaTypeLog.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

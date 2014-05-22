@@ -4,7 +4,10 @@
 #include <string>
 #include <map>
 
-#include "../Hge/HgeIncludes.h"
+#include <hge.h>
+#include <hgesprite.h>
+#include <hgefont.h>
+#include <hgeresource.h>
 
 
 /**

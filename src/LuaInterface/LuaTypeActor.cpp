@@ -1,6 +1,6 @@
 #include "LuaType.h"
 
-#include "../Core/IActor.h"
+#include <Core/IActor.h>
 
 template<>
 IActor* LuaInstance::getFromLua<IActor*>(int index)
