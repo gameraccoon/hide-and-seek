@@ -61,7 +61,7 @@ protected:
 	/** Update classId and actorId */
 	virtual void updateActorId(std::string classId);
 	
-	float getLifetime();
+	float getLifetime() const;
 	World* getOwnerWorld() const;
 	Vector2D getCalculatedSize() const;
 	void setType(ActorType newType);

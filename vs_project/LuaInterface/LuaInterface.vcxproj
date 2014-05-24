@@ -37,13 +37,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>D:\Libs\lua\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Libs\lua\Lib;$(LibraryPath)</LibraryPath>
-    <OutDir>$(SolutionDir)\libs</OutDir>
+    <IncludePath>$(ProjectDir)..\..\src\Engine;$(ProjectDir)..\..\src\Debug;$(ProjectDir)..\..\used_libs\lua52\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)..\$(Configuration);$(ProjectDir)..\..\used_libs\lua52\libs;$(IncludePath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>$(ProjectDir)..\..\src\Engine;$(ProjectDir)..\..\src\Debug;$(ProjectDir)..\..\used_libs\lua52\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)..\Release;$(ProjectDir)..\..\used_libs\lua52\libs;$(IncludePath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)..\$(Configuration);$(ProjectDir)..\..\used_libs\lua52\libs;$(IncludePath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
