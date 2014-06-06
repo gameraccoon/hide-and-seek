@@ -1,7 +1,7 @@
 #ifndef WALL_H
 #define WALL_H
 
-#include <Actors/Actor.h>
+#include <Engine/Actors/Actor.h>
 
 class Wall : public Actor
 {

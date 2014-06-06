@@ -1,7 +1,7 @@
 #include "LuaType.h"
 
-#include <AI/Role.h>
-#include <AI/IBody.h>
+#include <Engine/AI/Role.h>
+#include <Engine/AI/IBody.h>
 
 namespace LuaType
 {

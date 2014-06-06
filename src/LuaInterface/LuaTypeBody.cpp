@@ -1,6 +1,6 @@
 #include "LuaType.h"
 
-#include <AI/IBody.h>
+#include <Engine/AI/IBody.h>
 
 template<>
 IBody* LuaInstance::getFromLua<IBody*>(int index)

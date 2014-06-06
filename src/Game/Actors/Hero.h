@@ -1,9 +1,9 @@
 #ifndef HERO_H
 #define HERO_H
 
-#include <Core/World.h>
-#include <Core/Vector2D.h>
-#include <Actors/Body.h>
+#include <Engine/Core/World.h>
+#include <Engine/Core/Vector2D.h>
+#include <Engine/Actors/Body.h>
 
 class Hero:public Body
 {

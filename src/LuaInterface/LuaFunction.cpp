@@ -1,6 +1,6 @@
 #include "LuaFunction.h"
 
-#include <Log.h>
+#include <Debug/Log.h>
 
 
 namespace

@@ -8,9 +8,9 @@
 #include <hgefont.h>
 #include <hgeresource.h>
 
-#include <Core/Vector2D.h>
-#include <Core/World.h>
-#include <Actors/Actor.h>
+#include <Engine/Core/Vector2D.h>
+#include <Engine/Core/World.h>
+#include <Engine/Actors/Actor.h>
 
 #include "GraphicLoader.h"
 

@@ -6,8 +6,8 @@
 #include <hgefont.h>
 #include <hgeresource.h>
 
-#include <Core/Vector2D.h>
-#include <Core/Rotator.h>
+#include <Engine/Core/Vector2D.h>
+#include <Engine/Core/Rotator.h>
 
 class DirectionArrow
 {

@@ -11,17 +11,18 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{912A6497-7CC2-4292-9C90-45682E89780B}</ProjectGuid>
-    <RootNamespace>StealthGame</RootNamespace>
+    <ProjectGuid>{7569D2C9-9CC0-4597-804B-ABC8923AC148}</ProjectGuid>
+    <RootNamespace>Game</RootNamespace>
+    <ProjectName>Game</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
@@ -36,51 +37,46 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(ProjectDir)..\..\src;$(ProjectDir)..\..\used_libs\hge\include;$(ProjectDir)..\..\used_libs\lua52\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)..\..\src;$(ProjectDir)..\..\used_libs\lua52\include;$(ProjectDir)..\..\used_libs\hge\include;$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)..\build\</OutDir>
+    <LibraryPath>$(ProjectDir)..\$(Configuration);$(ProjectDir)..\..\used_libs\lua52\lib;$(ProjectDir)..\..\used_libs\hge\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(ProjectDir)..\..\src;$(ProjectDir)..\..\used_libs\hge\include;$(ProjectDir)..\..\used_libs\lua52\include;$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)..\build\</OutDir>
+    <IncludePath>$(ProjectDir)..\..\src;$(ProjectDir)..\..\used_libs\lua52\include;$(ProjectDir)..\..\used_libs\hge\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)..\$(Configuration);$(ProjectDir)..\..\used_libs\lua52\lib;$(ProjectDir)..\..\used_libs\hge\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <PreprocessorDefinitions>WIN32;DEBUG;NOMINMAX;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <BrowseInformation>false</BrowseInformation>
       <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;NOMINMAX;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
+      <AdditionalDependencies>StealthGame.lib;DebugHelpers.lib;liblua52.a;LuaInterface.lib;HgeInterface.lib;SGEngine.lib;hge.lib;hgehelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalOptions>/NODEFAULTLIB:LIBCMT %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;DEBUG;NOMINMAX;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <FavorSizeOrSpeed />
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>StealthGame.lib;DebugHelpers.lib;liblua52.a;LuaInterface.lib;HgeInterface.lib;SGEngine.lib;hge.lib;hgehelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalOptions>/NODEFAULTLIB:LIBCMT %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\Game\Actors\Corpse.h" />
-    <ClInclude Include="..\..\src\Game\Actors\Hero.h" />
-    <ClInclude Include="..\..\src\Game\Actors\Man.h" />
-    <ClInclude Include="..\..\src\Game\Actors\Wall.h" />
-    <ClInclude Include="..\..\src\Game\AI\AiRole.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\src\Game\Actors\Corpse.cpp" />
-    <ClCompile Include="..\..\src\Game\Actors\Hero.cpp" />
-    <ClCompile Include="..\..\src\Game\Actors\Man.cpp" />
-    <ClCompile Include="..\..\src\Game\Actors\Wall.cpp" />
-    <ClCompile Include="..\..\src\Game\AI\AiRole.cpp" />
+    <ClCompile Include="..\..\src\Game\main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

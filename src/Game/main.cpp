@@ -1,17 +1,17 @@
-#include <Log.h>
+#include <Debug/Log.h>
 
-#include <Input/KeyListeners.h>
-#include <Graphics/FloatingCamera.h>
-#include <Graphics/DirectionArrow.h>
+#include <HgeInterface/Input/KeyListeners.h>
+#include <HgeInterface/Graphics/FloatingCamera.h>
+#include <HgeInterface/Graphics/DirectionArrow.h>
 
-#include <Core/World.h>
-#include <Structures/PathPoint.h>
-#include <Modules/LevelLoader.h>
-#include <Modules/WorldsContainer.h>
-#include <Actors/LightEmitter.h>
+#include <Engine/Core/World.h>
+#include <Engine/Structures/PathPoint.h>
+#include <Engine/Modules/LevelLoader.h>
+#include <Engine/Modules/WorldsContainer.h>
+#include <Engine/Actors/LightEmitter.h>
 
-#include "Actors/Wall.h"
-#include "Actors/Hero.h"
+#include <Game/Actors/Wall.h>
+#include <Game/Actors/Hero.h>
 
 #include <vector>
 
@@ -277,6 +277,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	else
 	{
 		MessageBox(NULL, "System failed to initialize", "Error", MB_OK | MB_ICONERROR | MB_APPLMODAL);
+		Log::WriteError("System failed to initialize");
 	}
 
 	// Clean up and shutdown

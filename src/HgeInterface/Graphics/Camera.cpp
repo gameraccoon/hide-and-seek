@@ -1,6 +1,6 @@
 #include "Camera.h"
 
-#include <DebugMethods.h>
+#include <Debug/DebugMethods.h>
 
 // dummy for debugging methods
 #if (!defined DEBUG) && (!defined RELEASE)

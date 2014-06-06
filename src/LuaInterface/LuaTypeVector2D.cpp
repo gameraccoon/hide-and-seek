@@ -1,6 +1,6 @@
 #include "LuaType.h"
 
-#include <Core/Vector2D.h>
+#include <Engine/Core/Vector2D.h>
 
 namespace LuaType
 {
