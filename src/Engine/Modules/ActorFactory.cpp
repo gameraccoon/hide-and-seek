@@ -3,12 +3,7 @@
 ActorFactory* ActorFactory::singleInstance = nullptr;
 
 ActorFactory::ActorFactory() {}
-ActorFactory::ActorFactory(const ActorFactory&) {}
 ActorFactory::~ActorFactory() {}
-ActorFactory& ActorFactory::operator=(const ActorFactory&)
-{
-	return *ActorFactory::singleInstance;
-}
 
 ActorFactory& ActorFactory::Factory()
 {

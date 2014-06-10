@@ -94,6 +94,10 @@ private:
 	bool bWaitDestruction;
 	/** Time that actor live */
 	float lifetime;
+
+	/** Copy and assignment prohibited */
+	Actor(const Actor&);
+	void operator=(const Actor&);
 };
 
 #endif

@@ -1,23 +1,6 @@
 #include "Wall.h"
 
 
-#include <Engine/Modules/ActorFactory.h>
-// unnamed namespase to hide from another places
-namespace
-{
-	// specific factory
-	IActor* CreateWall(World *world, const Vector2D location, const Vector2D scale, const Rotator rotation)
-	{
-		return new Wall(world, location, scale, rotation);
-	}
-
-	const std::string CLASS_ID = "Wall";
-
-	// register specific factory in actor factory
-	const bool registered = ActorFactory::Factory().registerActor(CLASS_ID, CreateWall);
-}
-
-
 Wall::Wall(World *world, Vector2D location, Vector2D scale, Rotator rotation) : Actor(world, location, rotation)
 {
 	this->setType(ActorType::Static);
@@ -35,7 +18,7 @@ Wall::Wall(World *world, Vector2D location, Vector2D scale, Rotator rotation) : 
 
 	this->updateCollision();
 
-	this->updateActorId(CLASS_ID);
+	this->updateActorId("Wall");
 }
 
 Wall::~Wall(void)

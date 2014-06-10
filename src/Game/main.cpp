@@ -10,10 +10,11 @@
 #include <Engine/Modules/WorldsContainer.h>
 #include <Engine/Actors/LightEmitter.h>
 
-#include <Game/Actors/Wall.h>
 #include <Game/Actors/Hero.h>
 
 #include <vector>
+
+#include "actorsRegistration.h"
 
 // Hge subsystem
 HGE *hge = nullptr;
@@ -164,7 +165,7 @@ bool RenderFunc()
 	::hge->Gfx_BeginScene();
 	::hge->Gfx_Clear(0);
 	
-	//-- Start graphics render
+	//-- Start render graphics on the screen
 
 	cameraRenderSprite->Render(0, 0);
 
@@ -215,64 +216,62 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	if(::hge->System_Initiate())
 	{
-		// Load sound and texture
-		HTEXTURE texture = ::hge->Texture_Load("particles.png");
-		if(!texture)
+		try
 		{
-			// If one of the data files is not found, display
-			// an error message and shutdown.
-			Log::WriteError("Can't load one of the following files: FONT1.FNT, FONT1.PNG, PARTICLES.PNG");
-			::hge->System_Shutdown();
-			::hge->Release();
-			return 0;
-		}
+			// Load sound and texture
+			HTEXTURE texture = ::hge->Texture_Load("particles.png");
 
-		// Load a font
-		::font = new hgeFont("font1.fnt");
-		::font->SetScale(0.7f);
+			// Load a font
+			::font = new hgeFont("font1.fnt");
+			::font->SetScale(0.7f);
 
-		// Create and set up a particle system
-		::crosshair = new hgeSprite(texture, 64, 96, 32, 32);
-		::crosshair->SetBlendMode(BLEND_COLORMUL | BLEND_ALPHAADD | BLEND_NOZWRITE);
-		::crosshair->SetHotSpot(16, 16);
+			// Create and set up a particle system
+			::crosshair = new hgeSprite(texture, 64, 96, 32, 32);
+			::crosshair->SetBlendMode(BLEND_COLORMUL | BLEND_ALPHAADD | BLEND_NOZWRITE);
+			::crosshair->SetHotSpot(16, 16);
 
-		::gameWorld = new World();
-		WorldsContainer::Container().insertWorld(::gameWorld, "mainWorld");
+			FactoryActors::RegisterAll();
 
-		// -- end: register lua functions
+			::gameWorld = new World();
+			WorldsContainer::Container().insertWorld(::gameWorld, "mainWorld");
 
-		::mainCamera = new FloatingCamera(::hge, ::gameWorld, SCREEN_CENTER * 2, Vector2D(0.0f, 0.0f));
+			::mainCamera = new FloatingCamera(::hge, ::gameWorld, SCREEN_CENTER * 2, Vector2D(0.0f, 0.0f));
 
-		// hero will be deleted automaticaly as other actors
-		::ourHero = new Hero(::gameWorld, Vector2D(0.0f, 350.0f), Vector2D(1.f, 1.f), Rotator(0.f));
+			// hero will be deleted automaticaly as other actors
+			::ourHero = new Hero(::gameWorld, Vector2D(0.0f, 350.0f), Vector2D(1.f, 1.f), Rotator(0.f));
 
-		::ourHero->giveWeapon(new Weapon());
+			::ourHero->giveWeapon(new Weapon());
 
-		::arrow = new DirectionArrow(::hge);
-		::arrow->setCenter(SCREEN_CENTER);
+			::arrow = new DirectionArrow(::hge);
+			::arrow->setCenter(SCREEN_CENTER);
 		
-		::listeners.addListener(new BtnAABB(::hge));
-		::listeners.addListener(new BtnHulls(::hge));
-		::listeners.addListener(new BtnFog(::hge));
-		::listeners.addListener(new BtnShadows(::hge));
-		::listeners.addListener(new BtnLights(::hge));
-		::listeners.addListener(new BtnPaths(::hge));
-		::listeners.addListener(new BtnShoot(::hge));
-		::listeners.addListener(new BtnAddLight(::hge));
+			::listeners.addListener(new BtnAABB(::hge));
+			::listeners.addListener(new BtnHulls(::hge));
+			::listeners.addListener(new BtnFog(::hge));
+			::listeners.addListener(new BtnShadows(::hge));
+			::listeners.addListener(new BtnLights(::hge));
+			::listeners.addListener(new BtnPaths(::hge));
+			::listeners.addListener(new BtnShoot(::hge));
+			::listeners.addListener(new BtnAddLight(::hge));
 
-		LevelLoader::load(::gameWorld, std::string("test"));
-		//LevelLoader::save(::gameWorld, std::string("test"));
+			LevelLoader::load(::gameWorld, std::string("test"));
+			//LevelLoader::save(::gameWorld, std::string("test"));
 
-		// Let's rock now!
-		::hge->System_Start();
+			// Let's rock now!
+			::hge->System_Start();
 
-		// Delete created objects and free loaded resources
-		delete ::font;
-		delete ::crosshair;
-		delete ::arrow;
-		delete ::mainCamera;
-		delete ::gameWorld;
-		::hge->Texture_Free(texture);
+			// Delete created objects and free loaded resources
+			delete ::font;
+			delete ::crosshair;
+			delete ::arrow;
+			delete ::mainCamera;
+			delete ::gameWorld;
+			::hge->Texture_Free(texture);
+		}
+		catch (std::runtime_error e)
+		{
+			Log::WriteError("Game load filed with unknown error!");
+		}
 	}
 	else
 	{

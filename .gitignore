@@ -9,3 +9,5 @@ Release
 log.txt
 *_log.txt
 *.sdf
+*.ilk
+*.pdb
