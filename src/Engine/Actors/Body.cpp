@@ -2,6 +2,8 @@
 
 #include "../Modules/ActorFactory.h"
 
+#include "../Actors/LightEmitter.h"
+
 Body::Body(World *world, Vector2D location) : Actor(world, location, Rotator(0.0f)),
 	navigator(world),
 	size(32.0f, 32.0f),
@@ -133,6 +135,11 @@ void Body::update(float deltatime)
 	Actor::update(deltatime);
 }
 
+Body::Fraction Body::getFraction()
+{
+	return this->fraction;
+}
+
 void Body::onUpdateLocation()
 {
 	if (this->armedWeapon != nullptr)
@@ -153,12 +160,72 @@ void Body::look()
 {
 	for (auto actor : this->getOwnerWorld()->allActors)
 	{
-		if (actor->getType() == ActorType::Living && actor != this && (this->getLocation() - actor->getLocation()).size() < 60)
+		// if actor is a human or a creature and actor isn't this body
+		if (actor->getType() == ActorType::Living && actor != this)
 		{
-			role->onSeeEnemy(actor);
-			break;
+			Body *body = dynamic_cast<Body*>(actor);
+			// if actor is a body and it is an enemy
+			if (body != nullptr && body->getFraction() == Fraction::GoodGuys)
+			{
+				if (this->canSeeEnemy(body))
+				{
+					role->onSeeEnemy(actor);
+					break;
+				}
+			}
 		}
 	}
+}
+
+bool Body::canSeeEnemy(const Body *enemy) const
+{
+	const float angleOfView = PI/4;
+	const float viewDistance = 400.f;
+
+	// if enemy farther than viewDistance
+	if ((this->getLocation() - enemy->getLocation()).size() > viewDistance)
+	{
+		return false;
+	}
+
+	Vector2D loc = enemy->getLocation();
+	Rotator angle = (loc - this->getLocation()).rotation();
+
+	// if actor isn't on the front
+	if (abs((angle - this->getRotation()).getValue()) > angleOfView)
+	{
+		return false;
+	}
+
+	RayTrace ray(this->getOwnerWorld(), this->getLocation(), enemy->getLocation());
+	IActor *tracedActor = ray.trace();
+	if (tracedActor != enemy)
+	{
+		return false;
+	}
+
+	// ToDo: need to refactor next fragment
+	for (auto actor : this->getOwnerWorld()->allActors)
+	{
+		if (actor->getType() == ActorType::Light)
+		{
+			LightEmitter *light = dynamic_cast<LightEmitter*>(actor);
+			if (light != nullptr)
+			{
+				if ((light->getLocation() - enemy->getLocation()).size() < light->getBrightness() * 230)
+				{
+					RayTrace ray2(this->getOwnerWorld(), light->getLocation(), enemy->getLocation());
+					IActor *tracedActor2 = ray2.trace();
+					if (tracedActor2 == enemy)
+					{
+						return true;
+					}
+				}
+			}
+		}
+	}
+
+	return false;
 }
 
 void Body::findNextPathPoint()
@@ -184,4 +251,9 @@ void Body::findNextPathPoint()
 
 		this->setRotation((this->tempLocation - this->getLocation()).rotation());
 	}
+}
+
+void Body::setFraction(Fraction newFraction)
+{
+	this->fraction = newFraction;
 }

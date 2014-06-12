@@ -17,3 +17,8 @@ LightEmitter::~LightEmitter(void)
 void LightEmitter::updateCollision()
 {
 }
+
+float LightEmitter::getBrightness() const
+{
+	return this->brightness;
+}

@@ -8,6 +8,8 @@ class LightEmitter : public Actor
 public:
 	LightEmitter(World *world, Vector2D location, Vector2D scale, Rotator rotation);
 	~LightEmitter(void);
+
+	float getBrightness() const;
 protected:
 	virtual void updateCollision() override;
 	float brightness;

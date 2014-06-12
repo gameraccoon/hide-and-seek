@@ -36,10 +36,10 @@ namespace FactoryActors
 {
 	void RegisterAll()
 	{
-		ActorFactory::Factory().registerActor("Bullet", CreateBullet);
-		ActorFactory::Factory().registerActor("LightEmitter", CreateLightEmitter);
-		ActorFactory::Factory().registerActor("Wall", CreateWall);
-		ActorFactory::Factory().registerActor("Man", CreateMan);
-		ActorFactory::Factory().registerActor("Corpse", CreateCorpse);
+		ActorFactory::Factory().registerActor("Bullet", ::CreateBullet);
+		ActorFactory::Factory().registerActor("LightEmitter", ::CreateLightEmitter);
+		ActorFactory::Factory().registerActor("Wall", ::CreateWall);
+		ActorFactory::Factory().registerActor("Man", ::CreateMan);
+		ActorFactory::Factory().registerActor("Corpse", ::CreateCorpse);
 	}
 }
