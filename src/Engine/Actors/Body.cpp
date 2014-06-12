@@ -181,6 +181,7 @@ bool Body::canSeeEnemy(const Body *enemy) const
 {
 	const float angleOfView = PI/4;
 	const float viewDistance = 400.f;
+	const float attentiveness = 1.5f;
 
 	// if enemy farther than viewDistance
 	if ((this->getLocation() - enemy->getLocation()).size() > viewDistance)
@@ -203,6 +204,8 @@ bool Body::canSeeEnemy(const Body *enemy) const
 		return false;
 	}
 
+	float lightness = 0.f;
+
 	// ToDo: need to refactor next fragment
 	for (auto actor : this->getOwnerWorld()->allActors)
 	{
@@ -211,16 +214,28 @@ bool Body::canSeeEnemy(const Body *enemy) const
 			LightEmitter *light = dynamic_cast<LightEmitter*>(actor);
 			if (light != nullptr)
 			{
-				if ((light->getLocation() - enemy->getLocation()).size() < light->getBrightness() * 230)
+				if ((light->getLocation() - enemy->getLocation()).size() < light->getBrightness() * 512)
 				{
 					IActor *tracedActor2 = RayTrace::trace(this->getOwnerWorld(), light->getLocation(), enemy->getLocation());
 					if (tracedActor2 == enemy)
 					{
-						return true;
+						float sz = (light->getLocation() - enemy->getLocation()).size();
+						
+						if (sz < 0.1f)
+							sz = 0.1f;
+						
+						lightness += (light->getBrightness() * 256) / sz;
 					}
 				}
 			}
 		}
+	}
+
+	float visibility = lightness;
+
+	if (visibility > attentiveness)
+	{
+		return true;
 	}
 
 	return false;
