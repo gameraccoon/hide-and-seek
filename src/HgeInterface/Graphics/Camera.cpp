@@ -74,36 +74,41 @@ void Camera::render()
 	{
 		if (actor->getType() == ActorType::Light)
 		{
-			this->hge->Gfx_BeginScene(this->zone);
+			
+			LightEmitter *light = dynamic_cast<LightEmitter*>(actor);
+			if (light == nullptr)
+				continue;
+
+			this->hge->Gfx_BeginScene(this->zone); // start render to texture
 			this->hge->Gfx_Clear(0xFFFFFF);
 			
-			// Actors beside this light
-			this->renderActors(actor->getLocation());
+			// actors beside this light
+			this->renderActors(light);
 
-			// Shadows for this light
+			// shadows for this light
 			if (this->bRenderShadows)
 			{
-				this->renderLightShadows(actor->getLocation());
+				this->renderLightShadows(light);
 			}
 
-			// Fog of this light
-			if (this->bRenderFog)
-			{
-				this->fogSprite->RenderEx(this->shownSize/2, this->shownSize/2, 0, this->shownSize/this->fogWidth, this->shownSize/this->fogWidth);
-			}
-	
-			this->hge->Gfx_EndScene();
+			// fog of this light
+			this->renderFog(this->shownSize, this->shownSize, this->shownSize / this->fogWidth * light->getBrightness());
 
-			// render light to lights
-			hgeSprite *light = new hgeSprite(this->hge->Target_GetTexture(this->zone), 0, 0, this->shownSize, this->shownSize);
-			light->SetBlendMode(BLEND_COLORMUL);
-			light->SetColor(0xFF777777);
+			this->hge->Gfx_EndScene(); // end render to texture
 
+			// prepare the sprite
+			hgeSprite *lightSprite = new hgeSprite(this->hge->Target_GetTexture(this->zone), 0, 0, this->shownSize, this->shownSize);
+			lightSprite->SetBlendMode(BLEND_COLORMUL);
+			lightSprite->SetColor(0xFF777777);
+
+			Vector2D projected = this->project(actor->getLocation());
+
+			// render sprite to frame texture
 			this->hge->Gfx_BeginScene(this->renderTarget);
-			light->Render(this->project(actor->getLocation()).x-this->shownSize/2, this->project(actor->getLocation()).y - this->shownSize/2);
+			lightSprite->Render(projected.x-this->shownSize/2, projected.y - this->shownSize/2);
 			this->hge->Gfx_EndScene();
 
-			delete light;
+			delete lightSprite;
 		}
 	}
 
@@ -119,7 +124,7 @@ void Camera::render()
 	// Render player's fog
 	if (this->bRenderFog)
 	{
-		//this->renderFog();
+		this->renderFog(this->resolution.x, this->resolution.y, fogScale);
 	}
 
 	// Bounding boxes
@@ -150,8 +155,10 @@ void Camera::render()
 	this->hge->Gfx_EndScene();
 }
 
-void Camera::renderActors(Vector2D lightPos)
+void Camera::renderActors(const LightEmitter *light)
 {
+	const Vector2D lightPos = light->getLocation();
+	const float lightBrightness = light->getBrightness();
 	// for each actors in the world
 	for (auto const &actorToRender : this->browsableWorld->allActors)
 	{
@@ -161,7 +168,7 @@ void Camera::renderActors(Vector2D lightPos)
 		float distanceFromCamera = screenLoc.size();
 
 		// if actor is not far of drawing zone
-		if (distanceFromCamera >= this->shownSize)
+		if (distanceFromCamera >= this->shownSize * lightBrightness)
 			continue;
 
 		// Get sprite
@@ -199,7 +206,7 @@ void Camera::renderCollisionBoxes()
 	}
 }
 
-Vector2D Camera::project(Vector2D worldPoint)
+Vector2D Camera::project(const Vector2D &worldPoint) const
 {
 	// calc camera-location
 	Vector2D screenLoc(worldPoint - this->location);
@@ -209,7 +216,7 @@ Vector2D Camera::project(Vector2D worldPoint)
 	return this->centerPos + newScreenLoc;
 }
 
-Vector2D Camera::projectFrom(Vector2D worldPoint, Vector2D projectionCenter)
+Vector2D Camera::projectFrom(const Vector2D &worldPoint, const Vector2D &projectionCenter) const
 {
 	// calc camera-location
 	Vector2D screenLoc(worldPoint - projectionCenter);
@@ -219,7 +226,7 @@ Vector2D Camera::projectFrom(Vector2D worldPoint, Vector2D projectionCenter)
 	return Vector2D(this->shownSize/2, this->shownSize/2) + newScreenLoc;
 }
 
-Vector2D Camera::deProject(Vector2D screenPoint)
+Vector2D Camera::deProject(const Vector2D &screenPoint) const
 {
 	// calc relative screen-coordinates
 	Vector2D relScreenLoc(screenPoint - this->centerPos);
@@ -229,13 +236,33 @@ Vector2D Camera::deProject(Vector2D screenPoint)
 	return this->location + screenLoc;
 }
 
-void Camera::renderFog()
+void Camera::renderFog(float width, float height, float size)
 {
 	// render fog sprite
-	this->fogSprite->RenderEx(this->resolution.x/2, this->resolution.y/2, 0, this->fogScale, this->fogScale);
+	this->fogSprite->RenderEx(width/2, height/2, 0, size, size);
+
+	// left shadow quad
+	this->drawQuad(Vector2D(-2000.f, -2000.f), Vector2D(-2000.f, 2000.f),
+		Vector2D(width/2 - size*fogWidth/2, 2000.f),
+		Vector2D(width/2 - size*fogWidth/2, -2000.f));
+
+	// right shadow quad
+	this->drawQuad(Vector2D(2000.f, -2000.f), Vector2D(2000.f, 2000.f),
+		Vector2D(width/2 + size*fogWidth/2, 2000.f),
+		Vector2D(width/2 + size*fogWidth/2, -2000.f));
+
+	// up shadow quad
+	this->drawQuad(Vector2D(-2000.f, -2000.f), Vector2D(2000.f, -2000.f),
+		Vector2D(2000.f, height/2 - size*fogWidth/2),
+		Vector2D(-2000.f, height/2 - size*fogWidth/2));
+
+	// down shadow quad
+	this->drawQuad(Vector2D(-2000.f, 2000.f), Vector2D(2000.f, 2000.f),
+		Vector2D(2000.f, height/2 + size*fogWidth/2),
+		Vector2D(-2000.f, height/2 + size*fogWidth/2));
 }
 
-void Camera::drawPenumbra(Vector2D first, Vector2D second, Vector2D third)
+void Camera::drawPenumbra(const Vector2D &first, const Vector2D &second, const Vector2D &third)
 {
 	HTEXTURE PenumbraTexture = this->hge->Texture_Load("penumbra.png");
 
@@ -268,7 +295,7 @@ void Camera::drawPenumbra(Vector2D first, Vector2D second, Vector2D third)
 	this->hge->Gfx_RenderTriple(&triple);
 }
 
-void Camera::drawQuad(Vector2D first, Vector2D second, Vector2D third, Vector2D fourth)
+void Camera::drawQuad(const Vector2D &first, const Vector2D &second, const Vector2D &third, const Vector2D &fourth)
 {
 	hgeQuad quad;
 	quad.tex = 0;
@@ -291,8 +318,11 @@ void Camera::drawQuad(Vector2D first, Vector2D second, Vector2D third, Vector2D 
 	this->hge->Gfx_RenderQuad(&quad);
 }
 
-void Camera::renderLightShadows(Vector2D lightPos)
+void Camera::renderLightShadows(const LightEmitter *light)
 {
+	const Vector2D lightPos = light->getLocation();
+	const float lightBrightness = light->getBrightness();
+
 	Vector2D lightCenterPos(this->shownSize/2, this->shownSize/2);
 	// for each actors in the world
 	for (auto const &actor : this->browsableWorld->allActors)
@@ -300,6 +330,15 @@ void Camera::renderLightShadows(Vector2D lightPos)
 		// if actor - static
 		if (actor->getType() == ActorType::Static)
 		{
+			// Get actor's camera local location
+			Vector2D screenLoc(actor->getLocation() - lightPos);
+			// Get distance from center of screen
+			float distanceFromCamera = screenLoc.size();
+
+			// if actor is not far of drawing zone
+			if (distanceFromCamera >= this->shownSize * lightBrightness)
+				continue;
+
 			// get actors geometry
 			const Hull *hull = actor->getGeometry();
 			// for each border of actor's geometry
@@ -449,12 +488,12 @@ void Camera::renderPaths()
 	}
 }
 
-void Camera::setLocation(Vector2D newLocation)
+void Camera::setLocation(const Vector2D &newLocation)
 {
 	this->location = newLocation;
 }
 
-Vector2D Camera::getResolution()
+Vector2D Camera::getResolution() const
 {
 	return this->resolution;
 }
@@ -494,7 +533,7 @@ void Camera::showPaths(bool show)
 	this->bShowPaths = show;
 }
 
-HTEXTURE Camera::getRenderTexture()
+HTEXTURE Camera::getRenderTexture() const
 {
 	return this->renderTarget;
 }

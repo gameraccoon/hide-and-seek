@@ -12,6 +12,8 @@
 #include <Engine/Core/World.h>
 #include <Engine/Actors/Actor.h>
 
+#include <Engine/Actors/LightEmitter.h>
+
 #include "GraphicLoader.h"
 
 class Camera
@@ -20,13 +22,13 @@ public:
 	Camera(HGE* hge, World* world, Vector2D resolution, Vector2D location);
 	virtual ~Camera(void);
 	/** Get pointer to the texture which will be used to render */
-	HTEXTURE getRenderTexture();
+	HTEXTURE getRenderTexture() const;
 	/** Render of all objects thats seen by camera */
 	void render();
 	/** Set new location of camera in the world */
-	virtual void setLocation(Vector2D newLocation);
+	virtual void setLocation(const Vector2D &newLocation);
 	/** Get screen resolution */
-	Vector2D getResolution();
+	Vector2D getResolution() const;
 	/** Set new angle of camera rotation */
 	void setRotation(Rotator angle);
 	/** Switch showing bounding boxes */
@@ -42,20 +44,20 @@ public:
 	/** Switch showing paths */
 	void showPaths(bool show);
 	/** Project point from world coordinates to screen coordinates */
-	Vector2D project(Vector2D worldPoint);
-	Vector2D projectFrom(Vector2D worldPoint, Vector2D projectionCenter);
+	Vector2D project(const Vector2D &worldPoint) const;
+	Vector2D projectFrom(const Vector2D &worldPoint, const Vector2D &projectionCenter) const;
 	/** Project point from screen coordinates to the world coordinates */
-	Vector2D deProject(Vector2D screenPoint);
+	Vector2D deProject(const Vector2D &screenPoint) const;
 protected:
 	/** Render all seen actors */
-	void renderActors(Vector2D lightPos);
+	void renderActors(const LightEmitter *light);
 	/** Render collision AABB to screen */
 	void renderCollisionBoxes();
-	/** Render fog for the camera (fog of war) */
-	virtual void renderFog();
+	/** Render dark ring like fog */
+	virtual void renderFog(float width, float height, float size);
 	/** Render shadows of player view */
 	void renderShadows();
-	void renderLightShadows(Vector2D lightPos);
+	void renderLightShadows(const LightEmitter *light);
 	/** Render hulls */
 	void renderHulls();
 	/** Render lights centers */
@@ -108,9 +110,9 @@ protected:
 	HTARGET zone;
 private:
 	/** Helper method. Drawing quad on screen */
-	void drawQuad(Vector2D first, Vector2D second, Vector2D third, Vector2D fourth);
+	void drawQuad(const Vector2D &first, const Vector2D &second, const Vector2D &third, const Vector2D &fourth);
 	/** Drawing penumbra triangle */
-	void drawPenumbra(Vector2D first, Vector2D second, Vector2D third);
+	void drawPenumbra(const Vector2D &first, const Vector2D &second, const Vector2D &third);
 };
 
 #endif
