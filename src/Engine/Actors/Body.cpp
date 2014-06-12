@@ -197,8 +197,7 @@ bool Body::canSeeEnemy(const Body *enemy) const
 		return false;
 	}
 
-	RayTrace ray(this->getOwnerWorld(), this->getLocation(), enemy->getLocation());
-	IActor *tracedActor = ray.trace();
+	IActor *tracedActor = RayTrace::trace(this->getOwnerWorld(), this->getLocation(), enemy->getLocation());
 	if (tracedActor != enemy)
 	{
 		return false;
@@ -214,8 +213,7 @@ bool Body::canSeeEnemy(const Body *enemy) const
 			{
 				if ((light->getLocation() - enemy->getLocation()).size() < light->getBrightness() * 230)
 				{
-					RayTrace ray2(this->getOwnerWorld(), light->getLocation(), enemy->getLocation());
-					IActor *tracedActor2 = ray2.trace();
+					IActor *tracedActor2 = RayTrace::trace(this->getOwnerWorld(), light->getLocation(), enemy->getLocation());
 					if (tracedActor2 == enemy)
 					{
 						return true;
@@ -232,8 +230,7 @@ void Body::findNextPathPoint()
 {
 	if (this->followingTarget != nullptr)
 	{
-		RayTrace ray(this->getOwnerWorld(), this->getLocation(), this->followingTarget->getLocation());
-		IActor* tracedActor = ray.trace();
+		IActor* tracedActor = RayTrace::trace(this->getOwnerWorld(), this->getLocation(), this->followingTarget->getLocation());
 
 		if (tracedActor == this->followingTarget || tracedActor == nullptr)
 		{

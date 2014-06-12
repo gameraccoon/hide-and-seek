@@ -31,9 +31,8 @@ void Bullet::update(float deltatime)
 	
 	WARN_IF(!this->getOwnerWorld(), "Not assigned OwnerWorld for bullet");
 
-	RayTrace ray(this->getOwnerWorld(), this->getLocation(), newLocation);
 	Vector2D traceLocation(ZERO_VECTOR);
-	IActor *trasedActor = ray.trace(&traceLocation);
+	IActor *trasedActor = RayTrace::trace(this->getOwnerWorld(), this->getLocation(), newLocation, &traceLocation);
 
 	// if there nothing to hit
 	if (trasedActor == nullptr)
