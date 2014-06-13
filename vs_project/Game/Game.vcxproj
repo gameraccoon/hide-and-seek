@@ -44,17 +44,17 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)..\build\</OutDir>
     <IncludePath>$(ProjectDir)..\..\src;$(ProjectDir)..\..\used_libs\lua52\include;$(ProjectDir)..\..\used_libs\hge\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)..\$(Configuration);$(ProjectDir)..\..\used_libs\lua52\lib;$(ProjectDir)..\..\used_libs\hge\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)..\$(Configuration);$(ProjectDir)..\..\used_libs\lua52\lib;$(ProjectDir)..\..\used_libs\sqlite\lib;$(ProjectDir)..\..\used_libs\hge\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;NOMINMAX;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;DEBUG;NOMINMAX;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>StealthGame.lib;DebugHelpers.lib;liblua52.a;LuaInterface.lib;HgeInterface.lib;SGEngine.lib;hge.lib;hgehelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SqliteInterface.lib;StealthGame.lib;DebugHelpers.lib;sqlite3.lib;liblua52.a;LuaInterface.lib;HgeInterface.lib;SGEngine.lib;hge.lib;hgehelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalOptions>/NODEFAULTLIB:LIBCMT %(AdditionalOptions)</AdditionalOptions>
     </Link>
