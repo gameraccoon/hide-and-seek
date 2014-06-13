@@ -2,9 +2,12 @@
 
 #include <LuaInterface/LuaAiState.h>
 
+#include <SqliteInterface/StateLoader.h>
+
 AiRole::AiRole(World* world, IBody *body) : Role(world, body)
 {
-	std::string firstStateName = "test";
+	StateLoader sl("");
+	std::string firstStateName = sl.getStateName("");
 	this->states.push(new LuaAiState(world, body, this, firstStateName));
 }
 

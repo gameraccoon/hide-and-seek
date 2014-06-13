@@ -11,3 +11,4 @@ log.txt
 *.sdf
 *.ilk
 *.pdb
+!*.vcxproj
