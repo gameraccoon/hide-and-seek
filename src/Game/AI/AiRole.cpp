@@ -4,7 +4,8 @@
 
 AiRole::AiRole(World* world, IBody *body) : Role(world, body)
 {
-	this->states.push(new LuaAiState(world, body, this));
+	std::string firstStateName = "test";
+	this->states.push(new LuaAiState(world, body, this, firstStateName));
 }
 
 AiRole::~AiRole(void)
@@ -31,4 +32,14 @@ void AiRole::onSeeEnemy(IActor *enemy)
 
 void AiRole::onHearNoise(SoundVolume *sound)
 {
+}
+
+void AiRole::gotoState(std::string stateName)
+{
+
+}
+
+void AiRole::endCurrentState()
+{
+
 }

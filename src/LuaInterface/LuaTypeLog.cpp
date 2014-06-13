@@ -1,4 +1,4 @@
-#include "LuaType.h"
+#include "LuaTypeLog.h"
 
 #include <Debug/Log.h>
 

@@ -20,6 +20,9 @@ public:
 	virtual void onSeeEnemy(IActor *enemy) = 0;
 	virtual void onHearNoise(SoundVolume *sound) = 0;
 
+	virtual void gotoState(std::string stateName) = 0;
+	virtual void endCurrentState() = 0;
+
 	IBody* getBody();
 private:
 	IBody *body;

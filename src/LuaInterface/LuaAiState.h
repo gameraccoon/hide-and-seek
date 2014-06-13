@@ -9,7 +9,7 @@
 class LuaAiState : public AiState
 {
 public:
-	LuaAiState(World *world, IBody *body, Role *role);
+	LuaAiState(World *world, IBody *body, Role *role, std::string stateName);
 	virtual ~LuaAiState(void);
 
 	/**

@@ -76,6 +76,7 @@
     <ClCompile Include="..\..\src\LuaInterface\LuaTypeBody.cpp" />
     <ClCompile Include="..\..\src\LuaInterface\LuaTypeLog.cpp" />
     <ClCompile Include="..\..\src\LuaInterface\LuaTypeRole.cpp" />
+    <ClCompile Include="..\..\src\LuaInterface\LuaTypeState.cpp" />
     <ClCompile Include="..\..\src\LuaInterface\LuaTypeVector2D.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -84,6 +85,7 @@
     <ClInclude Include="..\..\src\LuaInterface\LuaInstance.h" />
     <ClInclude Include="..\..\src\LuaInterface\LuaType.h" />
     <ClInclude Include="..\..\src\LuaInterface\LuaTypeLog.h" />
+    <ClInclude Include="..\..\src\LuaInterface\LuaTypeState.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

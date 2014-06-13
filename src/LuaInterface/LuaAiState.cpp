@@ -1,11 +1,12 @@
 #include "LuaAiState.h"
 
+#include "LuaFunction.h"
 #include "LuaType.h"
 #include "LuaTypeLog.h"
-#include "LuaFunction.h"
+#include "LuaTypeState.h"
 
 
-LuaAiState::LuaAiState(World *world, IBody *body, Role *role) : AiState(world, body, role)
+LuaAiState::LuaAiState(World *world, IBody *body, Role *role, std::string stateName) : AiState(world, body, role)
 {
 	scriptUpdateInterval = 0.01f;
 	lastExecutionTime = 0.f;
@@ -19,7 +20,10 @@ LuaAiState::LuaAiState(World *world, IBody *body, Role *role) : AiState(world, b
 		"function OnSeeEnemy(enemy) end\n"
 		"function OnHearNoise(sound) end\n");
 
-	this->script->execScriptFromFile("test.lua");
+	LuaType::registerStateFunctions(this->script, this);
+
+	// "./scripts/StateName.lua"
+	this->script->execScriptFromFile(std::string("./scripts/").append(stateName).append(".lua").c_str());
 }
 
 LuaAiState::~LuaAiState(void)

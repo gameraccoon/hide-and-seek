@@ -11,3 +11,13 @@ AiState::AiState(World *world, IBody *body, Role *role)
 AiState::~AiState(void)
 {
 }
+
+void AiState::gotoState(std::string stateName)
+{
+	this->role->gotoState(stateName);
+}
+
+void AiState::endState()
+{
+	this->role->endCurrentState();
+}
