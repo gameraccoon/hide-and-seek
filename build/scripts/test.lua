@@ -1,15 +1,11 @@
-Log.log("Start script")
-
-function OnTakeDamage(instigator, damageValue)
-	Log.log("I'm damaged! My health is " .. body.getHealth(body.ptr))
-end
+Log.log("Start script 1")
 
 local seen = 1
 
 function OnSeeEnemy(enemy)
+	Log.log("seen");
 	if seen == 1 then
-		Log.log("I'm see you!")
-		body.follow(body.ptr, enemy)
+		gotoState(statePtr, "test1");
 		seen = 2
 	end
 end

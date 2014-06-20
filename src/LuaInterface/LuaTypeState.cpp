@@ -24,6 +24,8 @@ namespace luafunc
 		AiState *aiState = (AiState*)luaInstance.getFromLua<void*>(1);
 
 		aiState->endState();
+
+		//luaInstance.execScript("exit(0);");
 			
 		return 0;
 	}

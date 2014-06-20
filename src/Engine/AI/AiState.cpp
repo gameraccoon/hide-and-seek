@@ -6,6 +6,8 @@ AiState::AiState(World *world, IBody *body, Role *role)
 
 	this->body = body;
 	this->role = role;
+
+	this->ended = false;
 }
 
 AiState::~AiState(void)
@@ -20,4 +22,14 @@ void AiState::gotoState(std::string stateName)
 void AiState::endState()
 {
 	this->role->endCurrentState();
+}
+
+bool AiState::isEnded() const
+{
+	return this->ended;
+}
+
+void AiState::setEnded(bool ended)
+{
+	this->ended = ended;
 }

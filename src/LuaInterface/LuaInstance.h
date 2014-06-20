@@ -5,10 +5,6 @@
 
 class LuaInstance
 {
-private:
-	lua_State *luaState;
-	bool isMainInstance;
-
 public:
 	LuaInstance();
 	LuaInstance(lua_State *luaState);
@@ -40,6 +36,12 @@ public:
 	T getFromLua(int index);
 	template<typename T>
 	void sendToLua(T value);
+private:
+	lua_State *luaState;
+	bool isMainInstance;
+
+	LuaInstance(const LuaInstance&);
+	void operator=(const LuaInstance&);
 };
 
 template<typename T>

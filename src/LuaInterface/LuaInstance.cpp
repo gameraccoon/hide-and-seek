@@ -5,17 +5,6 @@
 LuaInstance::LuaInstance()
 {
     this->luaState = luaL_newstate();
-    
-    static const luaL_Reg lualibs[] = 
-    {
-        {"base", luaopen_base},
-        {"io", luaopen_io},
-		{"debug", luaopen_debug},
-        {NULL, NULL}
-    };
-
-	//this->registerLibs(lualibs);
-
 	isMainInstance = true;
 }
 
@@ -36,15 +25,6 @@ LuaInstance::~LuaInstance()
 lua_State* LuaInstance::getLuaState()
 {
 	return this->luaState;
-}
-
-void LuaInstance::registerLibs(const luaL_Reg lualibs[])
-{
-    for(const luaL_Reg *lib = lualibs; lib->func != NULL; lib++)
-    {
-		luaL_requiref(this->luaState, lib->name, lib->func, 1); // <<<--- Error here!
-        lua_settop(this->luaState, 0);
-    }
 }
 
 int LuaInstance::execScript(const char* script)

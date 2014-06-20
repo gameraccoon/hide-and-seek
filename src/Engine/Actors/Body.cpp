@@ -47,13 +47,15 @@ void Body::moveTo(Vector2D step)
 	this->clearTargets();
 
 	this->movingToLocation = new Vector2D(step);
+	this->followingTarget = nullptr;
 }
 
-void Body::follow(IActor *target)
+void Body::follow(const IActor *target)
 {
 	this->clearTargets();
 
 	this->followingTarget = target;
+	this->movingToLocation = nullptr;
 }
 
 float Body::getHealthValue()
@@ -117,8 +119,10 @@ void Body::hit(IActor *instigator, float damageValue, Vector2D impulse)
 		ActorFactory::Factory().placeActor("Corpse", this->getOwnerWorld(), this->getLocation(), Vector2D(1.f, 1.f), this->getRotation());
 		this->destroy();
 	}
-
-	this->role->onTakeDamage(this, damageValue, impulse);
+	else
+	{
+		this->role->onTakeDamage(this, damageValue, impulse);
+	}
 }
 
 void Body::update(float deltatime)
@@ -247,13 +251,33 @@ void Body::findNextPathPoint()
 	{
 		IActor* tracedActor = RayTrace::trace(this->getOwnerWorld(), this->getLocation(), this->followingTarget->getLocation());
 
-		if (tracedActor == this->followingTarget || tracedActor == nullptr)
+		if (tracedActor == this->followingTarget)
 		{
 			this->tempLocation = followingTarget->getLocation();
 		}
 		else
 		{
 			this->navigator.createNewPath(this->getLocation(), this->followingTarget->getLocation());
+			this->tempLocation = this->navigator.getNextPoint();
+			if (this->tempLocation == this->getLocation())
+			{
+				this->tempLocation = this->navigator.getNextPoint();
+			}
+		}
+
+		this->setRotation((this->tempLocation - this->getLocation()).rotation());
+	}
+	else if (this->movingToLocation != nullptr)
+	{
+		IActor* tracedActor = RayTrace::trace(this->getOwnerWorld(), this->getLocation(), *this->movingToLocation);
+
+		if (tracedActor == nullptr)
+		{
+			this->tempLocation = *this->movingToLocation;
+		}
+		else
+		{
+			this->navigator.createNewPath(this->getLocation(), *this->movingToLocation);
 			this->tempLocation = this->navigator.getNextPoint();
 			if (this->tempLocation == this->getLocation())
 			{

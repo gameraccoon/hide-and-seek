@@ -25,7 +25,7 @@ public:
 	virtual ~Body();
 
 	virtual void moveTo(Vector2D step) override;
-	virtual void follow(IActor *target);
+	virtual void follow(const IActor *target) override;
 
 	virtual float getHealthValue() override;
 
@@ -72,7 +72,7 @@ protected:
 	/** AI */
 	Role *role;
 	/** The target that the man follows */
-	IActor *followingTarget;
+	IActor const *followingTarget;
 	/** The location that the man moving to */
 	Vector2D *movingToLocation;
 	/** Some intermediate location that the man is moveing to now */

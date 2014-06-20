@@ -39,6 +39,8 @@ const Vector2D SCREEN_CENTER(SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
 
 const float MAX_CAMERA_RANGE = (float)std::min(SCREEN_HEIGHT, SCREEN_WIDTH) / 4.0f;
 
+const float HERO_SPEED = 100.f;
+
 Vector2D mousePos = ZERO_VECTOR;
 
 float cameraAngle = 0.0f;
@@ -132,8 +134,10 @@ bool FrameFunc()
 	if (::hge->Input_GetKeyState(HGEK_Q))	::cameraAngle += 0.005f;
 	if (::hge->Input_GetKeyState(HGEK_E))	::cameraAngle -= 0.005f;
 	
-
-	::ourHero->move(Vector2D(Direction.rotation() - ::cameraAngle) * Direction.ort().size() * 100); // constant speed
+	if (Direction.size() > 0)
+	{
+		::ourHero->move(Vector2D(Direction.rotation() - ::cameraAngle) * ::HERO_SPEED);
+	}
 	::ourHero->setRotation((::mainCamera->deProject(::mousePos) - ::ourHero->getLocation()).rotation());
 
 	::hge->Input_GetMousePos(&::mousePos.x, &::mousePos.y);

@@ -15,7 +15,7 @@ StateLoader::~StateLoader(void)
 
 std::string StateLoader::getStateName(std::string actorName)
 {
-	SqliteConnection conn("testdb.db");
-	std::string value = conn.getOneValue("Select * from test");
+	SqliteConnection conn(std::string(databaseFileName).append(".db"));
+	std::string value = conn.getOneValue(std::string("Select * from ").append(actorName));
 	return value;
 }

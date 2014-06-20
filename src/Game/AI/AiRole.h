@@ -21,6 +21,7 @@ public:
 	virtual void endCurrentState() override;
 private:
 	std::stack<IAiState*> states;
+	void checkStates();
 };
 
 #endif

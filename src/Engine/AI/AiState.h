@@ -20,12 +20,17 @@ public:
 
 	void gotoState(std::string stateName);
 	void endState();
+
+	virtual bool isEnded() const override;
+	virtual void setEnded(bool ended) override;
 protected:
 
 	IBody *body;
 	Role *role;
 
 	float lastExecutionTime;
+
+	bool ended;
 };
 
 #endif

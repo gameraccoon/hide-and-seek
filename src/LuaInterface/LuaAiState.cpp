@@ -43,7 +43,7 @@ void LuaAiState::onTakeDamage(IActor* instigator, float damageValue, Vector2D im
 
 	luaFunction.runFunction(2, 0);
 	luaFunction.clearAfterFunction();
-	
+
 	this->script->removeSymbol("body");
 }
 
