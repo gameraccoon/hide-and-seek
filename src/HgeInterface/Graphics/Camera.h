@@ -19,7 +19,7 @@
 class Camera
 {
 public:
-	Camera(HGE* hge, World* world, Vector2D resolution, Vector2D location);
+	Camera(HGE* hge, const World* world, Vector2D resolution, Vector2D location);
 	virtual ~Camera(void);
 	/** Get pointer to the texture which will be used to render */
 	HTEXTURE getRenderTexture() const;
@@ -65,7 +65,7 @@ protected:
 	/** Render all path points and paths in the world */
 	void renderPaths();
 	/** World which render this camera*/
-	World* browsableWorld;
+	const World* browsableWorld;
 	/** Camera location in the world */
 	Vector2D location;
 	/** Screen resolution */
