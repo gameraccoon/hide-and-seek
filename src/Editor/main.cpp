@@ -1,13 +1,14 @@
 #include <Debug/Log.h>
 
-#include <HgeInterface/Input/KeyListeners.h>
-#include <HgeInterface/Graphics/FloatingCamera.h>
-
 #include <Engine/Core/World.h>
 #include <Engine/Structures/PathPoint.h>
 #include <Engine/Modules/LevelLoader.h>
 #include <Engine/Modules/WorldsContainer.h>
+#include <Engine/Modules/ActorFactory.h>
 #include <Engine/Actors/LightEmitter.h>
+
+#include <HgeInterface/Input/KeyListeners.h>
+#include <HgeInterface/Graphics/FloatingCamera.h>
 
 #include <Game/Actors/Hero.h>
 
@@ -27,37 +28,46 @@ const int SCREEN_HEIGHT = 600;
 const bool FULL_SCREEN = false;
 
 Vector2D mousePos(ZERO_VECTOR);
+Vector2D worldMousePos(ZERO_VECTOR);
+
 
 float cameraAngle = 0.0f;
 
 // World that we edit
-World *gameWorld;
+World *gameWorld = nullptr;
 
 // Camera
-Camera *mainCamera;
+Camera *mainCamera = nullptr;
 
 Vector2D cameraWorldLocation(ZERO_VECTOR);
 
-// Button
+LightEmitter *cameraLight = nullptr;
+
+IActor *actorToCreate = nullptr;
+
+// Buttons
 ButtonListeners listeners;
 
-LightEmitter *cameraLight;
 
-/*
-class BtnShoot : public ButtonSwitcher
+class BtnMouseL : public ButtonSwitcher
 {
 public:
-	BtnShoot(HGE *hge) : ButtonSwitcher(hge, HGEK_LBUTTON, true) { };
-	void pressed() { ::ourHero->startShoting(::mainCamera->deProject(::mousePos)); }
-	void released() { ::ourHero->stopShoting(); }
+	BtnMouseL(HGE *hge) : ButtonSwitcher(hge, HGEK_LBUTTON, true) { };
+	void released()
+	{
+		::actorToCreate = nullptr;
+	}
 };
 
-class BtnAddLight : public ButtonSwitcher
+class BtnMouseR : public ButtonSwitcher
 {
 public:
-	BtnAddLight(HGE *hge) : ButtonSwitcher(hge, HGEK_RBUTTON, true) { };
-	void pressed() { new LightEmitter(::gameWorld, ::mainCamera->deProject(::mousePos), Vector2D(1.f, 1.f), Rotator(0.f)); }
-};*/
+	BtnMouseR(HGE *hge) : ButtonSwitcher(hge, HGEK_RBUTTON, true) { };
+	void pressed()
+	{
+		::actorToCreate = ActorFactory::Factory().placeActor("Wall", gameWorld, worldMousePos, Vector2D(1.0f, 1.0f), 0.0f);
+	}
+};
 
 bool FrameFunc()
 {
@@ -79,7 +89,14 @@ bool FrameFunc()
 
 	::hge->Input_GetMousePos(&::mousePos.x, &::mousePos.y);
 
-	cameraLight->setLocation(mainCamera->deProject(mousePos));
+	worldMousePos = mainCamera->deProject(mousePos);
+	
+	cameraLight->setLocation(worldMousePos);
+
+	if (::actorToCreate != nullptr)
+	{
+		::actorToCreate->setLocation(worldMousePos);
+	}
 
 	::mainCamera->setLocation(cameraWorldLocation);
 	::mainCamera->setRotation(::cameraAngle);
@@ -159,8 +176,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			cameraLight = new LightEmitter(::gameWorld, ZERO_VECTOR, Vector2D(0.0f, 0.0f), 0.0f);
 
-//			::listeners.addListener(new BtnShoot(::hge));
-//			::listeners.addListener(new BtnAddLight(::hge));
+			::listeners.addListener(new BtnMouseL(::hge));
+			::listeners.addListener(new BtnMouseR(::hge));
 
 			LevelLoader::load(::gameWorld, std::string("test"));
 
