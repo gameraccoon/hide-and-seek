@@ -1,12 +1,13 @@
 Simple 2D game.
 Created on C++ with HGE.
-Used Lua as script language.
+Uses Lua as script language and SQLite as database engine.
 
 Libraries
 DebugHelpers - base for debugging and logging.
 SGEngine - game engine (actor, world, AI, ...)
 HgeInterface - classes that works with HGE (camera, input, ...)
-LuaInterface - classes that works with Lua
+LuaInterface - classes that works with Lua (script language)
+SqliteInterface - classes that works with SQLite (databases)
+StealthGame - contains some actors and AI definitions
 
-StealthGame - main application that also contains some actors and
-AI definitions
+Game - main application

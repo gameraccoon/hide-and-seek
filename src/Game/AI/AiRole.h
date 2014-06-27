@@ -3,7 +3,7 @@
 
 #include <stack>
 
-#include <AI/Role.h>
+#include <Engine/AI/Role.h>
 
 class AiRole : public Role
 {
@@ -16,8 +16,12 @@ public:
 	virtual void onTakeDamage(IActor *instigator, float damageValue, Vector2D impulse) override;
 	virtual void onSeeEnemy(IActor *enemy) override;
 	virtual void onHearNoise(SoundVolume *sound) override;
+
+	virtual void gotoState(std::string stateName) override;
+	virtual void endCurrentState() override;
 private:
 	std::stack<IAiState*> states;
+	void checkStates();
 };
 
 #endif

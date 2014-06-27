@@ -12,8 +12,12 @@ class IBody
 public:
 	/** Say that the body must go to the location */
 	virtual void moveTo(Vector2D location) = 0;
-	/** Say that the body must follow the target */
-	virtual void follow(IActor *target) = 0;
+	/**
+	 * Say that the body must follow the target
+	 * @param target target those the body follows. It's constant that
+	 * helps prevent a direct change of the target.
+	 */
+	virtual void follow(const IActor *target) = 0;
 
 	virtual float getHealthValue() = 0;
 

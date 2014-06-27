@@ -23,3 +23,11 @@ void PlayerRole::onSeeEnemy(IActor *enemy)
 void PlayerRole::onHearNoise(SoundVolume *sound)
 {
 }
+
+void PlayerRole::gotoState(std::string stateName)
+{
+}
+
+void PlayerRole::endCurrentState()
+{
+}

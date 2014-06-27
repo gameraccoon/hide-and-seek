@@ -53,9 +53,9 @@ private:
 	 * Turn off unusable operations
 	 */
 	ActorFactory();
-	ActorFactory(const ActorFactory&);
 	~ActorFactory();
-	ActorFactory& operator=(const ActorFactory&);
+	ActorFactory(const ActorFactory&);
+	void operator=(const ActorFactory&);
 };
 
 #endif

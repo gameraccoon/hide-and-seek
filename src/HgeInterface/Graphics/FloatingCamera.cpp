@@ -11,7 +11,7 @@ FloatingCamera::~FloatingCamera(void)
 {
 }
 
-void FloatingCamera::setLocation(Vector2D newLocation)
+void FloatingCamera::setLocation(const Vector2D &newLocation)
 {
 	this->location = newLocation;
 	this->centerPos = this->resolution/2 - this->shift;

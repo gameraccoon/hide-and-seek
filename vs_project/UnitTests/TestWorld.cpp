@@ -40,35 +40,13 @@ namespace TestWorld
 			virtual void updateCollision() override final { }
 		};
 	public:
-		TEST_METHOD(TestWorldAddingStaticActor)
+		TEST_CLASS_INITIALIZE(Init)
 		{
-			World *testWorld = new World();
-
-			TestActor actor1(testWorld);
-
+			DestructionFlag = 0;
 			TestValue = 0;
-
-			testWorld->update(1.f);
-
-			Assert::AreEqual(1, TestValue);
-
-			delete testWorld;
 		}
 
-		TEST_METHOD(TestWorldDeletionStaticActor)
-		{
-			World *testWorld = new World();
-
-			TestValue = 0;
-
-			testWorld->update(1.f);
-
-			Assert::AreEqual(0, TestValue);
-
-			delete testWorld;
-		}
-
-		TEST_METHOD(TestWorldAdditionAndDeletionNonStaticActor)
+		TEST_METHOD(TestWorldAdditionAndDeletionActor)
 		{
 			World *testWorld = new World();
 
@@ -101,7 +79,7 @@ namespace TestWorld
 
 			DestructionFlag = 0;
 
-			delete testWorld;
+			delete testWorld; // delete actor1; delete actor2;
 
 			Assert::AreEqual(2, DestructionFlag);
 		}

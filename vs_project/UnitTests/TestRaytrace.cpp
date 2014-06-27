@@ -31,40 +31,32 @@ namespace TestRaytrace
 		
 		TEST_METHOD(TestRaytraceFastTrace1)
 		{
-			RayTrace trace1(TestWorld, Vector2D(20.f, 20.f), Vector2D(80.f, 60.f)); // out-out
-			Assert::IsTrue(trace1.fastTrace());
+			Assert::IsTrue(RayTrace::fastTrace(TestWorld, Vector2D(20.f, 20.f), Vector2D(80.f, 60.f))); // out-out
 
-			RayTrace trace2(TestWorld, Vector2D(30.f, 15.f), Vector2D(55.f, 35.f)); // out-in
-			Assert::IsTrue(trace2.fastTrace());
+			Assert::IsTrue(RayTrace::fastTrace(TestWorld, Vector2D(30.f, 15.f), Vector2D(55.f, 35.f))); // out-in
 			
-			RayTrace trace3(TestWorld, Vector2D(55.f, 35.f), Vector2D(80.f, 60.f)); // in-out
-			Assert::IsFalse(trace3.fastTrace());
+			Assert::IsFalse(RayTrace::fastTrace(TestWorld, Vector2D(55.f, 35.f), Vector2D(80.f, 60.f))); // in-out
 
-			RayTrace trace4(TestWorld, Vector2D(80.f, 35.f), Vector2D(80.f, 60.f)); // side
-			Assert::IsFalse(trace4.fastTrace());
+			Assert::IsFalse(RayTrace::fastTrace(TestWorld, Vector2D(80.f, 35.f), Vector2D(80.f, 60.f))); // side
 
-			RayTrace trace5(TestWorld, Vector2D(20.f, -3.f), Vector2D(80.f, 10.f)); // side
-			Assert::IsFalse(trace5.fastTrace());
+			Assert::IsFalse(RayTrace::fastTrace(TestWorld, Vector2D(20.f, -3.f), Vector2D(80.f, 10.f))); // side
 		}
 		
 		TEST_METHOD(TestRaytraceFastTrace2)
 		{
-			RayTrace trace1(TestWorld, Vector2D(35.f, 15.f), Vector2D(65.f, 45.f));
-			Assert::IsTrue(trace1.fastTrace());
+			Assert::IsTrue(RayTrace::fastTrace(TestWorld, Vector2D(35.f, 15.f), Vector2D(65.f, 45.f)));
 
-			RayTrace trace2(TestWorld, Vector2D(20.f, 60.f), Vector2D(80.f, 0.f));
-			Assert::IsTrue(trace2.fastTrace());
+			Assert::IsTrue(RayTrace::fastTrace(TestWorld, Vector2D(20.f, 60.f), Vector2D(80.f, 0.f)));
 		}
 		
 		TEST_METHOD(TestRaytraceTrace)
 		{
-			RayTrace trace1(TestWorld, Vector2D(20.f, 20.f), Vector2D(80.f, 60.f));
-			IActor *traceActor = trace1.trace();
+			IActor *traceActor = RayTrace::trace(TestWorld, Vector2D(20.f, 20.f), Vector2D(80.f, 60.f));
 			
 			Assert::IsTrue(traceActor == Actor1);
 
 			IActor *actor = new TestWall(TestWorld, Vector2D(45.f, 25.f), Vector2D(1.f, 1.f), Rotator(0.f)); // size 20-20
-			traceActor = trace1.trace();
+			traceActor = RayTrace::trace(TestWorld, Vector2D(20.f, 20.f), Vector2D(80.f, 60.f));
 
 			Assert::IsTrue(traceActor == actor);
 			actor->destroy();

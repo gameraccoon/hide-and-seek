@@ -14,10 +14,11 @@ Vector2D::Vector2D(const Vector2D& vector)
 	this->y = vector.y;
 }
 
-Vector2D::Vector2D(Rotator rotator)
+Vector2D::Vector2D(const Rotator& rotator)
 {
-	this->x = cos(rotator.getValue());
-	this->y = sin(rotator.getValue());
+	float rotation = rotator.getValue();
+	this->x = cos(rotation);
+	this->y = sin(rotation);
 }
 
 Vector2D::~Vector2D(void)

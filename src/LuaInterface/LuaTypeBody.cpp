@@ -1,6 +1,6 @@
 #include "LuaType.h"
 
-#include <AI/IBody.h>
+#include <Engine/AI/IBody.h>
 
 template<>
 IBody* LuaInstance::getFromLua<IBody*>(int index)
@@ -14,8 +14,9 @@ namespace LuaType
 	{
 		LuaInstance instance(luaState);
 		IBody* body = instance.getFromLua<IBody*>(1);
+		IActor* target = instance.getFromLua<IActor*>(2);
 
-		body->moveTo(Vector2D(0.0, 5.5));
+		body->moveTo(Vector2D(target->getLocation()));
 
 		return 0;
 	}

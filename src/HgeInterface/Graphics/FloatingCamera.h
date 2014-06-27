@@ -9,7 +9,7 @@ public:
 	FloatingCamera(HGE* hge, World* world, Vector2D resolution, Vector2D location);
 	~FloatingCamera(void);
 	/** Set new location of this camera in the world */
-	virtual void setLocation(Vector2D newLocation) override;
+	virtual void setLocation(const Vector2D &newLocation) override;
 	/** Set shift of center of the screen */
 	void setCenterShift(Vector2D shift);
 protected:

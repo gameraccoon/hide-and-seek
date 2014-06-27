@@ -19,7 +19,6 @@
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v110</PlatformToolset>
-    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -37,13 +36,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>D:\Libs\lua\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Libs\lua\Lib;$(LibraryPath)</LibraryPath>
-    <OutDir>$(SolutionDir)\libs</OutDir>
+    <IncludePath>$(ProjectDir)..\..\src;$(ProjectDir)..\..\used_libs\lua52\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(ProjectDir)..\..\src\Engine;$(ProjectDir)..\..\src\Debug;$(ProjectDir)..\..\used_libs\lua52\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)..\Release;$(ProjectDir)..\..\used_libs\lua52\libs;$(IncludePath)</LibraryPath>
+    <IncludePath>$(ProjectDir)..\..\src;$(ProjectDir)..\..\used_libs\lua52\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -80,6 +76,7 @@
     <ClCompile Include="..\..\src\LuaInterface\LuaTypeBody.cpp" />
     <ClCompile Include="..\..\src\LuaInterface\LuaTypeLog.cpp" />
     <ClCompile Include="..\..\src\LuaInterface\LuaTypeRole.cpp" />
+    <ClCompile Include="..\..\src\LuaInterface\LuaTypeState.cpp" />
     <ClCompile Include="..\..\src\LuaInterface\LuaTypeVector2D.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -88,6 +85,7 @@
     <ClInclude Include="..\..\src\LuaInterface\LuaInstance.h" />
     <ClInclude Include="..\..\src\LuaInterface\LuaType.h" />
     <ClInclude Include="..\..\src\LuaInterface\LuaTypeLog.h" />
+    <ClInclude Include="..\..\src\LuaInterface\LuaTypeState.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

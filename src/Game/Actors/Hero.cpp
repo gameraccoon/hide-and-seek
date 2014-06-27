@@ -1,6 +1,6 @@
 #include "Hero.h"
 
-#include <AI/PlayerRole.h>
+#include <Engine/AI/PlayerRole.h>
 
 Hero::Hero(World *world, Vector2D location, Vector2D scale, Rotator rotation) : Body(world, location),
 	step(ZERO_VECTOR)
@@ -8,9 +8,12 @@ Hero::Hero(World *world, Vector2D location, Vector2D scale, Rotator rotation) : 
 	this->speed = 1.f;
 
 	this->updateActorId("Hero");
+
+	this->setFraction(Fraction::GoodGuys);
 	
 	if (this->role != nullptr)
 		delete this->role;
+
 	this->role = new PlayerRole(world, this);
 }
 

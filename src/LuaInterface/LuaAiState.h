@@ -1,15 +1,15 @@
 #ifndef LUA_AI_STATE
 #define LUA_AI_STATE
 
-#include <Core/World.h>
-#include <AI/AiState.h>
+#include <Engine/Core/World.h>
+#include <Engine/AI/AiState.h>
 
 #include "LuaInstance.h"
 
 class LuaAiState : public AiState
 {
 public:
-	LuaAiState(World *world, IBody *body, Role *role);
+	LuaAiState(World *world, IBody *body, Role *role, std::string stateName);
 	virtual ~LuaAiState(void);
 
 	/**

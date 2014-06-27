@@ -13,13 +13,19 @@
 class Body:public Actor, public IBody
 {
 public:
+	enum class Fraction
+	{
+		BadGuys,
+		GoodGuys
+	};
+
 	/** Initialization of a new man standing at a given point */
 	Body(World *world, Vector2D location);
 
 	virtual ~Body();
 
 	virtual void moveTo(Vector2D step) override;
-	virtual void follow(IActor *target);
+	virtual void follow(const IActor *target) override;
 
 	virtual float getHealthValue() override;
 
@@ -32,6 +38,8 @@ public:
 	virtual void update(float deltatime) override;
 	
 	virtual void hit(IActor *instigator, float damageValue, Vector2D impulse) override;
+
+	Fraction getFraction();
 protected:
 	/* events */
 	virtual void onUpdateLocation() override;
@@ -43,6 +51,10 @@ protected:
 	void clearTargets();
 	/** */
 	void look();
+	/** */
+	void setFraction(Fraction newFraction);
+	/** */
+	bool canSeeEnemy(const Body *enemy) const;
 	/**  */
 	PathFinder navigator;
 	/** Body moving speed in Px/s */
@@ -60,11 +72,13 @@ protected:
 	/** AI */
 	Role *role;
 	/** The target that the man follows */
-	IActor *followingTarget;
+	IActor const *followingTarget;
 	/** The location that the man moving to */
 	Vector2D *movingToLocation;
 	/** Some intermediate location that the man is moveing to now */
 	Vector2D tempLocation;
+	/** */
+	Fraction fraction;
 };
 
 #endif

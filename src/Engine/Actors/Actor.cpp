@@ -125,7 +125,7 @@ World* Actor::getOwnerWorld() const
 	return this->ownerWorld;
 }
 
-float Actor::getLifetime()
+float Actor::getLifetime() const
 {
 	return this->lifetime;
 }

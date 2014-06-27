@@ -61,7 +61,7 @@ protected:
 	/** Update classId and actorId */
 	virtual void updateActorId(std::string classId);
 	
-	float getLifetime();
+	float getLifetime() const;
 	World* getOwnerWorld() const;
 	Vector2D getCalculatedSize() const;
 	void setType(ActorType newType);
@@ -94,6 +94,10 @@ private:
 	bool bWaitDestruction;
 	/** Time that actor live */
 	float lifetime;
+
+	/** Copy and assignment prohibited */
+	Actor(const Actor&);
+	void operator=(const Actor&);
 };
 
 #endif

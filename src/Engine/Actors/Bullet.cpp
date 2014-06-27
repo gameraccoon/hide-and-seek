@@ -1,23 +1,6 @@
 #include "Bullet.h"
 
-#include "../../Engine/Modules/ActorFactory.h"
-// unnamed namespase to hide from another places
-namespace
-{
-	// specific factory
-	IActor* CreateBullet(World *world, const Vector2D location, const Vector2D scale, const Rotator rotation)
-	{
-		return new Bullet(world, location, scale, rotation);
-	}
-
-	const std::string CLASS_ID = "Bullet";
-
-	// register specific factory in actor factory
-	const bool registered = ActorFactory::Factory().registerActor(CLASS_ID, CreateBullet);
-}
-
-
-#include <DebugMethods.h>
+#include <Debug/DebugMethods.h>
 
 // dummy for debugging methods
 #if (!defined DEBUG) && (!defined RELEASE)
@@ -35,7 +18,7 @@ Bullet::Bullet(World *world, Vector2D location, Vector2D scale, Rotator rotation
 
 	this->speed = 450.0f;
 
-	this->updateActorId(CLASS_ID);
+	this->updateActorId("Bullet");
 }
 
 Bullet::~Bullet(void)
@@ -48,9 +31,8 @@ void Bullet::update(float deltatime)
 	
 	WARN_IF(!this->getOwnerWorld(), "Not assigned OwnerWorld for bullet");
 
-	RayTrace ray(this->getOwnerWorld(), this->getLocation(), newLocation);
 	Vector2D traceLocation(ZERO_VECTOR);
-	IActor *trasedActor = ray.trace(&traceLocation);
+	IActor *trasedActor = RayTrace::trace(this->getOwnerWorld(), this->getLocation(), newLocation, &traceLocation);
 
 	// if there nothing to hit
 	if (trasedActor == nullptr)

@@ -2,22 +2,6 @@
 
 #include "../AI/AiRole.h"
 
-#include <Modules/ActorFactory.h>
-// unnamed namespase to hide from another places
-namespace
-{
-	// specific factory
-	IActor* CreateMan(World *world, const Vector2D location, const Vector2D scale, const Rotator rotation)
-	{
-		return new Man(world, location, scale, rotation);
-	}
-
-	const std::string CLASS_ID = "Man";
-
-	// register specific factory in actor factory
-	const bool registered = ActorFactory::Factory().registerActor(CLASS_ID, CreateMan);
-}
-
 
 Man::Man(World *world, Vector2D location, Vector2D scale, Rotator rotation) : Body(world, location)
 {
@@ -25,7 +9,9 @@ Man::Man(World *world, Vector2D location, Vector2D scale, Rotator rotation) : Bo
 
 	this->speed = 50.0f;
 
-	this->updateActorId(CLASS_ID);
+	this->updateActorId("Man");
+
+	this->setFraction(Fraction::BadGuys);
 
 	if (this->role != nullptr)
 		delete this->role;

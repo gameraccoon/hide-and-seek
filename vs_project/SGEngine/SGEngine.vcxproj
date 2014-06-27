@@ -16,10 +16,9 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v110</PlatformToolset>
-    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -37,18 +36,17 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>D:\Develop\StealthGame\src\LuaInterface;D:\Libs\lua\Include;D:\Libs\hge\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Develop\StealthGame\vs_project\libs;D:\Libs\lua\Lib;D:\Libs\hge\lib\vc;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)..\..\src;$(ProjectDir)..\..\used_libs\hge\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(ProjectDir)..\..\src\Engine;$(ProjectDir)..\..\src\Debug;$(ProjectDir)..\..\used_libs\hge\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)..\Release;$(IncludePath)</LibraryPath>
+    <IncludePath>$(ProjectDir)..\..\src;$(ProjectDir)..\..\used_libs\hge\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NOMINMAX;DEBUG;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

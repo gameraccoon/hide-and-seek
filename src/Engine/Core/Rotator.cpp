@@ -5,36 +5,36 @@ const float PI = 3.14159265358979323846f;
 Rotator::Rotator(float angle)
 {
 	this->value = angle;
+	this->reset();
 }
 
 Rotator::~Rotator()
 {
 }
 
-float Rotator::getValue()
+float Rotator::getValue() const
 {
-	float normValue = this->value;
-
-	if (normValue <= -PI)
+	if (this->calculatedValue <= -PI)
 	{
-		while (normValue <= -PI)
+		while (this->calculatedValue <= -PI)
 		{
-			normValue += 2 * PI;
+			this->calculatedValue += 2 * PI;
 		}
-
-		this->value = normValue;
 	}
-	else if (normValue > PI)
+	else if (this->calculatedValue > PI)
 	{
-		while (normValue > PI)
+		while (this->calculatedValue > PI)
 		{
-			normValue -= 2 * PI;
+			this->calculatedValue -= 2 * PI;
 		}
-
-		this->value = normValue;
 	}
 
-	return normValue;
+	return this->calculatedValue;
+}
+
+void Rotator::reset()
+{
+	this->calculatedValue = this->value;
 }
 
 Rotator operator-(Rotator rot)
@@ -62,6 +62,7 @@ Rotator operator+=(Rotator& left, const Rotator& right)
 	float newValue = left.value + right.value;
 
 	left.value = newValue;
+	left.reset();
 
 	return newValue;
 }
@@ -76,6 +77,7 @@ Rotator operator-=(Rotator& left, const Rotator& right)
 	float newValue = left.value - right.value;
 
 	left.value = newValue;
+	left.reset();
 
 	return newValue;
 }

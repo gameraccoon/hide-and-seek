@@ -1,6 +1,6 @@
-#include "LuaType.h"
+#include "LuaTypeLog.h"
 
-#include <Log.h>
+#include <Debug/Log.h>
 
 // -- lua functions
 

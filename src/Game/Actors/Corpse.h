@@ -1,7 +1,7 @@
 #ifndef CORPSE_H
 #define CORPSE_H
 
-#include <Actors/Actor.h>
+#include <Engine/Actors/Actor.h>
 
 class Corpse : public Actor
 {

@@ -1,19 +1,20 @@
-#include <Log.h>
+#include <Debug/Log.h>
 
-#include <Input/KeyListeners.h>
-#include <Graphics/FloatingCamera.h>
-#include <Graphics/DirectionArrow.h>
+#include <HgeInterface/Input/KeyListeners.h>
+#include <HgeInterface/Graphics/FloatingCamera.h>
+#include <HgeInterface/Graphics/DirectionArrow.h>
 
-#include <Core/World.h>
-#include <Structures/PathPoint.h>
-#include <Modules/LevelLoader.h>
-#include <Modules/WorldsContainer.h>
-#include <Actors/LightEmitter.h>
+#include <Engine/Core/World.h>
+#include <Engine/Structures/PathPoint.h>
+#include <Engine/Modules/LevelLoader.h>
+#include <Engine/Modules/WorldsContainer.h>
+#include <Engine/Actors/LightEmitter.h>
 
-#include "Actors/Wall.h"
-#include "Actors/Hero.h"
+#include <Game/Actors/Hero.h>
 
 #include <vector>
+
+#include "actorsRegistration.h"
 
 // Hge subsystem
 HGE *hge = nullptr;
@@ -23,6 +24,7 @@ hgeSprite*	crosshair;
 hgeFont*	font;
 
 //#define FULLSCREEN
+
 #ifndef FULLSCREEN
 	const int SCREEN_WIDTH = 800;
 	const int SCREEN_HEIGHT = 600;
@@ -36,6 +38,8 @@ hgeFont*	font;
 const Vector2D SCREEN_CENTER(SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
 
 const float MAX_CAMERA_RANGE = (float)std::min(SCREEN_HEIGHT, SCREEN_WIDTH) / 4.0f;
+
+const float HERO_SPEED = 100.f;
 
 Vector2D mousePos = ZERO_VECTOR;
 
@@ -130,8 +134,10 @@ bool FrameFunc()
 	if (::hge->Input_GetKeyState(HGEK_Q))	::cameraAngle += 0.005f;
 	if (::hge->Input_GetKeyState(HGEK_E))	::cameraAngle -= 0.005f;
 	
-
-	::ourHero->move(Vector2D(Direction.rotation() - ::cameraAngle) * Direction.ort().size() * 100); // constant speed
+	if (Direction.size() > 0)
+	{
+		::ourHero->move(Vector2D(Direction.rotation() - ::cameraAngle) * ::HERO_SPEED);
+	}
 	::ourHero->setRotation((::mainCamera->deProject(::mousePos) - ::ourHero->getLocation()).rotation());
 
 	::hge->Input_GetMousePos(&::mousePos.x, &::mousePos.y);
@@ -164,7 +170,7 @@ bool RenderFunc()
 	::hge->Gfx_BeginScene();
 	::hge->Gfx_Clear(0);
 	
-	//-- Start graphics render
+	//-- Start render graphics on the screen
 
 	cameraRenderSprite->Render(0, 0);
 
@@ -215,68 +221,67 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	if(::hge->System_Initiate())
 	{
-		// Load sound and texture
-		HTEXTURE texture = ::hge->Texture_Load("particles.png");
-		if(!texture)
+		try
 		{
-			// If one of the data files is not found, display
-			// an error message and shutdown.
-			Log::WriteError("Can't load one of the following files: FONT1.FNT, FONT1.PNG, PARTICLES.PNG");
-			::hge->System_Shutdown();
-			::hge->Release();
-			return 0;
-		}
+			// Load sound and texture
+			HTEXTURE texture = ::hge->Texture_Load("particles.png");
 
-		// Load a font
-		::font = new hgeFont("font1.fnt");
-		::font->SetScale(0.7f);
+			// Load a font
+			::font = new hgeFont("font1.fnt");
+			::font->SetScale(0.7f);
 
-		// Create and set up a particle system
-		::crosshair = new hgeSprite(texture, 64, 96, 32, 32);
-		::crosshair->SetBlendMode(BLEND_COLORMUL | BLEND_ALPHAADD | BLEND_NOZWRITE);
-		::crosshair->SetHotSpot(16, 16);
+			// Create and set up a particle system
+			::crosshair = new hgeSprite(texture, 64, 96, 32, 32);
+			::crosshair->SetBlendMode(BLEND_COLORMUL | BLEND_ALPHAADD | BLEND_NOZWRITE);
+			::crosshair->SetHotSpot(16, 16);
 
-		::gameWorld = new World();
-		WorldsContainer::Container().insertWorld(::gameWorld, "mainWorld");
+			FactoryActors::RegisterAll();
 
-		// -- end: register lua functions
+			::gameWorld = new World();
+			WorldsContainer::Container().insertWorld(::gameWorld, "mainWorld");
 
-		::mainCamera = new FloatingCamera(::hge, ::gameWorld, SCREEN_CENTER * 2, Vector2D(0.0f, 0.0f));
+			::mainCamera = new FloatingCamera(::hge, ::gameWorld, SCREEN_CENTER * 2, Vector2D(0.0f, 0.0f));
 
-		// hero will be deleted automaticaly as other actors
-		::ourHero = new Hero(::gameWorld, Vector2D(0.0f, 350.0f), Vector2D(1.f, 1.f), Rotator(0.f));
+			// hero will be deleted automaticaly as other actors
+			::ourHero = new Hero(::gameWorld, Vector2D(0.0f, 350.0f), Vector2D(1.f, 1.f), Rotator(0.f));
 
-		::ourHero->giveWeapon(new Weapon());
+			::ourHero->giveWeapon(new Weapon());
 
-		::arrow = new DirectionArrow(::hge);
-		::arrow->setCenter(SCREEN_CENTER);
+			::arrow = new DirectionArrow(::hge);
+			::arrow->setCenter(SCREEN_CENTER);
 		
-		::listeners.addListener(new BtnAABB(::hge));
-		::listeners.addListener(new BtnHulls(::hge));
-		::listeners.addListener(new BtnFog(::hge));
-		::listeners.addListener(new BtnShadows(::hge));
-		::listeners.addListener(new BtnLights(::hge));
-		::listeners.addListener(new BtnPaths(::hge));
-		::listeners.addListener(new BtnShoot(::hge));
-		::listeners.addListener(new BtnAddLight(::hge));
+			::listeners.addListener(new BtnAABB(::hge));
+			::listeners.addListener(new BtnHulls(::hge));
+			::listeners.addListener(new BtnFog(::hge));
+			::listeners.addListener(new BtnShadows(::hge));
+			::listeners.addListener(new BtnLights(::hge));
+			::listeners.addListener(new BtnPaths(::hge));
+			::listeners.addListener(new BtnShoot(::hge));
+			::listeners.addListener(new BtnAddLight(::hge));
 
-		LevelLoader::load(::gameWorld, std::string("test"));
-		//LevelLoader::save(::gameWorld, std::string("test"));
+			LevelLoader::load(::gameWorld, std::string("test"));
+			//LevelLoader::save(::gameWorld, std::string("test"));
 
-		// Let's rock now!
-		::hge->System_Start();
+			// Let's rock now!
+			::hge->System_Start();
 
-		// Delete created objects and free loaded resources
-		delete ::font;
-		delete ::crosshair;
-		delete ::arrow;
-		delete ::mainCamera;
-		delete ::gameWorld;
-		::hge->Texture_Free(texture);
+			// Delete created objects and free loaded resources
+			delete ::font;
+			delete ::crosshair;
+			delete ::arrow;
+			delete ::mainCamera;
+			delete ::gameWorld;
+			::hge->Texture_Free(texture);
+		}
+		catch (std::runtime_error e)
+		{
+			Log::WriteError("Game load filed with unknown error!");
+		}
 	}
 	else
 	{
 		MessageBox(NULL, "System failed to initialize", "Error", MB_OK | MB_ICONERROR | MB_APPLMODAL);
+		Log::WriteError("System failed to initialize");
 	}
 
 	// Clean up and shutdown
