@@ -11,3 +11,4 @@ SqliteInterface - classes that works with SQLite (databases)
 StealthGame - contains some actors and AI definitions
 
 Game - main application
+Editor - editor application
