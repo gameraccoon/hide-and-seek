@@ -48,6 +48,11 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SqliteInterface", "SqliteInterface\SqliteInterface.vcxproj", "{09E69F0C-7DD1-465E-B8B4-6F06F31E3C2A}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Editor", "Editor\Editor.vcxproj", "{D803662D-93B8-4B5E-8684-95C16FF2D511}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B9D8AE61-1EC9-43A4-84F5-10C6B1CD482B} = {B9D8AE61-1EC9-43A4-84F5-10C6B1CD482B}
+		{912A6497-7CC2-4292-9C90-45682E89780B} = {912A6497-7CC2-4292-9C90-45682E89780B}
+		{DE850ABA-DA32-4D70-9608-3662ACCBD829} = {DE850ABA-DA32-4D70-9608-3662ACCBD829}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

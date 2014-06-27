@@ -42,6 +42,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)..\build\</OutDir>
+    <IncludePath>$(ProjectDir)..\..\src;$(ProjectDir)..\..\used_libs\lua52\include;$(ProjectDir)..\..\used_libs\sqlite\include;$(ProjectDir)..\..\used_libs\hge\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)..\$(Configuration);$(ProjectDir)..\..\used_libs\lua52\lib;$(ProjectDir)..\..\used_libs\sqlite\lib;$(ProjectDir)..\..\used_libs\hge\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -67,9 +69,15 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>SqliteInterface.lib;StealthGame.lib;DebugHelpers.lib;sqlite3.lib;liblua52.a;LuaInterface.lib;HgeInterface.lib;SGEngine.lib;hge.lib;hgehelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\src\Editor\actorsRegistration.cpp" />
+    <ClCompile Include="..\..\src\Editor\main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\Editor\actorsRegistration.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
