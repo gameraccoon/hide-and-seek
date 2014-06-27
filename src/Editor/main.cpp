@@ -41,13 +41,13 @@ Camera *mainCamera = nullptr;
 
 Vector2D cameraWorldLocation(ZERO_VECTOR);
 
-LightEmitter *cameraLight = nullptr;
-
 IActor *actorToCreate = nullptr;
 
 // Buttons
 ButtonListeners listeners;
 
+std::vector<std::string> actorsToSpawn;
+int currentSpawnActorIndex = 0;
 
 class BtnMouseL : public ButtonSwitcher
 {
@@ -63,9 +63,10 @@ class BtnMouseR : public ButtonSwitcher
 {
 public:
 	BtnMouseR(HGE *hge) : ButtonSwitcher(hge, HGEK_RBUTTON, true) { };
+
 	void pressed()
 	{
-		::actorToCreate = ActorFactory::Factory().placeActor("Wall", gameWorld, worldMousePos, Vector2D(1.0f, 1.0f), 0.0f);
+		
 	}
 };
 
@@ -90,8 +91,6 @@ bool FrameFunc()
 	::hge->Input_GetMousePos(&::mousePos.x, &::mousePos.y);
 
 	worldMousePos = mainCamera->deProject(mousePos);
-	
-	cameraLight->setLocation(worldMousePos);
 
 	if (::actorToCreate != nullptr)
 	{
@@ -101,8 +100,34 @@ bool FrameFunc()
 	::mainCamera->setLocation(cameraWorldLocation);
 	::mainCamera->setRotation(::cameraAngle);
 
+	hgeInputEvent * event = new hgeInputEvent();
+	if (::hge->Input_GetEvent(event) && event->wheel != 0)
+	{
+		if (actorToCreate != nullptr)
+		{
+			::actorToCreate->destroy();
+
+			::currentSpawnActorIndex += event->wheel > 0 ? 1 : -1;
+
+			if (::currentSpawnActorIndex < 0)
+			{
+				::currentSpawnActorIndex = ::actorsToSpawn.size() - 1;
+			}
+
+			if (::currentSpawnActorIndex >= ::actorsToSpawn.size())
+			{
+				::currentSpawnActorIndex = 0;
+			}
+		}
+		
+		::actorToCreate = ActorFactory::Factory().placeActor(actorsToSpawn[currentSpawnActorIndex], gameWorld, worldMousePos, Vector2D(1.0f, 1.0f), 0.0f);
+	}
+	delete event;
+
 	// Update key states
 	::listeners.check();
+
+	::gameWorld->update(dt);
 
 	return false;
 }
@@ -174,10 +199,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			::mainCamera = new Camera(::hge, ::gameWorld, Vector2D((float)SCREEN_WIDTH, (float)SCREEN_HEIGHT), Vector2D(0.0f, 0.0f));
 			::mainCamera->showFog(false);
 
-			cameraLight = new LightEmitter(::gameWorld, ZERO_VECTOR, Vector2D(0.0f, 0.0f), 0.0f);
-
 			::listeners.addListener(new BtnMouseL(::hge));
 			::listeners.addListener(new BtnMouseR(::hge));
+
+			
+			::actorsToSpawn.push_back("Wall");
+			::actorsToSpawn.push_back("LightEmitter");
+			::actorsToSpawn.push_back("Man");
 
 			LevelLoader::load(::gameWorld, std::string("test"));
 
