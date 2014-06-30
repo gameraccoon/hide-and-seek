@@ -12,7 +12,7 @@
 
 ; Забираем первые три цифры версии из файла VersionInfo
 !define /file MAIN_VERSION '..\VersionInfo'
-!define BUILD_NUM '0'
+!define /file BUILD_NUM '..\BuildNum'
 !define VERSION "${MAIN_VERSION}.${BUILD_NUM}"
 
 ;--------------------------------
