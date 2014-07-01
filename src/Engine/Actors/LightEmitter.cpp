@@ -22,3 +22,8 @@ float LightEmitter::getBrightness() const
 {
 	return this->brightness;
 }
+
+void LightEmitter::setBrightness(float brightness)
+{
+	this->brightness = brightness;
+}

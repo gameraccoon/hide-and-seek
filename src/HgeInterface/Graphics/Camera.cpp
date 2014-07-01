@@ -9,7 +9,7 @@
   	#define WARN_IF(condition, message)
 #endif
 
-Camera::Camera(HGE* hge, World* world, Vector2D resolution, Vector2D location) : location(location),
+Camera::Camera(HGE* hge, const World* world, Vector2D resolution, Vector2D location) : location(location),
 	resolution(resolution),
 	centerPos(resolution / 2),
 	graphicLoader(hge, std::string("./configs/textures.conf"), "./")

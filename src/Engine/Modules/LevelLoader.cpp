@@ -62,13 +62,13 @@ void LevelLoader::save(World* world, const std::string levelName)
 	pathsFile << "-1\n";
 
 	// save connections of pathpoints
-	for (auto const &point1 : world->navigationMap)
+	for (auto const &point : points)
 	{
-		int firstIndex = points.at(point1);
+		int firstIndex = points.at(point.first);
 
-		for (auto const &point2 : world->navigationMap)
+		for (auto const &connection : point.first->legalPoints)
 		{
-			int secondIndex = points.at(point2);
+			int secondIndex = points.at(connection);
 
 			pathsFile << firstIndex;
 			pathsFile << " ";
