@@ -41,7 +41,7 @@ Camera *mainCamera = nullptr;
 
 Vector2D cameraWorldLocation(ZERO_VECTOR);
 
-IActor *actorToCreate = nullptr;
+IActor *actorToPlace = nullptr;
 
 // Buttons
 ButtonListeners listeners;
@@ -57,9 +57,38 @@ class BtnMouseL : public ButtonSwitcher
 {
 public:
 	BtnMouseL(HGE *hge) : ButtonSwitcher(hge, HGEK_LBUTTON, true) { };
+	void pressed()
+	{
+		if (::actorToPlace == nullptr)
+		{
+			for (auto actor : ::gameWorld->allActors)
+			{
+				Vector2D location = actor->getLocation();
+				BoundingBox aabb = actor->getBoundingBox();
+				if (this->getDotCode(aabb, ::mainCamera->deProject(::mousePos)) == 0)
+				{
+					::actorToPlace = actor;
+					break;
+				}
+			}
+		}
+	}
 	void released()
 	{
-		::actorToCreate = nullptr;
+		::actorToPlace = nullptr;
+	}
+private:
+	static const int LEFT_BIT = 1;
+	static const int RIGHT_BIT = 2;
+	static const int BOTTOM_BIT = 4;
+	static const int TOP_BIT = 8;
+
+	inline int getDotCode(const BoundingBox &box, const Vector2D &dot)
+	{
+		return (((dot.x < box.minX) ? LEFT_BIT : 0)
+				| ((dot.x > box.maxX) ? RIGHT_BIT : 0)
+				| ((dot.y < box.minY) ? BOTTOM_BIT : 0)
+				| ((dot.y > box.maxY) ? TOP_BIT : 0));
 	}
 };
 
@@ -95,6 +124,21 @@ public:
 	}
 };
 
+class BtnCancelPlacing : public ButtonSwitcher
+{
+public:
+	BtnCancelPlacing(HGE *hge) : ButtonSwitcher(hge, HGEK_SPACE, true) { };
+
+	void pressed()
+	{
+		if (::actorToPlace != nullptr)
+		{
+			::actorToPlace->destroy();
+			::actorToPlace = nullptr;
+		}
+	}
+};
+
 bool FrameFunc()
 {
 	float dt = ::hge->Timer_GetDelta();
@@ -117,9 +161,9 @@ bool FrameFunc()
 
 	worldMousePos = mainCamera->deProject(mousePos);
 
-	if (::actorToCreate != nullptr)
+	if (::actorToPlace != nullptr)
 	{
-		::actorToCreate->setLocation(worldMousePos);
+		::actorToPlace->setLocation(worldMousePos);
 	}
 
 	if (::bViewHolded)
@@ -133,9 +177,9 @@ bool FrameFunc()
 	hgeInputEvent * event = new hgeInputEvent();
 	if (::hge->Input_GetEvent(event) && event->wheel != 0)
 	{
-		if (actorToCreate != nullptr)
+		if (actorToPlace != nullptr)
 		{
-			::actorToCreate->destroy();
+			::actorToPlace->destroy();
 
 			::currentSpawnActorIndex += event->wheel > 0 ? 1 : -1;
 
@@ -150,7 +194,7 @@ bool FrameFunc()
 			}
 		}
 		
-		::actorToCreate = ActorFactory::Factory().placeActor(actorsToSpawn[currentSpawnActorIndex], gameWorld, worldMousePos, Vector2D(1.0f, 1.0f), 0.0f);
+		::actorToPlace = ActorFactory::Factory().placeActor(actorsToSpawn[currentSpawnActorIndex], gameWorld, worldMousePos, Vector2D(1.0f, 1.0f), 0.0f);
 	}
 	delete event;
 
@@ -228,11 +272,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			::mainCamera = new Camera(::hge, ::gameWorld, Vector2D((float)SCREEN_WIDTH, (float)SCREEN_HEIGHT), Vector2D(0.0f, 0.0f));
 			::mainCamera->showFog(false);
+			::mainCamera->showLights(true);
 
 			::listeners.addListener(new BtnMouseL(::hge));
 			::listeners.addListener(new BtnMouseR(::hge));
 			::listeners.addListener(new BtnSave(::hge));
-
+			::listeners.addListener(new BtnCancelPlacing(::hge));
 			
 			::actorsToSpawn.push_back("Wall");
 			::actorsToSpawn.push_back("LightEmitter");
