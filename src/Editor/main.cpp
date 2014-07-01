@@ -49,6 +49,10 @@ ButtonListeners listeners;
 std::vector<std::string> actorsToSpawn;
 int currentSpawnActorIndex = 0;
 
+bool bViewHolded = false;
+Vector2D lastCameraPos(ZERO_VECTOR);
+Vector2D lastMousePos(ZERO_VECTOR);
+
 class BtnMouseL : public ButtonSwitcher
 {
 public:
@@ -66,7 +70,28 @@ public:
 
 	void pressed()
 	{
-		
+		::bViewHolded = true;
+		::lastCameraPos = ::cameraWorldLocation;
+		::lastMousePos = ::mousePos;
+	}
+
+	void released()
+	{
+		::bViewHolded = false;
+	}
+};
+
+class BtnSave : public ButtonSwitcher
+{
+public:
+	BtnSave(HGE *hge) : ButtonSwitcher(hge, HGEK_S, true) { };
+
+	void pressed()
+	{
+		if (::hge->Input_GetKeyState(HGEK_CTRL))
+		{
+			LevelLoader::save(::gameWorld, std::string("test"));
+		}
 	}
 };
 
@@ -78,10 +103,10 @@ bool FrameFunc()
 	if (::hge->Input_GetKeyState(HGEK_ESCAPE)) return true;
 
 	Vector2D Direction = ZERO_VECTOR;
-	if (::hge->Input_GetKeyState(HGEK_A))	Direction += LEFT_DIRECTION;
-	if (::hge->Input_GetKeyState(HGEK_D))	Direction += RIGHT_DIRECTION;
-	if (::hge->Input_GetKeyState(HGEK_W))	Direction += UP_DIRECTION;
-	if (::hge->Input_GetKeyState(HGEK_S))	Direction += DOWN_DIRECTION;
+	if (::hge->Input_GetKeyState(HGEK_LEFT))	Direction += LEFT_DIRECTION;
+	if (::hge->Input_GetKeyState(HGEK_RIGHT))	Direction += RIGHT_DIRECTION;
+	if (::hge->Input_GetKeyState(HGEK_UP))	Direction += UP_DIRECTION;
+	if (::hge->Input_GetKeyState(HGEK_DOWN))	Direction += DOWN_DIRECTION;
 
 	if (::hge->Input_GetKeyState(HGEK_Q))	::cameraAngle += 0.005f;
 	if (::hge->Input_GetKeyState(HGEK_E))	::cameraAngle -= 0.005f;
@@ -97,7 +122,12 @@ bool FrameFunc()
 		::actorToCreate->setLocation(worldMousePos);
 	}
 
-	::mainCamera->setLocation(cameraWorldLocation);
+	if (::bViewHolded)
+	{
+		::cameraWorldLocation = ::lastCameraPos - ::mousePos + ::lastMousePos;
+	}
+
+	::mainCamera->setLocation(::cameraWorldLocation);
 	::mainCamera->setRotation(::cameraAngle);
 
 	hgeInputEvent * event = new hgeInputEvent();
@@ -114,7 +144,7 @@ bool FrameFunc()
 				::currentSpawnActorIndex = ::actorsToSpawn.size() - 1;
 			}
 
-			if (::currentSpawnActorIndex >= ::actorsToSpawn.size())
+			if (::currentSpawnActorIndex >= (int)::actorsToSpawn.size())
 			{
 				::currentSpawnActorIndex = 0;
 			}
@@ -201,6 +231,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			::listeners.addListener(new BtnMouseL(::hge));
 			::listeners.addListener(new BtnMouseR(::hge));
+			::listeners.addListener(new BtnSave(::hge));
 
 			
 			::actorsToSpawn.push_back("Wall");
