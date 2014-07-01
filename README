@@ -12,3 +12,25 @@ StealthGame - contains some actors and AI definitions
 
 Game - main application
 Editor - editor application
+
+
+Controls:
+Game
+W/A/S/D - move the Hero
+Q/E - rotate camera left/right
+LMB - fire
+RMB - place a light emitter
+C - show/hide axis-aligned bounding boxes
+F - hide/show Fog of war
+P - show/hide paths
+M - show/hide models of collision
+H - hide/show shadows
+L - hide/show lite points
+
+Editor
+Left/Right/Up/Down - move the camera
+Q/E - rotate camera left/right
+Mouse Scroll Up/Mouse scroll Down - change the actor to place
+LMB - place the actor
+RMB(holding) - move the camera
+Ctrl+S - save the level
