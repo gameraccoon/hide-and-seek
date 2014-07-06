@@ -5,7 +5,7 @@
 #if defined(DEBUG)
 	#define WARN(message)						\
 	{											\
-		Log::WriteError(std::string(message));	\
+		Log::Instance().writeError(std::string(message));	\
 		exit(1);								\
 	}
 

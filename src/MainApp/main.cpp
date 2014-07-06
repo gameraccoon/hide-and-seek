@@ -275,13 +275,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		}
 		catch (std::runtime_error e)
 		{
-			Log::WriteError("Game load filed with unknown error!");
+			Log::Instance().writeError("Game load filed with unknown error!");
 		}
 	}
 	else
 	{
 		MessageBox(NULL, "System failed to initialize", "Error", MB_OK | MB_ICONERROR | MB_APPLMODAL);
-		Log::WriteError("System failed to initialize");
+		Log::Instance().writeError("System failed to initialize");
 	}
 
 	// Clean up and shutdown

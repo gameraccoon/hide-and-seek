@@ -12,7 +12,7 @@ SqliteConnection::SqliteConnection(std::string databaseFile)
 	if (rc != 0)
 	{
 		this->error = true;
-		Log::WriteError(std::string("Can't open database: ").append(sqlite3_errmsg(database)));
+		Log::Instance().writeError(std::string("Can't open database: ").append(sqlite3_errmsg(database)));
 	}
 }
 
@@ -32,7 +32,7 @@ std::string SqliteConnection::getOneValue(std::string statement)
 
 	if (rc != 0)
 	{
-		Log::WriteError(std::string("Can't execute statement: ").append(statement));
+		Log::Instance().writeError(std::string("Can't execute statement: ").append(statement));
 	}
 
 	std::string singleValue = "";
@@ -45,7 +45,7 @@ std::string SqliteConnection::getOneValue(std::string statement)
 	}
 	else
 	{
-		Log::WriteError("Can't read line from sqlite");
+		Log::Instance().writeError("Can't read line from sqlite");
 	}
 	
 	sqlite3_finalize(ppStmt);
