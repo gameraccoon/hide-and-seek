@@ -1,6 +1,8 @@
 #ifndef DIRECTIONARROW_H
 #define DIRECTIONARROW_H
 
+#include <string>
+
 #include <hge.h>
 #include <hgesprite.h>
 #include <hgefont.h>
@@ -20,8 +22,10 @@ public:
 	void setDirection(Rotator direction);
 	/** Set new direction by vector */
 	void setVDirection(Vector2D vectDirection);
+	/** Set color of the arrow */
+	void setColor(DWORD color);
 	/** Render arrow to screen */
-	void render();
+	void render() const;
 private:
 	/** Location of center of this arrow */
 	Vector2D centerLocation;

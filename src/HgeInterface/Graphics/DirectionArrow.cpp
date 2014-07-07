@@ -9,7 +9,8 @@
   	#define WARN_IF(condition, message)
 #endif
 
-DirectionArrow::DirectionArrow(HGE *hge) : centerLocation(ZERO_VECTOR), direction(0.0f)
+DirectionArrow::DirectionArrow(HGE *hge) : centerLocation(ZERO_VECTOR),
+	direction(0.0f)
 {
 	this->hge = hge;
 
@@ -55,12 +56,16 @@ void DirectionArrow::setVDirection(Vector2D vectDirection)
 	}
 }
 
-
-void DirectionArrow::render()
+void DirectionArrow::setColor(DWORD color)
 {
-	if (this->bDrawable)
-	{
-		Vector2D location = this->centerLocation + Vector2D(this->direction) * 50;
-		this->arrowSprite->RenderEx(location.x, location.y, this->direction.getValue());
-	}
+	this->arrowSprite->SetColor(color);
+}
+
+void DirectionArrow::render() const
+{
+	if (!this->bDrawable)
+		return;
+	
+	Vector2D location = this->centerLocation + Vector2D(this->direction) * 50;
+	this->arrowSprite->RenderEx(location.x, location.y, this->direction.getValue());
 }
