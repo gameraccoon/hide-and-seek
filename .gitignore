@@ -1,6 +1,5 @@
 *.exe
 *.exe.*
-/res
 /vs_project
 Release
 *.filters
