@@ -13,19 +13,19 @@ IActor* CreateLightEmitter(World *world, const Vector2D location, const Vector2D
 	return new LightEmitter(world, location, scale, rotation);
 }
 
-#include <Game/Actors/Wall.h>
+#include <StealthGame/Actors/Wall.h>
 IActor* CreateWall(World *world, const Vector2D location, const Vector2D scale, const Rotator rotation)
 {
 	return new Wall(world, location, scale, rotation);
 }
 
-#include <Game/Actors/Man.h>
+#include <StealthGame/Actors/Man.h>
 IActor* CreateMan(World *world, const Vector2D location, const Vector2D scale, const Rotator rotation)
 {
 	return new Man(world, location, scale, rotation);
 }
 
-#include <Game/Actors/Corpse.h>
+#include <StealthGame/Actors/Corpse.h>
 IActor* CreateCorpse(World *world, const Vector2D location, const Vector2D scale, const Rotator rotation)
 {
 	return new Corpse(world, location, scale, rotation);

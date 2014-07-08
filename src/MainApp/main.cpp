@@ -10,7 +10,7 @@
 #include <Engine/Modules/WorldsContainer.h>
 #include <Engine/Actors/LightEmitter.h>
 
-#include <Game/Actors/Hero.h>
+#include <StealthGame/Actors/Hero.h>
 
 #include <vector>
 

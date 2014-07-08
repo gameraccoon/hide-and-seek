@@ -3,12 +3,12 @@
 
 #include "../Core/Vector2D.h"
 #include "../Core/World.h"
-#include "../Actors/Actor.h"
-#include "../Structures/InventoryItem.h"
-#include "../../Engine/Modules/PathFinder.h"
-#include "../Inventory/Weapon.h"
+#include "../Modules/PathFinder.h"
 #include "../AI/Role.h"
 #include "../AI/IBody.h"
+#include "../Inventory/InventoryItem.h"
+#include "../Inventory/Weapon.h"
+#include "../Actors/Actor.h"
 
 class Body:public Actor, public IBody
 {

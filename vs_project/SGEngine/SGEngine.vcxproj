@@ -82,6 +82,7 @@
     <ClCompile Include="..\..\src\Engine\Core\Rotator.cpp" />
     <ClCompile Include="..\..\src\Engine\Core\Vector2D.cpp" />
     <ClCompile Include="..\..\src\Engine\Core\World.cpp" />
+    <ClCompile Include="..\..\src\Engine\Inventory\InventoryItem.cpp" />
     <ClCompile Include="..\..\src\Engine\Inventory\Weapon.cpp" />
     <ClCompile Include="..\..\src\Engine\Modules\ActorFactory.cpp" />
     <ClCompile Include="..\..\src\Engine\Modules\LevelLoader.cpp" />
@@ -92,7 +93,6 @@
     <ClCompile Include="..\..\src\Engine\Structures\Border.cpp" />
     <ClCompile Include="..\..\src\Engine\Structures\BoundingBox.cpp" />
     <ClCompile Include="..\..\src\Engine\Structures\Hull.cpp" />
-    <ClCompile Include="..\..\src\Engine\Structures\InventoryItem.cpp" />
     <ClCompile Include="..\..\src\Engine\Structures\PathPoint.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -110,7 +110,7 @@
     <ClInclude Include="..\..\src\Engine\Core\Rotator.h" />
     <ClInclude Include="..\..\src\Engine\Core\Vector2D.h" />
     <ClInclude Include="..\..\src\Engine\Core\World.h" />
-    <ClInclude Include="..\..\src\Engine\Hge\HgeIncludes.h" />
+    <ClInclude Include="..\..\src\Engine\Inventory\InventoryItem.h" />
     <ClInclude Include="..\..\src\Engine\Inventory\Weapon.h" />
     <ClInclude Include="..\..\src\Engine\Modules\ActorFactory.h" />
     <ClInclude Include="..\..\src\Engine\Modules\LevelLoader.h" />
@@ -121,7 +121,6 @@
     <ClInclude Include="..\..\src\Engine\Structures\Border.h" />
     <ClInclude Include="..\..\src\Engine\Structures\BoundingBox.h" />
     <ClInclude Include="..\..\src\Engine\Structures\Hull.h" />
-    <ClInclude Include="..\..\src\Engine\Structures\InventoryItem.h" />
     <ClInclude Include="..\..\src\Engine\Structures\PathPoint.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

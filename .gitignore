@@ -1,9 +1,7 @@
 *.exe
 *.exe.*
-/res
-/vs_project
+Debug
 Release
-*.filters
 *.user
 *.log
 log.txt
@@ -11,4 +9,6 @@ log.txt
 *.sdf
 *.ilk
 *.pdb
-!*.vcxproj
+*.suo
+*.opensdf
+*.ipch
