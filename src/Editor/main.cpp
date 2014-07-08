@@ -16,6 +16,8 @@
 
 #include "actorsRegistration.h"
 
+#include "ControlElements/TransformationShell.h"
+
 // Hge subsystem
 HGE *hge = nullptr;
 
@@ -41,7 +43,11 @@ Camera *mainCamera = nullptr;
 
 Vector2D cameraWorldLocation(ZERO_VECTOR);
 
-IActor *actorToPlace = nullptr;
+Vector2D selectedActorDragPoint(ZERO_VECTOR);
+IActor *selectedActor = nullptr;
+
+TransformationShell *transformShell;
+bool isDraggingActor = false;
 
 // Buttons
 ButtonListeners listeners;
@@ -59,23 +65,22 @@ public:
 	BtnMouseL(HGE *hge) : ButtonSwitcher(hge, HGEK_LBUTTON, true) { };
 	void pressed()
 	{
-		if (::actorToPlace == nullptr)
+		for (auto actor : ::gameWorld->allActors)
 		{
-			for (auto actor : ::gameWorld->allActors)
+			Vector2D location = actor->getLocation();
+			BoundingBox aabb = actor->getBoundingBox();
+			if (this->getDotCode(aabb, ::mainCamera->deProject(::mousePos)) == 0)
 			{
-				Vector2D location = actor->getLocation();
-				BoundingBox aabb = actor->getBoundingBox();
-				if (this->getDotCode(aabb, ::mainCamera->deProject(::mousePos)) == 0)
-				{
-					::actorToPlace = actor;
-					break;
-				}
+				::selectedActor = actor;
+				::selectedActorDragPoint = mainCamera->deProject(::mousePos) - actor->getLocation();
+				isDraggingActor = true;
+				break;
 			}
 		}
 	}
 	void released()
 	{
-		::actorToPlace = nullptr;
+		isDraggingActor = false;
 	}
 private:
 	static const int LEFT_BIT = 1;
@@ -127,14 +132,14 @@ public:
 class BtnCancelPlacing : public ButtonSwitcher
 {
 public:
-	BtnCancelPlacing(HGE *hge) : ButtonSwitcher(hge, HGEK_SPACE, true) { };
+	BtnCancelPlacing(HGE *hge) : ButtonSwitcher(hge, HGEK_DELETE, true) { };
 
 	void pressed()
 	{
-		if (::actorToPlace != nullptr)
+		if (::selectedActor != nullptr)
 		{
-			::actorToPlace->destroy();
-			::actorToPlace = nullptr;
+			::selectedActor->destroy();
+			::selectedActor = nullptr;
 		}
 	}
 };
@@ -159,11 +164,15 @@ bool FrameFunc()
 
 	::hge->Input_GetMousePos(&::mousePos.x, &::mousePos.y);
 
-	worldMousePos = mainCamera->deProject(mousePos);
-
-	if (::actorToPlace != nullptr)
+	if (isDraggingActor)
 	{
-		::actorToPlace->setLocation(worldMousePos);
+		worldMousePos = mainCamera->deProject(::mousePos);
+		::selectedActor->setLocation(worldMousePos - ::selectedActorDragPoint);
+	}
+
+	if (selectedActor != nullptr)
+	{
+		::transformShell->setScreenLocation(mainCamera->project(selectedActor->getLocation()));
 	}
 
 	if (::bViewHolded)
@@ -177,9 +186,9 @@ bool FrameFunc()
 	hgeInputEvent * event = new hgeInputEvent();
 	if (::hge->Input_GetEvent(event) && event->wheel != 0)
 	{
-		if (actorToPlace != nullptr)
+		if (selectedActor != nullptr)
 		{
-			::actorToPlace->destroy();
+			::selectedActor->destroy();
 
 			::currentSpawnActorIndex += event->wheel > 0 ? 1 : -1;
 
@@ -194,7 +203,7 @@ bool FrameFunc()
 			}
 		}
 		
-		::actorToPlace = ActorFactory::Factory().placeActor(actorsToSpawn[currentSpawnActorIndex], gameWorld, worldMousePos, Vector2D(1.0f, 1.0f), 0.0f);
+		::selectedActor = ActorFactory::Factory().placeActor(actorsToSpawn[currentSpawnActorIndex], gameWorld, worldMousePos, Vector2D(1.0f, 1.0f), 0.0f);
 	}
 	delete event;
 
@@ -224,13 +233,17 @@ bool RenderFunc()
 
 	// fps and dt
 	::font->printf(5, 5, HGETEXT_LEFT, "dt:%.3f\nFPS:%d", ::hge->Timer_GetDelta(), ::hge->Timer_GetFPS());
+	
+	if (selectedActor != nullptr)
+	{
+		::transformShell->render();
+	}
 
 	//-- Stop render graphics
 
 	::hge->Gfx_EndScene();
 
 	delete cameraRenderSprite;
-
 	return false;
 }
 
@@ -264,6 +277,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			::crosshair = new hgeSprite(texture, 64, 96, 32, 32);
 			::crosshair->SetBlendMode(BLEND_COLORMUL | BLEND_ALPHAADD | BLEND_NOZWRITE);
 			::crosshair->SetHotSpot(16, 16);
+
+			::transformShell = new TransformationShell(::hge);
 
 			FactoryActors::RegisterAll();
 
