@@ -10,7 +10,7 @@
 #include <HgeInterface/Input/KeyListeners.h>
 #include <HgeInterface/Graphics/FloatingCamera.h>
 
-#include <Game/Actors/Hero.h>
+#include <StealthGame/Actors/Hero.h>
 
 #include <vector>
 
