@@ -150,6 +150,12 @@
     <ClInclude Include="..\..\src\Engine\Inventory\InventoryItem.h">
       <Filter>Inventory</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\Engine\Subsystems\Database\DbConnection.h">
+      <Filter>Subsystems\Database</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Engine\Subsystems\Database\SqlDataReader.h">
+      <Filter>Subsystems\Database</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Actors">
@@ -169,6 +175,12 @@
     </Filter>
     <Filter Include="Structures">
       <UniqueIdentifier>{608a6a4a-a026-4b10-9fd3-08a9dd78718e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsystems">
+      <UniqueIdentifier>{ed9e6403-dae1-4af8-98a0-27f87269e907}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsystems\Database">
+      <UniqueIdentifier>{f5551b3d-d08a-4699-9307-3e92ee66d23a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

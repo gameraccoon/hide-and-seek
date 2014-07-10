@@ -4,12 +4,21 @@
 
 #include <LuaInterface/LuaAiState.h>
 
-#include <SqliteInterface/StateLoader.h>
+#include <SqliteInterface/SqliteConnection.h>
 
 AiRole::AiRole(World* world, IBody *body) : Role(world, body)
 {
-	StateLoader sl("testdb");
-	std::string firstStateName = sl.getStateName("test");
+	std::shared_ptr<SqlDataReader> conn = SqliteConnection("testdb.db").execSql("select * from test");
+
+	std::string firstStateName;
+	if (conn->next())
+	{
+		firstStateName = conn->getValueByIndex(0)->asString();
+	}
+	else
+	{
+		throw std::runtime_error("can't read from table 'test' of database 'testdb'");
+	}
 	this->states.push(new LuaAiState(world, body, this, firstStateName));
 }
 

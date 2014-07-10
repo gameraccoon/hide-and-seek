@@ -122,6 +122,8 @@
     <ClInclude Include="..\..\src\Engine\Structures\BoundingBox.h" />
     <ClInclude Include="..\..\src\Engine\Structures\Hull.h" />
     <ClInclude Include="..\..\src\Engine\Structures\PathPoint.h" />
+    <ClInclude Include="..\..\src\Engine\Subsystems\Database\DbConnection.h" />
+    <ClInclude Include="..\..\src\Engine\Subsystems\Database\SqlDataReader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

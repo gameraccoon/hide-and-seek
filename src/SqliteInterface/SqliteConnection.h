@@ -1,26 +1,22 @@
 #ifndef SQLITE_CONNECTION_H
 #define SQLITE_CONNECTION_H
 
-#include <sqlite3.h>
+struct sqlite3;
 
-#include <string>
-
-class DatabaseErrorException : public std::exception { };
-class SqlStatementException : public std::exception { };
+#include <Engine/Subsystems/Database/DbConnection.h>
 
 /**
  * Class able to read Textures and create and sprites.
  *
  * If texture load once that it unload only after destruction.
  */
-class SqliteConnection
+class SqliteConnection : public DbConnection
 {
 public:
 	SqliteConnection(std::string databaseFile);
-	~SqliteConnection(void);
+	virtual ~SqliteConnection(void) override;
 
-	bool isError();
-	std::string getOneValue(std::string statement);
+	virtual std::shared_ptr<SqlDataReader> execSql(std::string query) override;
 private:
 	sqlite3 *database;
 	bool error;
