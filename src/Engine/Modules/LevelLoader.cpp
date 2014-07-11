@@ -96,26 +96,24 @@ void LevelLoader::load(World* world, const std::string levelName)
 	while (!mapFile.eof())
 	{
 		std::string className;
+
+		mapFile >> className;
+
+		if (className == "")
+			continue;
 		
 		float xPos, yPos;
 		float xScale, yScale;
 		float angle;
-		mapFile >> className;
+
 		mapFile >> xPos;
 		mapFile >> yPos;
 		mapFile >> xScale;
 		mapFile >> yScale;
 		mapFile >> angle;
 
-		try
-		{
-			ActorFactory::Factory().placeActor(className, world, Vector2D(xPos, yPos),
-				Vector2D(xScale, yScale), Rotator(angle));
-		}
-		catch (std::runtime_error)
-		{
-			// skip unknown classes
-		}
+		ActorFactory::Factory().placeActor(className, world, Vector2D(xPos, yPos),
+			Vector2D(xScale, yScale), Rotator(angle));
 	}
 	mapFile.close();
 

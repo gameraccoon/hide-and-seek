@@ -252,7 +252,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		}
 		catch (std::runtime_error e)
 		{
-			Log::Instance().writeError("Game load filed with unknown error!");
+			Log::Instance().writeError(std::string("Game load filed with error: ").append(+ e.what()));
 		}
 	}
 	else
