@@ -31,8 +31,8 @@ Editor
 Left/Right/Up/Down - move the camera
 Q/E - rotate camera left/right
 Mouse Scroll Up/Mouse scroll Down - change the actor to place
-LMB - place the actor
-LMB(holding) - move actor by mouse
+LMB - select and move actor by mouse
 RMB(holding) - move the camera
-Delete - cancel actor creation or delete dragged actor
+Delete - delete the selected actor
+Ctrl+LMB - place the choosen actor
 Ctrl+S - save the level

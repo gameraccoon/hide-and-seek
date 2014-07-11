@@ -77,6 +77,15 @@ public:
 				break;
 			}
 		}
+
+		if (!isDraggingActor)
+		{
+			if (::hge->Input_GetKeyState(HGEK_CTRL))
+			{
+				::selectedActor = ActorFactory::Factory().placeActor(actorsToSpawn[currentSpawnActorIndex],
+					gameWorld, mainCamera->deProject(::mousePos), Vector2D(1.0f, 1.0f), 0.0f);
+			}
+		}
 	}
 	void released()
 	{
@@ -187,24 +196,17 @@ bool FrameFunc()
 	hgeInputEvent * event = new hgeInputEvent();
 	if (::hge->Input_GetEvent(event) && event->wheel != 0)
 	{
-		if (selectedActor != nullptr)
+		::currentSpawnActorIndex += event->wheel > 0 ? 1 : -1;
+
+		if (::currentSpawnActorIndex < 0)
 		{
-			::selectedActor->destroy();
-
-			::currentSpawnActorIndex += event->wheel > 0 ? 1 : -1;
-
-			if (::currentSpawnActorIndex < 0)
-			{
-				::currentSpawnActorIndex = ::actorsToSpawn.size() - 1;
-			}
-
-			if (::currentSpawnActorIndex >= (int)::actorsToSpawn.size())
-			{
-				::currentSpawnActorIndex = 0;
-			}
+			::currentSpawnActorIndex = ::actorsToSpawn.size() - 1;
 		}
-		
-		::selectedActor = ActorFactory::Factory().placeActor(actorsToSpawn[currentSpawnActorIndex], gameWorld, worldMousePos, Vector2D(1.0f, 1.0f), 0.0f);
+
+		if (::currentSpawnActorIndex >= (int)::actorsToSpawn.size())
+		{
+			::currentSpawnActorIndex = 0;
+		}
 	}
 	delete event;
 
@@ -235,7 +237,10 @@ bool RenderFunc()
 	// fps and dt
 	::font->printf(5, 5, HGETEXT_LEFT, "dt:%.3f\nFPS:%d", ::hge->Timer_GetDelta(), ::hge->Timer_GetFPS());
 	
-	if (::selectedActor != nullptr && ::isDraggingActor)
+	// Object ready to spawn
+	::font->printf(5, 60, HGETEXT_LEFT, ::actorsToSpawn[currentSpawnActorIndex].c_str());
+
+	if (::selectedActor != nullptr)
 	{
 		::transformShell->render();
 	}
