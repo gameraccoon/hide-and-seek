@@ -55,6 +55,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>SqliteInterface.lib;StealthGame.lib;DebugHelpers.lib;sqlite3.lib;liblua52.a;LuaInterface.lib;HgeInterface.lib;SGEngine.lib;hge.lib;hgehelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/NODEFAULTLIB:LIBCMT %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -75,10 +76,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\Editor\actorsRegistration.cpp" />
+    <ClCompile Include="..\..\src\Editor\ControlElements\TransformationShell.cpp" />
     <ClCompile Include="..\..\src\Editor\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\Editor\actorsRegistration.h" />
+    <ClInclude Include="..\..\src\Editor\ControlElements\TransformationShell.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -31,9 +31,9 @@ DirectionArrow::~DirectionArrow(void)
 	this->hge->Texture_Free(this->arrowTexture);
 }
 
-void DirectionArrow::setCenter(Vector2D center)
+void DirectionArrow::setScreenLocation(const Vector2D& scrLocation)
 {
-	this->centerLocation = center;
+	this->centerLocation = scrLocation;
 }
 
 void DirectionArrow::setDirection(Rotator direction)
@@ -68,4 +68,14 @@ void DirectionArrow::render() const
 	
 	Vector2D location = this->centerLocation + Vector2D(this->direction) * 50;
 	this->arrowSprite->RenderEx(location.x, location.y, this->direction.getValue());
+}
+
+Vector2D DirectionArrow::getScreenLocation() const
+{
+	return this->centerLocation;
+}
+
+bool DirectionArrow::click()
+{
+	return false;
 }

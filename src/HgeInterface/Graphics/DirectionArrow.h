@@ -11,13 +11,16 @@
 #include <Engine/Core/Vector2D.h>
 #include <Engine/Core/Rotator.h>
 
-class DirectionArrow
+#include <Engine/Graphic/IGraphicElement.h>
+
+class DirectionArrow : public IGraphicElement
 {
 public:
 	DirectionArrow(HGE *hge);
-	~DirectionArrow(void);
+	virtual ~DirectionArrow(void);
 	/** Set center of arrow in world coordinates */
-	void setCenter(Vector2D center);
+	virtual void setScreenLocation(const Vector2D& scrLocation) override;
+	virtual Vector2D getScreenLocation() const override;
 	/** Set new direction of arrow */
 	void setDirection(Rotator direction);
 	/** Set new direction by vector */
@@ -25,7 +28,8 @@ public:
 	/** Set color of the arrow */
 	void setColor(DWORD color);
 	/** Render arrow to screen */
-	void render() const;
+	virtual void render() const override;
+	virtual bool click() override;
 private:
 	/** Location of center of this arrow */
 	Vector2D centerLocation;

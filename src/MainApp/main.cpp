@@ -155,7 +155,7 @@ bool FrameFunc()
 	::gameWorld->update(dt);
 
 	::arrow->setVDirection(Direction);
-	::arrow->setCenter(SCREEN_CENTER - CameraShift);
+	::arrow->setScreenLocation(SCREEN_CENTER - CameraShift);
 
 	return false;
 }
@@ -252,7 +252,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			::ourHero->giveWeapon(new Weapon());
 
 			::arrow = new DirectionArrow(::hge);
-			::arrow->setCenter(SCREEN_CENTER);
+			::arrow->setScreenLocation(SCREEN_CENTER);
 		
 			::listeners.addListener(new BtnAABB(::hge));
 			::listeners.addListener(new BtnHulls(::hge));

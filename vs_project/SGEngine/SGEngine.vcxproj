@@ -110,7 +110,8 @@
     <ClInclude Include="..\..\src\Engine\Core\Rotator.h" />
     <ClInclude Include="..\..\src\Engine\Core\Vector2D.h" />
     <ClInclude Include="..\..\src\Engine\Core\World.h" />
-    <ClInclude Include="..\..\src\Engine\Inventory\InventoryItem.h" />
+    <ClInclude Include="..\..\src\Engine\Graphic\IGraphicElement.h" />
+    <ClInclude Include="..\..\src\Engine\Hge\HgeIncludes.h" />
     <ClInclude Include="..\..\src\Engine\Inventory\Weapon.h" />
     <ClInclude Include="..\..\src\Engine\Modules\ActorFactory.h" />
     <ClInclude Include="..\..\src\Engine\Modules\LevelLoader.h" />
