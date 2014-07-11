@@ -8,12 +8,12 @@
 
 AiRole::AiRole(World* world, IBody *body) : Role(world, body)
 {
-	std::shared_ptr<SqlDataReader> conn = SqliteConnection("testdb.db").execSql("select * from test");
+	SqlDataReader::Ptr conn = SqliteConnection("testdb.db").execSql("select * from test");
 
 	std::string firstStateName;
 	if (conn->next())
 	{
-		firstStateName = conn->getValueByIndex(0)->asString();
+		firstStateName = conn->getValueByName("test")->asString();
 	}
 	else
 	{

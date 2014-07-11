@@ -20,7 +20,7 @@ public:
 	virtual int asInt() = 0;
 	virtual float asFloat() = 0;
 	virtual std::string asString() = 0;
-	virtual void* asVariant() = 0;
+	virtual const void* asVariant() = 0;
 };
 
 /**
@@ -30,6 +30,8 @@ public:
 class SqlDataReader
 {
 public:
+	typedef std::shared_ptr<SqlDataReader> Ptr;
+
 	virtual ~SqlDataReader() {}
 
 	/**

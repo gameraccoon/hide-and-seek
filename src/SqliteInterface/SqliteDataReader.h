@@ -17,7 +17,7 @@ public:
 	virtual int asInt() override;
 	virtual float asFloat() override;
 	virtual std::string asString() override;
-	virtual void* asVariant() override;
+	virtual const void* asVariant() override;
 private:
 	sqlite3_stmt* ppStmt;
 	int columnIndex;

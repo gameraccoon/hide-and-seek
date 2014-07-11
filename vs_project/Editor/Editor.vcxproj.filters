@@ -3,15 +3,9 @@
   <ItemGroup>
     <ClCompile Include="..\..\src\Editor\actorsRegistration.cpp" />
     <ClCompile Include="..\..\src\Editor\main.cpp" />
-    <ClCompile Include="..\..\src\Editor\ControlElements\TransformationShell.cpp">
-      <Filter>ControlElements</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\Editor\actorsRegistration.h" />
-    <ClInclude Include="..\..\src\Editor\ControlElements\TransformationShell.h">
-      <Filter>ControlElements</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ControlElements">

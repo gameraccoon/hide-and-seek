@@ -14,17 +14,17 @@ SqliteValue::~SqliteValue()
 
 bool SqliteValue::asBool()
 {
-	return false;
+	return (sqlite3_column_int(this->ppStmt, this->columnIndex) != 0);
 }
 
 int SqliteValue::asInt()
 {
-	return 0;
+	return sqlite3_column_int(this->ppStmt, this->columnIndex);
 }
 
 float SqliteValue::asFloat()
 {
-	return 0.0f;
+	return (float)sqlite3_column_double(this->ppStmt, this->columnIndex);
 }
 
 std::string SqliteValue::asString()
@@ -32,9 +32,9 @@ std::string SqliteValue::asString()
 	return reinterpret_cast<const char*>(sqlite3_column_text(this->ppStmt, this->columnIndex));
 }
 
-void* SqliteValue::asVariant()
+const void* SqliteValue::asVariant()
 {
-	return nullptr;
+	return sqlite3_column_blob(this->ppStmt, this->columnIndex);
 }
 
 
@@ -63,17 +63,25 @@ bool SqliteDataReader::next()
 
 std::shared_ptr<DbValue> SqliteDataReader::getValueByName(std::string columnName)
 {	
-	return nullptr;
+	for (int columnIndex = 0, columnsCount = sqlite3_column_count(this->ppStmt);
+		columnIndex < columnsCount;
+		columnIndex++)
+	{
+		std::string sTemp = sqlite3_column_name(this->ppStmt, columnIndex);
+		if (sTemp == columnName)
+		{
+			return std::shared_ptr<DbValue>(new SqliteValue(this->ppStmt, columnIndex));
+		}
+	}
+
+	throw new ColumnNotFoundException();
 }
 
 std::shared_ptr<DbValue> SqliteDataReader::getValueByIndex(int columnIndex)
 {	
+	if (columnIndex >= sqlite3_column_count(this->ppStmt))
+	{
+		throw new ColumnNotFoundException();
+	}
 	return std::shared_ptr<DbValue>(new SqliteValue(this->ppStmt, columnIndex));
 }
-/*
-std::string SqliteDataReader::getStateName(std::string actorName)
-{
-	SqliteConnection conn(std::string(databaseFileName).append(".db"));
-	std::string value = conn.getOneValue(std::string("Select * from ").append(actorName));
-	return value;
-}*/
