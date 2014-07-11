@@ -21,6 +21,7 @@ public:
 	void writeError(std::string text);
 	void writeWarning(std::string text);
 	void writeLog(std::string text);
+	void writeInit(std::string text);
 
 private:
 	/** Write line with timestamp */

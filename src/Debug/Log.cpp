@@ -8,7 +8,10 @@ bool Log::isDestroyed = false;
 
 Log::Log()
 {
-	this->logFileStream = new std::ofstream(std::string("./logs/").append("log.txt"), std::ios_base::app);
+	static const std::string LOG_FILE = std::string("./logs/").append("log.txt"); 
+
+	this->logFileStream = new std::ofstream(LOG_FILE, std::ios_base::trunc);
+	this->writeInit("Log file created");
 }
 
 Log::~Log()
@@ -80,6 +83,11 @@ void Log::writeWarning(std::string text)
 void Log::writeLog(std::string text)
 {
 	this->writeLine(std::string(" Log: ").append(text));
+}
+
+void Log::writeInit(std::string text)
+{
+	this->writeLine(std::string(" Init: ").append(text));
 }
 
 void Log::writeLine(std::string text)
