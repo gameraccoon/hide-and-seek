@@ -217,7 +217,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	::hge->System_SetState(HGE_SCREENWIDTH, SCREEN_WIDTH);
 	::hge->System_SetState(HGE_SCREENHEIGHT, SCREEN_HEIGHT);
 	::hge->System_SetState(HGE_SCREENBPP, 32);
-	::hge->System_SetState(HGE_SHOWSPLASH, false); // hidding splash for develop-time only
+
+#if (defined DEBUG) && (!defined RELEASE)
+	 // hidding HGE splash for develop-time only
+	::hge->System_SetState(HGE_SHOWSPLASH, false);
+#endif
 
 	if(::hge->System_Initiate())
 	{

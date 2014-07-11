@@ -2,7 +2,7 @@
 #include "Log.h"
 
 // Debugging methods
-#if defined(DEBUG)
+#if defined(DEBUG) && (!defined RELEASE)
 	#define WARN(message)						\
 	{											\
 		Log::Instance().writeError(std::string(message));	\
