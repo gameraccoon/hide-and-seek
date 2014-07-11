@@ -140,6 +140,7 @@ public:
 		{
 			::selectedActor->destroy();
 			::selectedActor = nullptr;
+			::isDraggingActor = false;
 		}
 	}
 };
@@ -164,7 +165,7 @@ bool FrameFunc()
 
 	::hge->Input_GetMousePos(&::mousePos.x, &::mousePos.y);
 
-	if (isDraggingActor)
+	if (isDraggingActor && ::selectedActor != nullptr)
 	{
 		worldMousePos = mainCamera->deProject(::mousePos);
 		::selectedActor->setLocation(worldMousePos - ::selectedActorDragPoint);
@@ -234,7 +235,7 @@ bool RenderFunc()
 	// fps and dt
 	::font->printf(5, 5, HGETEXT_LEFT, "dt:%.3f\nFPS:%d", ::hge->Timer_GetDelta(), ::hge->Timer_GetFPS());
 	
-	if (selectedActor != nullptr)
+	if (::selectedActor != nullptr && ::isDraggingActor)
 	{
 		::transformShell->render();
 	}

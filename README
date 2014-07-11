@@ -34,5 +34,5 @@ Mouse Scroll Up/Mouse scroll Down - change the actor to place
 LMB - place the actor
 LMB(holding) - move actor by mouse
 RMB(holding) - move the camera
-Space - cancel actor creation or delete dragged actor;
+Delete - cancel actor creation or delete dragged actor
 Ctrl+S - save the level
