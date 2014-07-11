@@ -4,12 +4,21 @@
 
 #include <LuaInterface/LuaAiState.h>
 
-#include <SqliteInterface/StateLoader.h>
+#include <SqliteInterface/SqliteConnection.h>
 
 AiRole::AiRole(World* world, IBody *body) : Role(world, body)
 {
-	StateLoader sl("testdb");
-	std::string firstStateName = sl.getStateName("test");
+	SqlDataReader::Ptr conn = SqliteConnection("testdb.db").execSql("select * from test");
+
+	std::string firstStateName;
+	if (conn->next())
+	{
+		firstStateName = conn->getValueByName("test")->asString();
+	}
+	else
+	{
+		throw std::runtime_error("can't read from table 'test' of database 'testdb'");
+	}
 	this->states.push(new LuaAiState(world, body, this, firstStateName));
 }
 
@@ -59,7 +68,7 @@ void AiRole::endCurrentState()
 	}
 	else
 	{
-		Log::WriteWarning("Trying to delete the last state");
+		Log::Instance().writeWarning("Trying to delete the last state");
 	}
 }
 

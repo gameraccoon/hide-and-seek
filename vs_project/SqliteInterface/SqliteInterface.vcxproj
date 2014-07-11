@@ -68,11 +68,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\SqliteInterface\SqliteConnection.cpp" />
-    <ClCompile Include="..\..\src\SqliteInterface\StateLoader.cpp" />
+    <ClCompile Include="..\..\src\SqliteInterface\SqliteDataReader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\SqliteInterface\SqliteConnection.h" />
-    <ClInclude Include="..\..\src\SqliteInterface\StateLoader.h" />
+    <ClInclude Include="..\..\src\SqliteInterface\SqliteDataReader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -4,7 +4,7 @@
 #include <Engine/Core/Vector2D.h>
 #include <Engine/Core/World.h>
 #include <Engine/Actors/Actor.h>
-#include <Engine/Structures/InventoryItem.h>
+#include <Engine/Inventory/InventoryItem.h>
 #include <Engine/Inventory/Weapon.h>
 #include <Engine/Actors/Body.h>
 

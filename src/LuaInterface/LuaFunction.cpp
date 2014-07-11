@@ -15,7 +15,7 @@ namespace
 		{
 			const char* err = lua_tostring(luaState, -1);
 
-			Log::WriteWarning(std::string("\nError in debug.traceback() call: %s\n").append(err));
+			Log::Instance().writeWarning(std::string("\nError in debug.traceback() call: %s\n").append(err));
 		}
 		else
 		{
@@ -69,7 +69,7 @@ void LuaFunction::runFunction(int paramsCount, int resultsCount)
 		// this message returned by errorHandler
 		const char* err = lua_tostring(this->luaState, -1);
 
-		Log::WriteWarning(err);
+		Log::Instance().writeWarning(err);
 	}
 }
 

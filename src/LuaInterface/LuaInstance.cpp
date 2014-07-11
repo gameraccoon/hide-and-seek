@@ -33,7 +33,7 @@ int LuaInstance::execScript(const char* script)
 
 	if (res != 0)
 	{
-		Log::WriteWarning(lua_tostring(this->luaState, -1));
+		Log::Instance().writeWarning(lua_tostring(this->luaState, -1));
 		return res;
 	}
 
@@ -46,7 +46,7 @@ int LuaInstance::execScriptFromFile(const char* ScriptFileName)
 	
 	if (res != 0)
 	{
-		Log::WriteWarning(lua_tostring(this->luaState, -1));
+		Log::Instance().writeWarning(lua_tostring(this->luaState, -1));
 		return res;
 	}
 

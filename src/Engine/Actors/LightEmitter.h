@@ -10,6 +10,7 @@ public:
 	~LightEmitter(void);
 
 	float getBrightness() const;
+	void setBrightness(float brightness);
 protected:
 	virtual void updateCollision() override;
 	float brightness;

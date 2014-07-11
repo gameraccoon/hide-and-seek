@@ -40,7 +40,6 @@ private:
 		DWORD color;
 		int hotSpotX, hotSpotY;
 		bool loaded;
-		byte asd;
 	};
 
 	typedef std::map<std::string, HTEXTURE> TextureMap;

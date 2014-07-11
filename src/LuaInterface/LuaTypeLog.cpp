@@ -11,7 +11,7 @@ namespace luafunc
 		LuaInstance luaInstance(state);
 
 		for(int i = 1; i < luaInstance.getArgumentsCount() + 1; i++)
-			Log::WriteLog(luaInstance.getFromLua<char*>(i));
+			Log::Instance().writeLog(luaInstance.getFromLua<char*>(i));
 			
 		return 0;
 	}
@@ -21,7 +21,7 @@ namespace luafunc
 		LuaInstance luaInstance(state);
 
 		for(int i = 1; i < luaInstance.getArgumentsCount() + 1; i++)
-			Log::WriteWarning(luaInstance.getFromLua<char*>(i));
+			Log::Instance().writeWarning(luaInstance.getFromLua<char*>(i));
 
 		return 0;
 	}
@@ -31,7 +31,7 @@ namespace luafunc
 		LuaInstance luaInstance(state);
 
 		for(int i = 1; i < luaInstance.getArgumentsCount() + 1; i++)
-			Log::WriteError(luaInstance.getFromLua<char*>(i));
+			Log::Instance().writeError(luaInstance.getFromLua<char*>(i));
 
 		return 0;
 	}

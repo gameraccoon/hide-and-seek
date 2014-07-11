@@ -1,0 +1,4 @@
+namespace FactoryActors
+{
+	void RegisterAll();
+}

@@ -10,7 +10,7 @@
 #include <Engine/Modules/WorldsContainer.h>
 #include <Engine/Actors/LightEmitter.h>
 
-#include <Game/Actors/Hero.h>
+#include <StealthGame/Actors/Hero.h>
 
 #include <vector>
 
@@ -155,7 +155,7 @@ bool FrameFunc()
 	::gameWorld->update(dt);
 
 	::arrow->setVDirection(Direction);
-	::arrow->setCenter(SCREEN_CENTER - CameraShift);
+	::arrow->setScreenLocation(SCREEN_CENTER - CameraShift);
 
 	return false;
 }
@@ -217,7 +217,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	::hge->System_SetState(HGE_SCREENWIDTH, SCREEN_WIDTH);
 	::hge->System_SetState(HGE_SCREENHEIGHT, SCREEN_HEIGHT);
 	::hge->System_SetState(HGE_SCREENBPP, 32);
-	::hge->System_SetState(HGE_SHOWSPLASH, false); // hidding splash for develop-time only
+
+#if (defined DEBUG) && (!defined RELEASE)
+	 // hidding HGE splash for develop-time only
+	::hge->System_SetState(HGE_SHOWSPLASH, false);
+#endif
 
 	if(::hge->System_Initiate())
 	{
@@ -248,7 +252,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			::ourHero->giveWeapon(new Weapon());
 
 			::arrow = new DirectionArrow(::hge);
-			::arrow->setCenter(SCREEN_CENTER);
+			::arrow->setScreenLocation(SCREEN_CENTER);
 		
 			::listeners.addListener(new BtnAABB(::hge));
 			::listeners.addListener(new BtnHulls(::hge));
@@ -275,13 +279,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		}
 		catch (std::runtime_error e)
 		{
-			Log::WriteError("Game load filed with unknown error!");
+			Log::Instance().writeError(std::string("Game load filed with error: ").append(+ e.what()));
 		}
 	}
 	else
 	{
 		MessageBox(NULL, "System failed to initialize", "Error", MB_OK | MB_ICONERROR | MB_APPLMODAL);
-		Log::WriteError("System failed to initialize");
+		Log::Instance().writeError("System failed to initialize");
 	}
 
 	// Clean up and shutdown

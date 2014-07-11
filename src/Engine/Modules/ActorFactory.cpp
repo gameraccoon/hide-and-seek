@@ -31,7 +31,7 @@ IActor* ActorFactory::placeActor(std::string actorId, World *world, const Vector
 	
 	if (it == this->callbacks.end())
 	{
-		throw std::runtime_error("Unknown actor identefier");
+		throw std::runtime_error(std::string("Unknown actor identefier '").append(actorId).append("'"));
 	}
 	
 	return (it->second)(world, location, scale, rotation);

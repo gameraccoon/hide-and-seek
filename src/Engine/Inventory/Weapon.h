@@ -1,10 +1,11 @@
 #ifndef WEAPON_H
 #define WEAPON_H
 
-#include "../../Engine/Core/Vector2D.h"
-#include "../../Engine/Core/World.h"
-#include "../../Engine/Structures/InventoryItem.h"
+#include "../Core/Vector2D.h"
+#include "../Core/World.h"
 #include "../Actors/Bullet.h"
+
+#include "InventoryItem.h"
 
 class Weapon : public InventoryItem
 {
