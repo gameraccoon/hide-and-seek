@@ -3,8 +3,7 @@
 
 Camera::Camera(HGE* hge, const World* world, Vector2D resolution, Vector2D location) : location(location),
 	resolution(resolution),
-	centerPos(resolution / 2),
-	graphicLoader(hge, std::string("./configs/textures.conf"), "./")
+	centerPos(resolution / 2)
 {
 	this->browsableWorld = world;
 	this->angle = 0;
@@ -22,14 +21,11 @@ Camera::Camera(HGE* hge, const World* world, Vector2D resolution, Vector2D locat
 	this->renderTarget = this->hge->Target_Create((int) this->resolution.x, (int) this->resolution.y, false);
 	this->zone = this->hge->Target_Create((int) this->shownSize, (int) this->shownSize, false);
 
-	this->camTexture = this->hge->Texture_Load("colision.png");
-	this->fogTexture = this->hge->Texture_Load("fog.png");
-
-	this->collisionSprite = new hgeSprite(this->camTexture, 0, 0, 64, 64);
+	this->collisionSprite = GraphicLoader::Instance().getSprite("collision");
 	this->collisionSprite->SetColor(0xFF00FF00);
-	this->collisionSprite->SetHotSpot(0, 0);
 
-	this->fogSprite = new hgeSprite(this->fogTexture, 0.0f, 0.0f, this->fogWidth, this->fogWidth);
+	this->fogSprite = GraphicLoader::Instance().getSprite("fog");
+	this->fogSprite->SetTextureRect(0.0f, 0.0f, this->fogWidth, this->fogWidth);
 	this->fogSprite->SetColor(0xFF000000);
 	this->fogSprite->SetHotSpot(this->fogWidth/2, this->fogWidth/2);
 
@@ -44,10 +40,6 @@ Camera::Camera(HGE* hge, const World* world, Vector2D resolution, Vector2D locat
 
 Camera::~Camera(void)
 {
-	delete this->collisionSprite;
-	delete this->fogSprite;
-	this->hge->Texture_Free(this->camTexture);
-	this->hge->Texture_Free(this->fogTexture);
 	this->hge->Target_Free(this->renderTarget);
 	this->hge->Target_Free(this->zone);
 }
@@ -162,7 +154,7 @@ void Camera::renderActors(const LightEmitter *light)
 			continue;
 
 		// Get sprite
-		hgeSprite* sprite = this->graphicLoader.getSprite(actorToRender->getClassID());
+		hgeSprite* sprite = GraphicLoader::Instance().getSprite(actorToRender->getClassID());
 
 		// if there no sprite for this actor then go to the next actor
 		if (sprite == nullptr)
@@ -254,7 +246,7 @@ void Camera::renderFog(float width, float height, float size)
 
 void Camera::drawPenumbra(const Vector2D &first, const Vector2D &second, const Vector2D &third)
 {
-	HTEXTURE PenumbraTexture = this->hge->Texture_Load("penumbra.png");
+	HTEXTURE PenumbraTexture = GraphicLoader::Instance().getTexture("penumbra.png");
 	
 	hgeTriple triple;
 	//triple.

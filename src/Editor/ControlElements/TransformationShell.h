@@ -26,8 +26,6 @@ private:
 	/** Pointer of the HGE subsystem */
 	HGE *hge;
 	hgeSprite* sprite;
-	/** Texture includes all the sprites DirectionArrow */
-	HTEXTURE texture;
 	Vector2D screenLocation;
 };
 

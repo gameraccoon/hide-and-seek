@@ -1,24 +1,20 @@
 #include "DirectionArrow.h"
 
+#include "GraphicLoader.h"
 
 DirectionArrow::DirectionArrow(HGE *hge) : centerLocation(ZERO_VECTOR),
 	direction(0.0f)
 {
 	this->hge = hge;
 
-	this->arrowTexture = this->hge->Texture_Load("arrow.png");
-		
-	this->arrowSprite = new hgeSprite(this->arrowTexture, 0, 0, 32, 32);
+	this->arrowSprite = GraphicLoader::Instance().getSprite("arrow");
 	this->arrowSprite->SetColor(0xFF00AA00);
-	this->arrowSprite->SetHotSpot(16, 16);
 
 	bDrawable = false;
 }
 
 DirectionArrow::~DirectionArrow(void)
 {
-	delete this->arrowSprite;
-	this->hge->Texture_Free(this->arrowTexture);
 }
 
 void DirectionArrow::setScreenLocation(const Vector2D& scrLocation)

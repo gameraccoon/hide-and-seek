@@ -78,16 +78,10 @@ protected:
 	HGE *hge;
 	/** Sprite of the actor */
 	hgeSprite *collisionSprite;
-	/** Texture of all Camera sprites */
-	HTEXTURE camTexture;
-	/** Texture of fog */
-	HTEXTURE fogTexture;
 	/** Render target */
 	HTARGET renderTarget;
 	/** Sprite of fog */
 	hgeSprite *fogSprite;
-	/** */
-	GraphicLoader graphicLoader;
 	/** Is camera shows AABB? */
 	bool bShowAABB;
 	/** Maximum distans of renderable objects from camera */

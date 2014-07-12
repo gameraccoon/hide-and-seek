@@ -19,23 +19,36 @@ class TextureNotFoundException : public std::exception { };
  * Class able to read Textures and create and sprites.
  *
  * If texture load once that it unload only after destruction.
+ *
+ * GraphicLoader is a singleton.
  */
 class GraphicLoader
 {
 public:
-	GraphicLoader(HGE* hge, std::string graphicInfoFile, std::string imgFolder);
-	~GraphicLoader(void);
+	/**
+	 * Return single instance of class Log
+	 * Usage: GraphicLoader::Instance().function(...);
+	 */
+	static GraphicLoader& Instance();
+
+	void init(HGE* hge, std::string graphicInfoFile, std::string imgFolder);
+
 	/**
 	 * @throws TextureNotFoundException
 	 */
-	hgeSprite* getSprite(std::string classId);
-
+	hgeSprite* getSprite(std::string spriteId);
+	
+	/**
+	 * @throws TextureNotFoundException
+	 */
+	HTEXTURE getTexture(std::string name);
 private:
 	// types
 	struct SpriteInfo
 	{
 		std::string id;
 		std::string textureName;
+		int posX, posY;
 		int sizeX, sizeY;
 		DWORD color;
 		int hotSpotX, hotSpotY;
@@ -56,10 +69,16 @@ private:
 
 	// methods
 	SpriteInfo loadSpriteInfo(std::string id);
-	/**
-	 * @throws TextureNotFoundException
+
+	static GraphicLoader* singleInstance;
+
+	/*
+	 * Turn off unusable operations
 	 */
-	HTEXTURE getTexture(std::string name);
+	GraphicLoader();
+	~GraphicLoader();
+	GraphicLoader(const GraphicLoader&);
+	void operator=(const GraphicLoader&);
 };
 
 #endif

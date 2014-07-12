@@ -40,8 +40,6 @@ private:
 	/** Is arrow can be rendered now? */
 	bool bDrawable;
 	hgeSprite* arrowSprite;
-	/** Texture includes all the sprites DirectionArrow */
-	HTEXTURE arrowTexture;
 };
 
 #endif

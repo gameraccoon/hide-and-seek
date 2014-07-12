@@ -227,17 +227,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	{
 		try
 		{
-			// Load sound and texture
-			HTEXTURE texture = ::hge->Texture_Load("particles.png");
+			GraphicLoader::Instance().init(hge, "./configs/textures.conf", "./");
 
 			// Load a font
 			::font = new hgeFont("font1.fnt");
 			::font->SetScale(0.7f);
 
 			// Create and set up a particle system
-			::crosshair = new hgeSprite(texture, 64, 96, 32, 32);
+			::crosshair = GraphicLoader::Instance().getSprite("particles");
 			::crosshair->SetBlendMode(BLEND_COLORMUL | BLEND_ALPHAADD | BLEND_NOZWRITE);
-			::crosshair->SetHotSpot(16, 16);
 
 			FactoryActors::RegisterAll();
 
@@ -253,7 +251,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 			::arrow = new DirectionArrow(::hge);
 			::arrow->setScreenLocation(SCREEN_CENTER);
-		
+
 			::listeners.addListener(new BtnAABB(::hge));
 			::listeners.addListener(new BtnHulls(::hge));
 			::listeners.addListener(new BtnFog(::hge));
@@ -264,18 +262,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			::listeners.addListener(new BtnAddLight(::hge));
 
 			LevelLoader::load(::gameWorld, std::string("test"));
-			//LevelLoader::save(::gameWorld, std::string("test"));
 
 			// Let's rock now!
 			::hge->System_Start();
 
 			// Delete created objects and free loaded resources
 			delete ::font;
-			delete ::crosshair;
 			delete ::arrow;
 			delete ::mainCamera;
 			delete ::gameWorld;
-			::hge->Texture_Free(texture);
 		}
 		catch (std::runtime_error e)
 		{

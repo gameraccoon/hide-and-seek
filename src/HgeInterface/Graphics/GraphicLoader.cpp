@@ -2,29 +2,59 @@
 
 #include <fstream>
 
-// dummy for debugging methods
-#if (!defined DEBUG) && (!defined RELEASE)
- 	#define RELEASE
-  	#define WARN(message)
-  	#define WARN_IF(condition, message)
-#endif
+#include <Debug/Log.h>
 
-GraphicLoader::GraphicLoader(HGE* hge, std::string graphicInfoFile, std::string imgFolder)
+GraphicLoader* GraphicLoader::singleInstance = nullptr;
+
+GraphicLoader::GraphicLoader()
 {
+	hge = nullptr;
+}
+GraphicLoader::~GraphicLoader()
+{
+	for (auto sprite : this->sprites)
+	{
+		delete sprite.second;
+		sprite.second = nullptr;
+	}
+
+	for (auto texture : this->textures)
+	{
+		this->hge->Texture_Free(texture.second);
+		texture.second = 0;
+	}
+}
+
+GraphicLoader& GraphicLoader::Instance()
+{
+	if (GraphicLoader::singleInstance == nullptr)
+	{
+		GraphicLoader::singleInstance = new GraphicLoader();
+	}
+
+	return *GraphicLoader::singleInstance;
+}
+
+void GraphicLoader::init(HGE* hge, std::string graphicInfoFile, std::string imgFolder)
+{
+	if (this->hge != nullptr)
+	{
+		Log::Instance().writeWarning("GraphicLoader double initialization");
+	}
+
 	this->hge = hge;
 	this->graphicInfoFileName = graphicInfoFile;
 	this->imageFolder = imgFolder;
 }
 
-
-GraphicLoader::~GraphicLoader(void)
+hgeSprite* GraphicLoader::getSprite(std::string spriteId)
 {
-}
-
-hgeSprite* GraphicLoader::getSprite(std::string classId)
-{
-	std::string spriteId;
-	spriteId = classId;
+	if (hge == nullptr)
+	{
+		std::string error = "GraphicLoader isn't initialised";
+		Log::Instance().writeError(error);
+		throw new std::runtime_error(error);
+	}
 
 	SpriteMap::iterator it = this->sprites.find(spriteId);
 	if (it != sprites.end())
@@ -41,7 +71,8 @@ hgeSprite* GraphicLoader::getSprite(std::string classId)
 		if (spriteInfo.loaded)
 		{
 			HTEXTURE texture = this->getTexture(spriteInfo.textureName);
-			sprite = new hgeSprite(texture, 0, 0, (float)spriteInfo.sizeX, (float)spriteInfo.sizeY);
+			sprite = new hgeSprite(texture, (float)spriteInfo.posX, (float)spriteInfo.posY,
+				(float)spriteInfo.sizeX, (float)spriteInfo.sizeY);
 			sprite->SetColor(spriteInfo.color);
 			sprite->SetHotSpot((float)spriteInfo.hotSpotX, (float)spriteInfo.hotSpotY);
 		}
@@ -75,8 +106,10 @@ GraphicLoader::SpriteInfo GraphicLoader::loadSpriteInfo(std::string id)
 		if (className.compare(std::string("[").append(id).append("]")) != 0)
 			continue;
 
-		// if we got required class
+		// if we got required sprite
 		graphicInfoFile >> spriteInfo.textureName;
+		graphicInfoFile >> spriteInfo.posX;
+		graphicInfoFile >> spriteInfo.posY;
 		graphicInfoFile >> spriteInfo.sizeX;
 		graphicInfoFile >> spriteInfo.sizeY;
 		graphicInfoFile >> spriteInfo.hotSpotX;
