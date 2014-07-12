@@ -1,13 +1,5 @@
 #include "Camera.h"
 
-#include <Debug/DebugMethods.h>
-
-// dummy for debugging methods
-#if (!defined DEBUG) && (!defined RELEASE)
- 	#define RELEASE
-  	#define WARN(message)
-  	#define WARN_IF(condition, message)
-#endif
 
 Camera::Camera(HGE* hge, const World* world, Vector2D resolution, Vector2D location) : location(location),
 	resolution(resolution),
@@ -32,8 +24,6 @@ Camera::Camera(HGE* hge, const World* world, Vector2D resolution, Vector2D locat
 
 	this->camTexture = this->hge->Texture_Load("colision.png");
 	this->fogTexture = this->hge->Texture_Load("fog.png");
-
-	WARN_IF(!this->camTexture || !this->fogTexture, "Texture 'colision.png' or 'for.png' not found!");
 
 	this->collisionSprite = new hgeSprite(this->camTexture, 0, 0, 64, 64);
 	this->collisionSprite->SetColor(0xFF00FF00);
@@ -265,8 +255,6 @@ void Camera::renderFog(float width, float height, float size)
 void Camera::drawPenumbra(const Vector2D &first, const Vector2D &second, const Vector2D &third)
 {
 	HTEXTURE PenumbraTexture = this->hge->Texture_Load("penumbra.png");
-
-	WARN_IF(!PenumbraTexture, "Texture 'penumbra.png' not found!");
 	
 	hgeTriple triple;
 	//triple.

@@ -1,13 +1,5 @@
 #include "PathFinder.h"
 
-#include <Debug/DebugMethods.h>
-
-// dummy for debugging methods
-#if (!defined DEBUG) && (!defined RELEASE)
- 	#define RELEASE
-  	#define WARN(message)
-  	#define WARN_IF(condition, message)
-#endif
 
 PathFinder::PathFinder(World* world) : destinationPoint(ZERO_VECTOR),
     ownerWorld(world)
@@ -42,7 +34,6 @@ void PathFinder::reconstructPath(CalculationPoint* start, CalculationPoint* end)
 	while (this->closedSet.size() > 0)
 	{
 		CalculationPoint* pointToDelete = *this->closedSet.begin();
-		WARN_IF(pointToDelete == nullptr, "PATHFINDER: Error in pathfinding! NULL or duplicated PathPoint");
 		this->closedSet.erase(pointToDelete);
 		delete pointToDelete;
 		pointToDelete = nullptr;
@@ -72,9 +63,6 @@ bool PathFinder::createNewPath(Vector2D startPoint, Vector2D endPoint)
 			minDistEnd = (lastPoint->location - endPoint).size();
 		}
 	}
-
-	WARN_IF(!firstPoint, "PATHFINDER: Nearest PathPoint not found");
-	WARN_IF(!lastPoint, "PATHFINDER: Target PathPoint not found");
 
 	std::set<CalculationPoint*> OpenSet;
 
@@ -108,14 +96,11 @@ bool PathFinder::createNewPath(Vector2D startPoint, Vector2D endPoint)
 			while (OpenSet.size() > 0)
 			{
 				CalculationPoint* pointToDelete = *OpenSet.begin();
-				WARN_IF(pointToDelete == nullptr, "Error in pathfinding! NULL PathPoint in OpenSet");
 				OpenSet.erase(pointToDelete);
 				delete pointToDelete;
 				pointToDelete = nullptr;
 			}
 
-			WARN_IF(!cFirstPoint, "PATHFINDER: NULL pointer 'cFirstPoint'");
-			WARN_IF(!currentPoint, "PATHFINDER: NULL pointer 'currentPoint'");
 			// create final path
 			this->reconstructPath(cFirstPoint, currentPoint);
 
@@ -180,7 +165,6 @@ bool PathFinder::createNewPath(Vector2D startPoint, Vector2D endPoint)
 	while (OpenSet.size() > 0)
 	{
 		CalculationPoint* pointToDelete = *OpenSet.begin();
-		WARN_IF(pointToDelete == nullptr, "PATHFINDER: Error in pathfinding! NULL PathPoint in OpenSet");
 		OpenSet.erase(pointToDelete);
 		delete pointToDelete;
 		pointToDelete = nullptr;
@@ -190,7 +174,6 @@ bool PathFinder::createNewPath(Vector2D startPoint, Vector2D endPoint)
 	while (this->closedSet.size() > 0)
 	{
 		CalculationPoint* pointToDelete = *this->closedSet.begin();
-		WARN_IF(pointToDelete == nullptr, "PATHFINDER: Error in pathfinding! NULL or duplicated PathPoint");
 		this->closedSet.erase(pointToDelete);
 		delete pointToDelete;
 		pointToDelete = nullptr;

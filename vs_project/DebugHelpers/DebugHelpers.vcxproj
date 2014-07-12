@@ -61,7 +61,6 @@
     <Lib />
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\Debug\DebugMethods.h" />
     <ClInclude Include="..\..\src\Debug\Log.h" />
   </ItemGroup>
   <ItemGroup>

@@ -1,13 +1,6 @@
 #include "Processes.h"
 
-#include <Debug/DebugMethods.h>
-
-// dummy for debugging methods
-#if (!defined DEBUG) && (!defined RELEASE)
- 	#define RELEASE
-  	#define WARN(message)
-  	#define WARN_IF(condition, message)
-#endif
+#include <exception>
 
 Process::Process(int id)
 {
@@ -20,7 +13,7 @@ Process::~Process()
 
 void Process::run()
 {
-    WARN("Function 'Run' not redefined in some process");
+	throw new std::exception();
 }
 
 int Process::getId()

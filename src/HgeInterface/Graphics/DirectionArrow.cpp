@@ -1,13 +1,5 @@
 #include "DirectionArrow.h"
 
-#include <Debug/DebugMethods.h>
-
-// dummy for debugging methods
-#if (!defined DEBUG) && (!defined RELEASE)
- 	#define RELEASE
-  	#define WARN(message)
-  	#define WARN_IF(condition, message)
-#endif
 
 DirectionArrow::DirectionArrow(HGE *hge) : centerLocation(ZERO_VECTOR),
 	direction(0.0f)
@@ -15,8 +7,6 @@ DirectionArrow::DirectionArrow(HGE *hge) : centerLocation(ZERO_VECTOR),
 	this->hge = hge;
 
 	this->arrowTexture = this->hge->Texture_Load("arrow.png");
-
-	WARN_IF(!this->arrowTexture, "Texture 'arrow.png' not found!");
 		
 	this->arrowSprite = new hgeSprite(this->arrowTexture, 0, 0, 32, 32);
 	this->arrowSprite->SetColor(0xFF00AA00);

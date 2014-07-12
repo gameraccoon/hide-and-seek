@@ -1,14 +1,5 @@
 #include "Bullet.h"
 
-#include <Debug/DebugMethods.h>
-
-// dummy for debugging methods
-#if (!defined DEBUG) && (!defined RELEASE)
- 	#define RELEASE
-  	#define WARN(message)
-  	#define WARN_IF(condition, message)
-#endif
-
 
 Bullet::Bullet(World *world, Vector2D location, Vector2D scale, Rotator rotation) :
 	Actor(world, location, rotation)
@@ -28,8 +19,6 @@ Bullet::~Bullet(void)
 void Bullet::update(float deltatime)
 {
 	Vector2D newLocation = this->getLocation() + deltatime * this->speed * Vector2D(this->getRotation());
-	
-	WARN_IF(!this->getOwnerWorld(), "Not assigned OwnerWorld for bullet");
 
 	Vector2D traceLocation(ZERO_VECTOR);
 	IActor *trasedActor = RayTrace::trace(this->getOwnerWorld(), this->getLocation(), newLocation, &traceLocation);
