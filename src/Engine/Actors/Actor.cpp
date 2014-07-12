@@ -21,6 +21,8 @@ Actor::Actor(World *world, Vector2D location, Rotator rotation) : location(locat
 	this->updateActorId("Actor");
 
 	this->bWaitDestruction = false;
+
+	this->lifetime = 0;
 }
 
 Actor::~Actor(void)

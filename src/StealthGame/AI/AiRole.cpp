@@ -79,6 +79,5 @@ void AiRole::checkStates()
 		IAiState * stateToDelete = this->states.top();
 		this->states.pop();
 		delete stateToDelete;
-		this->getBody()->moveTo(Vector2D(0.0f, 0.0f));
 	}
 }

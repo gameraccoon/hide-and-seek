@@ -35,8 +35,8 @@ void Bullet::update(float deltatime)
 		this->destroy();
 	}
 
-	// bullet will be destroyed after 10 second
-	if (this->getLifetime() > 10.f)
+	// bullet will be destroyed after some time
+	if (this->getLifetime() > 5.0f)
 	{
 		this->destroy();
 	}

@@ -22,7 +22,9 @@ IActor* CreateWall(World *world, const Vector2D location, const Vector2D scale, 
 #include <StealthGame/Actors/Man.h>
 IActor* CreateMan(World *world, const Vector2D location, const Vector2D scale, const Rotator rotation)
 {
-	return new Man(world, location, scale, rotation);
+	Man *man = new Man(world, location, scale, rotation);
+	man->giveWeapon(new Weapon);
+	return man;
 }
 
 #include <StealthGame/Actors/Corpse.h>

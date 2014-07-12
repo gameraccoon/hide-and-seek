@@ -41,6 +41,27 @@ namespace LuaType
 		return 1;
 	}
 
+	int cmdStartShoting(lua_State* luaState)
+	{
+		LuaInstance instance(luaState);
+		IBody* body = instance.getFromLua<IBody*>(1);
+		IActor* target = instance.getFromLua<IActor*>(2);
+
+		body->startShoting(target->getLocation());
+
+		return 0;
+	}
+
+	int cmdStopShoting(lua_State* luaState)
+	{
+		LuaInstance instance(luaState);
+		IBody* body = instance.getFromLua<IBody*>(1);
+
+		body->stopShoting();
+
+		return 0;
+	}
+
 	template<>
 	void registerValue<IBody>(LuaInstance *instance, IBody* value)
 	{
@@ -48,5 +69,7 @@ namespace LuaType
 		instance->registerTableFunction("moveTo", LuaType::cmdMoveTo);
 		instance->registerTableFunction("follow", LuaType::cmdFollow);
 		instance->registerTableFunction("getHealth", LuaType::cmdGetHealth);
+		instance->registerTableFunction("startShoting", LuaType::cmdStartShoting);
+		instance->registerTableFunction("stopShoting", LuaType::cmdStopShoting);
 	}
 }

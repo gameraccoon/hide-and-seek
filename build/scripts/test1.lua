@@ -2,6 +2,7 @@ Log.log("Start script 2")
 
 function OnTakeDamage(instigator, damageValue)
 	Log.log("I'm damaged! My health is " .. body.getHealth(body.ptr));
+	body.stopShoting(body.ptr);
 	endState(statePtr);
 end
 
@@ -11,6 +12,7 @@ function OnSeeEnemy(enemy)
 	--if seen == 1 then
 		Log.log("I'm see you!");
 		body.moveTo(body.ptr, enemy);
+		body.startShoting(body.ptr, enemy);
 	--	seen = 2;
 	--end
 end
