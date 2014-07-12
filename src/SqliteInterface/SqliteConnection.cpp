@@ -9,12 +9,9 @@
 
 SqliteConnection::SqliteConnection(std::string databaseFile)
 {
-	this->error = false;
-
 	struct stat buffer;   
 	if (stat(databaseFile.c_str(), &buffer) != 0)
 	{
-		this->error = true;
 		Log::Instance().writeError(std::string("Database file isn't exist: ").append(databaseFile));
 		throw new DatabaseErrorException();
 	}
@@ -23,7 +20,6 @@ SqliteConnection::SqliteConnection(std::string databaseFile)
 	
 	if (rc != 0)
 	{
-		this->error = true;
 		Log::Instance().writeError(std::string("Can't open database: ").append(sqlite3_errmsg(database)));
 		throw new DatabaseErrorException();
 	}

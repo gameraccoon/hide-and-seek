@@ -19,7 +19,6 @@ public:
 	virtual std::shared_ptr<SqlDataReader> execSql(std::string query) override;
 private:
 	sqlite3 *database;
-	bool error;
 };
 
 #endif
