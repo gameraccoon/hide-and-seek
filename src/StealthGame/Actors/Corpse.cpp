@@ -10,7 +10,3 @@ Corpse::Corpse(World *world, Vector2D location, Vector2D scale, Rotator rotation
 Corpse::~Corpse(void)
 {
 }
-
-void Corpse::updateCollision()
-{
-}

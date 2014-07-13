@@ -15,7 +15,6 @@ public:
 protected:
 	/** Update classId and actorId */
 	virtual void updateActorId(std::string classId) override;
-	virtual void updateCollision() override;
 	float speed;
 };
 

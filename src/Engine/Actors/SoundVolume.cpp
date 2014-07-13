@@ -12,7 +12,3 @@ SoundVolume::SoundVolume(World *world, Vector2D location, float loudness) :
 SoundVolume::~SoundVolume(void)
 {
 }
-
-void SoundVolume::updateCollision()
-{
-}

@@ -28,7 +28,6 @@ namespace TestActorFactory
 		void Render(Vector2D shift, Rotator angle) { }
 	protected:
 		virtual void hit(IActor *instigator, float damageValue, Vector2D impulse) override final { };
-		virtual void updateCollision() override final { }
 	};
 
 	// new actor 2
@@ -47,7 +46,6 @@ namespace TestActorFactory
 		void Render(Vector2D shift, Rotator angle) { }
 	protected:
 		virtual void hit(IActor *instigator, float damageValue, Vector2D impulse) override final { };
-		virtual void updateCollision() override final { }
 	};
 
 	// specific factory

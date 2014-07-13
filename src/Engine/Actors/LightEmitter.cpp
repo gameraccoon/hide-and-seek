@@ -7,9 +7,14 @@ LightEmitter::LightEmitter(World *world, Vector2D location, Vector2D scale, Rota
 	this->color = 0xFFFFFFFF;
 
 	this->setOriginalSize(Vector2D(10, 10));
-	this->setScale(scale);
-
-	this->updateCollision();
+	Hull geometry;
+	geometry.points.insert(geometry.points.end(), -this->getOriginalSize() / 2);
+	geometry.points.insert(geometry.points.end(), (this->getOriginalSize() / 2).mirrorV());
+	geometry.points.insert(geometry.points.end(), this->getOriginalSize() / 2);
+	geometry.points.insert(geometry.points.end(), (this->getOriginalSize() / 2).mirrorH());
+	geometry.generate();
+	this->setGeometry(geometry);
+	this->updateGeometry();
 
 	this->updateActorId("LightEmitter");
 }
@@ -17,11 +22,6 @@ LightEmitter::LightEmitter(World *world, Vector2D location, Vector2D scale, Rota
 
 LightEmitter::~LightEmitter(void)
 {
-}
-
-void LightEmitter::updateCollision()
-{
-	this->setColideBox(BoundingBox(this->getLocation() - this->getCalculatedSize()/2, this->getLocation() + this->getCalculatedSize()/2));
 }
 
 float LightEmitter::getBrightness() const

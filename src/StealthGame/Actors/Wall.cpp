@@ -17,7 +17,7 @@ Wall::Wall(World *world, Vector2D location, Vector2D scale, Rotator rotation) : 
 	this->setGeometry(geometry);
 	this->updateGeometry();
 
-	this->updateCollision();
+	this->updateGeometry();
 
 	this->updateActorId("Wall");
 }
@@ -29,9 +29,4 @@ Wall::~Wall(void)
 void Wall::update(float deltatime)
 {
 	Actor::update(deltatime);
-}
-
-void Wall::updateCollision()
-{
-	this->setColideBox(BoundingBox(this->getLocation() - this->getCalculatedSize()/2, this->getLocation() + this->getCalculatedSize()/2));
 }

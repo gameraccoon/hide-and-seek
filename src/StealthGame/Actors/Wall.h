@@ -10,9 +10,6 @@ public:
 	~Wall(void);
 	/** Dummy (wall do nothing) */
 	virtual void update(float deltatime) override;
-private:
-	/** */
-	void updateCollision();
 };
 
 #endif

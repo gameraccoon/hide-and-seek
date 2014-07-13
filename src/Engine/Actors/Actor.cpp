@@ -159,6 +159,39 @@ void Actor::setColideBox(BoundingBox newColideBox)
 	this->colideBox = newColideBox;
 }
 
+void Actor::updateCollision()
+{
+	float minX = 1000;
+	float maxX = -1000;
+	float minY = 1000;
+	float maxY = -1000;
+
+	for (auto point : this->geometry.points)
+	{
+		if (point.x < minX)
+		{
+			minX = point.x;
+		}
+		
+		if (point.x > maxX)
+		{
+			maxX = point.x;
+		}
+		
+		if (point.y < minY)
+		{
+			minY = point.y;
+		}
+		
+		if (point.y > maxY)
+		{
+			maxY = point.y;
+		}
+	}
+
+	this->setColideBox(BoundingBox(this->getLocation() + Vector2D(minX, minY), this->getLocation() + Vector2D(maxX, maxY)));
+}
+
 void Actor::setGeometry(Hull newGeometry)
 {
 	this->initialGeometry = newGeometry;
@@ -179,6 +212,8 @@ void Actor::updateGeometry()
 	}
 	localGeometry.generate();
 	this->geometry = localGeometry;
+
+	this->updateCollision();
 }
 
 void Actor::setClassId(std::string newClassId)

@@ -44,10 +44,6 @@ void Bullet::update(float deltatime)
 	Actor::update(deltatime);
 }
 
-void Bullet::updateCollision()
-{
-}
-
 void Bullet::updateActorId(std::string classId)
 {
 	this->setClassId(classId);

@@ -6,24 +6,25 @@
 
 Body::Body(World *world, Vector2D location) : Actor(world, location, Rotator(0.0f)),
 	navigator(world),
-	size(32.0f, 32.0f),
 	tempLocation(location)
 {
 	this->setType(ActorType::Living);
 
 	this->speed = 12.0f;
+
+	this->setOriginalSize(Vector2D(32.0f, 32.0f));
 	
 	this->healthValue = 10000.0f;
 
 	Hull geometry;
-	geometry.points.insert(geometry.points.end(), -this->size / 2);
-	geometry.points.insert(geometry.points.end(), (this->size / 2).mirrorV());
-	geometry.points.insert(geometry.points.end(), this->size / 2);
-	geometry.points.insert(geometry.points.end(), (this->size / 2).mirrorH());
+	geometry.points.insert(geometry.points.end(), -this->getOriginalSize() / 2);
+	geometry.points.insert(geometry.points.end(), (this->getOriginalSize() / 2).mirrorV());
+	geometry.points.insert(geometry.points.end(), this->getOriginalSize() / 2);
+	geometry.points.insert(geometry.points.end(), (this->getOriginalSize() / 2).mirrorH());
 	geometry.generate();
 	this->setGeometry(geometry);
 	
-	this->updateCollision();
+	this->updateGeometry();
 
 	this->armedWeapon = nullptr;
 
@@ -76,11 +77,6 @@ void Body::clearTargets()
 		delete this->movingToLocation;
 		this->movingToLocation = nullptr;
 	}
-}
-
-void Body::updateCollision()
-{
-	this->setColideBox(BoundingBox(this->getLocation() - this->size/2, this->getLocation() + this->size/2));
 }
 
 void Body::startShoting(Vector2D targetLocation)
@@ -292,4 +288,30 @@ void Body::findNextPathPoint()
 void Body::setFraction(Fraction newFraction)
 {
 	this->fraction = newFraction;
+}
+
+bool Body::isWillCollide(Vector2D step)
+{
+	// for each actors in the world
+	for (auto const &actor : this->getOwnerWorld()->allActors)
+	{
+		// if the actor is not this man
+		if (actor != this && (actor->getType() != ActorType::Light && actor->getType() != ActorType::Special && actor->getType() != ActorType::Bullet))
+		{
+			// get an actor's AABB (axis-aligned bounding box)
+			BoundingBox box = actor->getBoundingBox();
+			BoundingBox ourBox = this->getBoundingBox();
+			// if the actor's AABB intersects with the Man's AABB (in new Man location)
+			if ((box.minX < ourBox.maxX + step.x
+					&& ourBox.minX + step.x < box.maxX)
+				&& (box.minY < ourBox.maxY + step.y
+					&& ourBox.minY + step.y  < box.maxY))
+			{
+				// actor's path is not free
+				return true;
+			}
+		}
+	}
+
+	return false;
 }

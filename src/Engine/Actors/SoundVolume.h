@@ -11,8 +11,6 @@ public:
 
 	float getLoudness();
 
-protected:
-	virtual void updateCollision() override;
 private:
 	float loudness;
 };

@@ -33,34 +33,14 @@ void Man::update(float deltatime)
 
 	if (stepSize < (this->tempLocation - this->getLocation()).size())
 	{
-		Vector2D newLocation = this->getLocation() + (this->tempLocation - this->getLocation()).ort() * stepSize;
+		Vector2D step = (this->tempLocation - this->getLocation()).ort() * stepSize;
 		bool bFree = true;
 
-		// for each actors in the world
-		for (auto const &actor : this->getOwnerWorld()->allActors)
-		{
-			// if the actor is not this man // test: and it is a static actor
-			if (actor != this && (actor->getType() != ActorType::Light && actor->getType() != ActorType::Special && actor->getType() != ActorType::Bullet))
-			{
-				// get an actor's AABB (axis-aligned bounding box)
-				BoundingBox box = actor->getBoundingBox();
-				// if the actor's AABB intersects with the Man's AABB (in new Man location)
-				if ((box.minX < newLocation.x + this->size.x/2 && newLocation.x - this->size.x/2 < box.maxX)
-					&&
-					(box.minY < newLocation.y + this->size.y/2 && newLocation.y - this->size.y/2 < box.maxY))
-				{
-					// actor's path is not free
-					bFree = false;
-					break;
-				}
-			}
-		}
-
 		// if actor's path is free
-		if (bFree)
+		if (!this->isWillCollide(step))
 		{
 			// accept new position of the man
-			this->setLocation(newLocation);
+			this->setLocation(this->getLocation() + step);
 		}
 		else
 		{
@@ -71,8 +51,6 @@ void Man::update(float deltatime)
 	{
 		this->setLocation(this->tempLocation);
 	}
-
-	this->updateCollision();
 
 	// use superclass method
 	Body::update(deltatime);

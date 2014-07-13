@@ -176,15 +176,20 @@ void Camera::renderCollisionBoxes()
 	// for each actors in the world
 	for (auto const &actor : this->browsableWorld->allActors)
 	{
-		// get location and size of actor's AABB (axis-aligned bounding box)
-		Vector2D min = actor->getBoundingBox().getFirst();
-		Vector2D size = actor->getBoundingBox().getThird() - min;
+		if (actor->getType() != ActorType::Bullet
+			&& actor->getType() != ActorType::Light
+			&& actor->getType() != ActorType::Ghost)
+		{
+			// get location and size of actor's AABB (axis-aligned bounding box)
+			Vector2D min = actor->getBoundingBox().getFirst();
+			Vector2D size = actor->getBoundingBox().getThird() - min;
 
-		// project location on the screen
-		Vector2D shift = this->project(min);
+			// project location on the screen
+			Vector2D shift = this->project(min);
 
-		// render collision sprite
-		this->collisionSprite->RenderEx(shift.x, shift.y, this->angle, size.x/64.0f, size.y/64.0f);
+			// render collision sprite
+			this->collisionSprite->RenderEx(shift.x, shift.y, this->angle, size.x/64.0f, size.y/64.0f);
+		}
 	}
 }
 

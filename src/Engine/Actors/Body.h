@@ -45,12 +45,11 @@ protected:
 	virtual void onUpdateLocation() override;
 	virtual void onUpdateRotation() override;
 	/** */
-	virtual void updateCollision() override;
-	/** */
 	void findNextPathPoint();
 	void clearTargets();
 	/** */
 	void look();
+	bool isWillCollide(Vector2D step);
 	/** */
 	void setFraction(Fraction newFraction);
 	/** */
@@ -59,8 +58,6 @@ protected:
 	PathFinder navigator;
 	/** Body moving speed in Px/s */
 	float speed;
-	/** */
-	Vector2D size;
 	/** */
 	float healthValue;
 	/** Inventory */

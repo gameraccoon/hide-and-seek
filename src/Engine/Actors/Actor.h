@@ -56,8 +56,6 @@ protected:
 	virtual void onUpdateLocation();
 	virtual void onUpdateRotation();
 	virtual void onUpdateSize();
-	/** */
-	virtual void updateCollision() = 0;
 	/** Update classId and actorId */
 	virtual void updateActorId(std::string classId);
 	
@@ -67,12 +65,14 @@ protected:
 	void setType(ActorType newType);
 	void setOriginalSize(Vector2D newOriginalSize);
 	Vector2D getOriginalSize();
-	void setColideBox(BoundingBox newColideBox);
 	void setGeometry(Hull newGeometry);
 	void updateGeometry();
 	void setClassId(std::string newClassId);
 	void setActorId(std::string newActorId);
 private:
+	/** */
+	void updateCollision();
+	void setColideBox(BoundingBox newColideBox);
 	/** Pointer to the owner World */
 	World* ownerWorld;
 	/** Type of the actor */

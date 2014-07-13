@@ -12,7 +12,6 @@ public:
 	float getBrightness() const;
 	void setBrightness(float brightness);
 protected:
-	virtual void updateCollision() override;
 	float brightness;
 	long color; // 0xAARRGGBB
 };
