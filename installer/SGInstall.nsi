@@ -13,6 +13,8 @@
 ; Забираем первые три цифры версии из файла VersionInfo
 !define /file MAIN_VERSION '..\VersionInfo'
 !define /file BUILD_NUM '..\BuildNum'
+; Имя ветки
+!define /file TAG '..\Tag'
 !define VERSION "${MAIN_VERSION}.${BUILD_NUM}"
 
 ;--------------------------------
@@ -26,7 +28,7 @@
 	;Name and file
 	Name "${GAME_NAME}"
 	Caption "Установка ${GAME_NAME} ${VERSION}"
-	OutFile ".\out\${GAME_NAME} ${VERSION} Setup.exe"
+	OutFile ".\out\${GAME_NAME} ${VERSION} ${TAG}Setup.exe"
 	!system 'mkdir out'
 
 	;Боковые картинки
