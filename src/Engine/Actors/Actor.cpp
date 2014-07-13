@@ -47,6 +47,7 @@ void Actor::setRotation(const Rotator& rotation)
 	this->direction = Rotator(rotation);
 	this->updateCollision();
 	this->onUpdateRotation();
+	this->updateGeometry();
 }
 
 Rotator Actor::getRotation() const
@@ -60,6 +61,7 @@ void Actor::setScale(const Vector2D& scale)
 	this->calculatedSize.x = this->originalSize.x * scale.x;
 	this->calculatedSize.y = this->originalSize.y * scale.y;
 	this->onUpdateSize();
+	this->updateGeometry();
 }
 
 Vector2D Actor::getScale() const
@@ -147,6 +149,11 @@ void Actor::setOriginalSize(Vector2D newOriginalSize)
 	this->originalSize = newOriginalSize;
 }
 
+Vector2D Actor::getOriginalSize()
+{
+	return this->originalSize;
+}
+
 void Actor::setColideBox(BoundingBox newColideBox)
 {
 	this->colideBox = newColideBox;
@@ -154,7 +161,24 @@ void Actor::setColideBox(BoundingBox newColideBox)
 
 void Actor::setGeometry(Hull newGeometry)
 {
-	this->geometry = newGeometry;
+	this->initialGeometry = newGeometry;
+}
+
+void Actor::updateGeometry()
+{
+	Hull localGeometry;
+	for (auto point : this->initialGeometry.points)
+	{
+		Vector2D scaled(point);
+		scaled.x = point.x * this->scale.x;
+		scaled.y = point.y * this->scale.y;
+
+		Vector2D rotated = Vector2D(scaled.rotation() + this->direction).ort() * scaled.size();
+
+		localGeometry.points.insert(localGeometry.points.end(), rotated);
+	}
+	localGeometry.generate();
+	this->geometry = localGeometry;
 }
 
 void Actor::setClassId(std::string newClassId)

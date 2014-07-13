@@ -66,8 +66,10 @@ protected:
 	Vector2D getCalculatedSize() const;
 	void setType(ActorType newType);
 	void setOriginalSize(Vector2D newOriginalSize);
+	Vector2D getOriginalSize();
 	void setColideBox(BoundingBox newColideBox);
 	void setGeometry(Hull newGeometry);
+	void updateGeometry();
 	void setClassId(std::string newClassId);
 	void setActorId(std::string newActorId);
 private:
@@ -85,6 +87,8 @@ private:
 	/** Bounding box */
 	BoundingBox colideBox;
 	/** Geometry for physics and shadows calculation */
+	Hull initialGeometry;
+	/** Scaled and rotated geometry */
 	Hull geometry;
 	/** Specific class identificator */
 	std::string classId;

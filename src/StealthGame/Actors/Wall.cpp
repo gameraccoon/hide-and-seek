@@ -9,12 +9,13 @@ Wall::Wall(World *world, Vector2D location, Vector2D scale, Rotator rotation) : 
 	this->setScale(scale);
 
 	Hull geometry;
-	geometry.points.insert(geometry.points.end(), -this->getCalculatedSize()/2);
-	geometry.points.insert(geometry.points.end(), (this->getCalculatedSize()/2).mirrorV());
-	geometry.points.insert(geometry.points.end(), this->getCalculatedSize()/2);
-	geometry.points.insert(geometry.points.end(), (this->getCalculatedSize()/2).mirrorH());
+	geometry.points.insert(geometry.points.end(), -this->getOriginalSize()/2);
+	geometry.points.insert(geometry.points.end(), (this->getOriginalSize()/2).mirrorV());
+	geometry.points.insert(geometry.points.end(), this->getOriginalSize()/2);
+	geometry.points.insert(geometry.points.end(), (this->getOriginalSize()/2).mirrorH());
 	geometry.generate();
 	this->setGeometry(geometry);
+	this->updateGeometry();
 
 	this->updateCollision();
 

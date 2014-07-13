@@ -94,6 +94,7 @@
     <ClCompile Include="..\..\src\Engine\Structures\BoundingBox.cpp" />
     <ClCompile Include="..\..\src\Engine\Structures\Hull.cpp" />
     <ClCompile Include="..\..\src\Engine\Structures\PathPoint.cpp" />
+    <ClCompile Include="..\..\src\Engine\Subsystems\Graphic\GUI\Button.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\Engine\Actors\Actor.h" />
@@ -110,8 +111,6 @@
     <ClInclude Include="..\..\src\Engine\Core\Rotator.h" />
     <ClInclude Include="..\..\src\Engine\Core\Vector2D.h" />
     <ClInclude Include="..\..\src\Engine\Core\World.h" />
-    <ClInclude Include="..\..\src\Engine\Graphic\IGraphicElement.h" />
-    <ClInclude Include="..\..\src\Engine\Hge\HgeIncludes.h" />
     <ClInclude Include="..\..\src\Engine\Inventory\Weapon.h" />
     <ClInclude Include="..\..\src\Engine\Modules\ActorFactory.h" />
     <ClInclude Include="..\..\src\Engine\Modules\LevelLoader.h" />
@@ -125,6 +124,8 @@
     <ClInclude Include="..\..\src\Engine\Structures\PathPoint.h" />
     <ClInclude Include="..\..\src\Engine\Subsystems\Database\DbConnection.h" />
     <ClInclude Include="..\..\src\Engine\Subsystems\Database\SqlDataReader.h" />
+    <ClInclude Include="..\..\src\Engine\Subsystems\Graphic\GUI\Button.h" />
+    <ClInclude Include="..\..\src\Engine\Subsystems\Graphic\GUI\IGraphicElement.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

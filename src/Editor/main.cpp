@@ -30,7 +30,6 @@ const int SCREEN_HEIGHT = 600;
 const bool FULL_SCREEN = false;
 
 Vector2D mousePos(ZERO_VECTOR);
-Vector2D worldMousePos(ZERO_VECTOR);
 
 
 float cameraAngle = 0.0f;
@@ -43,11 +42,12 @@ Camera *mainCamera = nullptr;
 
 Vector2D cameraWorldLocation(ZERO_VECTOR);
 
-Vector2D selectedActorDragPoint(ZERO_VECTOR);
 IActor *selectedActor = nullptr;
+Vector2D selectedActorDragPoint(ZERO_VECTOR);
+Vector2D selectedActorInitialScale(ZERO_VECTOR);
+Rotator selectedActorInitialRotation(0.0f);
 
-TransformationShell *transformShell;
-bool isDraggingActor = false;
+TransformationShell *transformShell = nullptr;
 
 // Buttons
 ButtonListeners listeners;
@@ -59,37 +59,104 @@ bool bViewHolded = false;
 Vector2D lastCameraPos(ZERO_VECTOR);
 Vector2D lastMousePos(ZERO_VECTOR);
 
+enum class TransformationType
+{
+	Move
+	,Rotate
+	,Scale
+	,None
+};
+
+TransformationType transform = TransformationType::None;
+
+void SelectActor(IActor *actor)
+{
+	::selectedActor = actor;
+	
+	if (::transformShell != nullptr)
+	{
+		delete ::transformShell; ::transformShell = nullptr;
+	}
+				
+	::transformShell = new TransformationShell(::hge, actor);
+}
+
+void UnSelect()
+{
+	::selectedActor = nullptr;
+	
+	delete ::transformShell; ::transformShell = nullptr;
+}
+
 class BtnMouseL : public ButtonSwitcher
 {
 public:
 	BtnMouseL(HGE *hge) : ButtonSwitcher(hge, HGEK_LBUTTON, true) { };
 	void pressed()
 	{
-		for (auto actor : ::gameWorld->allActors)
+		bool processed = false;
+
+		if (::transformShell != nullptr)
 		{
-			Vector2D location = actor->getLocation();
-			BoundingBox aabb = actor->getBoundingBox();
-			if (this->getDotCode(aabb, ::mainCamera->deProject(::mousePos)) == 0)
+			TransformationShell::ModificationEvent trEvent = ::transformShell->checkButton(mousePos);
+			
+			switch (trEvent)
 			{
-				::selectedActor = actor;
-				::selectedActorDragPoint = mainCamera->deProject(::mousePos) - actor->getLocation();
-				isDraggingActor = true;
+			case TransformationShell::Move:
+				::selectedActorDragPoint = mainCamera->deProject(::mousePos) - ::selectedActor->getLocation();
+				transform = TransformationType::Move;
+				processed = true;
+				break;
+			case TransformationShell::Scale:
+				::selectedActorInitialScale = ::selectedActor->getScale();
+				::selectedActorDragPoint = mainCamera->deProject(::mousePos);
+				transform = TransformationType::Scale;
+				processed = true;
+				break;
+			case TransformationShell::Rotate:
+				::selectedActorInitialRotation = ::selectedActor->getRotation();
+				::selectedActorDragPoint = mainCamera->deProject(::mousePos);
+				transform = TransformationType::Rotate;
+				processed = true;
+				break;
+			default:
+				transform = TransformationType::None;
 				break;
 			}
 		}
-
-		if (!isDraggingActor)
+		
+		if (!processed)
 		{
-			if (::hge->Input_GetKeyState(HGEK_CTRL))
+			for (auto actor : ::gameWorld->allActors)
 			{
-				::selectedActor = ActorFactory::Factory().placeActor(actorsToSpawn[currentSpawnActorIndex],
-					gameWorld, mainCamera->deProject(::mousePos), Vector2D(1.0f, 1.0f), 0.0f);
+				Vector2D location = actor->getLocation();
+				BoundingBox aabb = actor->getBoundingBox();
+				if (actor != ::selectedActor && this->getDotCode(aabb, ::mainCamera->deProject(::mousePos)) == 0)
+				{
+					::SelectActor(actor);
+					processed = true;
+					break;
+				}
 			}
 		}
+
+		if (!processed && ::hge->Input_GetKeyState(HGEK_CTRL))
+		{
+			
+			::SelectActor(ActorFactory::Factory().placeActor(actorsToSpawn[currentSpawnActorIndex],
+				gameWorld, mainCamera->deProject(::mousePos), Vector2D(1.0f, 1.0f), 0.0f));
+			processed = true;
+		}
+
+		if (!processed)
+		{
+			::UnSelect();
+		}
 	}
+
 	void released()
 	{
-		isDraggingActor = false;
+		transform = TransformationType::None;
 	}
 private:
 	static const int LEFT_BIT = 1;
@@ -149,7 +216,7 @@ public:
 		{
 			::selectedActor->destroy();
 			::selectedActor = nullptr;
-			::isDraggingActor = false;
+			::UnSelect();
 		}
 	}
 };
@@ -174,10 +241,39 @@ bool FrameFunc()
 
 	::hge->Input_GetMousePos(&::mousePos.x, &::mousePos.y);
 
-	if (isDraggingActor && ::selectedActor != nullptr)
+	switch (transform)
 	{
-		worldMousePos = mainCamera->deProject(::mousePos);
-		::selectedActor->setLocation(worldMousePos - ::selectedActorDragPoint);
+	case TransformationType::Move:
+		{
+			Vector2D worldMousePos = mainCamera->deProject(::mousePos);
+			::selectedActor->setLocation(worldMousePos - ::selectedActorDragPoint);
+			break;
+		}
+	case TransformationType::Scale:
+		{
+			Vector2D worldMousePos = mainCamera->deProject(::mousePos);
+			Vector2D absScale(worldMousePos - ::selectedActor->getLocation());
+			Vector2D oldScale(::selectedActorDragPoint - ::selectedActor->getLocation());
+
+			// abs
+			absScale.x = absScale.x >= 0 ? absScale.x : -absScale.x;
+			absScale.y = absScale.y >= 0 ? absScale.y : -absScale.y;
+			oldScale.x = oldScale.x >= 0 ? oldScale.x : -oldScale.x;
+			oldScale.y = oldScale.y >= 0 ? oldScale.y : -oldScale.y;
+
+			::selectedActor->setScale((absScale - oldScale)/30.0 + ::selectedActorInitialScale);
+			break;
+		}
+	case TransformationType::Rotate:
+		{
+			Vector2D worldMousePos = mainCamera->deProject(::mousePos);
+			Rotator absRotate((worldMousePos - ::selectedActor->getLocation()).rotation());
+			Rotator oldRotate((::selectedActorDragPoint - ::selectedActor->getLocation()).rotation());
+			::selectedActor->setRotation((absRotate - oldRotate) + ::selectedActorInitialRotation);
+			break;
+		}
+	default:
+		break;
 	}
 
 	if (selectedActor != nullptr)
@@ -240,7 +336,7 @@ bool RenderFunc()
 	// Object ready to spawn
 	::font->printf(5, 60, HGETEXT_LEFT, ::actorsToSpawn[currentSpawnActorIndex].c_str());
 
-	if (::selectedActor != nullptr)
+	if (::transformShell != nullptr)
 	{
 		::transformShell->render();
 	}
@@ -285,8 +381,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			// Create and set up a particle system
 			::crosshair = GraphicLoader::Instance().getSprite("particles");
 			::crosshair->SetBlendMode(BLEND_COLORMUL | BLEND_ALPHAADD | BLEND_NOZWRITE);
-
-			::transformShell = new TransformationShell(::hge);
 
 			FactoryActors::RegisterAll();
 

@@ -65,3 +65,8 @@ bool DirectionArrow::click()
 {
 	return false;
 }
+
+bool DirectionArrow::checkHovered(const Vector2D& mousePos)
+{
+	return false;
+}

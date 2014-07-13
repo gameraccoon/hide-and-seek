@@ -4,21 +4,27 @@
 
 #include <HgeInterface/Graphics/GraphicLoader.h>
 
-TransformationShell::TransformationShell(HGE *hge) : screenLocation(ZERO_VECTOR)
+TransformationShell::TransformationShell(HGE *hge, IActor *controlledActor) : screenLocation(ZERO_VECTOR)
+	, moveBtn(hge, "move", "moveHover")
+	, rotateBtn(hge, "rotate", "rotateHover")
+	, scaleBtn(hge, "scale", "scaleHover")
 {
 	this->hge = hge;
 
-	this->sprite = GraphicLoader::Instance().getSprite("transform");
-	this->sprite->SetColor(0xFFFFFFFF);
+	this->controlledActor = controlledActor;
 }
 
-TransformationShell::~TransformationShell(void)
+TransformationShell::~TransformationShell()
 {
 }
 
 void TransformationShell::setScreenLocation(const Vector2D& scrLocation)
 {
 	this->screenLocation = scrLocation;
+	
+	this->moveBtn.setScreenLocation(scrLocation + Vector2D(-16, -16));
+	this->scaleBtn.setScreenLocation(scrLocation + Vector2D(16, -16));
+	this->rotateBtn.setScreenLocation(scrLocation + Vector2D(0, 16));
 }
 
 Vector2D TransformationShell::getScreenLocation() const
@@ -28,10 +34,38 @@ Vector2D TransformationShell::getScreenLocation() const
 
 void TransformationShell::render() const
 {
-	this->sprite->Render(this->screenLocation.x, this->screenLocation.y);
+	this->moveBtn.render();
+	this->scaleBtn.render();
+	this->rotateBtn.render();
 }
 
 bool TransformationShell::click()
 {
 	return false;
+}
+
+bool TransformationShell::checkHovered(const Vector2D& mousePos)
+{
+	return false;
+}
+
+
+TransformationShell::ModificationEvent TransformationShell::checkButton(const Vector2D& mousePos)
+{
+	if (this->moveBtn.checkHovered(mousePos))
+	{
+		return ModificationEvent::Move;
+	}
+	else if (this->scaleBtn.checkHovered(mousePos))
+	{
+		return ModificationEvent::Scale;
+	}
+	else if (this->rotateBtn.checkHovered(mousePos))
+	{
+		return ModificationEvent::Rotate;
+	}
+	else
+	{
+		return ModificationEvent::None;
+	}
 }

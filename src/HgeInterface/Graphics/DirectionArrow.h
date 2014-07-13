@@ -11,7 +11,7 @@
 #include <Engine/Core/Vector2D.h>
 #include <Engine/Core/Rotator.h>
 
-#include <Engine/Graphic/IGraphicElement.h>
+#include <Engine/Subsystems/Graphic/GUI/IGraphicElement.h>
 
 class DirectionArrow : public IGraphicElement
 {
@@ -30,6 +30,7 @@ public:
 	/** Render arrow to screen */
 	virtual void render() const override;
 	virtual bool click() override;
+	virtual bool checkHovered(const Vector2D& mousePos) override;
 private:
 	/** Location of center of this arrow */
 	Vector2D centerLocation;

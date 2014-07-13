@@ -70,6 +70,9 @@
     <ClCompile Include="..\..\src\Engine\Inventory\InventoryItem.cpp">
       <Filter>Inventory</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\Engine\Subsystems\Graphic\GUI\Button.cpp">
+      <Filter>Subsystems\Graphic\GUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\Engine\Actors\Actor.h">
@@ -153,8 +156,12 @@
     <ClInclude Include="..\..\src\Engine\Subsystems\Database\SqlDataReader.h">
       <Filter>Subsystems\Database</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\Engine\Graphic\IGraphicElement.h" />
-    <ClInclude Include="..\..\src\Engine\Hge\HgeIncludes.h" />
+    <ClInclude Include="..\..\src\Engine\Subsystems\Graphic\GUI\IGraphicElement.h">
+      <Filter>Subsystems\Graphic\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Engine\Subsystems\Graphic\GUI\Button.h">
+      <Filter>Subsystems\Graphic\GUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Actors">
@@ -180,6 +187,12 @@
     </Filter>
     <Filter Include="Subsystems\Database">
       <UniqueIdentifier>{f5551b3d-d08a-4699-9307-3e92ee66d23a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsystems\Graphic">
+      <UniqueIdentifier>{9285f958-4c0e-40d0-aac6-d6b399c84bf5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Subsystems\Graphic\GUI">
+      <UniqueIdentifier>{c7c6b30a-7964-4b79-97e9-50246c8891e6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
