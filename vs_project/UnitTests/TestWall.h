@@ -9,8 +9,6 @@ public:
 	TestWall(World *world, Vector2D location, Vector2D scale, Rotator rotation);
 	~TestWall(void);
 	virtual void update(float deltatime) override final;
-private:
-	void updateCollision();
 };
 
 #endif

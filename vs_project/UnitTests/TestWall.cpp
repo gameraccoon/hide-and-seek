@@ -18,7 +18,7 @@ TestWall::TestWall(World *world, Vector2D location, Vector2D scale, Rotator rota
 	geometry.generate();
 	this->setGeometry(geometry);
 
-	this->updateCollision();
+	this->updateGeometry();
 }
 
 TestWall::~TestWall(void)
@@ -28,9 +28,4 @@ TestWall::~TestWall(void)
 void TestWall::update(float deltatime)
 {
 	Actor::update(deltatime);
-}
-
-void TestWall::updateCollision()
-{
-	this->setColideBox(BoundingBox(this->getLocation() - this->getCalculatedSize()/2, this->getLocation() + this->getCalculatedSize()/2));
 }
