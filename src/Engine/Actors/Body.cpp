@@ -4,6 +4,8 @@
 
 #include "../Actors/LightEmitter.h"
 
+#include <cmath>
+
 Body::Body(World *world, Vector2D location) : Actor(world, location, Rotator(0.0f)),
 	navigator(world),
 	tempLocation(location)
@@ -17,11 +19,8 @@ Body::Body(World *world, Vector2D location) : Actor(world, location, Rotator(0.0
 	this->healthValue = 10000.0f;
 
 	Hull geometry;
-	geometry.points.insert(geometry.points.end(), -this->getOriginalSize() / 2);
-	geometry.points.insert(geometry.points.end(), (this->getOriginalSize() / 2).mirrorV());
-	geometry.points.insert(geometry.points.end(), this->getOriginalSize() / 2);
-	geometry.points.insert(geometry.points.end(), (this->getOriginalSize() / 2).mirrorH());
-	geometry.generate();
+	geometry.type = Hull::Type::Circular;
+	geometry.setRadius(16.0f);
 	this->setGeometry(geometry);
 	
 	this->updateGeometry();
@@ -290,13 +289,45 @@ void Body::setFraction(Fraction newFraction)
 	this->fraction = newFraction;
 }
 
+bool IsCollideGeometry(const Hull* hull1, const Hull* hull2, float distance)
+{
+	if (hull1->type == Hull::Type::Circular && hull2->type == Hull::Type::Circular)
+	{
+		return abs(hull1->getRadius() + hull2->getRadius()) - distance > 0.0f;
+	}
+	else if (hull1->type == Hull::Type::Circular || hull2->type == Hull::Type::Circular)
+	{
+		const Hull *cHull, *aHull;
+		if (hull1->type == Hull::Type::Circular)
+		{
+			cHull = hull1;
+			aHull = hull2;
+		}
+		else
+		{
+			cHull = hull2;
+			aHull = hull1;
+		}
+
+		// some checking
+	}
+	else
+	{
+		// some checking
+	}
+	return false;
+}
+
 bool Body::isWillCollide(Vector2D step)
 {
 	// for each actors in the world
 	for (auto const &actor : this->getOwnerWorld()->allActors)
 	{
 		// if the actor is not this man
-		if (actor != this && (actor->getType() != ActorType::Light && actor->getType() != ActorType::Special && actor->getType() != ActorType::Bullet))
+		if (actor != this
+			&& (actor->getType() != ActorType::Light
+			&& actor->getType() != ActorType::Special
+			&& actor->getType() != ActorType::Bullet))
 		{
 			// get an actor's AABB (axis-aligned bounding box)
 			BoundingBox box = actor->getBoundingBox();
@@ -308,7 +339,8 @@ bool Body::isWillCollide(Vector2D step)
 					&& ourBox.minY + step.y  < box.maxY))
 			{
 				// actor's path is not free
-				return true;
+				return IsCollideGeometry(this->getGeometry(), actor->getGeometry(),
+					(this->getLocation() + step - actor->getLocation()).size());
 			}
 		}
 	}

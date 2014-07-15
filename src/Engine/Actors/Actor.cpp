@@ -161,35 +161,43 @@ void Actor::setColideBox(BoundingBox newColideBox)
 
 void Actor::updateCollision()
 {
-	float minX = 1000;
-	float maxX = -1000;
-	float minY = 1000;
-	float maxY = -1000;
-
-	for (auto point : this->geometry.points)
+	if (this->getGeometry()->type == Hull::Type::Circular)
 	{
-		if (point.x < minX)
-		{
-			minX = point.x;
-		}
-		
-		if (point.x > maxX)
-		{
-			maxX = point.x;
-		}
-		
-		if (point.y < minY)
-		{
-			minY = point.y;
-		}
-		
-		if (point.y > maxY)
-		{
-			maxY = point.y;
-		}
+		float radius = this->getGeometry()->getRadius();
+		this->setColideBox(BoundingBox(this->getLocation() - Vector2D(radius, radius), this->getLocation() + Vector2D(radius, radius)));
 	}
+	else
+	{
+		float minX = 1000;
+		float maxX = -1000;
+		float minY = 1000;
+		float maxY = -1000;
 
-	this->setColideBox(BoundingBox(this->getLocation() + Vector2D(minX, minY), this->getLocation() + Vector2D(maxX, maxY)));
+		for (auto point : this->geometry.points)
+		{
+			if (point.x < minX)
+			{
+				minX = point.x;
+			}
+		
+			if (point.x > maxX)
+			{
+				maxX = point.x;
+			}
+		
+			if (point.y < minY)
+			{
+				minY = point.y;
+			}
+		
+			if (point.y > maxY)
+			{
+				maxY = point.y;
+			}
+		}
+
+		this->setColideBox(BoundingBox(this->getLocation() + Vector2D(minX, minY), this->getLocation() + Vector2D(maxX, maxY)));
+	}
 }
 
 void Actor::setGeometry(Hull newGeometry)
@@ -199,7 +207,8 @@ void Actor::setGeometry(Hull newGeometry)
 
 void Actor::updateGeometry()
 {
-	Hull localGeometry;
+	Hull localGeometry(initialGeometry);
+	localGeometry.points.clear();
 	for (auto point : this->initialGeometry.points)
 	{
 		Vector2D scaled(point);
@@ -210,7 +219,7 @@ void Actor::updateGeometry()
 
 		localGeometry.points.insert(localGeometry.points.end(), rotated);
 	}
-	localGeometry.generate();
+	localGeometry.generateBorders();
 	this->geometry = localGeometry;
 
 	this->updateCollision();

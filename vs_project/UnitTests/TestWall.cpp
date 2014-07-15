@@ -11,11 +11,12 @@ TestWall::TestWall(World *world, Vector2D location, Vector2D scale, Rotator rota
 	this->setScale(scale);
 
 	Hull geometry;
+	geometry.type = Hull::Type::Angular;
 	geometry.points.insert(geometry.points.end(), -this->getCalculatedSize()/2);
 	geometry.points.insert(geometry.points.end(), (this->getCalculatedSize()/2).mirrorV());
 	geometry.points.insert(geometry.points.end(), this->getCalculatedSize()/2);
 	geometry.points.insert(geometry.points.end(), (this->getCalculatedSize()/2).mirrorH());
-	geometry.generate();
+	geometry.generateBorders();
 	this->setGeometry(geometry);
 
 	this->updateGeometry();

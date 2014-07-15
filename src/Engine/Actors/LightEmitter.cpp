@@ -6,15 +6,11 @@ LightEmitter::LightEmitter(World *world, Vector2D location, Vector2D scale, Rota
 	this->brightness = 1.0f;
 	this->color = 0xFFFFFFFF;
 
-	this->setOriginalSize(Vector2D(10, 10));
+	this->setOriginalSize(Vector2D(10.0f, 10.0f));
 	Hull geometry;
-	geometry.points.insert(geometry.points.end(), -this->getOriginalSize() / 2);
-	geometry.points.insert(geometry.points.end(), (this->getOriginalSize() / 2).mirrorV());
-	geometry.points.insert(geometry.points.end(), this->getOriginalSize() / 2);
-	geometry.points.insert(geometry.points.end(), (this->getOriginalSize() / 2).mirrorH());
-	geometry.generate();
+	geometry.type = Hull::Type::Circular;
+	geometry.setRadius(10.0f);
 	this->setGeometry(geometry);
-	this->updateGeometry();
 
 	this->updateActorId("LightEmitter");
 }
