@@ -85,6 +85,7 @@
     <ClCompile Include="..\..\src\Engine\Inventory\InventoryItem.cpp" />
     <ClCompile Include="..\..\src\Engine\Inventory\Weapon.cpp" />
     <ClCompile Include="..\..\src\Engine\Modules\ActorFactory.cpp" />
+    <ClCompile Include="..\..\src\Engine\Modules\Collide.cpp" />
     <ClCompile Include="..\..\src\Engine\Modules\LevelLoader.cpp" />
     <ClCompile Include="..\..\src\Engine\Modules\PathFinder.cpp" />
     <ClCompile Include="..\..\src\Engine\Modules\Processes.cpp" />
@@ -113,6 +114,7 @@
     <ClInclude Include="..\..\src\Engine\Core\World.h" />
     <ClInclude Include="..\..\src\Engine\Inventory\Weapon.h" />
     <ClInclude Include="..\..\src\Engine\Modules\ActorFactory.h" />
+    <ClInclude Include="..\..\src\Engine\Modules\Collide.h" />
     <ClInclude Include="..\..\src\Engine\Modules\LevelLoader.h" />
     <ClInclude Include="..\..\src\Engine\Modules\PathFinder.h" />
     <ClInclude Include="..\..\src\Engine\Modules\Processes.h" />

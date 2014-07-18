@@ -18,10 +18,7 @@ public:
 
 	Hull(void);
 	~Hull(void);
-	/** Corners of a hull's borders */
-	std::vector<Vector2D> points;
-	/** Borders of hull (calculates from Points) */
-	std::vector<Border> borders;
+
 	/** Pre-calculated squared radius */
 	float getQRadius() const;
 	/** Get the radius */
@@ -30,7 +27,11 @@ public:
 	void setRadius(float newRadius);
 	/** Calc borders from points */
 	void generateBorders();
-
+	
+	/** Corners of a hull's borders */
+	std::vector<Vector2D> points;
+	/** Borders of hull (calculates from Points) */
+	std::vector<Border> borders;
 	Type type;
 private:
 	/** Squared radius */

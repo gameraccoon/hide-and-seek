@@ -49,7 +49,6 @@ protected:
 	void clearTargets();
 	/** */
 	void look();
-	bool isWillCollide(Vector2D step);
 	/** */
 	void setFraction(Fraction newFraction);
 	/** */

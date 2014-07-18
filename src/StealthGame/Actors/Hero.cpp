@@ -2,6 +2,8 @@
 
 #include <Engine/AI/PlayerRole.h>
 
+#include <Engine/Modules/Collide.h>
+
 Hero::Hero(World *world, Vector2D location, Vector2D scale, Rotator rotation) : Body(world, location),
 	step(ZERO_VECTOR)
 {
@@ -32,7 +34,7 @@ void Hero::update(float deltatime)
 	bool bFree = true;
 
 	// if actor's path is free
-	if (!this->isWillCollide(step))
+	if (!Collide::isWillCollide(this, this->getOwnerWorld(), step))
 	{
 		// accept new position of the man
 		this->setLocation(this->getLocation() + step);

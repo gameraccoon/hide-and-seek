@@ -73,6 +73,9 @@
     <ClCompile Include="..\..\src\Engine\Subsystems\Graphic\GUI\Button.cpp">
       <Filter>Subsystems\Graphic\GUI</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\Engine\Modules\Collide.cpp">
+      <Filter>Modules</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\Engine\Actors\Actor.h">
@@ -161,6 +164,9 @@
     </ClInclude>
     <ClInclude Include="..\..\src\Engine\Subsystems\Graphic\GUI\Button.h">
       <Filter>Subsystems\Graphic\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\Engine\Modules\Collide.h">
+      <Filter>Modules</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
