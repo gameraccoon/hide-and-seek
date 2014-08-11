@@ -42,12 +42,12 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\Develop\StealthGame\src\Debug;D:\Develop\StealthGame\src;D:\Libs\lua\Include;D:\Libs\hge\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Develop\StealthGame\vs_project\DebugHelpers\$(Configuration);D:\Develop\StealthGame\vs_project\$(Configuration);D:\Libs\hge\lib\vc;D:\Libs\lua\Lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)..\..\src;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)..\..\vs_project\DebugHelpers\$(Configuration);$(ProjectDir)..\..\vs_project\$(Configuration);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(ProjectDir)..\..\src;$(ProjectDir)..\..\used_libs\lua52\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)..\$(Configuration);$(ProjectDir)..\..\used_libs\lua52\lib;$(ProjectDir)..\..\used_libs\hge\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)..\..\src;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)..\..\vs_project\DebugHelpers\$(Configuration);D:\Develop\StealthGame\vs_project\$(Configuration);D:\Libs\hge\lib\vc;D:\Libs\lua\Lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
