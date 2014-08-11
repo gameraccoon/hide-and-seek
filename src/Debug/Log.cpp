@@ -5,13 +5,21 @@
 
 Log* Log::singleInstance = nullptr;
 bool Log::isDestroyed = false;
+bool Log::isFirstLife = true;
 
 Log::Log()
 {
-	static const std::string LOG_FILE = std::string("./logs/").append("log.txt"); 
+	const std::string LOG_FILE = std::string("./logs/").append("log.txt"); 
 
-	this->logFileStream = new std::ofstream(LOG_FILE, std::ios_base::trunc);
-	this->writeInit("Log file created");
+	if (this->isFirstLife)
+	{
+		this->logFileStream = new std::ofstream(LOG_FILE, std::ios_base::trunc);
+		this->writeInit("Log file created");
+	}
+	else
+	{
+		this->logFileStream = new std::ofstream(LOG_FILE, std::ios_base::app);
+	}
 }
 
 Log::~Log()
@@ -19,8 +27,9 @@ Log::~Log()
 	this->logFileStream->close();
 	delete this->logFileStream;
 
-	singleInstance = nullptr;
-	isDestroyed = true;
+	Log::singleInstance = nullptr;
+	Log::isDestroyed = true;
+	Log::isFirstLife = false;
 }
 
 Log& Log::Instance()
@@ -36,7 +45,7 @@ Log& Log::Instance()
 		else
 		{
 			// first access, create single instance
-			Log::singleInstance = new Log();
+			Log::create();
 		}
 	}
 
@@ -58,7 +67,7 @@ void Log::onDeadReference()
 	// Get the old singletone location in the memory (ash of the phoenix)
 	Log::create();
 	// Create new singletone on this place
-	new (singleInstance) Log;
+	new (Log::singleInstance) Log;
 	// Say that we want to destroy this singletone on the application shutdown
 	atexit(killPhoenixSingletone);
 	// Say that the singletone is ready to use
@@ -67,7 +76,8 @@ void Log::onDeadReference()
 
 void Log::killPhoenixSingletone()
 {
-	delete Log::singleInstance;
+	Log::singleInstance->~Log();
+	operator delete(Log::singleInstance);
 }
 
 void Log::writeError(std::string text)

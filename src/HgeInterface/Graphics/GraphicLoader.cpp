@@ -4,12 +4,11 @@
 
 #include <Debug/Log.h>
 
-GraphicLoader* GraphicLoader::singleInstance = nullptr;
-
 GraphicLoader::GraphicLoader()
 {
 	hge = nullptr;
 }
+
 GraphicLoader::~GraphicLoader()
 {
 	for (auto sprite : this->sprites)
@@ -20,19 +19,18 @@ GraphicLoader::~GraphicLoader()
 
 	for (auto texture : this->textures)
 	{
-		this->hge->Texture_Free(texture.second);
+		// ToDo: hge already destroyed it's will fail
+		//this->hge->Texture_Free(texture.second);
 		texture.second = 0;
 	}
+
+	Log::Instance().writeLog("GraphicLoader destroyed");
 }
 
 GraphicLoader& GraphicLoader::Instance()
 {
-	if (GraphicLoader::singleInstance == nullptr)
-	{
-		GraphicLoader::singleInstance = new GraphicLoader();
-	}
-
-	return *GraphicLoader::singleInstance;
+	static GraphicLoader singleInstance;
+	return singleInstance;
 }
 
 void GraphicLoader::init(HGE* hge, std::string graphicInfoFile, std::string imgFolder)

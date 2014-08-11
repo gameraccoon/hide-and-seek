@@ -1,23 +1,17 @@
 #include "WorldsContainer.h"
 
-WorldsContainer* WorldsContainer::singleInstance = nullptr;
+#include <Debug/Log.h>
 
 WorldsContainer::WorldsContainer() {}
-WorldsContainer::WorldsContainer(const WorldsContainer&) {}
-WorldsContainer::~WorldsContainer() {}
-WorldsContainer& WorldsContainer::operator=(const WorldsContainer&)
+WorldsContainer::~WorldsContainer()
 {
-	return *WorldsContainer::singleInstance;
+	Log::Instance().writeLog("WorldsContainer destroyed");
 }
 
 WorldsContainer& WorldsContainer::Container()
 {
-	if (WorldsContainer::singleInstance == nullptr)
-	{
-		WorldsContainer::singleInstance = new WorldsContainer();
-	}
-
-	return *WorldsContainer::singleInstance;
+	static WorldsContainer singleInstance;
+	return singleInstance;
 }
 
 

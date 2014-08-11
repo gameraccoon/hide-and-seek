@@ -44,6 +44,7 @@ private:
 
 	/** Flag shows that singletone was created and destroyed */
 	static bool isDestroyed;
+	static bool isFirstLife;
 
 	/* Turn off unusable operations */
 	Log();

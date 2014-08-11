@@ -70,8 +70,6 @@ private:
 	// methods
 	SpriteInfo loadSpriteInfo(std::string id);
 
-	static GraphicLoader* singleInstance;
-
 	/*
 	 * Turn off unusable operations
 	 */

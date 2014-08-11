@@ -1,18 +1,17 @@
 #include "ActorFactory.h"
 
-ActorFactory* ActorFactory::singleInstance = nullptr;
+#include <Debug/Log.h>
 
 ActorFactory::ActorFactory() {}
-ActorFactory::~ActorFactory() {}
+ActorFactory::~ActorFactory()
+{
+	Log::Instance().writeLog("ActorFactory destroyed");
+}
 
 ActorFactory& ActorFactory::Factory()
 {
-	if (ActorFactory::singleInstance == nullptr)
-	{
-		ActorFactory::singleInstance = new ActorFactory();
-	}
-
-	return *ActorFactory::singleInstance;
+	static ActorFactory singleInstance;
+	return singleInstance;
 }
 
 bool ActorFactory::registerActor(std::string actorId, CreateActorCallback createFn)

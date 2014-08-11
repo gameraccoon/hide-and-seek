@@ -47,8 +47,6 @@ public:
 private:
 	CallbackMap callbacks;
 
-	static ActorFactory* singleInstance;
-
 	/*
 	 * Turn off unusable operations
 	 */

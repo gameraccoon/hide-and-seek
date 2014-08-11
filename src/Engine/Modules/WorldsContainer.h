@@ -21,8 +21,6 @@ private:
 	typedef std::map<std::string, World*> WorldsMap;
 	std::map<std::string, World*> worlds;
 
-	static WorldsContainer* singleInstance;
-
 	/*
 	 * Turn off unusable operations
 	 */
