@@ -6,6 +6,7 @@ AiState::AiState(World *world, IBody *body, Role *role)
 
 	this->body = body;
 	this->role = role;
+	this->world = world;
 
 	this->ended = false;
 }

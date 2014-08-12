@@ -18,14 +18,14 @@ public:
 	static Log& Instance();
 
 	/* Logging functions */
-	void writeError(std::string text);
-	void writeWarning(std::string text);
-	void writeLog(std::string text);
-	void writeInit(std::string text);
+	void writeError(const std::string& text);
+	void writeWarning(const std::string& text);
+	void writeLog(const std::string& text);
+	void writeInit(const std::string& text);
 
 private:
 	/** Write line with timestamp */
-	void writeLine(std::string text);
+	void writeLine(const std::string& text);
 
 	/** Filestream that holds the logfile handler */
 	std::ofstream *logFileStream;
@@ -44,6 +44,7 @@ private:
 
 	/** Flag shows that singletone was created and destroyed */
 	static bool isDestroyed;
+	/** Flag shows that this is the first life of this singletone */
 	static bool isFirstLife;
 
 	/* Turn off unusable operations */

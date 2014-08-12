@@ -80,31 +80,36 @@ void Log::killPhoenixSingletone()
 	operator delete(Log::singleInstance);
 }
 
-void Log::writeError(std::string text)
+void Log::writeError(const std::string& text)
 {
 	this->writeLine(std::string(" Error: ").append(text));
 }
 
-void Log::writeWarning(std::string text)
+void Log::writeWarning(const std::string& text)
 {
 	this->writeLine(std::string(" Warning: ").append(text));
 }
 
-void Log::writeLog(std::string text)
+void Log::writeLog(const std::string& text)
 {
 	this->writeLine(std::string(" Log: ").append(text));
 }
 
-void Log::writeInit(std::string text)
+void Log::writeInit(const std::string& text)
 {
 	this->writeLine(std::string(" Init: ").append(text));
 }
 
-void Log::writeLine(std::string text)
+void Log::writeLine(const std::string& text)
 {
 	if (this->logFileStream->is_open())
 	{
-		*this->logFileStream << std::time(0);
+		char dateStr[9];
+		char timeStr[9];
+		_strdate_s(dateStr);
+		*this->logFileStream << dateStr << " ";
+		_strtime_s(timeStr);
+		*this->logFileStream << timeStr;
 		*this->logFileStream << text << std::endl;
 	}
 }

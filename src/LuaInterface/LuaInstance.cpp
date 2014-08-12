@@ -143,7 +143,7 @@ void LuaInstance::endInitializeTable(const char* tableName)
 
 void LuaInstance::endInitializeSubtable(const char* tableName)
 {
-	lua_pushstring(this->luaState, "pos");
+	lua_pushstring(this->luaState, tableName);
     lua_insert(this->luaState, -2);
     lua_settable(this->luaState, -3);
 }

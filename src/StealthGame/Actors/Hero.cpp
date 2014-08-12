@@ -31,7 +31,6 @@ void Hero::move(Vector2D step)
 void Hero::update(float deltatime)
 {
 	Vector2D step =  this->step * deltatime;
-	bool bFree = true;
 
 	// if actor's path is free
 	if (!Collide::isWillCollide(this, this->getOwnerWorld(), step))

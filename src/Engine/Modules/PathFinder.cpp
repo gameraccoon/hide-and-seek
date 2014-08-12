@@ -20,7 +20,7 @@ CalculationPoint::CalculationPoint(PathPoint* point, float g, float h, Calculati
 	this->cameFrom = cameFrom;
 }
 
-void PathFinder::reconstructPath(CalculationPoint* start, CalculationPoint* end)
+void PathFinder::reconstructPath(CalculationPoint* end)
 {
 	this->path.clear();
 	CalculationPoint *currentPoint = end;
@@ -102,7 +102,7 @@ bool PathFinder::createNewPath(Vector2D startPoint, Vector2D endPoint)
 			}
 
 			// create final path
-			this->reconstructPath(cFirstPoint, currentPoint);
+			this->reconstructPath(currentPoint);
 
 			return true;
 		}

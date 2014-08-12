@@ -36,7 +36,6 @@ void Man::update(float deltatime)
 	if (stepSize < (this->tempLocation - this->getLocation()).size())
 	{
 		Vector2D step = (this->tempLocation - this->getLocation()).ort() * stepSize;
-		bool bFree = true;
 
 		// if actor's path is free
 		if (!Collide::isWillCollide(this, this->getOwnerWorld(), step))

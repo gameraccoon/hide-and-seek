@@ -39,7 +39,7 @@ private:
 	Vector2D destinationPoint;
 	World* ownerWorld;
 	std::set<CalculationPoint*> closedSet;
-	void reconstructPath(CalculationPoint* start, CalculationPoint* end);
+	void reconstructPath(CalculationPoint* end);
 };
 
 #endif

@@ -258,12 +258,12 @@ void Camera::drawPenumbra(const Vector2D &first, const Vector2D &second, const V
 	triple.tex = PenumbraTexture;
 	triple.blend = BLEND_DEFAULT;
 	triple.v[0].z = triple.v[1].z = triple.v[2].z = 0;
-	triple.v[0].x = 100;
-	triple.v[0].y = 200;
-	triple.v[1].x = 300;
-	triple.v[1].y = 400;
-	triple.v[2].x = 100;
-	triple.v[2].y = 400;
+	triple.v[0].x = first.x;
+	triple.v[0].y = first.y;
+	triple.v[1].x = second.x;
+	triple.v[1].y = second.y;
+	triple.v[2].x = third.x;
+	triple.v[2].y = third.y;
 	
 	triple.v[0].col = 0xFFFFFFFF;
 	triple.v[0].tx = 1;

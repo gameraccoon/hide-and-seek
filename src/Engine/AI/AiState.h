@@ -27,6 +27,7 @@ protected:
 
 	IBody *body;
 	Role *role;
+	World *world;
 
 	float lastExecutionTime;
 
