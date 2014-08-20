@@ -37,7 +37,7 @@ void Actor::setLocation(const Vector2D& location)
 	this->onUpdateLocation();
 }
 
-Vector2D Actor::getLocation() const
+const Vector2D Actor::getLocation() const
 {
 	return this->location;
 }
@@ -50,7 +50,7 @@ void Actor::setRotation(const Rotator& rotation)
 	this->updateGeometry();
 }
 
-Rotator Actor::getRotation() const
+const Rotator Actor::getRotation() const
 {
 	return this->direction;
 }
@@ -64,17 +64,17 @@ void Actor::setScale(const Vector2D& scale)
 	this->updateGeometry();
 }
 
-Vector2D Actor::getScale() const
+const Vector2D Actor::getScale() const
 {
 	return this->scale;
 }
 
-ActorType Actor::getType() const
+const ActorType Actor::getType() const
 {
 	return this->type;
 }
 
-BoundingBox Actor::getBoundingBox() const
+const BoundingBox Actor::getBoundingBox() const
 {
 	return this->colideBox;
 }
@@ -84,12 +84,12 @@ const Hull* Actor::getGeometry() const
 	return &(this->geometry);
 }
 
-std::string Actor::getClassID() const
+const std::string Actor::getClassID() const
 {
 	return this->classId;
 }
 
-std::string Actor::getActorId() const
+const std::string Actor::getActorId() const
 {
 	return this->actorId;
 }

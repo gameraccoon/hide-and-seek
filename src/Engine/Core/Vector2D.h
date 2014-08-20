@@ -22,38 +22,38 @@ public:
 	float qSize(void) const;
 
 	/** Normalize vector */
-	Vector2D ort(void) const;
+	const Vector2D ort(void) const;
 	/** Mirror horisontally */
-	Vector2D mirrorH() const;
+	const Vector2D mirrorH() const;
 	/** Mirror vertically */
-	Vector2D mirrorV() const;
+	const Vector2D mirrorV() const;
 	/** Get normal-vector */
-	Vector2D normal() const;
+	const Vector2D normal() const;
 
 	/** Project this vector to line that parallel with the vector "base" */
-	Vector2D project(Vector2D base) const;
+	const Vector2D project(Vector2D base) const;
 
 	/** Get angle between vector and OX axis */
-	Rotator rotation(void) const;
+	const Rotator rotation(void) const;
 
 	friend bool operator==(const Vector2D& left, const Vector2D& right);
 	friend bool operator!=(const Vector2D& left, const Vector2D& right);
 
 	friend Vector2D operator-(const Vector2D& vector);
-
-	friend Vector2D operator+(const Vector2D& left, const Vector2D& right);
+	
 	friend Vector2D operator+=(Vector2D& left, const Vector2D& right);
-
-	friend Vector2D operator-(const Vector2D& left, const Vector2D& right);
+	friend Vector2D operator+(const Vector2D& left, const Vector2D& right);
+	
 	friend Vector2D operator-=(Vector2D& left, const Vector2D& right);
-
-	friend Vector2D operator*(const Vector2D& vector, float scalar);
-	friend Vector2D operator*(float scalar, const Vector2D& vector);
+	friend Vector2D operator-(const Vector2D& left, const Vector2D& right);
+	
 	friend Vector2D operator*=(Vector2D& vector, float scalar);
 	friend Vector2D operator*=(float scalar, Vector2D& vector);
-
-	friend Vector2D operator/(const Vector2D& vector, float scalar);
+	friend Vector2D operator*(const Vector2D& vector, float scalar);
+	friend Vector2D operator*(float scalar, const Vector2D& vector);
+	
 	friend Vector2D operator/=(Vector2D& vector, float scalar);
+	friend Vector2D operator/(const Vector2D& vector, float scalar);
 
 	friend float DotProduct(const Vector2D& left, const Vector2D& right);
 };

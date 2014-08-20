@@ -24,15 +24,15 @@ public:
 	/** Set new location of the actor in the World */
 	virtual void setLocation(const Vector2D& newLocations) override final;
 	/** Get actor's world location */
-	virtual Vector2D getLocation() const override final;
+	virtual const Vector2D getLocation() const override final;
 	/** Set actor's rotation */
 	virtual void setRotation(const Rotator& newRotation) override final;
 	/** Get actor's rotation */
-	virtual Rotator getRotation() const override final;
+	virtual const Rotator getRotation() const override final;
 	/** Set actor's scale */
 	virtual void setScale(const Vector2D& newScale) override final;
 	/** Get actor's scale */
-	virtual Vector2D getScale() const override final;
+	virtual const Vector2D getScale() const override final;
 	/** Process moving and other actions of the Actor */
 	virtual void update(float deltatime) override;
 	/** Say to actor, that it mast be destroyed now */
@@ -40,15 +40,15 @@ public:
 	/** Is actor wait to be automatically destroyed? */
 	virtual bool isWaitDestruction() const override final;
 	/** Get actor type */
-	virtual ActorType getType() const override final;
+	virtual const ActorType getType() const override final;
 	/** Get axis-aligned bounding box */
-	virtual BoundingBox getBoundingBox() const override final;
+	virtual const BoundingBox getBoundingBox() const override final;
 	/** Get actor's hull */
 	virtual const Hull* getGeometry() const override final;
 	/** Returns the class identificator of this actor's class */
-	virtual std::string getClassID() const override final;
+	virtual const std::string getClassID() const override final;
 	/** Returns the specific identificator of current object */
-	virtual std::string getActorId() const override final;
+	virtual const std::string getActorId() const override final;
 	/** Take some damage to the actor */
 	virtual void hit(IActor *instigator, float damageValue, Vector2D impulse) override;
 protected:

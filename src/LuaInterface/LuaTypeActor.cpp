@@ -28,7 +28,8 @@ namespace LuaType
 	void registerValue<IActor>(LuaInstance *instance, IActor* value)
 	{
 		instance->registerTableConstant<const char*, void*>("ptr", value);
-		registerField<Vector2D>(instance, "pos", &value->getLocation());
+		Vector2D location = value->getLocation();
+		registerField<Vector2D>(instance, "pos", &location);
 		instance->registerTableConstant<const char*, const char*>("id", value->getActorId().c_str());
 		instance->registerTableFunction("getRotation", LuaType::cmdGetRotation);
 		instance->registerTableFunction("setRotation", LuaType::cmdSetRotation);

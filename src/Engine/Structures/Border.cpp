@@ -11,17 +11,17 @@ Border::~Border(void)
 {
 }
 
-Vector2D Border::getNormal() const
+const Vector2D Border::getNormal() const
 {
 	return this->normal;
 }
 
-Vector2D Border::getA() const
+const Vector2D Border::getA() const
 {
 	return this->a;
 }
 
-Vector2D Border::getB() const
+const Vector2D Border::getB() const
 {
 	return this->b;
 }
