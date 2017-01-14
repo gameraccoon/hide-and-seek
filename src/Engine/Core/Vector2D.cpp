@@ -35,7 +35,7 @@ float Vector2D::qSize(void) const
 	return (this->x * this->x) + (this->y * this->y);
 }
 
-const Vector2D Vector2D::ort(void) const
+Vector2D Vector2D::ort(void) const
 {
 	if (this->x == 0.0f && this->y == 0.0f)
 		return ZERO_VECTOR;
@@ -43,27 +43,27 @@ const Vector2D Vector2D::ort(void) const
 	return (*this) / this->size();
 }
 
-const Rotator Vector2D::rotation(void) const
+Rotator Vector2D::rotation(void) const
 {
 	return atan2(this->y, this->x);
 }
 
-const Vector2D Vector2D::mirrorH() const
+Vector2D Vector2D::mirrorH() const
 {
 	return Vector2D(-this->x, this->y);
 }
 
-const Vector2D Vector2D::mirrorV() const
+Vector2D Vector2D::mirrorV() const
 {
 	return Vector2D(this->x, -this->y);
 }
 
-const Vector2D Vector2D::normal() const
+Vector2D Vector2D::normal() const
 {
 	return this->rotation() - PI/2;
 }
 
-const Vector2D Vector2D::project(Vector2D base) const
+Vector2D Vector2D::project(Vector2D base) const
 {
 	float qSize = base.qSize();
 	Vector2D result(ZERO_VECTOR);
@@ -99,6 +99,16 @@ bool operator!=(const Vector2D& left, const Vector2D& right)
 	return !(left == right);
 }
 
+Vector2D operator+(const Vector2D& left, const Vector2D& right)
+{
+	Vector2D newVect(left);
+	
+	newVect.x += right.x;
+	newVect.y += right.y;
+
+	return newVect;
+}
+
 Vector2D operator+=(Vector2D& left, const Vector2D& right)
 {
 	left.x += right.x;
@@ -107,9 +117,14 @@ Vector2D operator+=(Vector2D& left, const Vector2D& right)
 	return Vector2D(left);
 }
 
-Vector2D operator+(const Vector2D& left, const Vector2D& right)
+Vector2D operator-(const Vector2D& left, const Vector2D& right)
 {
-	return Vector2D(left) += right;
+	Vector2D newVect(left);
+	
+	newVect.x -= right.x;
+	newVect.y -= right.y;
+
+	return newVect;
 }
 
 Vector2D operator-=(Vector2D& left, const Vector2D& right)
@@ -120,9 +135,24 @@ Vector2D operator-=(Vector2D& left, const Vector2D& right)
 	return Vector2D(left);
 }
 
-Vector2D operator-(const Vector2D& left, const Vector2D& right)
+Vector2D operator*(const Vector2D& vect, float scalar)
 {
-	return Vector2D(left) -= right;
+	Vector2D newVect(vect);
+	
+	newVect.x *= scalar;
+	newVect.y *= scalar;
+
+	return newVect;
+}
+
+Vector2D operator*(float scalar, const Vector2D& vector)
+{
+	Vector2D newVect(vector);
+	
+	newVect.x *= scalar;
+	newVect.y *= scalar;
+
+	return newVect;
 }
 
 Vector2D operator*=(Vector2D& vector, float scalar)
@@ -141,14 +171,14 @@ Vector2D operator*=(float scalar, Vector2D& vector)
 	return Vector2D(vector);
 }
 
-Vector2D operator*(const Vector2D& vector, float scalar)
+Vector2D operator/(const Vector2D& vector, float scalar)
 {
-	return Vector2D(vector) *= scalar;
-}
+	Vector2D newVect(vector);
+	
+	newVect.x /= scalar;
+	newVect.y /= scalar;
 
-Vector2D operator*(float scalar, const Vector2D& vector)
-{
-	return Vector2D(vector) *= scalar;
+	return newVect;
 }
 
 Vector2D operator/=(Vector2D& vector, float scalar)
@@ -157,11 +187,6 @@ Vector2D operator/=(Vector2D& vector, float scalar)
 	vector.y /= scalar;
 
 	return Vector2D(vector);
-}
-
-Vector2D operator/(const Vector2D& vector, float scalar)
-{
-	return Vector2D(vector) /= scalar;
 }
 
 float DotProduct(const Vector2D& left, const Vector2D& right)

@@ -21,22 +21,22 @@ BoundingBox::~BoundingBox(void)
 {
 }
 
-const Vector2D BoundingBox::getFirst() const
+Vector2D BoundingBox::getFirst()
 {
 	return Vector2D(this->minX, this->minY);
 }
 
-const Vector2D BoundingBox::getThird() const
+Vector2D BoundingBox::getThird()
 {
 	return Vector2D(this->maxX, this->maxY);
 }
 
-const Vector2D BoundingBox::getSecond() const
+Vector2D BoundingBox::getSecond()
 {
 	return Vector2D(this->maxX, this->minY);
 }
 
-const Vector2D BoundingBox::getFourth() const
+Vector2D BoundingBox::getFourth()
 {
 	return Vector2D(this->minX, this->maxY);
 }

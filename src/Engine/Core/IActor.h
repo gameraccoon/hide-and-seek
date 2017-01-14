@@ -30,15 +30,15 @@ public:
 	/** Set new location of the actor in the World */
 	virtual void setLocation(const Vector2D& location) = 0;
 	/** Get actor's world location */
-	virtual const Vector2D getLocation() const = 0;
+	virtual Vector2D getLocation() const = 0;
 	/** Set actor's rotation */
 	virtual void setRotation(const Rotator& rotation) = 0;
 	/** Get actor's rotation */
-	virtual const Rotator getRotation() const = 0;
+	virtual Rotator getRotation() const = 0;
 	/** Set actor's scale */
 	virtual void setScale(const Vector2D& scale) = 0;
 	/** Get actor's scale */
-	virtual const Vector2D getScale() const = 0;
+	virtual Vector2D getScale() const = 0;
 	/** Process moving and other actions of the Actor */
 	virtual void update(float deltatime) = 0;
 	/** Say to actor, that it mast be destroyed now */
@@ -46,17 +46,17 @@ public:
 	/** Is actor wait to be automatically destroyed? */
 	virtual bool isWaitDestruction() const = 0;
 	/** Get actor type */
-	virtual const ActorType getType() const = 0;
+	virtual ActorType getType() const = 0;
 	/** Get axis-aligned bounding box */
-	virtual const BoundingBox getBoundingBox() const = 0;
+	virtual BoundingBox getBoundingBox() const = 0;
 	/** Get hull of this actor */
 	virtual const Hull* getGeometry() const = 0;
 	/** Take some damage to the actor */
 	virtual void hit(IActor *instigator, float damageValue, Vector2D impulse) = 0;
 	/** Returns the class identificator of this actor's class */
-	virtual const std::string getClassID() const = 0;
+	virtual std::string getClassID() const = 0;
 	/** Returns the specific identificator of current object */
-	virtual const std::string getActorId() const = 0;
+	virtual std::string getActorId() const = 0;
 };
 
 #endif

@@ -12,13 +12,13 @@ public:
 	BoundingBox(Vector2D minPoint, Vector2D maxPoint);
 	~BoundingBox(void);
 	/** Left-top point */
-	const Vector2D getFirst() const;
+	Vector2D getFirst();
 	/** Right-top point */
-	const Vector2D getSecond() const;
+	Vector2D getSecond();
 	/** Right-bottom point */
-	const Vector2D getThird() const;
+	Vector2D getThird();
 	/** Left-bottom point */
-	const Vector2D getFourth() const;
+	Vector2D getFourth();
 	/** X-pos of left border */
 	float minX;
 	/** Y-pos of top border */
