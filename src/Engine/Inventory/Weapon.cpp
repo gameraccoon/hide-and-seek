@@ -1,53 +1,55 @@
 #include "Weapon.h"
 
 
-Weapon::Weapon() : location(ZERO_VECTOR), direction(0.0f)
+Weapon::Weapon()
+	: mLocation(ZERO_VECTOR)
+	, mDirection(0.0f)
 {
-	this->fireInterval = 0.1f;
-	this->lastFireTime = 0.0f;
-	this->startFireDelay = 0.01f;
-	this->isFiring = false;
+	mFireInterval = 0.1f;
+	mLastFireTime = 0.0f;
+	mStartFireDelay = 0.01f;
+	mIsFiring = false;
 }
 
 
-Weapon::~Weapon(void)
+Weapon::~Weapon()
 {
 }
 
-void Weapon::startShooting(Vector2D location, Rotator direction)
+void Weapon::startShooting(const Vector2D& location, const Rotator& direction)
 {
-	this->location = location;
-	this->direction = direction;
-	this->lastFireTime = this->fireInterval - this->startFireDelay;
-	this->isFiring = true;
+	mLocation = location;
+	mDirection = direction;
+	mLastFireTime = mFireInterval - mStartFireDelay;
+	mIsFiring = true;
 }
 
 void Weapon::stopShooting()
 {
-	this->isFiring = false;
+	mIsFiring = false;
 }
 
-void Weapon::changeDirection(Rotator newDirection)
+void Weapon::changeDirection(const Rotator& newDirection)
 {
-	this->direction = newDirection;
+	mDirection = newDirection;
 }
 
-void Weapon::setLocation(Vector2D newLocation)
+void Weapon::setLocation(const Vector2D& newLocation)
 {
-	this->location = newLocation;
+	mLocation = newLocation;
 }
 
 void Weapon::update(float deltatime)
 {
-	lastFireTime += deltatime;
-	if (this->isFiring && this->lastFireTime > this->fireInterval)
+	mLastFireTime += deltatime;
+	if (mIsFiring && mLastFireTime > mFireInterval)
 	{
-		this->ownerWorld->spawnActor(new Bullet(this->ownerWorld, this->location, Vector2D(1.f, 1.f), direction));
-		this->lastFireTime = 0;
+		mOwnerWorld->spawnActor(new Bullet(mOwnerWorld, mLocation, Vector2D(1.f, 1.f), mDirection));
+		mLastFireTime = 0;
 	}
 }
 
 void Weapon::setOwnerWorld(World *world)
 {
-	this->ownerWorld = world;
+	mOwnerWorld = world;
 }

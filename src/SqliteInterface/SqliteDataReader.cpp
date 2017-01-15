@@ -1,5 +1,7 @@
 #include "SqliteDataReader.h"
 
+#include <sqlite/sqlite3.h>
+
 #include <Debug/Log.h>
 
 SqliteValue::SqliteValue(sqlite3_stmt* ppStmt, int columnIndex)
@@ -37,15 +39,20 @@ const void* SqliteValue::asVariant()
 	return sqlite3_column_blob(this->ppStmt, this->columnIndex);
 }
 
-
-SqliteDataReader::SqliteDataReader(std::string query, sqlite3* db)
+SqliteDataReader::SqliteDataReader(const std::string& query, sqlite3* db)
 {
 	int rc = sqlite3_prepare(db, query.c_str(), query.length(), &this->ppStmt, 0);
 
 	if (rc != 0)
 	{
-		Log::Instance().writeError(std::string("Can't execute query: ").append(query));
+		Log::Instance().writeError(std::string("Unable to execute SQL query \"").append(query)
+			.append("\" ").append(sqlite3_errmsg(db)));
 	}
+}
+
+bool SqliteValue::isNull()
+{
+	return sqlite3_column_type(ppStmt, columnIndex) == SQLITE_NULL;
 }
 
 SqliteDataReader::~SqliteDataReader()
@@ -57,12 +64,12 @@ bool SqliteDataReader::next()
 {
 	// go to the next line
 	bool result = (sqlite3_step(this->ppStmt) == SQLITE_ROW);
-	
+
 	return result;
 }
 
-std::shared_ptr<DbValue> SqliteDataReader::getValueByName(std::string columnName)
-{	
+DbValue::Ptr SqliteDataReader::getValueByName(const std::string& columnName)
+{
 	for (int columnIndex = 0, columnsCount = sqlite3_column_count(this->ppStmt);
 		columnIndex < columnsCount;
 		columnIndex++)
@@ -70,18 +77,20 @@ std::shared_ptr<DbValue> SqliteDataReader::getValueByName(std::string columnName
 		std::string sTemp = sqlite3_column_name(this->ppStmt, columnIndex);
 		if (sTemp == columnName)
 		{
-			return std::shared_ptr<DbValue>(new SqliteValue(this->ppStmt, columnIndex));
+			return DbValue::Ptr(new SqliteValue(this->ppStmt, columnIndex));
 		}
 	}
 
-	throw new ColumnNotFoundException();
+	Log::Instance().writeError("SqliteDataReader error: Column not found: " + columnName);
+	return nullptr;
 }
 
-std::shared_ptr<DbValue> SqliteDataReader::getValueByIndex(int columnIndex)
-{	
+DbValue::Ptr SqliteDataReader::getValueByIndex(int columnIndex)
+{
 	if (columnIndex >= sqlite3_column_count(this->ppStmt))
 	{
-		throw new ColumnNotFoundException();
+		Log::Instance().writeError("SqliteDataReader error: Column not found: " + std::to_string(columnIndex));
 	}
-	return std::shared_ptr<DbValue>(new SqliteValue(this->ppStmt, columnIndex));
+
+	return DbValue::Ptr(new SqliteValue(this->ppStmt, columnIndex));
 }

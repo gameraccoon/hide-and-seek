@@ -1,5 +1,4 @@
-#ifndef HULL_H
-#define HULL_H
+#pragma once
 
 #include <vector>
 
@@ -16,8 +15,8 @@ public:
 		,None
 	};
 
-	Hull(void);
-	~Hull(void);
+	Hull();
+	~Hull();
 
 	/** Pre-calculated squared radius */
 	float getQRadius() const;
@@ -39,5 +38,3 @@ private:
 	/** Radius for the circular hull */
 	float radius;
 };
-
-#endif

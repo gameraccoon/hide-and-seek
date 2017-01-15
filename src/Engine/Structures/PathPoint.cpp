@@ -6,12 +6,12 @@ PathPoint::PathPoint(Vector2D location) : location(location)
 }
 
 
-PathPoint::~PathPoint(void)
+PathPoint::~PathPoint()
 {
 }
 
 
 void PathPoint::connect(PathPoint* destPoint)
 {
-	this->legalPoints.insert(destPoint);
+	legalPoints.insert(destPoint);
 }

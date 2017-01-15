@@ -1,21 +1,21 @@
 #include "InventoryItem.h"
 
 
-InventoryItem::InventoryItem(void)
+InventoryItem::InventoryItem()
 {
-	bEquipped = false;
+	mIsEquipped = false;
 }
 
-InventoryItem::~InventoryItem(void)
+InventoryItem::~InventoryItem()
 {
 }
 
 bool InventoryItem::isEquipped()
 {
-	return this->bEquipped;
+	return mIsEquipped;
 }
 
 void InventoryItem::setEquipped(bool equipped)
 {
-	this->bEquipped = equipped;
+	mIsEquipped = equipped;
 }

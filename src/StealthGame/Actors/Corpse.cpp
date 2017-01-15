@@ -3,10 +3,10 @@
 Corpse::Corpse(World *world, Vector2D location, Vector2D scale, Rotator rotation) :
 	Actor(world, location, rotation)
 {
-	this->updateActorId("Corpse");
+	updateActorId("Corpse");
 }
 
 
-Corpse::~Corpse(void)
+Corpse::~Corpse()
 {
 }

@@ -74,7 +74,7 @@ namespace Collide
 	bool isWillCollide(const IActor* actor1, const World* world, Vector2D step)
 	{
 		// for each actors in the world
-		for (auto &actor : world->allActors)
+		for (const auto actor : world->getAllActors())
 		{
 			// if the actor is not this man
 			if (actor != actor1

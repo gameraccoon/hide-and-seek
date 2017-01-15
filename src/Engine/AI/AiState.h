@@ -1,5 +1,4 @@
-#ifndef AI_STATE
-#define AI_STATE
+#pragma once
 
 #include "Role.h"
 #include "../Core/World.h"
@@ -9,7 +8,7 @@ class AiState : public IAiState
 {
 public:
 	AiState(World *world, IBody *body, Role *role);
-	virtual ~AiState(void);
+	virtual ~AiState();
 
 	/**
 	 * Event that executed when body takes damage
@@ -25,13 +24,11 @@ public:
 	virtual void setEnded(bool ended) override;
 protected:
 
-	IBody *body;
-	Role *role;
-	World *world;
+	IBody *mBody;
+	Role *mRole;
+	World *mWorld;
 
-	float lastExecutionTime;
+	float mLastExecutionTime;
 
-	bool ended;
+	bool mEnded;
 };
-
-#endif

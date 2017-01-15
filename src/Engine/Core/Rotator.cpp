@@ -4,8 +4,8 @@ const float PI = 3.14159265358979323846f;
 
 Rotator::Rotator(float angle)
 {
-	this->value = angle;
-	this->reset();
+	mValue = angle;
+	reset();
 }
 
 Rotator::~Rotator()
@@ -14,27 +14,27 @@ Rotator::~Rotator()
 
 float Rotator::getValue() const
 {
-	if (this->calculatedValue <= -PI)
+	if (calculatedValue <= -PI)
 	{
-		while (this->calculatedValue <= -PI)
+		while (calculatedValue <= -PI)
 		{
-			this->calculatedValue += 2 * PI;
+			calculatedValue += 2 * PI;
 		}
 	}
-	else if (this->calculatedValue > PI)
+	else if (calculatedValue > PI)
 	{
-		while (this->calculatedValue > PI)
+		while (calculatedValue > PI)
 		{
-			this->calculatedValue -= 2 * PI;
+			calculatedValue -= 2 * PI;
 		}
 	}
 
-	return this->calculatedValue;
+	return calculatedValue;
 }
 
 void Rotator::reset()
 {
-	this->calculatedValue = this->value;
+	calculatedValue = mValue;
 }
 
 Rotator operator-(Rotator rot)
@@ -44,7 +44,7 @@ Rotator operator-(Rotator rot)
 
 bool operator==(const Rotator& left, const Rotator& right)
 {
-	return left.value == right.value;
+	return left.getValue() == right.getValue();
 }
 
 bool operator!=(const Rotator& left, const Rotator& right)
@@ -54,14 +54,14 @@ bool operator!=(const Rotator& left, const Rotator& right)
 
 Rotator operator+(const Rotator& left, const Rotator& right)
 {
-	return left.value + right.value;
+	return left.getValue() + right.getValue();
 }
 
 Rotator operator+=(Rotator& left, const Rotator& right)
 {
-	float newValue = left.value + right.value;
+	float newValue = left.getValue() + right.getValue();
 
-	left.value = newValue;
+	left.mValue = newValue;
 	left.reset();
 
 	return newValue;
@@ -69,14 +69,14 @@ Rotator operator+=(Rotator& left, const Rotator& right)
 
 Rotator operator-(const Rotator& left, const Rotator& right)
 {
-	return left.value - right.value;
+	return left.getValue() - right.getValue();
 }
 
 Rotator operator-=(Rotator& left, const Rotator& right)
 {
-	float newValue = left.value - right.value;
+	float newValue = left.getValue() - right.getValue();
 
-	left.value = newValue;
+	left.mValue = newValue;
 	left.reset();
 
 	return newValue;

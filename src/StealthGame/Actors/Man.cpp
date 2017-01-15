@@ -7,41 +7,37 @@
 
 Man::Man(World *world, Vector2D location, Vector2D scale, Rotator rotation) : Body(world, location)
 {
-	this->setType(ActorType::Living);
+	setType(ActorType::Living);
 
-	this->speed = 50.0f;
+	mSpeed = 50.0f;
 
-	this->updateActorId("Man");
+	updateActorId("Man");
 
-	this->setFraction(Fraction::BadGuys);
+	setFraction(Fraction::BadGuys);
 
-	if (this->role != nullptr)
-		delete this->role;
-	this->role = new AiRole(world, this);
-}
-
-Man::~Man(void)
-{
+	if (mRole != nullptr)
+		delete mRole;
+	mRole = new AiRole(world, this);
 }
 
 void Man::update(float deltatime)
 {
-	if (this->tempLocation == this->getLocation())
+	if (mTempLocation == getLocation())
 	{
-		this->findNextPathPoint();
+		findNextPathPoint();
 	}
 
-	float stepSize = this->speed * deltatime;
+	float stepSize = mSpeed * deltatime;
 
-	if (stepSize < (this->tempLocation - this->getLocation()).size())
+	if (stepSize < (mTempLocation - getLocation()).size())
 	{
-		Vector2D step = (this->tempLocation - this->getLocation()).ort() * stepSize;
+		Vector2D step = (mTempLocation - getLocation()).ort() * stepSize;
 
 		// if actor's path is free
-		if (!Collide::isWillCollide(this, this->getOwnerWorld(), step))
+		if (!Collide::isWillCollide(this, getOwnerWorld(), step))
 		{
 			// accept new position of the man
-			this->setLocation(this->getLocation() + step);
+			setLocation(getLocation() + step);
 		}
 		else
 		{
@@ -50,7 +46,7 @@ void Man::update(float deltatime)
 	}
 	else
 	{
-		this->setLocation(this->tempLocation);
+		setLocation(mTempLocation);
 	}
 
 	// use superclass method

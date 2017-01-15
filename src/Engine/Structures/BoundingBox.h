@@ -1,5 +1,4 @@
-#ifndef BOUNDINGBOX_H
-#define BOUNDINGBOX_H
+#pragma once
 
 #include "../Core/Vector2D.h"
 /**
@@ -10,7 +9,7 @@ class BoundingBox
 public:
 	BoundingBox(float minX, float minY, float maxX, float maxY);
 	BoundingBox(Vector2D minPoint, Vector2D maxPoint);
-	~BoundingBox(void);
+	~BoundingBox();
 	/** Left-top point */
 	Vector2D getFirst();
 	/** Right-top point */
@@ -28,5 +27,3 @@ public:
 	/** Y-pos of bottom border */
 	float maxY;
 };
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef PLAYER_ROLE_H
-#define PLAYER_ROLE_H
+#pragma once
 
 #include <stack>
 
@@ -9,7 +8,7 @@ class PlayerRole : public Role
 {
 public:
 	PlayerRole(World* world, IBody *body);
-	virtual ~PlayerRole(void) override;
+	virtual ~PlayerRole() override;
 
 	virtual void update(float deltaTime) override;
 
@@ -20,5 +19,3 @@ public:
 	virtual void gotoState(std::string stateName) override;
 	virtual void endCurrentState() override;
 };
-
-#endif

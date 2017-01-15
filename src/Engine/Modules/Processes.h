@@ -1,5 +1,4 @@
-#ifndef PROCESSES_H
-#define PROCESSES_H
+#pragma once
 
 /**
  * Abstract class for some process
@@ -67,5 +66,3 @@ private:
      */
     ProcessContainer *first;
 };
-
-#endif

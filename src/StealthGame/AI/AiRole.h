@@ -1,5 +1,4 @@
-#ifndef AI_ROLE_H
-#define AI_ROLE_H
+#pragma once
 
 #include <stack>
 
@@ -9,7 +8,7 @@ class AiRole : public Role
 {
 public:
 	AiRole(World* world, IBody *body);
-	virtual ~AiRole(void) override;
+	virtual ~AiRole() override;
 
 	virtual void update(float deltaTime) override;
 
@@ -20,8 +19,6 @@ public:
 	virtual void gotoState(std::string stateName) override;
 	virtual void endCurrentState() override;
 private:
-	std::stack<IAiState*> states;
+	std::stack<IAiState*> mStates;
 	void checkStates();
 };
-
-#endif

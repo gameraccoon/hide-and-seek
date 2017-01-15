@@ -1,30 +1,31 @@
 #include "PlayerRole.h"
 
-PlayerRole::PlayerRole(World* world, IBody *body) : Role(world, body)
+PlayerRole::PlayerRole(World* world, IBody *body)
+	: Role(world, body)
 {
 }
 
-PlayerRole::~PlayerRole(void)
+PlayerRole::~PlayerRole()
 {
 }
 
-void PlayerRole::update(float deltaTime)
+void PlayerRole::update(float )
 {
 }
 
-void PlayerRole::onTakeDamage(IActor* instigator, float damageValue, Vector2D impulse)
+void PlayerRole::onTakeDamage(IActor* , float , Vector2D )
 {
 }
 
-void PlayerRole::onSeeEnemy(IActor *enemy)
+void PlayerRole::onSeeEnemy(IActor *)
 {
 }
 
-void PlayerRole::onHearNoise(SoundVolume *sound)
+void PlayerRole::onHearNoise(SoundVolume *)
 {
 }
 
-void PlayerRole::gotoState(std::string stateName)
+void PlayerRole::gotoState(std::string )
 {
 }
 

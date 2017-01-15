@@ -2,35 +2,35 @@
 
 AiState::AiState(World *world, IBody *body, Role *role)
 {
-	lastExecutionTime = 0.f;
+	mLastExecutionTime = 0.f;
 
-	this->body = body;
-	this->role = role;
-	this->world = world;
+	body = body;
+	role = role;
+	world = world;
 
-	this->ended = false;
+	mEnded = false;
 }
 
-AiState::~AiState(void)
+AiState::~AiState()
 {
 }
 
 void AiState::gotoState(std::string stateName)
 {
-	this->role->gotoState(stateName);
+	mRole->gotoState(stateName);
 }
 
 void AiState::endState()
 {
-	this->role->endCurrentState();
+	mRole->endCurrentState();
 }
 
 bool AiState::isEnded() const
 {
-	return this->ended;
+	return mEnded;
 }
 
 void AiState::setEnded(bool ended)
 {
-	this->ended = ended;
+	mEnded = ended;
 }

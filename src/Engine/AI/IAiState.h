@@ -1,5 +1,4 @@
-#ifndef I_AI_STATE
-#define I_AI_STATE
+#pragma once
 
 #include "../Core/IActor.h"
 #include "../Actors/SoundVolume.h"
@@ -18,5 +17,3 @@ public:
 	virtual bool isEnded() const = 0;
 	virtual void setEnded(bool ended) = 0;
 };
-
-#endif

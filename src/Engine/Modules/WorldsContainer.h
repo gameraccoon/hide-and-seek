@@ -1,8 +1,7 @@
-#ifndef WORLDS_CONTAINER_H
-#define WORLDS_CONTAINER_H
+#pragma once
 
 #include <map>
-#include "..\Core\World.h"
+#include "../Core/World.h"
 
 /**
  * Container for created worlds.
@@ -24,10 +23,8 @@ private:
 	/*
 	 * Turn off unusable operations
 	 */
-	WorldsContainer();
-	WorldsContainer(const WorldsContainer&);
+	WorldsContainer() = default;
 	~WorldsContainer();
-	WorldsContainer& operator=(const WorldsContainer&);
+	WorldsContainer(const WorldsContainer&) = delete;
+	WorldsContainer& operator=(const WorldsContainer&) = delete;
 };
-
-#endif

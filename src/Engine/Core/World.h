@@ -1,5 +1,4 @@
-#ifndef WORLD_H
-#define WORLD_H
+#pragma once
 
 #include <set>
 
@@ -11,8 +10,8 @@
 class World
 {
 public:
-	World(void);
-	~World(void);
+	World();
+	~World();
 	/** Add Actor to the World. */
 	void spawnActor(IActor* actor);
 	/** Delete actor from the World. */
@@ -23,15 +22,19 @@ public:
 	void addPathPoint(PathPoint* pathPoint);
 	/** */
 	IActor* getActorById(std::string id);
-	/** All actors in the World. */
-	std::set<IActor*> allActors;
-	/** All pathpoints of this world */
-	std::set<PathPoint*> navigationMap;
+	/** */
+	std::set<IActor*>& getAllActors();
+	/** */
+	const std::set<IActor*>& getAllActors() const;
+	/** */
+	const std::set<PathPoint*>& getNavigationMap() const;
 private:
 	/** Free memory of path points */
 	void removeAllPathPoints();
 	/** Destroy actors that waits to be destroyed */
 	void cleanDestroyedActors();
+	/** All actors in the World. */
+	std::set<IActor*> mAllActors;
+	/** All pathpoints of this world */
+	std::set<PathPoint*> mNavigationMap;
 };
-
-#endif

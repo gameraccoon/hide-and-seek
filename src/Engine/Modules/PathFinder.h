@@ -1,5 +1,4 @@
-#ifndef PATHFINDER_H
-#define PATHFINDER_H
+#pragma once
 
 #include <list>
 #include <set>
@@ -8,9 +7,8 @@
 #include "../Core/Vector2D.h"
 #include "../Structures/PathPoint.h"
 
-class CalculationPoint
+struct CalculationPoint
 {
-public:
 	CalculationPoint(PathPoint* point, float g, float h, CalculationPoint* cameFrom);
 	PathPoint* point;
 	float f, g, h;
@@ -24,7 +22,7 @@ class PathFinder
 {
 public:
 	PathFinder(World* world);
-	~PathFinder(void);
+	~PathFinder();
 	
 	/** Find and save path from startPoint to endPoint in owner world */
 	bool createNewPath(Vector2D startPoint, Vector2D endPoint);
@@ -33,13 +31,12 @@ public:
 	 * @return next point or DestinationPoint if no more points of this path.
 	 */
 	Vector2D getNextPoint();
+
 private:
 	/** Current path */
-	std::list<PathPoint*> path;
-	Vector2D destinationPoint;
-	World* ownerWorld;
-	std::set<CalculationPoint*> closedSet;
+	std::list<PathPoint*> mPath;
+	Vector2D mDestinationPoint;
+	World* mOwnerWorld;
+	std::set<CalculationPoint*> mClosedSet;
 	void reconstructPath(CalculationPoint* end);
 };
-
-#endif

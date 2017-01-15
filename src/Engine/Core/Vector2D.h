@@ -1,5 +1,4 @@
-#ifndef VECTOR_H
-#define VECTOR_H
+#pragma once
 
 #include <math.h>
 
@@ -11,7 +10,7 @@ public:
 	Vector2D(float x, float y);
 	Vector2D(const Vector2D& vector);
 	Vector2D(const Rotator& rotator);
-	~Vector2D(void);
+	~Vector2D();
 
 	float x, y;
 
@@ -19,10 +18,10 @@ public:
 	float size() const;
 
 	/** Get quarter of vector length (faster than Size()) */
-	float qSize(void) const;
+	float qSize() const;
 
 	/** Normalize vector */
-	Vector2D ort(void) const;
+	Vector2D ort() const;
 	/** Mirror horisontally */
 	Vector2D mirrorH() const;
 	/** Mirror vertically */
@@ -34,7 +33,7 @@ public:
 	Vector2D project(Vector2D base) const;
 
 	/** Get angle between vector and OX axis */
-	Rotator rotation(void) const;
+	Rotator rotation() const;
 
 	friend bool operator==(const Vector2D& left, const Vector2D& right);
 	friend bool operator!=(const Vector2D& left, const Vector2D& right);
@@ -63,5 +62,3 @@ extern const Vector2D RIGHT_DIRECTION;
 extern const Vector2D UP_DIRECTION;
 extern const Vector2D DOWN_DIRECTION;
 extern const Vector2D ZERO_VECTOR;
-
-#endif

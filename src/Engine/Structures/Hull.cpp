@@ -1,36 +1,36 @@
 #include "Hull.h"
 
 
-Hull::Hull(void)
+Hull::Hull()
 {
 }
 
-Hull::~Hull(void)
+Hull::~Hull()
 {
 }
 
 void Hull::generateBorders()
 {
-	this->borders.clear();
-	int count = this->points.size();
+	borders.clear();
+	int count = points.size();
 	for (int i = 0; i < count; i++)
 	{
-		this->borders.insert(this->borders.end(), Border(this->points[i], this->points[(i + 1) % count]));
+		borders.insert(borders.end(), Border(points[i], points[(i + 1) % count]));
 	}
 }
 
 float Hull::getQRadius() const
 {
-	return this->qRadius;
+	return qRadius;
 }
 
 float Hull::getRadius() const
 {
-	return this->radius;
+	return radius;
 }
 
 void Hull::setRadius(float newRadius)
 {
-	this->radius = newRadius;
-	this->qRadius = newRadius * newRadius;
+	radius = newRadius;
+	qRadius = newRadius * newRadius;
 }

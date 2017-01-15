@@ -1,40 +1,41 @@
 #include "PathFinder.h"
 
 
-PathFinder::PathFinder(World* world) : destinationPoint(ZERO_VECTOR),
-    ownerWorld(world)
+PathFinder::PathFinder(World* world)
+	: mDestinationPoint(ZERO_VECTOR)
+	, mOwnerWorld(world)
 {
 }
 
 
-PathFinder::~PathFinder(void)
+PathFinder::~PathFinder()
 {
 }
 
 CalculationPoint::CalculationPoint(PathPoint* point, float g, float h, CalculationPoint* cameFrom)
+	: f(g + h)
+	, g(g)
+	, h(h)
+	, point(point)
+	, cameFrom(cameFrom)
 {
-	this->f = g + h;
-	this->g = g;
-	this->h = h;
-	this->point = point;
-	this->cameFrom = cameFrom;
 }
 
 void PathFinder::reconstructPath(CalculationPoint* end)
 {
-	this->path.clear();
+	mPath.clear();
 	CalculationPoint *currentPoint = end;
 	while (currentPoint != nullptr)
 	{
-		this->path.insert(this->path.begin(), currentPoint->point); // back order
+		mPath.insert(mPath.begin(), currentPoint->point); // back order
 		currentPoint = currentPoint->cameFrom;
 	}
 
 	// free closed set
-	while (this->closedSet.size() > 0)
+	while (mClosedSet.size() > 0)
 	{
-		CalculationPoint* pointToDelete = *this->closedSet.begin();
-		this->closedSet.erase(pointToDelete);
+		CalculationPoint* pointToDelete = *mClosedSet.begin();
+		mClosedSet.erase(pointToDelete);
 		delete pointToDelete;
 		pointToDelete = nullptr;
 	}
@@ -42,14 +43,14 @@ void PathFinder::reconstructPath(CalculationPoint* end)
 
 bool PathFinder::createNewPath(Vector2D startPoint, Vector2D endPoint)
 {
-	this->destinationPoint = endPoint;
+	mDestinationPoint = endPoint;
 
 	// find first and last path points
 	float minDistStart = 1000000.f;
 	float minDistEnd = minDistStart;
 	PathPoint *firstPoint = nullptr, *lastPoint = nullptr;
 
-	for (auto const pathPoint : this->ownerWorld->navigationMap)
+	for (auto const pathPoint : mOwnerWorld->getNavigationMap())
 	{
 		if ((pathPoint->location - startPoint).size() < minDistStart)
 		{
@@ -76,7 +77,7 @@ bool PathFinder::createNewPath(Vector2D startPoint, Vector2D endPoint)
 		float minF = 1000000.0;
 		CalculationPoint *currentPoint;
 		// find point with minimal heuristic
-		for (auto const &openSetPoint : OpenSet)
+		for (const auto& openSetPoint : OpenSet)
 		{
 			if (openSetPoint->f < minF)
 			{
@@ -86,7 +87,7 @@ bool PathFinder::createNewPath(Vector2D startPoint, Vector2D endPoint)
 		}
 
 		// move point to closed set from open set
-		this->closedSet.insert(currentPoint);
+		mClosedSet.insert(currentPoint);
 		OpenSet.erase(currentPoint);
 
 		// if we got it
@@ -102,7 +103,7 @@ bool PathFinder::createNewPath(Vector2D startPoint, Vector2D endPoint)
 			}
 
 			// create final path
-			this->reconstructPath(currentPoint);
+			reconstructPath(currentPoint);
 
 			return true;
 		}
@@ -110,7 +111,7 @@ bool PathFinder::createNewPath(Vector2D startPoint, Vector2D endPoint)
 		for (auto const &neighbor : currentPoint->point->legalPoints)
 		{
 			bool bPointInClosedSet = false;
-			for (auto const &alreadyFound : this->closedSet)
+			for (auto const &alreadyFound : mClosedSet)
 			{
 				if (neighbor == alreadyFound->point)
 				{
@@ -171,10 +172,10 @@ bool PathFinder::createNewPath(Vector2D startPoint, Vector2D endPoint)
 	}
 
 	// free closed set
-	while (this->closedSet.size() > 0)
+	while (mClosedSet.size() > 0)
 	{
-		CalculationPoint* pointToDelete = *this->closedSet.begin();
-		this->closedSet.erase(pointToDelete);
+		CalculationPoint* pointToDelete = *mClosedSet.begin();
+		mClosedSet.erase(pointToDelete);
 		delete pointToDelete;
 		pointToDelete = nullptr;
 	}
@@ -184,14 +185,14 @@ bool PathFinder::createNewPath(Vector2D startPoint, Vector2D endPoint)
 
 Vector2D PathFinder::getNextPoint()
 {
-	if (this->path.size() != 0)
+	if (mPath.size() != 0)
 	{
-		PathPoint * next = *(this->path.begin());
-		this->path.remove(next);
+		PathPoint * next = *(mPath.begin());
+		mPath.remove(next);
 		return next->location;
 	}
 	else
 	{
-		return this->destinationPoint;
+		return mDestinationPoint;
 	}
 }

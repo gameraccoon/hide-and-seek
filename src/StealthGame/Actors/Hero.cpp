@@ -4,42 +4,39 @@
 
 #include <Engine/Modules/Collide.h>
 
-Hero::Hero(World *world, Vector2D location, Vector2D scale, Rotator rotation) : Body(world, location),
-	step(ZERO_VECTOR)
+Hero::Hero(World *world, Vector2D location, Vector2D scale, Rotator rotation)
+	: Body(world, location)
+	, mStep(ZERO_VECTOR)
 {
-	this->speed = 1.f;
+	mSpeed = 1.f;
 
-	this->updateActorId("Hero");
+	updateActorId("Hero");
 
-	this->setFraction(Fraction::GoodGuys);
+	setFraction(Fraction::GoodGuys);
 	
-	if (this->role != nullptr)
-		delete this->role;
+	if (mRole != nullptr)
+		delete mRole;
 
-	this->role = new PlayerRole(world, this);
-}
-
-Hero::~Hero(void)
-{
+	mRole = new PlayerRole(world, this);
 }
 
 void Hero::move(Vector2D step)
 {
-	this->step += step;
+	step += step;
 }
 
 void Hero::update(float deltatime)
 {
-	Vector2D step =  this->step * deltatime;
+	Vector2D step =  step * deltatime;
 
 	// if actor's path is free
-	if (!Collide::isWillCollide(this, this->getOwnerWorld(), step))
+	if (!Collide::isWillCollide(this, getOwnerWorld(), step))
 	{
 		// accept new position of the man
-		this->setLocation(this->getLocation() + step);
+		setLocation(getLocation() + step);
 	}
 
-	this->step = ZERO_VECTOR;
+	step = ZERO_VECTOR;
 
 	// use superclass method
 	Body::update(deltatime);

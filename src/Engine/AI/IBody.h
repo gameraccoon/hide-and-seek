@@ -1,5 +1,4 @@
-#ifndef I_BODY_H
-#define I_BODY_H
+#pragma once
 
 #include "../Inventory/Weapon.h"
 #include "../Actors/SoundVolume.h"
@@ -27,5 +26,3 @@ public:
 	virtual void startShoting(Vector2D targetLocation) = 0;
 	virtual void stopShoting() = 0;
 };
-
-#endif

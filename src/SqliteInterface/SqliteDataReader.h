@@ -1,12 +1,12 @@
-#ifndef SQLITE_DATA_READER_H
-#define SQLITE_DATA_READER_H
+#pragma once
 
 #include <string>
 
-#include <sqlite3.h>
-
 #include <Engine/Subsystems/Database/SqlDataReader.h>
 #include <Engine/Subsystems/Database/DbConnection.h>
+
+struct sqlite3_stmt;
+struct sqlite3;
 
 class SqliteValue : public DbValue
 {
@@ -18,32 +18,31 @@ public:
 	virtual float asFloat() override;
 	virtual std::string asString() override;
 	virtual const void* asVariant() override;
+	virtual bool isNull() override;
 private:
 	sqlite3_stmt* ppStmt;
 	int columnIndex;
 };
 
 /**
- * Class able to read Textures and create and sprites.
- *
- * If texture load once that it unload only after destruction.
- */
+* Class able to read Textures and create and sprites.
+*
+* If texture load once that it unload only after destruction.
+*/
 class SqliteDataReader : public SqlDataReader
 {
 public:
-	SqliteDataReader(std::string query, sqlite3* db);
+	SqliteDataReader(const std::string& query, sqlite3* db);
 	virtual ~SqliteDataReader();
 	/**
-	 * @throws TextureNotFoundException
-	 */
+	* @throws TextureNotFoundException
+	*/
 	virtual bool next() override;
 
-	virtual std::shared_ptr<DbValue> getValueByName(std::string columnName) override;
-	
-	virtual std::shared_ptr<DbValue> getValueByIndex(int columnIndex) override;
+	virtual DbValue::Ptr getValueByName(const std::string& columnName) override;
+
+	virtual DbValue::Ptr getValueByIndex(int columnIndex) override;
 
 private:
 	sqlite3_stmt *ppStmt;
 };
-
-#endif

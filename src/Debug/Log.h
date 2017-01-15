@@ -28,7 +28,7 @@ private:
 	void writeLine(const std::string& text);
 
 	/** Filestream that holds the logfile handler */
-	std::ofstream *logFileStream;
+	std::ofstream *mLogFileStream;
 
 	/** Construct singletone information */
 	static void create();
@@ -40,18 +40,18 @@ private:
 	static void killPhoenixSingletone();
 
 	/** Single instance of class log */
-	static Log* singleInstance;
+	static Log* mSingleInstance;
 
 	/** Flag shows that singletone was created and destroyed */
-	static bool isDestroyed;
+	static bool mIsDestroyed;
 	/** Flag shows that this is the first life of this singletone */
-	static bool isFirstLife;
+	static bool mIsFirstLife;
 
 	/* Turn off unusable operations */
 	Log();
 	~Log();
-	Log(const Log&);
-	void operator=(const Log&);
+	Log(const Log&) = delete;
+	void operator=(const Log&) = delete;
 };
 
 #endif

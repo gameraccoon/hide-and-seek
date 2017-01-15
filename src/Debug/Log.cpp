@@ -3,41 +3,41 @@
 #include <fstream>
 #include <ctime>
 
-Log* Log::singleInstance = nullptr;
-bool Log::isDestroyed = false;
-bool Log::isFirstLife = true;
+Log* Log::mSingleInstance = nullptr;
+bool Log::mIsDestroyed = false;
+bool Log::mIsFirstLife = true;
 
 Log::Log()
 {
 	const std::string LOG_FILE = std::string("./logs/").append("log.txt"); 
 
-	if (this->isFirstLife)
+	if (mIsFirstLife)
 	{
-		this->logFileStream = new std::ofstream(LOG_FILE, std::ios_base::trunc);
-		this->writeInit("Log file created");
+		mLogFileStream = new std::ofstream(LOG_FILE, std::ios_base::trunc);
+		writeInit("Log file created");
 	}
 	else
 	{
-		this->logFileStream = new std::ofstream(LOG_FILE, std::ios_base::app);
+		mLogFileStream = new std::ofstream(LOG_FILE, std::ios_base::app);
 	}
 }
 
 Log::~Log()
 {
-	this->logFileStream->close();
-	delete this->logFileStream;
+	mLogFileStream->close();
+	delete mLogFileStream;
 
-	Log::singleInstance = nullptr;
-	Log::isDestroyed = true;
-	Log::isFirstLife = false;
+	Log::mSingleInstance = nullptr;
+	Log::mIsDestroyed = true;
+	Log::mIsFirstLife = false;
 }
 
 Log& Log::Instance()
 {
 	// if we haven't instance of the Log
-	if (Log::singleInstance == nullptr)
+	if (Log::mSingleInstance == nullptr)
 	{
-		if (isDestroyed)
+		if (mIsDestroyed)
 		{
 			// the Log was destroyed
 			Log::onDeadReference();
@@ -49,7 +49,7 @@ Log& Log::Instance()
 		}
 	}
 
-	return *Log::singleInstance;
+	return *Log::mSingleInstance;
 }
 
 void Log::create()
@@ -59,7 +59,7 @@ void Log::create()
 	 * and it be automatically destroyed on program shutdown
 	 */
 	static Log theInstance;
-	Log::singleInstance = &theInstance;
+	Log::mSingleInstance = &theInstance;
 }
 
 void Log::onDeadReference()
@@ -67,49 +67,49 @@ void Log::onDeadReference()
 	// Get the old singletone location in the memory (ash of the phoenix)
 	Log::create();
 	// Create new singletone on this place
-	new (Log::singleInstance) Log;
+	new (Log::mSingleInstance) Log;
 	// Say that we want to destroy this singletone on the application shutdown
 	atexit(killPhoenixSingletone);
 	// Say that the singletone is ready to use
-	Log::isDestroyed = false;
+	Log::mIsDestroyed = false;
 }
 
 void Log::killPhoenixSingletone()
 {
-	Log::singleInstance->~Log();
-	operator delete(Log::singleInstance);
+	Log::mSingleInstance->~Log();
+	operator delete(Log::mSingleInstance);
 }
 
 void Log::writeError(const std::string& text)
 {
-	this->writeLine(std::string(" Error: ").append(text));
+	writeLine(std::string(" Error: ").append(text));
 }
 
 void Log::writeWarning(const std::string& text)
 {
-	this->writeLine(std::string(" Warning: ").append(text));
+	writeLine(std::string(" Warning: ").append(text));
 }
 
 void Log::writeLog(const std::string& text)
 {
-	this->writeLine(std::string(" Log: ").append(text));
+	writeLine(std::string(" Log: ").append(text));
 }
 
 void Log::writeInit(const std::string& text)
 {
-	this->writeLine(std::string(" Init: ").append(text));
+	writeLine(std::string(" Init: ").append(text));
 }
 
 void Log::writeLine(const std::string& text)
 {
-	if (this->logFileStream->is_open())
+	if (mLogFileStream->is_open())
 	{
 		char dateStr[9];
 		char timeStr[9];
 		_strdate_s(dateStr);
-		*this->logFileStream << dateStr << " ";
+		*mLogFileStream << dateStr << " ";
 		_strtime_s(timeStr);
-		*this->logFileStream << timeStr;
-		*this->logFileStream << text << std::endl;
+		*mLogFileStream << timeStr;
+		*mLogFileStream << text << std::endl;
 	}
 }

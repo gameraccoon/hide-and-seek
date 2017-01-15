@@ -1,16 +1,13 @@
-#ifndef LEVEL_LOADER
-#define LEVEL_LOADER
+#pragma once
 
 #include "../Core/World.h"
 
 class LevelLoader
 {
 public:
-	LevelLoader(void);
-	~LevelLoader(void);
+	LevelLoader();
+	~LevelLoader();
 
 	static void save(World* world, const std::string levelName);
 	static void load(World* world, const std::string levelName);
 };
-
-#endif

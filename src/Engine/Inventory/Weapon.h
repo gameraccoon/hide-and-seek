@@ -1,5 +1,4 @@
-#ifndef WEAPON_H
-#define WEAPON_H
+#pragma once
 
 #include "../Core/Vector2D.h"
 #include "../Core/World.h"
@@ -10,22 +9,21 @@
 class Weapon : public InventoryItem
 {
 public:
-	Weapon(void);
-	~Weapon(void);
-	void startShooting(Vector2D location, Rotator direction);
+	Weapon();
+	~Weapon();
+	void startShooting(const Vector2D& location, const Rotator& direction);
 	void stopShooting();
-	void changeDirection(Rotator newDirection);
-	void setLocation(Vector2D newLocation);
+	void changeDirection(const Rotator& newDirection);
+	void setLocation(const Vector2D& newLocation);
 	void update(float deltaTime);
 	void setOwnerWorld(World *world);
-private:
-	World *ownerWorld;
-	bool isFiring;
-	float fireInterval;
-	float lastFireTime;
-	float startFireDelay;
-	Vector2D location;
-	Rotator direction;
-};
 
-#endif
+private:
+	World *mOwnerWorld;
+	bool mIsFiring;
+	float mFireInterval;
+	float mLastFireTime;
+	float mStartFireDelay;
+	Vector2D mLocation;
+	Rotator mDirection;
+};

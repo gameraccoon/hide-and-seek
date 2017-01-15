@@ -1,5 +1,4 @@
-#ifndef IACTOR_H
-#define IACTOR_H
+#pragma once
 
 #include <string>
 
@@ -58,5 +57,3 @@ public:
 	/** Returns the specific identificator of current object */
 	virtual std::string getActorId() const = 0;
 };
-
-#endif

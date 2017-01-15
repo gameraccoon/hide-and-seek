@@ -1,5 +1,4 @@
-#ifndef ROTATOR_H
-#define ROTATOR_H
+#pragma once
 
 // 3.1415...
 extern const float PI;
@@ -26,10 +25,9 @@ public:
     friend Rotator operator-(const Rotator& left, const Rotator& right);
 
     friend Rotator operator-=(Rotator& left, const Rotator& right);
+
 private:
-	float value;
+	float mValue;
 	mutable float calculatedValue;
 	void reset();
 };
-
-#endif

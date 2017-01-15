@@ -1,5 +1,4 @@
-#ifndef ROLE_H
-#define ROLE_H
+#pragma once
 
 #include <stack>
 
@@ -12,7 +11,7 @@ class Role
 {
 public:
 	Role(World* world, IBody *body);
-	virtual ~Role(void);
+	virtual ~Role();
 
 	virtual void update(float deltaTime) = 0;
 
@@ -26,8 +25,6 @@ public:
 	IBody* getBody() const;
 	World* getWorld() const;
 private:
-	IBody *body;
-	World *world;
+	IBody *mBody;
+	World *mWorld;
 };
-
-#endif

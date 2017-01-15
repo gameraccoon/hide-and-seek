@@ -1,5 +1,4 @@
-#ifndef ACTOR_FACTORY
-#define ACTOR_FACTORY
+#pragma once
 
 #include <map>
 #include "../Core/World.h"
@@ -44,16 +43,15 @@ public:
 	 * @throws runtime_error when actorId is unknown
 	 */
 	IActor* placeActor(std::string actorId, World *world, const Vector2D location, const Vector2D size, const Rotator rotation);
+
 private:
-	CallbackMap callbacks;
+	CallbackMap mCallbacks;
 
 	/*
 	 * Turn off unusable operations
 	 */
 	ActorFactory();
 	~ActorFactory();
-	ActorFactory(const ActorFactory&);
-	void operator=(const ActorFactory&);
+	ActorFactory(const ActorFactory&) = delete;
+	void operator=(const ActorFactory&) = delete;
 };
-
-#endif

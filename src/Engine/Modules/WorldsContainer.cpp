@@ -2,7 +2,6 @@
 
 #include <Debug/Log.h>
 
-WorldsContainer::WorldsContainer() {}
 WorldsContainer::~WorldsContainer()
 {
 	Log::Instance().writeLog("WorldsContainer destroyed");
@@ -17,14 +16,14 @@ WorldsContainer& WorldsContainer::Container()
 
 void WorldsContainer::insertWorld(World* world, std::string name)
 {
-	this->worlds.insert(WorldsMap::value_type(name, world)).second;
+	worlds.insert(WorldsMap::value_type(name, world)).second;
 }
 
 World* WorldsContainer::getWorldByName(std::string name)
 {
-	auto it = this->worlds.find(name);
+	auto it = worlds.find(name);
 	
-	if (it == this->worlds.end())
+	if (it == worlds.end())
 	{
 		throw std::runtime_error("Unknown actor identefier");
 	}
@@ -34,5 +33,5 @@ World* WorldsContainer::getWorldByName(std::string name)
 
 void WorldsContainer::removeWorld(std::string name)
 {
-	this->worlds.erase(name);
+	worlds.erase(name);
 }

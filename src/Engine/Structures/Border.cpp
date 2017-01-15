@@ -1,45 +1,44 @@
 #include "Border.h"
 
 
-Border::Border(Vector2D a, Vector2D b) : a(a),
-										b(b),
+Border::Border(const Vector2D& a, const Vector2D& b) : aPoint(a),
+										bPoint(b),
 										normal((b - a).normal())
 {
 }
 
-Border::~Border(void)
+Border::~Border()
 {
 }
 
 Vector2D Border::getNormal() const
 {
-	return this->normal;
+	return normal;
 }
 
 Vector2D Border::getA() const
 {
-	return this->a;
+	return aPoint;
 }
 
 Vector2D Border::getB() const
 {
-	return this->b;
+	return bPoint;
 }
 
-void Border::setA(Vector2D a)
+void Border::setA(const Vector2D& a)
 {
-	this->a = a;
+	aPoint = a;
 	calculateNormal();
 }
 
-void Border::setB(Vector2D b)
+void Border::setB(const Vector2D& b)
 {
-	this->b = b;
+	bPoint = b;
 	calculateNormal();
 }
 
 void Border::calculateNormal()
 {
-	this->normal = (this->b - this->a).normal();
-
+	normal = (bPoint - aPoint).normal();
 }

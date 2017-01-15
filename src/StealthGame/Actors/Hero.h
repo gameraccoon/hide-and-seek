@@ -1,5 +1,4 @@
-#ifndef HERO_H
-#define HERO_H
+#pragma once
 
 #include <Engine/Core/World.h>
 #include <Engine/Core/Vector2D.h>
@@ -11,7 +10,7 @@ public:
 	/** Initialization of a new Hero standing at a given point */
 	Hero(World *world, Vector2D location, Vector2D scale, Rotator rotation);
 
-	~Hero();
+	~Hero() = default;
 
 	/** Process moving and other actions of the man */
 	virtual void update(float deltatime) override;
@@ -21,7 +20,5 @@ public:
 
 protected:
 	/** Delta between needless position and current position */
-	Vector2D step;
+	Vector2D mStep;
 };
-
-#endif

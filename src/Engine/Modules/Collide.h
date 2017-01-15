@@ -1,5 +1,4 @@
-#ifndef COLLIDE_H
-#define COLLIDE_H
+#pragma once
 
 #include <stdio.h>
 
@@ -9,6 +8,4 @@
 namespace Collide
 {
 	bool isWillCollide(const IActor* actor1, const World* world, Vector2D step);
-};
-
-#endif
+}

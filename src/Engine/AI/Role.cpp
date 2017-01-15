@@ -1,21 +1,21 @@
 #include "Role.h"
 
 Role::Role(World* world, IBody *body)
+	:mBody(body)
+	,mWorld(world)
 {
-	this->body = body;
-	this->world = world;
 }
 
-Role::~Role(void)
+Role::~Role()
 {
 }
 
 IBody* Role::getBody() const
 {
-	return this->body;
+	return mBody;
 }
 
 World* Role::getWorld() const
 {
-	return this->world;
+	return mWorld;
 }

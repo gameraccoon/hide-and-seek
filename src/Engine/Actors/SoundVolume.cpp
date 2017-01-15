@@ -1,14 +1,19 @@
 #include "SoundVolume.h"
 
 
-SoundVolume::SoundVolume(World *world, Vector2D location, float loudness) :
-	Actor(world, location, 0.f)
+SoundVolume::SoundVolume(World *world, Vector2D location, float loudness)
+	: Actor(world, location, 0.f)
 {
-	this->loudness = loudness;
+	loudness = loudness;
 
-	this->updateActorId("SoundVolume");
+	updateActorId("SoundVolume");
 }
 
-SoundVolume::~SoundVolume(void)
+SoundVolume::~SoundVolume()
 {
+}
+
+float SoundVolume::getLoudness() const
+{
+	return mLoudness;
 }

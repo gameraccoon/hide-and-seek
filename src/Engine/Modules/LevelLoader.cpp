@@ -6,12 +6,12 @@
 
 #include "../Modules/ActorFactory.h"
 
-LevelLoader::LevelLoader(void)
+LevelLoader::LevelLoader()
 {
 }
 
 
-LevelLoader::~LevelLoader(void)
+LevelLoader::~LevelLoader()
 {
 }
 
@@ -20,7 +20,7 @@ void LevelLoader::save(World* world, const std::string levelName)
 	// saving all actors in this world
 	std::ofstream mapFile;
 	mapFile.open(std::string("./maps/").append(levelName).append(std::string(".map")));
-	for (auto const &actor : world->allActors)
+	for (const auto actor : world->getAllActors())
 	{
 		mapFile << actor->getClassID();
 		mapFile << " ";
@@ -46,7 +46,7 @@ void LevelLoader::save(World* world, const std::string levelName)
 
 	int i = 0;
 	// save locations of pathpoints
-	for (auto const &navPoint : world->navigationMap)
+	for (const auto &navPoint : world->getNavigationMap())
 	{
 		points.insert(PathPointMap::value_type(navPoint, i));
 

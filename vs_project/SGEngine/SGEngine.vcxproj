@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -18,12 +18,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v110</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -48,7 +48,8 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NOMINMAX;DEBUG;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <DisableSpecificWarnings>4100</DisableSpecificWarnings>
+      <DisableSpecificWarnings>
+      </DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -63,7 +64,8 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NOMINMAX;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <DisableSpecificWarnings>4100</DisableSpecificWarnings>
+      <DisableSpecificWarnings>
+      </DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -99,7 +101,6 @@
     <ClCompile Include="..\..\src\Engine\Structures\BoundingBox.cpp" />
     <ClCompile Include="..\..\src\Engine\Structures\Hull.cpp" />
     <ClCompile Include="..\..\src\Engine\Structures\PathPoint.cpp" />
-    <ClCompile Include="..\..\src\Engine\Subsystems\Graphic\GUI\Button.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\Engine\Actors\Actor.h" />
@@ -116,6 +117,7 @@
     <ClInclude Include="..\..\src\Engine\Core\Rotator.h" />
     <ClInclude Include="..\..\src\Engine\Core\Vector2D.h" />
     <ClInclude Include="..\..\src\Engine\Core\World.h" />
+    <ClInclude Include="..\..\src\Engine\Inventory\InventoryItem.h" />
     <ClInclude Include="..\..\src\Engine\Inventory\Weapon.h" />
     <ClInclude Include="..\..\src\Engine\Modules\ActorFactory.h" />
     <ClInclude Include="..\..\src\Engine\Modules\Collide.h" />
@@ -130,8 +132,6 @@
     <ClInclude Include="..\..\src\Engine\Structures\PathPoint.h" />
     <ClInclude Include="..\..\src\Engine\Subsystems\Database\DbConnection.h" />
     <ClInclude Include="..\..\src\Engine\Subsystems\Database\SqlDataReader.h" />
-    <ClInclude Include="..\..\src\Engine\Subsystems\Graphic\GUI\Button.h" />
-    <ClInclude Include="..\..\src\Engine\Subsystems\Graphic\GUI\IGraphicElement.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -6,129 +6,130 @@
 
 #include <cmath>
 
-Body::Body(World *world, Vector2D location) : Actor(world, location, Rotator(0.0f)),
-	navigator(world),
-	tempLocation(location)
+Body::Body(World *world, Vector2D location)
+	: Actor(world, location, Rotator(0.0f))
+	, mNavigator(world)
+	, mTempLocation(location)
 {
-	this->setType(ActorType::Living);
+	setType(ActorType::Living);
 
-	this->speed = 12.0f;
+	mSpeed = 12.0f;
 
-	this->setOriginalSize(Vector2D(32.0f, 32.0f));
+	setOriginalSize(Vector2D(32.0f, 32.0f));
 	
-	this->healthValue = 10000.0f;
+	mHealthValue = 10000.0f;
 
 	Hull geometry;
 	geometry.type = Hull::Type::Circular;
 	geometry.setRadius(16.0f);
-	this->setGeometry(geometry);
+	setGeometry(geometry);
 	
-	this->updateGeometry();
+	updateGeometry();
 
-	this->armedWeapon = nullptr;
+	mArmedWeapon = nullptr;
 
-	this->followingTarget = nullptr;
-	this->movingToLocation = nullptr;
+	mFollowingTarget = nullptr;
+	mMovingToLocation = nullptr;
 
-	this->role = nullptr;
+	mRole = nullptr;
 }
 
-Body::~Body(void)
+Body::~Body()
 {
-	if (this->role != nullptr)
+	if (mRole != nullptr)
 	{
-		delete this->role;
-		this->role = nullptr;
+		delete mRole;
+		mRole = nullptr;
 	}
 }
 
 void Body::moveTo(Vector2D step)
 {
-	this->clearTargets();
+	clearTargets();
 
-	this->movingToLocation = new Vector2D(step);
-	this->followingTarget = nullptr;
+	mMovingToLocation = new Vector2D(step);
+	mFollowingTarget = nullptr;
 }
 
 void Body::follow(const IActor *target)
 {
-	this->clearTargets();
+	clearTargets();
 
-	this->followingTarget = target;
-	this->movingToLocation = nullptr;
+	mFollowingTarget = target;
+	mMovingToLocation = nullptr;
 }
 
 float Body::getHealthValue()
 {
-	return this->healthValue;
+	return mHealthValue;
 }
 
 void Body::clearTargets()
 {
-	if (this->followingTarget != nullptr)
+	if (mFollowingTarget != nullptr)
 	{
-		delete this->followingTarget;
-		this->followingTarget = nullptr;
+		delete mFollowingTarget;
+		mFollowingTarget = nullptr;
 	}
 
-	if (this->movingToLocation != nullptr)
+	if (mMovingToLocation != nullptr)
 	{
-		delete this->movingToLocation;
-		this->movingToLocation = nullptr;
+		delete mMovingToLocation;
+		mMovingToLocation = nullptr;
 	}
 }
 
 void Body::startShoting(Vector2D targetLocation)
 {
-	if (this->armedWeapon != nullptr)
+	if (mArmedWeapon != nullptr)
 	{
-		this->armedWeapon->startShooting(this->getLocation(), (targetLocation - this->getLocation()).rotation());
+		mArmedWeapon->startShooting(getLocation(), (targetLocation - getLocation()).rotation());
 	}
 }
 
 void Body::stopShoting()
 {
-	if (this->armedWeapon != nullptr)
+	if (mArmedWeapon != nullptr)
 	{
-		this->armedWeapon->stopShooting();
+		mArmedWeapon->stopShooting();
 	}
 }
 
 void Body::giveWeapon(Weapon *weap)
 {
-	this->armedWeapon = weap;
-	weap->setOwnerWorld(this->getOwnerWorld());
-	this->armedWeapon->setEquipped(true);
+	mArmedWeapon = weap;
+	weap->setOwnerWorld(getOwnerWorld());
+	mArmedWeapon->setEquipped(true);
 }
 
-void Body::hit(IActor *instigator, float damageValue, Vector2D impulse)
+void Body::hit(IActor *, float damageValue, Vector2D impulse)
 {
-	this->healthValue -= damageValue;
+	mHealthValue -= damageValue;
 	
-	//this->setLocation(this->getLocation() + impulse);
+	//setLocation(getLocation() + impulse);
 
-	if (this->healthValue <= 0.0f)
+	if (mHealthValue <= 0.0f)
 	{
-		this->healthValue = 0.0f;
-		this->speed = 0.0f;
-		ActorFactory::Factory().placeActor("Corpse", this->getOwnerWorld(), this->getLocation(), Vector2D(1.f, 1.f), this->getRotation());
-		this->destroy();
+		mHealthValue = 0.0f;
+		mSpeed = 0.0f;
+		ActorFactory::Factory().placeActor("Corpse", getOwnerWorld(), getLocation(), Vector2D(1.f, 1.f), getRotation());
+		destroy();
 	}
 	else
 	{
-		this->role->onTakeDamage(this, damageValue, impulse);
+		mRole->onTakeDamage(this, damageValue, impulse);
 	}
 }
 
 void Body::update(float deltatime)
 {
-	this->role->update(deltatime);
+	mRole->update(deltatime);
 
-	this->look();
+	look();
 
-	if (this->armedWeapon != nullptr)
+	if (mArmedWeapon != nullptr)
 	{
-		this->armedWeapon->update(deltatime);
+		mArmedWeapon->update(deltatime);
 	}
 
 	Actor::update(deltatime);
@@ -136,28 +137,28 @@ void Body::update(float deltatime)
 
 Body::Fraction Body::getFraction()
 {
-	return this->fraction;
+	return mFraction;
 }
 
 void Body::onUpdateLocation()
 {
-	if (this->armedWeapon != nullptr)
+	if (mArmedWeapon != nullptr)
 	{
-		this->armedWeapon->setLocation(this->getLocation());
+		mArmedWeapon->setLocation(getLocation());
 	}
 }
 
 void Body::onUpdateRotation()
 {
-	if (this->armedWeapon != nullptr)
+	if (mArmedWeapon != nullptr)
 	{
-		this->armedWeapon->changeDirection(this->getRotation());
+		mArmedWeapon->changeDirection(getRotation());
 	}
 }
 
 void Body::look()
 {
-	for (auto actor : this->getOwnerWorld()->allActors)
+	for (const auto actor : getOwnerWorld()->getAllActors())
 	{
 		// if actor is a human or a creature and actor isn't this body
 		if (actor->getType() == ActorType::Living && actor != this)
@@ -166,9 +167,9 @@ void Body::look()
 			// if actor is a body and it is an enemy
 			if (body != nullptr && body->getFraction() == Fraction::GoodGuys)
 			{
-				if (this->canSeeEnemy(body))
+				if (canSeeEnemy(body))
 				{
-					role->onSeeEnemy(actor);
+					mRole->onSeeEnemy(actor);
 					break;
 				}
 			}
@@ -183,21 +184,21 @@ bool Body::canSeeEnemy(const Body *enemy) const
 	const float attentiveness = 1.5f;
 
 	// if enemy farther than viewDistance
-	if ((this->getLocation() - enemy->getLocation()).size() > viewDistance)
+	if ((getLocation() - enemy->getLocation()).size() > viewDistance)
 	{
 		return false;
 	}
 
 	Vector2D loc = enemy->getLocation();
-	Rotator angle = (loc - this->getLocation()).rotation();
+	Rotator angle = (loc - getLocation()).rotation();
 
 	// if actor isn't on the front
-	if (abs((angle - this->getRotation()).getValue()) > angleOfView)
+	if (abs((angle - getRotation()).getValue()) > angleOfView)
 	{
 		return false;
 	}
 
-	IActor *tracedActor = RayTrace::trace(this->getOwnerWorld(), this->getLocation(), enemy->getLocation());
+	IActor *tracedActor = RayTrace::trace(getOwnerWorld(), getLocation(), enemy->getLocation());
 	if (tracedActor != enemy)
 	{
 		return false;
@@ -206,7 +207,7 @@ bool Body::canSeeEnemy(const Body *enemy) const
 	float lightness = 0.f;
 
 	// ToDo: need to refactor next fragment
-	for (auto actor : this->getOwnerWorld()->allActors)
+	for (const auto actor : getOwnerWorld()->getAllActors())
 	{
 		if (actor->getType() == ActorType::Light)
 		{
@@ -215,7 +216,7 @@ bool Body::canSeeEnemy(const Body *enemy) const
 			{
 				if ((light->getLocation() - enemy->getLocation()).size() < light->getBrightness() * 512)
 				{
-					IActor *tracedActor2 = RayTrace::trace(this->getOwnerWorld(), light->getLocation(), enemy->getLocation());
+					IActor *tracedActor2 = RayTrace::trace(getOwnerWorld(), light->getLocation(), enemy->getLocation());
 					if (tracedActor2 == enemy)
 					{
 						float sz = (light->getLocation() - enemy->getLocation()).size();
@@ -242,49 +243,49 @@ bool Body::canSeeEnemy(const Body *enemy) const
 
 void Body::findNextPathPoint()
 {
-	if (this->followingTarget != nullptr)
+	if (mFollowingTarget != nullptr)
 	{
-		IActor* tracedActor = RayTrace::trace(this->getOwnerWorld(), this->getLocation(), this->followingTarget->getLocation());
+		IActor* tracedActor = RayTrace::trace(getOwnerWorld(), getLocation(), mFollowingTarget->getLocation());
 
-		if (tracedActor == this->followingTarget)
+		if (tracedActor == mFollowingTarget)
 		{
-			this->tempLocation = followingTarget->getLocation();
+			mTempLocation = mFollowingTarget->getLocation();
 		}
 		else
 		{
-			this->navigator.createNewPath(this->getLocation(), this->followingTarget->getLocation());
-			this->tempLocation = this->navigator.getNextPoint();
-			if (this->tempLocation == this->getLocation())
+			mNavigator.createNewPath(getLocation(), mFollowingTarget->getLocation());
+			mTempLocation = mNavigator.getNextPoint();
+			if (mTempLocation == getLocation())
 			{
-				this->tempLocation = this->navigator.getNextPoint();
+				mTempLocation = mNavigator.getNextPoint();
 			}
 		}
 
-		this->setRotation((this->tempLocation - this->getLocation()).rotation());
+		setRotation((mTempLocation - getLocation()).rotation());
 	}
-	else if (this->movingToLocation != nullptr)
+	else if (mMovingToLocation != nullptr)
 	{
-		IActor* tracedActor = RayTrace::trace(this->getOwnerWorld(), this->getLocation(), *this->movingToLocation);
+		IActor* tracedActor = RayTrace::trace(getOwnerWorld(), getLocation(), *mMovingToLocation);
 
 		if (tracedActor == nullptr)
 		{
-			this->tempLocation = *this->movingToLocation;
+			mTempLocation = *mMovingToLocation;
 		}
 		else
 		{
-			this->navigator.createNewPath(this->getLocation(), *this->movingToLocation);
-			this->tempLocation = this->navigator.getNextPoint();
-			if (this->tempLocation == this->getLocation())
+			mNavigator.createNewPath(getLocation(), *mMovingToLocation);
+			mTempLocation = mNavigator.getNextPoint();
+			if (mTempLocation == getLocation())
 			{
-				this->tempLocation = this->navigator.getNextPoint();
+				mTempLocation = mNavigator.getNextPoint();
 			}
 		}
 
-		this->setRotation((this->tempLocation - this->getLocation()).rotation());
+		setRotation((mTempLocation - getLocation()).rotation());
 	}
 }
 
 void Body::setFraction(Fraction newFraction)
 {
-	this->fraction = newFraction;
+	mFraction = newFraction;
 }

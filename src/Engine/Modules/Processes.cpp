@@ -4,7 +4,7 @@
 
 Process::Process(int id)
 {
-	this->processID = id;
+	processID = id;
 }
 
 Process::~Process()
@@ -18,7 +18,7 @@ void Process::run()
 
 int Process::getId()
 {
-	return this->processID;
+	return processID;
 }
 
 /**
@@ -43,16 +43,16 @@ protected:
 public:
     ProcessContainer(ProcessContainer *next, Process *process)
     {
-        this->currentProcess = process;
-        this->next = next;
+        currentProcess = process;
+        next = next;
     }
 
 	~ProcessContainer()
 	{
-		if (this->currentProcess != nullptr)
+		if (currentProcess != nullptr)
 		{
-			delete this->currentProcess;
-			this->currentProcess = nullptr;
+			delete currentProcess;
+			currentProcess = nullptr;
 		}
 	}
 
@@ -61,7 +61,7 @@ public:
      */
     int getId()
     {
-        return this->currentProcess->getId();
+        return currentProcess->getId();
     }
 
     /**
@@ -69,7 +69,7 @@ public:
      */
     ProcessContainer* getNext()
     {
-        return this->next;
+        return next;
     }
 
     /**
@@ -77,10 +77,10 @@ public:
      */
     void run()
     {
-        this->currentProcess->run();
-        if (this->next != nullptr)
+        currentProcess->run();
+        if (next != nullptr)
         {
-            this->next->run();
+            next->run();
         }
     }
 
@@ -90,22 +90,22 @@ public:
 	void remove(int id)
     {
         // если это не последний процесс в цепочке
-        if (this->next != nullptr && id >= 0)
+        if (next != nullptr && id >= 0)
         {
             // если следующий процесс - то что мы хотим удалить
-			if (this->next->getId() == id)
+			if (next->getId() == id)
             {
                 // удаляем следующий процесс, сохраняя связи
-                ProcessContainer *processToDelete = this->next;
-                this->next = this->next->getNext();
+                ProcessContainer *processToDelete = next;
+                next = next->getNext();
                 delete processToDelete;  
                 // рекурсивный вызов (нужен чтобы удалить дублирующиеся элементы)
-				this->remove(id);
+				remove(id);
             }
             else
             {
                 // посылаем запрос на удаление дальше по цепочке
-				this->next->remove(id);
+				next->remove(id);
             }
         }
     }
@@ -114,41 +114,41 @@ public:
 
 ProcessManager::ProcessManager()
 {
-	this->first = nullptr;
+	first = nullptr;
 }
 
 void ProcessManager::add(Process *process)
 {
-	this->first = new ProcessContainer(this->first, process);
+	first = new ProcessContainer(first, process);
 }
 
 void ProcessManager::run()
 {
-	if (this->first != 0)
+	if (first != 0)
 	{
-		this->first->run();
+		first->run();
 	}
 }
 
 void ProcessManager::remove(int id)
 {
     // если есть что удалять
-    if (this->first != nullptr && id >= 0)
+    if (first != nullptr && id >= 0)
     {
         // если следующий процесс - то что мы хотим удалить
-        if (this->first->getId() == id)
+        if (first->getId() == id)
         {
             // удаляем следующий процесс, сохраняя связи
-            ProcessContainer *processToDelete = this->first;
-            this->first = this->first->getNext();
+            ProcessContainer *processToDelete = first;
+            first = first->getNext();
             delete processToDelete;
             // рекурсивный вызов (нужен чтобы удалить дублирующиеся элементы)
-			this->remove(id);
+			remove(id);
         }
         else
         {
             // посылаем запрос на удаление дальше по цепочке
-			this->first->remove(id);
+			first->remove(id);
         }
     }
 }

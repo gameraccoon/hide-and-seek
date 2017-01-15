@@ -7,8 +7,8 @@
 #include <Engine/Modules/ActorFactory.h>
 #include <Engine/Actors/LightEmitter.h>
 
-#include <HgeInterface/Input/KeyListeners.h>
-#include <HgeInterface/Graphics/FloatingCamera.h>
+#include <EngineInterface/Input/KeyListeners.h>
+#include <EngineInterface/Graphics/FloatingCamera.h>
 
 #include <StealthGame/Actors/Hero.h>
 

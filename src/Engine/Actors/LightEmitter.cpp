@@ -2,30 +2,30 @@
 
 LightEmitter::LightEmitter(World *world, Vector2D location, Vector2D scale, Rotator rotation) : Actor(world, location, rotation)
 {
-	this->setType(ActorType::Light);
-	this->brightness = 1.0f;
-	this->color = 0xFFFFFFFF;
+	setType(ActorType::Light);
+	mBrightness = 1.0f;
+	mColor = 0xFFFFFFFF;
 
-	this->setOriginalSize(Vector2D(10.0f, 10.0f));
+	setOriginalSize(Vector2D(10.0f, 10.0f));
 	Hull geometry;
 	geometry.type = Hull::Type::Circular;
 	geometry.setRadius(10.0f);
-	this->setGeometry(geometry);
+	setGeometry(geometry);
 
-	this->updateActorId("LightEmitter");
+	updateActorId("LightEmitter");
 }
 
 
-LightEmitter::~LightEmitter(void)
+LightEmitter::~LightEmitter()
 {
 }
 
 float LightEmitter::getBrightness() const
 {
-	return this->brightness;
+	return mBrightness;
 }
 
 void LightEmitter::setBrightness(float brightness)
 {
-	this->brightness = brightness;
+	mBrightness = brightness;
 }

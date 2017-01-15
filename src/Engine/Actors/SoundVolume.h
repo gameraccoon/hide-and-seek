@@ -1,5 +1,4 @@
-#ifndef SOUND_VOLUME_H
-#define SOUND_VOLUME_H
+#pragma once
 
 #include "../Actors/Actor.h"
 
@@ -7,12 +6,10 @@ class SoundVolume : public Actor
 {
 public:
 	SoundVolume(World *world, Vector2D location, float loudness);
-	~SoundVolume(void);
+	~SoundVolume();
 
-	float getLoudness();
+	float getLoudness() const;
 
 private:
-	float loudness;
+	float mLoudness;
 };
-
-#endif

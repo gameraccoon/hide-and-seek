@@ -1,5 +1,4 @@
-#ifndef BODY_H
-#define BODY_H
+#pragma once
 
 #include "../Core/Vector2D.h"
 #include "../Core/World.h"
@@ -54,27 +53,25 @@ protected:
 	/** */
 	bool canSeeEnemy(const Body *enemy) const;
 	/**  */
-	PathFinder navigator;
+	PathFinder mNavigator;
 	/** Body moving speed in Px/s */
-	float speed;
+	float mSpeed;
 	/** */
-	float healthValue;
+	float mHealthValue;
 	/** Inventory */
-	std::vector<InventoryItem*> Inventory;
+	std::vector<InventoryItem*> mInventory;
 	/** */
-	Weapon *armedWeapon;
+	Weapon *mArmedWeapon;
 	/** Is we shooting */
-	bool bShooting;
+	bool mIsShooting;
 	/** AI */
-	Role *role;
+	Role *mRole;
 	/** The target that the man follows */
-	IActor const *followingTarget;
+	IActor const *mFollowingTarget;
 	/** The location that the man moving to */
-	Vector2D *movingToLocation;
+	Vector2D *mMovingToLocation;
 	/** Some intermediate location that the man is moveing to now */
-	Vector2D tempLocation;
+	Vector2D mTempLocation;
 	/** */
-	Fraction fraction;
+	Fraction mFraction;
 };
-
-#endif

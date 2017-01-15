@@ -12,3 +12,5 @@ log.txt
 *.suo
 *.opensdf
 *.ipch
+*.db
+*.opendb

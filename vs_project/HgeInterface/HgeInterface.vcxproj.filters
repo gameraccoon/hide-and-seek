@@ -1,36 +1,100 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="..\..\src\HgeInterface\Input\KeyListeners.cpp">
+    <ClCompile Include="..\..\src\EngineInterface\GUI\Button.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\EngineInterface\Graphics\Camera.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\EngineInterface\Graphics\DirectionArrow.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\EngineInterface\Graphics\FloatingCamera.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\EngineInterface\Input\KeyListeners.cpp">
       <Filter>Input</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\HgeInterface\Graphics\Camera.cpp">
+    <ClCompile Include="..\..\src\EngineInterface\Internal\Engine.cpp">
+      <Filter>Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\EngineInterface\Internal\Font.cpp">
+      <Filter>Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\EngineInterface\Internal\GlContext.cpp">
+      <Filter>Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\EngineInterface\Internal\Sdl.cpp">
+      <Filter>Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\EngineInterface\Internal\SdlSurface.cpp">
+      <Filter>Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\EngineInterface\Internal\SdlWindow.cpp">
+      <Filter>Internal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\EngineInterface\Graphics\ResourceManager.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\HgeInterface\Graphics\DirectionArrow.cpp">
+    <ClCompile Include="..\..\src\EngineInterface\Graphics\Resource.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\HgeInterface\Graphics\FloatingCamera.cpp">
+    <ClCompile Include="..\..\src\EngineInterface\Graphics\Texture.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\HgeInterface\Graphics\GraphicLoader.cpp">
-      <Filter>Graphics</Filter>
-    </ClCompile>
+    <ClCompile Include="..\..\src\EngineInterface\Game.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\HgeInterface\Input\KeyListeners.h">
+    <ClInclude Include="..\..\src\EngineInterface\GUI\IGraphicElement.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\EngineInterface\GUI\Button.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\EngineInterface\Graphics\Camera.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\EngineInterface\Graphics\DirectionArrow.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\EngineInterface\Graphics\FloatingCamera.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\EngineInterface\Input\KeyListeners.h">
       <Filter>Input</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\HgeInterface\Graphics\GraphicLoader.h">
+    <ClInclude Include="..\..\src\EngineInterface\Internal\Engine.h">
+      <Filter>Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\EngineInterface\Internal\Font.h">
+      <Filter>Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\EngineInterface\Internal\GlContext.h">
+      <Filter>Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\EngineInterface\Internal\Sdl.h">
+      <Filter>Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\EngineInterface\Internal\SdlSurface.h">
+      <Filter>Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\EngineInterface\Internal\SdlWindow.h">
+      <Filter>Internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\EngineInterface\Graphics\ResourceManager.h">
       <Filter>Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\HgeInterface\Graphics\Camera.h">
+    <ClInclude Include="..\..\src\EngineInterface\Graphics\Resource.h">
       <Filter>Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\HgeInterface\Graphics\DirectionArrow.h">
+    <ClInclude Include="..\..\src\EngineInterface\Graphics\Texture.h">
       <Filter>Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\HgeInterface\Graphics\FloatingCamera.h">
+    <ClInclude Include="..\..\src\EngineInterface\Game.h" />
+    <ClInclude Include="..\..\src\EngineInterface\IGame.h" />
+    <ClInclude Include="..\..\src\EngineInterface\EngineFwd.h" />
+    <ClInclude Include="..\..\src\EngineInterface\Graphics\IUseCounter.h">
       <Filter>Graphics</Filter>
     </ClInclude>
   </ItemGroup>
@@ -40,6 +104,12 @@
     </Filter>
     <Filter Include="Input">
       <UniqueIdentifier>{f7fccf40-0bab-4bdc-83e4-5021807021af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GUI">
+      <UniqueIdentifier>{85e0e653-3eae-4c64-bfb1-16ba4c531cd6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Internal">
+      <UniqueIdentifier>{4c3d76ea-b44c-440d-9606-8ef3ec620ed5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

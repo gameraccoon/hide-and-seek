@@ -4,12 +4,13 @@
 class InventoryItem
 {
 public:
-	InventoryItem(void);
-	virtual ~InventoryItem(void);
+	InventoryItem();
+	virtual ~InventoryItem();
 	virtual bool isEquipped();
 	virtual void setEquipped(bool equipped);
+
 private:
-	bool bEquipped;
+	bool mIsEquipped;
 };
 
 #endif

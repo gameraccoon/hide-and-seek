@@ -1,66 +1,67 @@
 #include "Vector2D.h"
+#include <cmath>
 
 const float VECTOR_ERROR = 0.0001f;
 
 Vector2D::Vector2D(float x, float y)
 {
-	this->x = x;
-	this->y = y;
+	x = x;
+	y = y;
 }
 
 Vector2D::Vector2D(const Vector2D& vector)
 {
-	this->x = vector.x;
-	this->y = vector.y;
+	x = vector.x;
+	y = vector.y;
 }
 
 Vector2D::Vector2D(const Rotator& rotator)
 {
 	float rotation = rotator.getValue();
-	this->x = cos(rotation);
-	this->y = sin(rotation);
+	x = std::cos(rotation);
+	y = std::sin(rotation);
 }
 
-Vector2D::~Vector2D(void)
+Vector2D::~Vector2D()
 {
 }
 
-float Vector2D::size(void) const
+float Vector2D::size() const
 {
-	return sqrt((this->x * this->x) + (this->y * this->y));
+	return sqrt((x * x) + (y * y));
 }
 
-float Vector2D::qSize(void) const
+float Vector2D::qSize() const
 {
-	return (this->x * this->x) + (this->y * this->y);
+	return (x * x) + (y * y);
 }
 
-Vector2D Vector2D::ort(void) const
+Vector2D Vector2D::ort() const
 {
-	if (this->x == 0.0f && this->y == 0.0f)
+	if (x == 0.0f && y == 0.0f)
 		return ZERO_VECTOR;
 
-	return (*this) / this->size();
+	return (*this) / size();
 }
 
-Rotator Vector2D::rotation(void) const
+Rotator Vector2D::rotation() const
 {
-	return atan2(this->y, this->x);
+	return atan2(y, x);
 }
 
 Vector2D Vector2D::mirrorH() const
 {
-	return Vector2D(-this->x, this->y);
+	return Vector2D(-x, y);
 }
 
 Vector2D Vector2D::mirrorV() const
 {
-	return Vector2D(this->x, -this->y);
+	return Vector2D(x, -y);
 }
 
 Vector2D Vector2D::normal() const
 {
-	return this->rotation() - PI/2;
+	return rotation() - PI/2;
 }
 
 Vector2D Vector2D::project(Vector2D base) const

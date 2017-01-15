@@ -7,164 +7,165 @@ namespace
 	int ClassIndex = 0;
 }
 
-Actor::Actor(World *world, Vector2D location, Rotator rotation) : location(location),
-    scale(1.f, 1.f),
-    originalSize(1.f, 1.f),
-    calculatedSize(1.f, 1.f),
-    direction(rotation),
-    colideBox(location, location)
+Actor::Actor(World *world, Vector2D location, Rotator rotation)
+	: mLocation(location)
+	, mScale(1.f, 1.f)
+	, mOriginalSize(1.f, 1.f)
+	, mCalculatedSize(1.f, 1.f)
+	, mDirection(rotation)
+	, mColideBox(location, location)
 {
-	this->ownerWorld = world;
-	this->ownerWorld->spawnActor(this);
-	this->type = ActorType::Ghost;
+	mOwnerWorld = world;
+	mOwnerWorld->spawnActor(this);
+	mType = ActorType::Ghost;
 
-	this->updateActorId("Actor");
+	updateActorId("Actor");
 
-	this->bWaitDestruction = false;
+	mIsWaitDestruction = false;
 
-	this->lifetime = 0;
+	mLifetime = 0;
 }
 
-Actor::~Actor(void)
+Actor::~Actor()
 {
-	this->ownerWorld->removeActor(this);
+	mOwnerWorld->removeActor(this);
 }
 
 void Actor::setLocation(const Vector2D& location)
 {
-	this->location = Vector2D(location);
-	this->updateCollision();
-	this->onUpdateLocation();
+	mLocation = Vector2D(location);
+	updateCollision();
+	onUpdateLocation();
 }
 
 Vector2D Actor::getLocation() const
 {
-	return this->location;
+	return mLocation;
 }
 
 void Actor::setRotation(const Rotator& rotation)
 {
-	this->direction = Rotator(rotation);
-	this->updateCollision();
-	this->onUpdateRotation();
-	this->updateGeometry();
+	mDirection = Rotator(rotation);
+	updateCollision();
+	onUpdateRotation();
+	updateGeometry();
 }
 
 Rotator Actor::getRotation() const
 {
-	return this->direction;
+	return mDirection;
 }
 
 void Actor::setScale(const Vector2D& scale)
 {
-	this->scale = Vector2D(scale);
-	this->calculatedSize.x = this->originalSize.x * scale.x;
-	this->calculatedSize.y = this->originalSize.y * scale.y;
-	this->onUpdateSize();
-	this->updateGeometry();
+	mScale = Vector2D(scale);
+	mCalculatedSize.x = mOriginalSize.x * scale.x;
+	mCalculatedSize.y = mOriginalSize.y * scale.y;
+	onUpdateSize();
+	updateGeometry();
 }
 
 Vector2D Actor::getScale() const
 {
-	return this->scale;
+	return mScale;
 }
 
 ActorType Actor::getType() const
 {
-	return this->type;
+	return mType;
 }
 
 BoundingBox Actor::getBoundingBox() const
 {
-	return this->colideBox;
+	return mColideBox;
 }
 
 const Hull* Actor::getGeometry() const
 {
-	return &(this->geometry);
+	return &(mGeometry);
 }
 
 std::string Actor::getClassID() const
 {
-	return this->classId;
+	return mClassId;
 }
 
 std::string Actor::getActorId() const
 {
-	return this->actorId;
+	return mActorId;
 }
 
 void Actor::updateActorId(std::string classId)
 {
-	this->classId = classId;
+	mClassId = classId;
 	std::ostringstream s;
 	s << ::ClassIndex++;
-	this->actorId = classId + s.str();
+	mActorId = classId + s.str();
 }
 
 void Actor::update(float deltatime)
 {
-	this->lifetime += deltatime;
+	mLifetime += deltatime;
 }
 
 void Actor::destroy()
 {
-	if (!this->bWaitDestruction)
+	if (!mIsWaitDestruction)
 	{
-		this->bWaitDestruction = true;
+		mIsWaitDestruction = true;
 	}
 }
 
 bool Actor::isWaitDestruction() const
 {
-	return this->bWaitDestruction;
+	return mIsWaitDestruction;
 }
 
-void Actor::hit(IActor *instigator, float damageValue, Vector2D impulse)
+void Actor::hit(IActor *, float , Vector2D )
 {
 }
 
 World* Actor::getOwnerWorld() const
 {
-	return this->ownerWorld;
+	return mOwnerWorld;
 }
 
 float Actor::getLifetime() const
 {
-	return this->lifetime;
+	return mLifetime;
 }
 
 Vector2D Actor::getCalculatedSize() const
 {
-	return this->calculatedSize;
+	return mCalculatedSize;
 }
 
 void Actor::setType(ActorType newType)
 {
-	this->type = newType;
+	mType = newType;
 }
 
 void Actor::setOriginalSize(Vector2D newOriginalSize)
 {
-	this->originalSize = newOriginalSize;
+	mOriginalSize = newOriginalSize;
 }
 
 Vector2D Actor::getOriginalSize()
 {
-	return this->originalSize;
+	return mOriginalSize;
 }
 
 void Actor::setColideBox(BoundingBox newColideBox)
 {
-	this->colideBox = newColideBox;
+	mColideBox = newColideBox;
 }
 
 void Actor::updateCollision()
 {
-	if (this->getGeometry()->type == Hull::Type::Circular)
+	if (getGeometry()->type == Hull::Type::Circular)
 	{
-		float radius = this->getGeometry()->getRadius();
-		this->setColideBox(BoundingBox(this->getLocation() - Vector2D(radius, radius), this->getLocation() + Vector2D(radius, radius)));
+		float radius = getGeometry()->getRadius();
+		setColideBox(BoundingBox(getLocation() - Vector2D(radius, radius), getLocation() + Vector2D(radius, radius)));
 	}
 	else
 	{
@@ -173,7 +174,7 @@ void Actor::updateCollision()
 		float minY = 1000;
 		float maxY = -1000;
 
-		for (auto point : this->geometry.points)
+		for (auto point : mGeometry.points)
 		{
 			if (point.x < minX)
 			{
@@ -196,43 +197,43 @@ void Actor::updateCollision()
 			}
 		}
 
-		this->setColideBox(BoundingBox(this->getLocation() + Vector2D(minX, minY), this->getLocation() + Vector2D(maxX, maxY)));
+		setColideBox(BoundingBox(getLocation() + Vector2D(minX, minY), getLocation() + Vector2D(maxX, maxY)));
 	}
 }
 
 void Actor::setGeometry(Hull newGeometry)
 {
-	this->initialGeometry = newGeometry;
+	mInitialGeometry = newGeometry;
 }
 
 void Actor::updateGeometry()
 {
-	Hull localGeometry(initialGeometry);
+	Hull localGeometry(mInitialGeometry);
 	localGeometry.points.clear();
-	for (auto point : this->initialGeometry.points)
+	for (auto point : mInitialGeometry.points)
 	{
 		Vector2D scaled(point);
-		scaled.x = point.x * this->scale.x;
-		scaled.y = point.y * this->scale.y;
+		scaled.x = point.x * mScale.x;
+		scaled.y = point.y * mScale.y;
 
-		Vector2D rotated = Vector2D(scaled.rotation() + this->direction).ort() * scaled.size();
+		Vector2D rotated = Vector2D(scaled.rotation() + mDirection).ort() * scaled.size();
 
 		localGeometry.points.insert(localGeometry.points.end(), rotated);
 	}
 	localGeometry.generateBorders();
-	this->geometry = localGeometry;
+	mGeometry = localGeometry;
 
-	this->updateCollision();
+	updateCollision();
 }
 
 void Actor::setClassId(std::string newClassId)
 {
-	this->classId = newClassId;
+	mClassId = newClassId;
 }
 
 void Actor::setActorId(std::string newActorId)
 {
-	this->actorId = newActorId;
+	mActorId = newActorId;
 }
 
 void Actor::onUpdateLocation() { }

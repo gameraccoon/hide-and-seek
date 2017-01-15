@@ -1,5 +1,4 @@
-#ifndef RAYTRACE_H
-#define RAYTRACE_H
+#pragma once
 
 #include <stdio.h>
 
@@ -15,5 +14,3 @@ namespace RayTrace
 	IActor* trace(World * world, const Vector2D &startPoint, const Vector2D &endPoint,
 		Vector2D *outPoint = nullptr, Vector2D *outNormal = nullptr);
 };
-
-#endif

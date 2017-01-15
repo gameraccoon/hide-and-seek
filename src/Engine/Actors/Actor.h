@@ -1,5 +1,4 @@
-#ifndef ACTOR_H
-#define ACTOR_H
+#pragma once
 
 #include <vector>
 
@@ -19,7 +18,7 @@ class Actor : public IActor
 {
 public:
 	Actor(World *world, Vector2D location, Rotator rotation);
-	virtual ~Actor(void);
+	virtual ~Actor();
 	
 	/** Set new location of the actor in the World */
 	virtual void setLocation(const Vector2D& newLocations) override final;
@@ -51,6 +50,7 @@ public:
 	virtual std::string getActorId() const override final;
 	/** Take some damage to the actor */
 	virtual void hit(IActor *instigator, float damageValue, Vector2D impulse) override;
+
 protected:
 	/* events */
 	virtual void onUpdateLocation();
@@ -69,39 +69,38 @@ protected:
 	void updateGeometry();
 	void setClassId(std::string newClassId);
 	void setActorId(std::string newActorId);
+
 private:
 	/** */
 	void updateCollision();
 	void setColideBox(BoundingBox newColideBox);
 	/** Pointer to the owner World */
-	World* ownerWorld;
+	World* mOwnerWorld;
 	/** Type of the actor */
-	ActorType type;
+	ActorType mType;
 	/** Location of the actor in the world */
-	Vector2D location;
-	Vector2D scale;
-	Vector2D originalSize;
-	Vector2D calculatedSize;
+	Vector2D mLocation;
+	Vector2D mScale;
+	Vector2D mOriginalSize;
+	Vector2D mCalculatedSize;
 	/** Angle between world's x-axis and actor's x-axis */
-	Rotator direction;
+	Rotator mDirection;
 	/** Bounding box */
-	BoundingBox colideBox;
+	BoundingBox mColideBox;
 	/** Geometry for physics and shadows calculation */
-	Hull initialGeometry;
+	Hull mInitialGeometry;
 	/** Scaled and rotated geometry */
-	Hull geometry;
+	Hull mGeometry;
 	/** Specific class identificator */
-	std::string classId;
+	std::string mClassId;
 	/** Actor's identificator */
-	std::string actorId;
+	std::string mActorId;
 	/** Is actor wait automatically destruction? */
-	bool bWaitDestruction;
+	bool mIsWaitDestruction;
 	/** Time that actor live */
-	float lifetime;
+	float mLifetime;
 
 	/** Copy and assignment prohibited */
-	Actor(const Actor&);
-	void operator=(const Actor&);
+	Actor(const Actor&) = delete;
+	void operator=(const Actor&) = delete;
 };
-
-#endif
