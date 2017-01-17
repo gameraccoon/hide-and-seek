@@ -19,9 +19,6 @@
     <ClCompile Include="..\..\src\EngineInterface\Internal\Engine.cpp">
       <Filter>Internal</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\EngineInterface\Internal\Font.cpp">
-      <Filter>Internal</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\EngineInterface\Internal\GlContext.cpp">
       <Filter>Internal</Filter>
     </ClCompile>
@@ -44,6 +41,12 @@
       <Filter>Graphics</Filter>
     </ClCompile>
     <ClCompile Include="..\..\src\EngineInterface\Game.cpp" />
+    <ClCompile Include="..\..\src\EngineInterface\Graphics\Font.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\EngineInterface\Internal\FontInternal.cpp">
+      <Filter>Internal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\EngineInterface\GUI\IGraphicElement.h">
@@ -65,9 +68,6 @@
       <Filter>Input</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\EngineInterface\Internal\Engine.h">
-      <Filter>Internal</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\EngineInterface\Internal\Font.h">
       <Filter>Internal</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\EngineInterface\Internal\GlContext.h">
@@ -96,6 +96,12 @@
     <ClInclude Include="..\..\src\EngineInterface\EngineFwd.h" />
     <ClInclude Include="..\..\src\EngineInterface\Graphics\IUseCounter.h">
       <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\EngineInterface\Graphics\Font.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\EngineInterface\Internal\FontInternal.h">
+      <Filter>Internal</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

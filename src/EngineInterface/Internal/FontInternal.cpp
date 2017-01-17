@@ -1,4 +1,4 @@
-#include "Font.h"
+#include "FontInternal.h"
 
 namespace Engine
 {

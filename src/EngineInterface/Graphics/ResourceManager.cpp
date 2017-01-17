@@ -14,6 +14,7 @@ class ResourceManager::Impl : public IUseCounter
 public:
 	std::vector<std::unique_ptr<Resource::Base>> resources;
 	std::map<std::string, IUseCounter::Uid> texturesMap;
+	std::map<std::string, IUseCounter::Uid> fontsMap;
 
 	Engine::Internal::Engine* engine;
 
@@ -89,61 +90,108 @@ ResourceManager::~ResourceManager()
 	Log::Instance().writeLog("ResourceManager destroyed");
 }
 
-static void FillTextureBase(Texture::Base* textureBase, const std::string& path, Engine::Internal::Engine* engine)
+template <typename T, typename Base>
+T getResource(const std::string& texturePath,
+	std::map<std::string, IUseCounter::Uid>& nameMap,
+	std::vector<std::unique_ptr<Resource::Base>>& resources,
+	IUseCounter* useCounter,
+	std::function<void(Base*)> fillResource,
+	std::function<void(Resource::Base*)> destroyResource
+)
 {
-	textureBase->surface = new Engine::Internal::SdlSurface(path.c_str());
-	textureBase->engine = engine;
-}
+	std::map<std::string, IUseCounter::Uid>::const_iterator it = nameMap.find(texturePath);
 
-static void TextureDestructor(Resource::Base* resourceBase)
-{
-	Texture::Base* textureBase = dynamic_cast<Texture::Base*>(resourceBase);
-	if (textureBase)
+	if (it == nameMap.cend())
 	{
-		delete textureBase->surface;
-		textureBase->surface = nullptr;
-	}
-	else
-	{
-		Log::Instance().writeError("Trying to destruct non-texture resource with texture destructer");
-	}
-}
-
-Texture::Ptr ResourceManager::getTexture(const std::string& texturePath)
-{
-	std::map<std::string, IUseCounter::Uid>::const_iterator it = mPimpl->texturesMap.find(texturePath);
-
-	if (it == mPimpl->texturesMap.cend())
-	{
-		// there are no texture and info about it
-		IUseCounter::Uid uid = mPimpl->resources.size();
-		mPimpl->texturesMap.insert({ texturePath, uid });
-		Texture::Base* unsafePointer = new Texture::Base(uid, &TextureDestructor);
-		FillTextureBase(unsafePointer, texturePath, mPimpl->engine);
-		mPimpl->resources.emplace_back(unsafePointer);
-		return std::make_unique<Texture>(mPimpl.get(), unsafePointer);
+		// there are no resource and info about it
+		IUseCounter::Uid uid = resources.size();
+		nameMap.insert({ texturePath, uid });
+		Base* unsafePointer = new Base(uid, destroyResource);
+		fillResource(unsafePointer);
+		resources.emplace_back(unsafePointer);
+		return T(useCounter, unsafePointer);
 	}
 	else
 	{
 		IUseCounter::Uid uid = it->second;
 
-		if (uid < 0 || uid >= mPimpl->resources.size())
+		if (uid < 0 || uid >= resources.size())
 		{
 			Log::Instance().writeError("Inadequate resource UID");
-			return nullptr;
+			return T(useCounter, nullptr);
 		}
 
-		Texture::Base* unsafePointer = dynamic_cast<Texture::Base*>(mPimpl->resources[uid].get());
+		Base* unsafePointer = dynamic_cast<T::Base*>(resources[uid].get());
 		if (unsafePointer)
 		{
-			return std::make_unique<Texture>(mPimpl.get(), unsafePointer);
+			return T(useCounter, unsafePointer);
 		}
 		else
 		{
-			Log::Instance().writeError("Try to access empty texture");
-			return nullptr;
+			unsafePointer = new Base(uid, destroyResource);
+			fillResource(unsafePointer);
+			resources[uid].reset(unsafePointer);
+			return T(useCounter, unsafePointer);
 		}
 	}
+}
+
+Texture ResourceManager::getTexture(const std::string& texturePath)
+{
+	Engine::Internal::Engine* engine = mPimpl->engine;
+
+	return getResource<Texture, Texture::Base>(texturePath,
+		mPimpl->texturesMap,
+		mPimpl->resources,
+		mPimpl.get(),
+		[&texturePath, engine](Texture::Base* textureBase)
+		{
+			textureBase->surface = new Engine::Internal::SdlSurface(texturePath.c_str());
+			textureBase->engine = engine;
+		},
+		[](Resource::Base* resourceBase)
+		{
+			Texture::Base* textureBase = dynamic_cast<Texture::Base*>(resourceBase);
+			if (textureBase)
+			{
+				delete textureBase->surface;
+				textureBase->surface = nullptr;
+			}
+			else
+			{
+				Log::Instance().writeError("Trying to destruct non-texture resource with texture destructer");
+			}
+		}
+	);
+}
+
+Font ResourceManager::getFont(const std::string & texturePath)
+{
+	Engine::Internal::Engine* engine = mPimpl->engine;
+
+	return getResource<Font, Font::Base>(texturePath,
+		mPimpl->texturesMap,
+		mPimpl->resources,
+		mPimpl.get(),
+		[&texturePath, engine](Font::Base* textureBase)
+		{
+			textureBase->surface = new Engine::Internal::SdlSurface(texturePath.c_str());
+			textureBase->engine = engine;
+		},
+		[](Resource::Base* resourceBase)
+		{
+			Font::Base* textureBase = dynamic_cast<Font::Base*>(resourceBase);
+			if (textureBase)
+			{
+				delete textureBase->surface;
+				textureBase->surface = nullptr;
+			}
+			else
+			{
+				Log::Instance().writeError("Trying to destruct non-texture resource with texture destructer");
+			}
+		}
+	);
 }
 
 /*

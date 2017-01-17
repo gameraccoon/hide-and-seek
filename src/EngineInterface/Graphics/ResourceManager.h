@@ -4,6 +4,7 @@
 #include <map>
 
 #include "Texture.h"
+#include "Font.h"
 
 #include <EngineInterface/EngineFwd.h>
 
@@ -16,7 +17,8 @@ public:
 	ResourceManager(Engine::Internal::Engine* engine);
 	~ResourceManager();
 
-	Texture::Ptr getTexture(const std::string& texturePath);
+	Texture getTexture(const std::string& texturePath);
+	Font getFont(const std::string& texturePath);
 private:
 	// types
 	struct SpriteInfo

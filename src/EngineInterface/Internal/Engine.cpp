@@ -10,7 +10,7 @@
 #include <glm/glm.hpp>
 #include <sdl/Sdl.h>
 
-#include "Font.h"
+#include "FontInternal.h"
 #include "GlContext.h"
 #include "Sdl.h"
 #include "SdlWindow.h"

@@ -27,7 +27,6 @@ namespace Engine
 			void Render(SdlSurface* surface, const glm::mat4& transform, float alpha = 1.0f);
 			void Render(SdlSurface* surface, float x, float y, float rotation = 0.0f, float alpha = 1.0f);
 
-
 			float CalculateStringWidth(const char* text) const;
 			void Write(SdlSurface* fontSurface, const char* text, const glm::mat4& transform);
 			void Write(SdlSurface* fontSurface, const char* text, float x, float y, float rotation = 0.0f);

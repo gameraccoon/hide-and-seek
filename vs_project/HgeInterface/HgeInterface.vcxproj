@@ -15,13 +15,14 @@
     <ClCompile Include="..\..\src\EngineInterface\Graphics\Camera.cpp" />
     <ClCompile Include="..\..\src\EngineInterface\Graphics\DirectionArrow.cpp" />
     <ClCompile Include="..\..\src\EngineInterface\Graphics\FloatingCamera.cpp" />
+    <ClCompile Include="..\..\src\EngineInterface\Graphics\Font.cpp" />
     <ClCompile Include="..\..\src\EngineInterface\Graphics\Resource.cpp" />
     <ClCompile Include="..\..\src\EngineInterface\Graphics\ResourceManager.cpp" />
     <ClCompile Include="..\..\src\EngineInterface\Graphics\Texture.cpp" />
     <ClCompile Include="..\..\src\EngineInterface\GUI\Button.cpp" />
     <ClCompile Include="..\..\src\EngineInterface\Input\KeyListeners.cpp" />
     <ClCompile Include="..\..\src\EngineInterface\Internal\Engine.cpp" />
-    <ClCompile Include="..\..\src\EngineInterface\Internal\Font.cpp" />
+    <ClCompile Include="..\..\src\EngineInterface\Internal\FontInternal.cpp" />
     <ClCompile Include="..\..\src\EngineInterface\Internal\GlContext.cpp" />
     <ClCompile Include="..\..\src\EngineInterface\Internal\Sdl.cpp" />
     <ClCompile Include="..\..\src\EngineInterface\Internal\SdlSurface.cpp" />
@@ -32,6 +33,7 @@
     <ClInclude Include="..\..\src\EngineInterface\Graphics\Camera.h" />
     <ClInclude Include="..\..\src\EngineInterface\Graphics\DirectionArrow.h" />
     <ClInclude Include="..\..\src\EngineInterface\Graphics\FloatingCamera.h" />
+    <ClInclude Include="..\..\src\EngineInterface\Graphics\Font.h" />
     <ClInclude Include="..\..\src\EngineInterface\Graphics\IUseCounter.h" />
     <ClInclude Include="..\..\src\EngineInterface\Graphics\Resource.h" />
     <ClInclude Include="..\..\src\EngineInterface\Graphics\ResourceManager.h" />
@@ -42,7 +44,7 @@
     <ClInclude Include="..\..\src\EngineInterface\IGame.h" />
     <ClInclude Include="..\..\src\EngineInterface\Input\KeyListeners.h" />
     <ClInclude Include="..\..\src\EngineInterface\Internal\Engine.h" />
-    <ClInclude Include="..\..\src\EngineInterface\Internal\Font.h" />
+    <ClInclude Include="..\..\src\EngineInterface\Internal\FontInternal.h" />
     <ClInclude Include="..\..\src\EngineInterface\Internal\GlContext.h" />
     <ClInclude Include="..\..\src\EngineInterface\Internal\Sdl.h" />
     <ClInclude Include="..\..\src\EngineInterface\Internal\SdlSurface.h" />

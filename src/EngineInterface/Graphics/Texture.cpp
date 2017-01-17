@@ -27,7 +27,12 @@ int Texture::GetWidth() const
 	return mBase->surface->Width();
 }
 
-void Texture::Draw(int x, int y)
+void Texture::Draw(float x, float y, float rotation, float alpha)
 {
-	mBase->engine->Render(mBase->surface, (float)x, (float)y);
+	mBase->engine->Render(mBase->surface, x, y, rotation, alpha);
+}
+
+bool Texture::isValid() const
+{
+	return mBase != nullptr;
 }

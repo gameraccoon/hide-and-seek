@@ -35,5 +35,8 @@ Resource::Base::Base(IUseCounter::Uid uid, Destructor destructor)
 
 Resource::Base::~Base()
 {
-	destructor(this);
+	if (destructor)
+	{
+		destructor(this);
+	}
 }

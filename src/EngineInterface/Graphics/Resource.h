@@ -15,7 +15,6 @@ public:
 	{
 	public:
 		using Destructor = std::function<void(Base*)>;
-		using Ptr = std::unique_ptr<Resource>;
 
 	public:
 		Base(IUseCounter::Uid uid, Destructor destructor);
@@ -32,6 +31,8 @@ public:
 	Resource(Resource&& resource) = default;
 	void operator=(const Resource& resource);
 	virtual ~Resource();
+
+	virtual bool isValid() const = 0;
 
 private:
 	IUseCounter* mUseCounter;
