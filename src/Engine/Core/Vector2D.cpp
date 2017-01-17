@@ -4,9 +4,9 @@
 const float VECTOR_ERROR = 0.0001f;
 
 Vector2D::Vector2D(float x, float y)
+	: x(x)
+	, y(y)
 {
-	x = x;
-	y = y;
 }
 
 Vector2D::Vector2D(const Vector2D& vector)

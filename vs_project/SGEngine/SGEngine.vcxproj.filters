@@ -46,9 +46,6 @@
     <ClCompile Include="..\..\src\Engine\Modules\PathFinder.cpp">
       <Filter>Modules</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\Engine\Modules\Processes.cpp">
-      <Filter>Modules</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\Engine\Modules\RayTrace.cpp">
       <Filter>Modules</Filter>
     </ClCompile>
@@ -127,9 +124,6 @@
       <Filter>Modules</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\Engine\Modules\PathFinder.h">
-      <Filter>Modules</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\Engine\Modules\Processes.h">
       <Filter>Modules</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\Engine\Modules\RayTrace.h">
