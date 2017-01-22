@@ -4,28 +4,21 @@
 
 namespace Game
 {
-	void StealthGame::Start()
+	void StealthGame::start()
 	{
+		mWorld = std::make_unique<World>();
+
 		// start the main loop
-		getEngine()->Start(*this);
+		getEngine()->start(*this);
 	}
 
-	void StealthGame::Update(float )
+	void StealthGame::update(float dt)
 	{
+		mWorld->update(dt);
 	}
 
-	void StealthGame::Draw()
+	void StealthGame::draw()
 	{
-		std::unique_ptr<Texture> text3;
-		{
-			Texture text1 = getResourceManager()->getTexture("arrow.png");
-			Texture text2 = text1;
-			text3.reset(new Texture(text2));
-
-			text1.Draw(100, 200);
-			text2.Draw(200, 200);
-		}
-
-		text3->Draw(100, 300);
+		
 	}
 }

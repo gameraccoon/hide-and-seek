@@ -1,14 +1,19 @@
 #pragma once
 
-#include "EngineInterface/Internal/Engine.h"
-#include "EngineInterface/Game.h"
+#include "Game.h"
 
-namespace Game {
+#include <Core/World.h>
+
+namespace Game
+{
 	class StealthGame : public Engine::Game
 	{
 	public:
-		void Start();
-		virtual void Update(float dt) override;
-		virtual void Draw() override;
+		void start();
+		virtual void update(float dt) override;
+		virtual void draw() override;
+
+	private:
+		std::unique_ptr<World> mWorld;
 	};
 }

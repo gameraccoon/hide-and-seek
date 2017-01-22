@@ -1,0 +1,7 @@
+aux_source_directory(./src/Actors ENGINE_SRC)
+aux_source_directory(./src/AI ENGINE_SRC)
+aux_source_directory(./src/Core ENGINE_SRC)
+aux_source_directory(./src/Inventory ENGINE_SRC)
+aux_source_directory(./src/Modules ENGINE_SRC)
+aux_source_directory(./src/Structures ENGINE_SRC)
+add_library(EngineLib ${ENGINE_SRC})

@@ -1,0 +1,5 @@
+aux_source_directory(./src/Graphics ENGINE_INTERFACE_SRC)
+aux_source_directory(./src/GUI ENGINE_INTERFACE_SRC)
+aux_source_directory(./src/Input ENGINE_INTERFACE_SRC)
+aux_source_directory(./src/Internal ENGINE_INTERFACE_SRC)
+add_library(EngineInterfaceLib ${ENGINE_INTERFACE_SRC})
