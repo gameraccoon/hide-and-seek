@@ -1,12 +1,12 @@
-#include "Graphics/ResourceManager.h"
+#include "Base/ResourceManager.h"
 
 #include <fstream>
 #include <vector>
 
 #include <Log.h>
 
+#include "Base/Engine.h"
 #include "../Internal/SdlSurface.h"
-#include "../Internal/Engine.h"
 
 
 class ResourceManager::Impl : public IUseCounter

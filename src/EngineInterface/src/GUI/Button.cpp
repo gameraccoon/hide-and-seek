@@ -1,6 +1,6 @@
 #include "GUI/Button.h"
 
-#include <Graphics/ResourceManager.h>
+#include <Base/ResourceManager.h>
 
 Button::Button(Engine::Internal::Engine *, std::string spriteNormal, std::string spriteHover)
 	: mScreenLocation(ZERO_VECTOR)

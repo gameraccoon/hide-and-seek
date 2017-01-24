@@ -50,20 +50,15 @@ include_directories(
 	${SOURCE_ROOT}/EngineInterface/include
 	${SOURCE_ROOT}/SqliteInterface/include
 	${SOURCE_ROOT}/StealthGame/include
-	${SOURCE_ROOT}/MainApp
-	${SOURCE_ROOT}/Editor
+	${SOURCE_ROOT}/MainApp/include
+	${SOURCE_ROOT}/Editor/include
 
 	${CMAKE_SOURCE_DIR}/MainApp
 )
 link_directories(
 	#/usr/local/lib
 	${CMAKE_SOURCE_DIR}/external/lib
-	${CMAKE_SOURCE_DIR}/vs_project/src/DebugHelpers/Debug
-	${CMAKE_SOURCE_DIR}/vs_project/src/Engine/Debug
-	${CMAKE_SOURCE_DIR}/vs_project/src/EngineInterface/Debug
-	${CMAKE_SOURCE_DIR}/vs_project/src/MainApp/Debug
-	${CMAKE_SOURCE_DIR}/vs_project/src/SqliteInterface/Debug
-	${CMAKE_SOURCE_DIR}/vs_project/src/StealthGame/Debug
+	${CMAKE_SOURCE_DIR}/vs_project/Debug
 )
 
 elseif(UNIX) #assumed linux

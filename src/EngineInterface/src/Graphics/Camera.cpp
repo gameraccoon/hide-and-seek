@@ -1,6 +1,6 @@
 #include "Graphics/Camera.h"
 
-#include "../../EngineInterface/src/Internal/Engine.h"
+#include "Base/Engine.h"
 
 Camera::Camera(Engine::Internal::Engine*, const World* world, Vector2D resolution, Vector2D location)
 	: mLocation(location)

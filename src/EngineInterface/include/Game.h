@@ -2,7 +2,7 @@
 
 #include "IGame.h"
 
-#include "Graphics/ResourceManager.h"
+#include "Base/ResourceManager.h"
 #include <EngineFwd.h>
 
 namespace Engine

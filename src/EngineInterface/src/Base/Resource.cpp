@@ -1,4 +1,4 @@
-#include "Graphics/Resource.h"
+#include "Base/Resource.h"
 
 Resource::Resource(IUseCounter* useCounter, IUseCounter::Uid uid)
 	: mUseCounter(useCounter)

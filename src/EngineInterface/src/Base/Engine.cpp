@@ -1,4 +1,4 @@
-#include "Engine.h"
+#include "Base/Engine.h"
 
 #include <stdexcept>
 #include <algorithm>
@@ -10,11 +10,11 @@
 #include <glm/glm.hpp>
 #include <sdl/Sdl.h>
 
-#include "FontInternal.h"
-#include "GlContext.h"
-#include "Sdl.h"
-#include "SdlWindow.h"
-#include "SdlSurface.h"
+#include "../Internal/FontInternal.h"
+#include "../Internal/GlContext.h"
+#include "../Internal/Sdl.h"
+#include "../Internal/SdlWindow.h"
+#include "../Internal/SdlSurface.h"
 #include "IGame.h"
 
 

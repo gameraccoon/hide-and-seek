@@ -3,8 +3,8 @@
 #include <string>
 #include <map>
 
-#include "Texture.h"
-#include "Font.h"
+#include "Graphics/Texture.h"
+#include "Graphics/Font.h"
 
 #include <EngineFwd.h>
 

@@ -1,7 +1,7 @@
 #include "Graphics/Texture.h"
 
 #include "../Internal/SdlSurface.h"
-#include "../Internal/Engine.h"
+#include "Base/Engine.h"
 
 Texture::Base::~Base()
 {

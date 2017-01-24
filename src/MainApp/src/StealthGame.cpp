@@ -2,6 +2,8 @@
 
 #include "StealthGame.h"
 
+#include "Base/Engine.h"
+
 namespace Game
 {
 	void StealthGame::start()

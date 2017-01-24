@@ -1,7 +1,7 @@
 #include "Graphics/Font.h"
 
 #include "../Internal/SdlSurface.h"
-#include "../Internal/Engine.h"
+#include "Base/Engine.h"
 
 Font::Base::~Base()
 {

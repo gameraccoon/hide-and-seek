@@ -1,8 +1,7 @@
 #include "Graphics/DirectionArrow.h"
 
-#include "Graphics/ResourceManager.h"
-
-#include "../Internal/Engine.h"
+#include "Base/ResourceManager.h"
+#include "Base/Engine.h"
 
 DirectionArrow::DirectionArrow(Engine::Internal::Engine *)
 	: mCenterLocation(ZERO_VECTOR)

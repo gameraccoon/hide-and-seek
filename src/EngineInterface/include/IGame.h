@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Graphics/ResourceManager.h"
+#include "Base/ResourceManager.h"
 
 namespace Engine
 {

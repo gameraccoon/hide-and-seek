@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "Resource.h"
+#include "Base/Resource.h"
 #include <EngineFwd.h>
 
 class Texture : public Resource
