@@ -76,14 +76,48 @@ link_directories(
 )
 endif()
 
-add_subdirectory(${SOURCE_ROOT}/DebugHelpers)
-add_subdirectory(${SOURCE_ROOT}/Engine)
-add_subdirectory(${SOURCE_ROOT}/EngineInterface)
-add_subdirectory(${SOURCE_ROOT}/SqliteInterface)
-add_subdirectory(${SOURCE_ROOT}/StealthGame)
+function(add_src_folder local_path global_path)
+	aux_source_directory(${global_path} src)
+	string(REPLACE "/" "\\" _group_path "${local_path}")
+	source_group(${_group_path} FILES ${src})
+	set(TEMP_SRC ${TEMP_SRC} ${src} PARENT_SCOPE)
+endfunction()
 
-add_subdirectory(${SOURCE_ROOT}/MainApp)
-#add_subdirectory(${SOURCE_ROOT}/Editor)
+function(add_headers_folder local_path global_path)
+	file (GLOB headers "${global_path}/*.h")
+	string(REPLACE "/" "\\" _group_path "${local_path}")
+	source_group(${_group_path} FILES ${headers})
+	set(TEMP_SRC ${TEMP_SRC} ${headers} PARENT_SCOPE)
+endfunction()
+
+function(add_folder_as_library folder_path name)
+	set(TEMP_SRC "")
+	file(RELATIVE_PATH relative_dir ${CMAKE_CURRENT_SOURCE_DIR} ${folder_path})
+
+	add_src_folder(src "${folder_path}/src")
+	file (GLOB folders RELATIVE "${folder_path}" "${folder_path}/src/*")
+	foreach(folder ${folders})
+		add_src_folder(${folder} "${folder_path}/${folder}")
+		add_headers_folder(${folder} "${folder_path}/${folder}")
+	endforeach()
+
+	add_headers_folder(include "${folder_path}/include")
+	file (GLOB folders RELATIVE "${folder_path}" "${folder_path}/include/*")
+	foreach(folder ${folders})
+		add_headers_folder(${folder} "${folder_path}/${folder}")
+	endforeach()
+
+	add_library(${name} ${TEMP_SRC})
+endfunction()
+
+add_folder_as_library(${SOURCE_ROOT}/Engine EngineLib)
+add_folder_as_library(${SOURCE_ROOT}/DebugHelpers DebugHelpersLib)
+add_folder_as_library(${SOURCE_ROOT}/EngineInterface EngineInterfaceLib)
+add_folder_as_library(${SOURCE_ROOT}/SqliteInterface SqliteInterfaceLib)
+add_folder_as_library(${SOURCE_ROOT}/StealthGame StealthGameLib)
+
+add_folder_as_library(${SOURCE_ROOT}/MainApp MainAppLib)
+#add_folder_as_library(${SOURCE_ROOT}/Editor)
 
 if(WIN32)
 	# add the executable
