@@ -1,7 +1,10 @@
 #include "StealthGame.h"
 
-int main(int , char *[])
+#include "sdl/SDL.h"
+
+int main(int argc, char *argv[])
 {
+	argc; argv;
 	Game::StealthGame game;
 	game.start();
 

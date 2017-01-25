@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.8)
 set(APP_NAME Game)
 project(${APP_NAME})
 
-option(DEBUG_MODE "Debug or release?" ON)
+option(DEBUG_MODE "Debug or release?" OFF)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
@@ -58,7 +58,7 @@ include_directories(
 link_directories(
 	#/usr/local/lib
 	${CMAKE_SOURCE_DIR}/external/lib
-	${CMAKE_SOURCE_DIR}/vs_project/Debug
+	${CMAKE_SOURCE_DIR}/vs_project
 )
 
 elseif(UNIX) #assumed linux
@@ -136,6 +136,8 @@ target_link_libraries(${APP_NAME}
 	SDL2main
 	SDL2test
 	sqlite3
+
+	opengl32
 
 	DebugHelpersLib
 	EngineLib
