@@ -2,12 +2,13 @@
 
 #include <vector>
 
-#include "../Core/Vector2D.h"
-#include "../Core/IActor.h"
-#include "../Core/World.h"
-#include "../Core/Rotator.h"
-#include "../Structures/BoundingBox.h"
-#include "../Structures/Hull.h"
+#include <Core/Vector2D.h>
+#include <Core/IActor.h>
+#include <Core/World.h>
+#include <Core/Rotator.h>
+#include <Structures/BoundingBox.h>
+#include <Structures/Hull.h>
+
 
 /**
  * The base class for all actors which may be placed in the World.

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../Core/World.h"
-#include "../Actors/Actor.h"
-#include "../Modules/RayTrace.h"
+#include "Core/World.h"
+#include "Core/Actor.h"
+#include "Modules/RayTrace.h"
 
 class Bullet : public Actor
 {

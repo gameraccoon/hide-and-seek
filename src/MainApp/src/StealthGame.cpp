@@ -9,6 +9,9 @@ namespace Game
 	void StealthGame::start()
 	{
 		mWorld = std::make_unique<World>();
+		mMainCamera = std::make_unique<Camera>(mWorld.get(),
+			Vector2D((float)getEngine()->getWidth(), (float)getEngine()->getHeight()),
+			Vector2D(0.0f, 0.0f));
 
 		// start the main loop
 		getEngine()->start(*this);
@@ -21,6 +24,6 @@ namespace Game
 
 	void StealthGame::draw()
 	{
-		
+		mMainCamera->render();
 	}
 }

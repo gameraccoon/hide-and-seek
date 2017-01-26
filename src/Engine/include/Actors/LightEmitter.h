@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Actor.h"
+#include "Core/Actor.h"
 
 class LightEmitter : public Actor
 {

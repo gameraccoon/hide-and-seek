@@ -1,8 +1,8 @@
 #include "Graphics/FloatingCamera.h"
 
 
-FloatingCamera::FloatingCamera(Engine::Internal::Engine* engine, const World* world, Vector2D resolution, Vector2D location)
-	: Camera(engine, world, resolution, location)
+FloatingCamera::FloatingCamera(const World* world, Vector2D resolution, Vector2D location)
+	: Camera(world, resolution, location)
 	, mShift(ZERO_VECTOR)
 {
 }

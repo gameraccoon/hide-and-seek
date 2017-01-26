@@ -1,13 +1,13 @@
 #pragma once
 
-#include "../Core/Vector2D.h"
-#include "../Core/World.h"
-#include "../Modules/PathFinder.h"
-#include "../AI/Role.h"
-#include "../AI/IBody.h"
-#include "../Inventory/InventoryItem.h"
-#include "../Inventory/Weapon.h"
-#include "../Actors/Actor.h"
+#include "Core/Vector2D.h"
+#include "Core/World.h"
+#include "Modules/PathFinder.h"
+#include "AI/Role.h"
+#include "AI/IBody.h"
+#include "Inventory/InventoryItem.h"
+#include "Inventory/Weapon.h"
+#include "Core/Actor.h"
 
 class Body:public Actor, public IBody
 {

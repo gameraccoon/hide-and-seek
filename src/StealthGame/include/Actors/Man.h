@@ -2,7 +2,7 @@
 
 #include <Core/Vector2D.h>
 #include <Core/World.h>
-#include <Actors/Actor.h>
+#include <Core/Actor.h>
 #include <Inventory/InventoryItem.h>
 #include <Inventory/Weapon.h>
 #include <Actors/Body.h>

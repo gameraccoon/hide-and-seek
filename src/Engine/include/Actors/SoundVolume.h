@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Actors/Actor.h"
+#include "Core/Actor.h"
 
 class SoundVolume : public Actor
 {

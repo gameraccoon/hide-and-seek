@@ -2,7 +2,7 @@
 
 #include "Base/Engine.h"
 
-Camera::Camera(Engine::Internal::Engine*, const World* world, Vector2D resolution, Vector2D location)
+Camera::Camera(const World* world, Vector2D resolution, Vector2D location)
 	: mLocation(location)
 	, mResolution(resolution)
 	, mCenterPos(resolution / 2)

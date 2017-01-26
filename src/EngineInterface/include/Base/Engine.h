@@ -5,38 +5,46 @@
 
 #include "Graphics/Texture.h"
 
-namespace Engine
+namespace EngineInterface
 {
-	class IGame;
-
 	namespace Internal
 	{
-		class Engine
+		class SdlSurface;
+	}
+
+	class IGame;
+
+	namespace Base
+	{
+		namespace Internal
 		{
-		public:
-			Engine();
-			~Engine();
+			class Engine
+			{
+			public:
+				Engine();
+				~Engine();
 
-			float getMouseX() const;
-			float getMouseY() const;
-			bool getMouseButtonDown() const;
+				float getMouseX() const;
+				float getMouseY() const;
+				bool getMouseButtonDown() const;
 
-			void start(IGame& updater);
-			void quit();
+				void start(IGame& updater);
+				void quit();
 
-			void render(SdlSurface* surface, const glm::mat4& transform, float alpha = 1.0f);
-			void render(SdlSurface* surface, float x, float y, float rotation = 0.0f, float alpha = 1.0f);
+				void render(Internal::SdlSurface* surface, const glm::mat4& transform, float alpha = 1.0f);
+				void render(Internal::SdlSurface* surface, float x, float y, float rotation = 0.0f, float alpha = 1.0f);
 
-			float calculateStringWidth(const char* text) const;
-			void write(SdlSurface* fontSurface, const char* text, const glm::mat4& transform);
-			void write(SdlSurface* fontSurface, const char* text, float x, float y, float rotation = 0.0f);
+				float calculateStringWidth(const char* text) const;
+				void write(Internal::SdlSurface* fontSurface, const char* text, const glm::mat4& transform);
+				void write(Internal::SdlSurface* fontSurface, const char* text, float x, float y, float rotation = 0.0f);
 
-			int getWidth() const;
-			int getHeight() const;
+				int getWidth() const;
+				int getHeight() const;
 
-		private:
-			struct Impl;
-			std::unique_ptr<Impl> mPimpl;
-		};
+			private:
+				struct Impl;
+				std::unique_ptr<Impl> mPimpl;
+			};
+		}
 	}
 }

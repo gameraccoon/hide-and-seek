@@ -4,16 +4,14 @@
 
 #include <Core/Vector2D.h>
 #include <Core/World.h>
-#include <Actors/Actor.h>
+#include "Core/Actor.h"
 
 #include <Actors/LightEmitter.h>
-
-#include "EngineFwd.h"
 
 class Camera
 {
 public:
-	Camera(Engine::Internal::Engine* engine, const World* world, Vector2D resolution, Vector2D location);
+	Camera(const World* world, Vector2D resolution, Vector2D location);
 	virtual ~Camera();
 	/** Get pointer to the texture which will be used to render */
 	//HTEXTURE getRenderTexture() const;

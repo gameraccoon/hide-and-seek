@@ -5,7 +5,7 @@
 class FloatingCamera : public Camera
 {
 public:
-	FloatingCamera(Engine::Internal::Engine* engine, const World* world, Vector2D resolution, Vector2D location);
+	FloatingCamera(const World* world, Vector2D resolution, Vector2D location);
 	~FloatingCamera();
 	/** Set new location of this camera in the world */
 	virtual void setLocation(const Vector2D &newLocation) override;

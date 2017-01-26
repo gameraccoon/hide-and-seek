@@ -3,6 +3,7 @@
 #include "Game.h"
 
 #include <Core/World.h>
+#include <Graphics/Camera.h>
 
 namespace Game
 {
@@ -15,5 +16,6 @@ namespace Game
 
 	private:
 		std::unique_ptr<World> mWorld;
+		std::unique_ptr<Camera> mMainCamera;
 	};
 }

@@ -1,10 +1,9 @@
 #pragma once
 
-namespace Engine
+namespace EngineInterface
 {
-	namespace Internal
+	namespace Graphics
 	{
 		class Engine;
-		class SdlSurface;
 	}
 }
