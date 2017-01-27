@@ -7,7 +7,7 @@
 
 namespace Game
 {
-	class StealthGame : public Engine::Game
+	class StealthGame : public SystemInterface::Game
 	{
 	public:
 		void start();

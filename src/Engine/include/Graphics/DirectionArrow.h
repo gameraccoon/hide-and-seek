@@ -6,12 +6,12 @@
 #include <Core/Rotator.h>
 
 #include <EngineFwd.h>
-#include <GUI/IGraphicElement.h>
+#include <Graphics/GUI/IGraphicElement.h>
 
 class DirectionArrow : public IGraphicElement
 {
 public:
-	DirectionArrow(Engine::Internal::Engine *engine);
+	DirectionArrow(SystemInterface::Engine *engine);
 	virtual ~DirectionArrow();
 	/** Set center of arrow in world coordinates */
 	virtual void setScreenLocation(const Vector2D& scrLocation) override;
@@ -26,6 +26,7 @@ public:
 	virtual void render() const override;
 	virtual bool click() override;
 	virtual bool checkHovered(const Vector2D& mousePos) override;
+
 private:
 	/** Location of center of this arrow */
 	Vector2D mCenterLocation;

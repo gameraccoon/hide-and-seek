@@ -1,8 +1,8 @@
-#include "GUI/Button.h"
+#include "Graphics/GUI/Button.h"
 
 #include <Base/ResourceManager.h>
 
-Button::Button(Engine::Internal::Engine *, std::string spriteNormal, std::string spriteHover)
+Button::Button(SystemInterface::Engine *, std::string spriteNormal, std::string spriteHover)
 	: mScreenLocation(ZERO_VECTOR)
 {
 	//mNormalSprite = GraphicLoader::Instance().getSprite(spriteNormal);

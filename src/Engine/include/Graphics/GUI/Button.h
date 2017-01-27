@@ -9,7 +9,7 @@
 class Button : public IGraphicElement
 {
 public:
-	Button(Engine::Internal::Engine *engine, std::string spriteNormal, std::string spriteHover);
+	Button(SystemInterface::Engine *engine, std::string spriteNormal, std::string spriteHover);
 	virtual ~Button() = default;
 	virtual void render() const override;
 	virtual Vector2D getScreenLocation() const override;

@@ -47,7 +47,7 @@ include_directories(
 
 	${SOURCE_ROOT}/DebugHelpers/include
 	${SOURCE_ROOT}/Engine/include
-	${SOURCE_ROOT}/EngineInterface/include
+	${SOURCE_ROOT}/SystemInterface/include
 	${SOURCE_ROOT}/SqliteInterface/include
 	${SOURCE_ROOT}/StealthGame/include
 	${SOURCE_ROOT}/MainApp/include
@@ -100,7 +100,7 @@ endfunction()
 
 add_folder_as_library(${SOURCE_ROOT}/Engine EngineLib)
 add_folder_as_library(${SOURCE_ROOT}/DebugHelpers DebugHelpersLib)
-add_folder_as_library(${SOURCE_ROOT}/EngineInterface EngineInterfaceLib)
+add_folder_as_library(${SOURCE_ROOT}/SystemInterface SystemInterfaceLib)
 add_folder_as_library(${SOURCE_ROOT}/SqliteInterface SqliteInterfaceLib)
 add_folder_as_library(${SOURCE_ROOT}/StealthGame StealthGameLib)
 
@@ -134,7 +134,7 @@ target_link_libraries(${APP_NAME}
 
 	DebugHelpersLib
 	EngineLib
-	EngineInterfaceLib
+	SystemInterfaceLib
 	SqliteInterfaceLib
 	StealthGameLib
 	MainAppLib

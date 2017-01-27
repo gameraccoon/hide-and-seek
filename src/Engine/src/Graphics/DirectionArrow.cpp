@@ -3,7 +3,7 @@
 #include "Base/ResourceManager.h"
 #include "Base/Engine.h"
 
-DirectionArrow::DirectionArrow(Engine::Internal::Engine *)
+DirectionArrow::DirectionArrow(SystemInterface::Engine *)
 	: mCenterLocation(ZERO_VECTOR)
 	, mDirection(0.0f)
 {
