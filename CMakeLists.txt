@@ -15,12 +15,12 @@ else(DEBUG_MODE)
 endif(DEBUG_MODE)
 
 if(MSVC)
-	#set(CMAKE_C_FLAGS_DEBUG "-DCOCOS2D_DEBUG=1")
-	#set(CMAKE_CXX_FLAGS_DEBUG ${CMAKE_C_FLAGS_DEBUG})
-
-	#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D_CRT_SECURE_NO_WARNINGS")
-	#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_CRT_SECURE_NO_WARNINGS")
-
+	# Force to always compile with W4
+	if(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
+		string(REGEX REPLACE "/W[0-4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+	else()
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
+	endif()
 elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
 	#set(CMAKE_C_FLAGS_DEBUG "-g -Wall -DCOCOS2D_DEBUG=1")
 	#set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -Wno-reorder -Wno-deprecated-declarations -Wno-unused-but-set-variable -Wno-unused-variable -Wno-unused-function")
@@ -140,23 +140,33 @@ target_link_libraries(${APP_NAME}
 	MainAppLib
 )
 
-set(APP_BIN_DIR "${CMAKE_BINARY_DIR}/bin")
+set(APP_BIN_DIR "${CMAKE_SOURCE_DIR}/build")
 
 set_target_properties(${APP_NAME} PROPERTIES
 	RUNTIME_OUTPUT_DIRECTORY "${APP_BIN_DIR}"
 )
 
-# if (WIN32)
-# 	#also copying dlls to binary directory for the executable to run
-# 	pre_build(${APP_NAME}
-# 		COMMAND ${CMAKE_COMMAND} -E remove_directory ${APP_BIN_DIR}/Resources
-# 		COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/resources ${APP_BIN_DIR}/Resources
-# 		COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/external/win32-specific/gles/prebuilt/glew32.dll ${APP_BIN_DIR}/${CMAKE_BUILD_TYPE}
-# 		COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/external/win32-specific/zlib/prebuilt/zlib1.dll ${APP_BIN_DIR}/${CMAKE_BUILD_TYPE}
-# 	)
-# else()
-# 	pre_build(${APP_NAME}
-# 		COMMAND ${CMAKE_COMMAND} -E remove_directory ${APP_BIN_DIR}/Resources
-# 		COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/Resources ${APP_BIN_DIR}/Resources
-# 	)
-# endif()
+if (WIN32)
+	#also copying dlls to binary directory for the executable to run
+	add_custom_command(TARGET ${APP_NAME}
+		PRE_BUILD
+		COMMAND ${CMAKE_COMMAND} -E remove_directory ${APP_BIN_DIR}/$(Configuration)
+		COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/resources ${APP_BIN_DIR}/$(Configuration)/Resources
+
+		COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/external/dll/zlib1.dll ${APP_BIN_DIR}/$(Configuration)
+		COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/external/dll/sqlite3.dll ${APP_BIN_DIR}/$(Configuration)
+		COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/external/dll/SDL2_image.dll ${APP_BIN_DIR}/$(Configuration)
+		COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/external/dll/SDL2.dll ${APP_BIN_DIR}/$(Configuration)
+		COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/external/dll/lua52.dll ${APP_BIN_DIR}/$(Configuration)
+		COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/external/dll/libwebp-4.dll ${APP_BIN_DIR}/$(Configuration)
+		COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/external/dll/libtiff-5.dll ${APP_BIN_DIR}/$(Configuration)
+		COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/external/dll/libpng16-16.dll ${APP_BIN_DIR}/$(Configuration)
+		COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/external/dll/libjpeg-9.dll ${APP_BIN_DIR}/$(Configuration)
+		COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/external/dll/glew32.dll ${APP_BIN_DIR}/$(Configuration)
+	)
+else()
+	# pre_build(${APP_NAME}
+	# 	COMMAND ${CMAKE_COMMAND} -E remove_directory ${APP_BIN_DIR}/Resources
+	# 	COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/Resources ${APP_BIN_DIR}/Resources
+	# )
+endif()

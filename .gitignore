@@ -29,5 +29,4 @@ log.txt
 *.tlog
 *.lib
 *.cache
-/x64
-/Game.dir
+/build
