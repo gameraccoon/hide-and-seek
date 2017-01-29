@@ -1,19 +1,24 @@
 #pragma once
 
-#include <set>
-#include "../Core/Vector2D.h"
+#include <vector>
+#include <memory>
+#include "Core/Vector2D.h"
 
 class PathPoint
 {
 public:
-	PathPoint(Vector2D location);
-	virtual ~PathPoint();
+	using Ptr = std::unique_ptr<PathPoint>;
+
+public:
+	PathPoint(const Vector2D& location);
 	/** Add point to the legal points list */
 	void connect(PathPoint* destPoint);
-	/** Location of this point in a world (points don't know to which world they belongs) */
+
+public:
+	/** Location of this point in a world (points don't know to which world they belong to) */
 	Vector2D location;
 	/** Points at which we can go from this point */
-	std::set<PathPoint*> legalPoints;
+	std::vector<PathPoint*> legalPoints;
 };
 
 /** Two sided connect */

@@ -112,7 +112,7 @@ void Body::hit(IActor *, float damageValue, Vector2D impulse)
 	{
 		mHealthValue = 0.0f;
 		mSpeed = 0.0f;
-		ActorFactory::Factory().placeActor("Corpse", getOwnerWorld(), getLocation(), Vector2D(1.f, 1.f), getRotation());
+		ActorFactory::Factory().spawnActor("Corpse", getOwnerWorld(), getLocation(), Vector2D(1.f, 1.f), getRotation());
 		destroy();
 	}
 	else
@@ -158,18 +158,18 @@ void Body::onUpdateRotation()
 
 void Body::look()
 {
-	for (const auto actor : getOwnerWorld()->getAllActors())
+	for (const auto& actor : getOwnerWorld()->getAllActors())
 	{
 		// if actor is a human or a creature and actor isn't this body
-		if (actor->getType() == ActorType::Living && actor != this)
+		if (actor->getType() == ActorType::Living && actor.get() != this)
 		{
-			Body *body = dynamic_cast<Body*>(actor);
+			Body *body = dynamic_cast<Body*>(actor.get());
 			// if actor is a body and it is an enemy
 			if (body != nullptr && body->getFraction() == Fraction::GoodGuys)
 			{
 				if (canSeeEnemy(body))
 				{
-					mRole->onSeeEnemy(actor);
+					mRole->onSeeEnemy(actor.get());
 					break;
 				}
 			}
@@ -207,11 +207,11 @@ bool Body::canSeeEnemy(const Body *enemy) const
 	float lightness = 0.f;
 
 	// ToDo: need to refactor next fragment
-	for (const auto actor : getOwnerWorld()->getAllActors())
+	for (const auto& actor : getOwnerWorld()->getAllActors())
 	{
 		if (actor->getType() == ActorType::Light)
 		{
-			LightEmitter *light = dynamic_cast<LightEmitter*>(actor);
+			LightEmitter *light = dynamic_cast<LightEmitter*>(actor.get());
 			if (light != nullptr)
 			{
 				if ((light->getLocation() - enemy->getLocation()).size() < light->getBrightness() * 512)

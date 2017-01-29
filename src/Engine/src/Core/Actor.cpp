@@ -7,6 +7,11 @@ namespace
 	int ClassIndex = 0;
 }
 
+Actor::Ptr Actor::Create(World * world, Vector2D location, Rotator rotation)
+{
+	return std::make_unique<Actor>(world, location, rotation);
+}
+
 Actor::Actor(World *world, Vector2D location, Rotator rotation)
 	: mLocation(location)
 	, mScale(1.f, 1.f)
@@ -14,21 +19,16 @@ Actor::Actor(World *world, Vector2D location, Rotator rotation)
 	, mCalculatedSize(1.f, 1.f)
 	, mDirection(rotation)
 	, mColideBox(location, location)
+	, mOwnerWorld(world)
+	, mType(ActorType::Ghost)
+	, mIsWaitDestruction(false)
+	, mLifetime(0)
 {
-	mOwnerWorld = world;
-	mOwnerWorld->spawnActor(this);
-	mType = ActorType::Ghost;
-
 	updateActorId("Actor");
-
-	mIsWaitDestruction = false;
-
-	mLifetime = 0;
 }
 
 Actor::~Actor()
 {
-	mOwnerWorld->removeActor(this);
 }
 
 void Actor::setLocation(const Vector2D& location)
@@ -123,6 +123,11 @@ bool Actor::isWaitDestruction() const
 
 void Actor::hit(IActor *, float , Vector2D )
 {
+}
+
+void Actor::AddComponent(const ActorComponent::Ptr& component)
+{
+	mComponents.push_back(component);
 }
 
 World* Actor::getOwnerWorld() const

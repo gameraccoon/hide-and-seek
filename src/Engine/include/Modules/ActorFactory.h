@@ -1,7 +1,9 @@
 #pragma once
 
 #include <map>
-#include "../Core/World.h"
+#include <functional>
+
+#include "Core/World.h"
 
 /**
  * Factory that allows to create any type of registered actor by their name identifier.
@@ -13,9 +15,8 @@
 class ActorFactory
 {
 public:
-	typedef IActor* (*CreateActorCallback)(World *world, const Vector2D location, const Vector2D scale, const Rotator rotation);
-private:
-	typedef std::map<std::string, CreateActorCallback> CallbackMap;
+	using CreateActorCallback = std::function<IActor*(World *world, const Vector2D location, const Vector2D scale, const Rotator rotation)>;
+
 public:
 	/**
 	 * @return the single instance of the ActorFactory
@@ -42,7 +43,10 @@ public:
 	 *
 	 * @throws runtime_error when actorId is unknown
 	 */
-	IActor* placeActor(std::string actorId, World *world, const Vector2D location, const Vector2D size, const Rotator rotation);
+	IActor* spawnActor(std::string actorId, World *world, const Vector2D location, const Vector2D size, const Rotator rotation);
+
+private:
+	using CallbackMap = std::map<std::string, CreateActorCallback>;
 
 private:
 	CallbackMap mCallbacks;
@@ -50,7 +54,7 @@ private:
 	/*
 	 * Turn off unusable operations
 	 */
-	ActorFactory();
+	ActorFactory() = default;
 	~ActorFactory();
 	ActorFactory(const ActorFactory&) = delete;
 	void operator=(const ActorFactory&) = delete;

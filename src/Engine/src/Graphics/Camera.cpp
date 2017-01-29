@@ -148,7 +148,7 @@ void Camera::renderActors(const LightEmitter *light)
 	const Vector2D lightPos = light->getLocation();
 	const float lightBrightness = light->getBrightness();
 	// for each actors in the world
-	for (const auto actorToRender : mBrowsableWorld->getAllActors())
+	for (const auto& actorToRender : mBrowsableWorld->getAllActors())
 	{
 		// Get actor's camera local location
 		Vector2D screenLoc(actorToRender->getLocation() - lightPos);
@@ -182,7 +182,7 @@ void Camera::renderActors(const LightEmitter *light)
 void Camera::renderCollisionBoxes()
 {
 	// for each actors in the world
-	for (const auto actor : mBrowsableWorld->getAllActors())
+	for (const auto& actor : mBrowsableWorld->getAllActors())
 	{
 		if (actor->getType() != ActorType::Bullet
 			&& actor->getType() != ActorType::Light
@@ -318,7 +318,7 @@ void Camera::renderLightShadows(const LightEmitter *light)
 
 	Vector2D lightCenterPos(mShownSize/2, mShownSize/2);
 	// for each actors in the world
-	for (const auto actor : mBrowsableWorld->getAllActors())
+	for (const auto& actor : mBrowsableWorld->getAllActors())
 	{
 		// if actor - static
 		if (actor->getType() == ActorType::Static)
@@ -362,7 +362,7 @@ void Camera::renderLightShadows(const LightEmitter *light)
 void Camera::renderShadows()
 {
 	// for each actors in the world
-	for (const auto actor : mBrowsableWorld->getAllActors())
+	for (const auto& actor : mBrowsableWorld->getAllActors())
 	{
 		// if actor - static
 		if (actor->getType() == ActorType::Static)
@@ -399,7 +399,7 @@ void Camera::renderHulls()
 	const int normal_length = 10;
 
 	// for each actors in the world
-	for (const auto actor : mBrowsableWorld->getAllActors())
+	for (const auto& actor : mBrowsableWorld->getAllActors())
 	{
 		// if actor - static
 		if (actor->getType() != ActorType::Light && actor->getType() != ActorType::Special)
@@ -432,7 +432,7 @@ void Camera::renderHulls()
 void Camera::renderLights()
 {
 	// for each actors in the world
-	for (const auto actor : mBrowsableWorld->getAllActors())
+	for (const auto& actor : mBrowsableWorld->getAllActors())
 	{
 		// if actor - static
 		if (actor->getType() == ActorType::Light)

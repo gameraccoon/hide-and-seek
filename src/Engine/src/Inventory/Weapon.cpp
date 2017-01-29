@@ -1,5 +1,6 @@
 #include "Inventory/Weapon.h"
 
+#include "Modules/ActorFactory.h"
 
 Weapon::Weapon()
 	: mLocation(ZERO_VECTOR)
@@ -44,7 +45,7 @@ void Weapon::update(float deltatime)
 	mLastFireTime += deltatime;
 	if (mIsFiring && mLastFireTime > mFireInterval)
 	{
-		mOwnerWorld->spawnActor(new Bullet(mOwnerWorld, mLocation, Vector2D(1.f, 1.f), mDirection));
+		ActorFactory::Factory().spawnActor("Bullet", mOwnerWorld, mLocation, Vector2D(1.f, 1.f), mDirection);
 		mLastFireTime = 0;
 	}
 }

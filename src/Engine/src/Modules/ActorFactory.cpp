@@ -2,7 +2,6 @@
 
 #include <Log.h>
 
-ActorFactory::ActorFactory() {}
 ActorFactory::~ActorFactory()
 {
 	Log::Instance().writeLog("ActorFactory destroyed");
@@ -24,7 +23,7 @@ bool ActorFactory::unregisterActor(std::string actorId)
 	return mCallbacks.erase(actorId) == 1;
 }
 
-IActor* ActorFactory::placeActor(std::string actorId, World *world, const Vector2D location, const Vector2D scale, const Rotator rotation)
+IActor* ActorFactory::spawnActor(std::string actorId, World *world, const Vector2D location, const Vector2D scale, const Rotator rotation)
 {
 	CallbackMap::const_iterator it = mCallbacks.find(actorId);
 	
@@ -33,5 +32,11 @@ IActor* ActorFactory::placeActor(std::string actorId, World *world, const Vector
 		throw std::runtime_error(std::string("Unknown actor identefier '").append(actorId).append("'"));
 	}
 	
-	return (it->second)(world, location, scale, rotation);
+	std::unique_ptr<IActor> newActor((it->second)(world, location, scale, rotation));
+
+	IActor* actorRawPtr = newActor.get();
+
+	world->addActor(newActor);
+
+	return actorRawPtr;
 }

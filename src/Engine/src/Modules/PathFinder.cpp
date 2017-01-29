@@ -50,17 +50,17 @@ bool PathFinder::createNewPath(Vector2D startPoint, Vector2D endPoint)
 	float minDistEnd = minDistStart;
 	PathPoint *firstPoint = nullptr, *lastPoint = nullptr;
 
-	for (auto const pathPoint : mOwnerWorld->getNavigationMap())
+	for (auto const& pathPoint : mOwnerWorld->getNavigationMap())
 	{
 		if ((pathPoint->location - startPoint).size() < minDistStart)
 		{
-			firstPoint = pathPoint;
+			firstPoint = pathPoint.get();
 			minDistStart = (firstPoint->location - startPoint).size();
 		}
 
 		if ((pathPoint->location - endPoint).size() < minDistEnd)
 		{
-			lastPoint = pathPoint;
+			lastPoint = pathPoint.get();
 			minDistEnd = (lastPoint->location - endPoint).size();
 		}
 	}

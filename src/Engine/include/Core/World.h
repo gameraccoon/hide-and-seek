@@ -1,40 +1,35 @@
 #pragma once
 
-#include <set>
-
 #include "IActor.h"
-#include "../Structures/PathPoint.h"
+#include "Structures/PathPoint.h"
 
 #include <string>
 
 class World
 {
 public:
-	World();
+	World() = default;
 	~World();
 	/** Add Actor to the World. */
-	void spawnActor(IActor* actor);
-	/** Delete actor from the World. */
-	void removeActor(IActor* actor);
+	void addActor(IActor::Ptr& actor);
 	/** Update all Actors in the World */
 	void update(float deltatime);
 	/** Add a new PathPoint to the navigation map*/
-	void addPathPoint(PathPoint* pathPoint);
+	void addPathPoint(PathPoint::Ptr& pathPoint);
 	/** */
-	IActor* getActorById(std::string id);
+	IActor* getActorById(const std::string& id);
 	/** */
-	std::set<IActor*>& getAllActors();
+	std::vector<IActor::Ptr>& getAllActors();
 	/** */
-	const std::set<IActor*>& getAllActors() const;
+	const std::vector<IActor::Ptr>& getAllActors() const;
 	/** */
-	const std::set<PathPoint*>& getNavigationMap() const;
+	const std::vector<PathPoint::Ptr>& getNavigationMap() const;
+
 private:
-	/** Free memory of path points */
-	void removeAllPathPoints();
 	/** Destroy actors that waits to be destroyed */
 	void cleanDestroyedActors();
 	/** All actors in the World. */
-	std::set<IActor*> mAllActors;
+	std::vector<IActor::Ptr> mAllActors;
 	/** All pathpoints of this world */
-	std::set<PathPoint*> mNavigationMap;
+	std::vector<PathPoint::Ptr> mNavigationMap;
 };

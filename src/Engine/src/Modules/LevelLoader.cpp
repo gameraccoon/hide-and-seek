@@ -11,7 +11,7 @@ void LevelLoader::save(World* world, const std::string levelName)
 	// saving all actors in this world
 	std::ofstream mapFile;
 	mapFile.open(std::string("./maps/").append(levelName).append(std::string(".map")));
-	for (const auto actor : world->getAllActors())
+	for (const auto& actor : world->getAllActors())
 	{
 		mapFile << actor->getClassID();
 		mapFile << " ";
@@ -39,7 +39,7 @@ void LevelLoader::save(World* world, const std::string levelName)
 	// save locations of pathpoints
 	for (const auto &navPoint : world->getNavigationMap())
 	{
-		points.insert(PathPointMap::value_type(navPoint, i));
+		points.insert(PathPointMap::value_type(navPoint.get(), i));
 
 		pathsFile << i;
 		pathsFile << " ";
@@ -103,13 +103,13 @@ void LevelLoader::load(World* world, const std::string levelName)
 		mapFile >> yScale;
 		mapFile >> angle;
 
-		ActorFactory::Factory().placeActor(className, world, Vector2D(xPos, yPos),
+		ActorFactory::Factory().spawnActor(className, world, Vector2D(xPos, yPos),
 			Vector2D(xScale, yScale), Rotator(angle));
 	}
 	mapFile.close();
 
 	// loading paths
-	typedef std::map<int, PathPoint*> PathPointMap;
+	typedef std::map<int, PathPoint::Ptr> PathPointMap;
 	PathPointMap points;
 
 	std::ifstream pathsFile;
@@ -137,7 +137,7 @@ void LevelLoader::load(World* world, const std::string levelName)
 		pathsFile >> point2;
 
 		// create way from point1 to point2
-		points.at(point1)->connect(points.at(point2));
+		points.at(point1)->connect(points.at(point2).get());
 	}
 
 	// put paths into the world

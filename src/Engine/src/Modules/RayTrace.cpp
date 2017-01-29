@@ -131,7 +131,7 @@ namespace RayTrace
 
 	bool fastTrace(World * world, const Vector2D &startPoint, const Vector2D &endPoint)
 	{
-		for (const auto currentActor : world->getAllActors())
+		for (const auto& currentActor : world->getAllActors())
 		{
 			if (currentActor->getType() == ActorType::Light || currentActor->getType() == ActorType::Special)
 				continue;
@@ -192,7 +192,7 @@ namespace RayTrace
 		float minRayLength = (startPoint - endPoint).size() + 20.0f;
 
 		// for each actor in the world
-		for (const auto currentActor : world->getAllActors())
+		for (const auto& currentActor : world->getAllActors())
 		{
 			if (currentActor->getType() == ActorType::Light || currentActor->getType() == ActorType::Special)
 				continue;
@@ -244,7 +244,7 @@ namespace RayTrace
 					if (rayLength < minRayLength)
 					{
 						minRayLength = rayLength;
-						nearestActor = currentActor;
+						nearestActor = currentActor.get();
 						nearestHitPoint = hitLocation;
 						nearestNormal = border.getNormal();
 					}

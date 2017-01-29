@@ -2,10 +2,11 @@
 
 #include <string>
 
-#include "../Core/Vector2D.h"
-#include "../Core/Rotator.h"
-#include "../Structures/BoundingBox.h"
-#include "../Structures/Hull.h"
+#include "Core/Vector2D.h"
+#include "Core/Rotator.h"
+#include "Structures/BoundingBox.h"
+#include "Structures/Hull.h"
+#include "Core/ActorComponent.h"
 
 /** Types of an actors */
 enum class ActorType
@@ -25,7 +26,10 @@ enum class ActorType
 class IActor
 {
 public:
-	virtual ~IActor() {};
+	using Ptr = std::unique_ptr<IActor>;
+
+public:
+	virtual ~IActor() = default;
 	/** Set new location of the actor in the World */
 	virtual void setLocation(const Vector2D& location) = 0;
 	/** Get actor's world location */
@@ -56,4 +60,7 @@ public:
 	virtual std::string getClassID() const = 0;
 	/** Returns the specific identificator of current object */
 	virtual std::string getActorId() const = 0;
+
+	/** Add a new component to this actor */
+	virtual void AddComponent(const ActorComponent::Ptr& component) = 0;
 };

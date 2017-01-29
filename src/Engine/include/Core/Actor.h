@@ -18,6 +18,11 @@
 class Actor : public IActor
 {
 public:
+	using Ptr = std::unique_ptr<Actor>;
+
+public:
+	static Ptr Create(World *world, Vector2D location, Rotator rotation);
+
 	Actor(World *world, Vector2D location, Rotator rotation);
 	virtual ~Actor();
 	
@@ -51,6 +56,9 @@ public:
 	virtual std::string getActorId() const override final;
 	/** Take some damage to the actor */
 	virtual void hit(IActor *instigator, float damageValue, Vector2D impulse) override;
+
+	/** Add a new component to this actor */
+	virtual void AddComponent(const ActorComponent::Ptr& component) override;
 
 protected:
 	/* events */
@@ -100,6 +108,8 @@ private:
 	bool mIsWaitDestruction;
 	/** Time that actor live */
 	float mLifetime;
+	/** All the components that attached to this actor */
+	std::vector<ActorComponent::Ptr> mComponents;
 
 	/** Copy and assignment prohibited */
 	Actor(const Actor&) = delete;

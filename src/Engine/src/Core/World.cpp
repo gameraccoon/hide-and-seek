@@ -1,40 +1,19 @@
 #include "Core/World.h"
 
-World::World()
-{
-}
+#include <algorithm>
 
 World::~World()
 {
-	auto i = mAllActors.begin(), iEnd = mAllActors.end();
-
-	while (i != iEnd)
-	{
-		IActor* actorToDelete = (*i);
-		i++;
-		
-		mAllActors.erase(actorToDelete);
-
-		delete (actorToDelete);
-	}
-
-	mAllActors.clear();
-	removeAllPathPoints();
 }
 
-void World::spawnActor(IActor* actor)
+void World::addActor(IActor::Ptr& actor)
 {
-	mAllActors.insert(actor);
-}
-
-void World::removeActor(IActor* actor)
-{
-	mAllActors.erase(actor);
+	mAllActors.emplace_back(actor.release());
 }
 
 void World::update(float deltatime)
 {
-	for (auto actor : mAllActors)
+	for (auto& actor : mAllActors)
 	{
 		if (!actor->isWaitDestruction())
 		{
@@ -45,22 +24,9 @@ void World::update(float deltatime)
 	cleanDestroyedActors();
 }
 
-void World::addPathPoint(PathPoint* pathPoint)
+void World::addPathPoint(PathPoint::Ptr& pathPoint)
 {
-	mNavigationMap.insert(pathPoint);
-}
-
-void World::removeAllPathPoints()
-{
-	auto i = mNavigationMap.begin(), iEnd = mNavigationMap.end();
-	while (i != iEnd)
-	{
-		PathPoint* point = (*i);
-		i++;
-
-		mNavigationMap.erase(point);
-		delete point;
-	}
+	mNavigationMap.emplace_back(pathPoint.release());
 }
 
 void World::cleanDestroyedActors()
@@ -68,41 +34,43 @@ void World::cleanDestroyedActors()
 	auto i = mAllActors.begin(), iEnd = mAllActors.end();
 	while (i != iEnd)
 	{
-		IActor* currentActor = (*i);
-		i++;
+		IActor* currentActor = i->get();
 
 		if (currentActor->isWaitDestruction())
 		{
-			removeActor(currentActor);
-			delete currentActor;
+			i = mAllActors.erase(i);
+		}
+		else
+		{
+			i++;
 		}
 	}
 }
 
-IActor* World::getActorById(std::string id)
+IActor* World::getActorById(const std::string& id)
 {
 	for (const auto &actor : mAllActors)
 	{
 		if (id == actor->getActorId())
 		{
-			return actor;
+			return actor.get();
 		}
 	}
 
 	return nullptr;
 }
 
-std::set<IActor*>& World::getAllActors()
+std::vector<IActor::Ptr>& World::getAllActors()
 {
 	return mAllActors;
 }
 
-const std::set<IActor*>& World::getAllActors() const
+const std::vector<IActor::Ptr>& World::getAllActors() const
 {
 	return mAllActors;
 }
 
-const std::set<PathPoint*>& World::getNavigationMap() const
+const std::vector<PathPoint::Ptr>& World::getNavigationMap() const
 {
 	return mNavigationMap;
 }
