@@ -4,7 +4,7 @@ namespace SystemInterface
 {
 	namespace Input
 	{
-		ButtonSwitcher::ButtonSwitcher(Engine *, int8_t key, bool active)
+        ButtonSwitcher::ButtonSwitcher(Engine *, char key, bool active)
 		{
 			mIsActive = active;
 			mKey = key;
@@ -19,7 +19,7 @@ namespace SystemInterface
 			return mIsActive;
 		}
 
-		int8_t ButtonSwitcher::getKey()
+        char ButtonSwitcher::getKey()
 		{
 			return mKey;
 		}
@@ -58,7 +58,7 @@ namespace SystemInterface
 
 		void ButtonListeners::check()
 		{
-			for (int i = 0; i < (int)mListeners.size(); i++)
+            for (size_t i = 0, count = mListeners.size(); i < count; i++)
 			{
 				mListeners[i]->check();
 			}
@@ -66,7 +66,7 @@ namespace SystemInterface
 
 		bool ButtonListeners::isActive(int key)
 		{
-			for (int i = 0; i < (int)mListeners.size(); i++)
+            for (size_t i = 0, count = mListeners.size(); i < count; i++)
 			{
 				if (mListeners[i]->getKey() == key)
 				{

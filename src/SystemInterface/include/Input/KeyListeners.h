@@ -11,11 +11,11 @@ namespace SystemInterface
 		class ButtonSwitcher
 		{
 		public:
-			ButtonSwitcher(Engine *engine, int8_t key, bool active);
+            ButtonSwitcher(Engine *engine, char key, bool active);
 			virtual ~ButtonSwitcher();
 			bool isActive();
 
-			int8_t getKey();
+            char getKey();
 
 			void check();
 
@@ -27,7 +27,7 @@ namespace SystemInterface
 		protected:
 			bool mIsPressed;
 			bool mIsActive;
-			int8_t mKey;
+            char mKey;
 		};
 
 		class ButtonListeners

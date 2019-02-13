@@ -1,7 +1,7 @@
 #include "Actors/Bullet.h"
 
 
-Bullet::Bullet(World *world, Vector2D location, Vector2D scale, Rotator rotation) :
+Bullet::Bullet(World *world, Vector2D location, Vector2D /*scale*/, Rotator rotation) :
 	Actor(world, location, rotation)
 {
 	mSpeed = 10.0f;

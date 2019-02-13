@@ -33,7 +33,7 @@ class SqliteDataReader : public SqlDataReader
 {
 public:
 	SqliteDataReader(const std::string& query, sqlite3* db);
-	virtual ~SqliteDataReader();
+    virtual ~SqliteDataReader() override;
 	/**
 	* @throws TextureNotFoundException
 	*/

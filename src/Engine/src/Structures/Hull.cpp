@@ -11,9 +11,8 @@ Hull::~Hull()
 
 void Hull::generateBorders()
 {
-	borders.clear();
-	int count = (int)points.size();
-	for (int i = 0; i < count; i++)
+    borders.clear();
+    for (size_t i = 0, count = points.size(); i < count; i++)
 	{
 		borders.insert(borders.end(), Border(points[i], points[(i + 1) % count]));
 	}

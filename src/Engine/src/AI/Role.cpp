@@ -1,8 +1,8 @@
 #include "AI/Role.h"
 
 Role::Role(World* world, IBody *body)
-	:mBody(body)
-	,mWorld(world)
+    : mBody(body)
+    , mWorld(world)
 {
 }
 

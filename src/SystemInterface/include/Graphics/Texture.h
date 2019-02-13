@@ -37,10 +37,10 @@ namespace Graphics
 		Texture(SystemInterface::IUseCounter* useCounter, const Base* base);
 		Texture(const Texture&) = default;
 		Texture(Texture&&) = default;
-		virtual ~Texture();
+        virtual ~Texture() override;
 
-		int Texture::GetHeight() const;
-		int Texture::GetWidth() const;
+        int GetHeight() const;
+        int GetWidth() const;
 
 		void Draw(float x, float y, float rotation = 0.0f, float alpha = 1.0f);
 

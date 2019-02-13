@@ -3,9 +3,8 @@
 
 SoundVolume::SoundVolume(World *world, Vector2D location, float loudness)
 	: Actor(world, location, 0.f)
+    , mLoudness(loudness)
 {
-	loudness = loudness;
-
 	updateActorId("SoundVolume");
 }
 

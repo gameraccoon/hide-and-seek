@@ -1,7 +1,9 @@
 #include "Log.h"
 
 #include <fstream>
-#include <ctime>
+#include <chrono>
+#include <iomanip>
+#include <filesystem>
 
 Log* Log::mSingleInstance = nullptr;
 bool Log::mIsDestroyed = false;
@@ -9,10 +11,15 @@ bool Log::mIsFirstLife = true;
 
 Log::Log()
 {
-	const std::string LOG_FILE = std::string("./logs/").append("log.txt"); 
+    const std::string LOG_FILE = std::string("./logs/").append("log.txt");
 
 	if (mIsFirstLife)
 	{
+        namespace fs = std::filesystem;
+        if (!fs::is_directory("./logs") || !fs::exists("./logs")) {
+            fs::create_directory("logs");
+        }
+
 		mLogFileStream = new std::ofstream(LOG_FILE, std::ios_base::trunc);
 		writeInit("Log file created");
 	}
@@ -34,7 +41,7 @@ Log::~Log()
 
 Log& Log::Instance()
 {
-	// if we haven't instance of the Log
+    // if we don't have the instance of the Log
 	if (Log::mSingleInstance == nullptr)
 	{
 		if (mIsDestroyed)
@@ -103,13 +110,11 @@ void Log::writeInit(const std::string& text)
 void Log::writeLine(const std::string& text)
 {
 	if (mLogFileStream->is_open())
-	{
-		char dateStr[9];
-		char timeStr[9];
-		_strdate_s(dateStr);
-		*mLogFileStream << dateStr << " ";
-		_strtime_s(timeStr);
-		*mLogFileStream << timeStr;
+    {
+        auto now = std::chrono::system_clock::now();
+        auto in_time_t = std::chrono::system_clock::to_time_t(now);
+
+        *mLogFileStream << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %X");
 		*mLogFileStream << text << std::endl;
 	}
 }

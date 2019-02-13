@@ -9,7 +9,7 @@ namespace Graphics
 	}
 
 	Font::Font(SystemInterface::IUseCounter * useCounter, const Base* base)
-		: Resource(useCounter, base ? base->uid : -1)
+        : Resource(useCounter, base ? base->uid : 0)
 		, mBase(base)
 	{
 	}

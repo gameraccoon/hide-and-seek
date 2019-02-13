@@ -1,6 +1,6 @@
 #include "Actors/LightEmitter.h"
 
-LightEmitter::LightEmitter(World *world, Vector2D location, Vector2D scale, Rotator rotation) : Actor(world, location, rotation)
+LightEmitter::LightEmitter(World *world, Vector2D location, Vector2D /*scale*/, Rotator rotation) : Actor(world, location, rotation)
 {
 	setType(ActorType::Light);
 	mBrightness = 1.0f;

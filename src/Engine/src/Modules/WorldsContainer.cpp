@@ -16,7 +16,7 @@ WorldsContainer& WorldsContainer::Container()
 
 void WorldsContainer::insertWorld(World* world, std::string name)
 {
-	worlds.insert(WorldsMap::value_type(name, world)).second;
+    worlds.insert(WorldsMap::value_type(name, world));
 }
 
 World* WorldsContainer::getWorldByName(std::string name)

@@ -13,4 +13,4 @@ namespace RayTrace
 	bool fastTrace(World * world, const Vector2D &startPoint, const Vector2D &endPoint);
 	IActor* trace(World * world, const Vector2D &startPoint, const Vector2D &endPoint,
 		Vector2D *outPoint = nullptr, Vector2D *outNormal = nullptr);
-};
+}

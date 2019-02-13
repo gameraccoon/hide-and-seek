@@ -5,7 +5,7 @@
 #include <Modules/Collide.h>
 
 
-Man::Man(World *world, Vector2D location, Vector2D scale, Rotator ) : Body(world, location)
+Man::Man(World *world, Vector2D location, Vector2D /*scale*/, Rotator ) : Body(world, location)
 {
 	setType(ActorType::Living);
 

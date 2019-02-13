@@ -13,6 +13,7 @@ namespace SystemInterface
 	class ResourceManager::Impl : public IUseCounter
 	{
 	public:
+        virtual ~Impl() = default;
 		std::vector<std::unique_ptr<Resource::Base>> resources;
 		std::map<std::string, IUseCounter::Uid> texturesMap;
 		std::map<std::string, IUseCounter::Uid> fontsMap;
@@ -24,9 +25,9 @@ namespace SystemInterface
 		void releaseResource(Uid uid);
 	};
 
-	void ResourceManager::Impl::beginUse(Uid uid)
+    void ResourceManager::Impl::beginUse(Uid uid)
 	{
-		if (uid < 0 || uid >= resources.size())
+        if (uid >= resources.size())
 		{
 			Log::Instance().writeError("Inadequate resource UID");
 			return;
@@ -45,7 +46,7 @@ namespace SystemInterface
 
 	void ResourceManager::Impl::endUse(Uid uid)
 	{
-		if (uid < 0 || uid >= resources.size())
+        if (uid >= resources.size())
 		{
 			Log::Instance().writeError("Inadequate resource UID");
 			return;
@@ -69,7 +70,7 @@ namespace SystemInterface
 
 	void ResourceManager::Impl::releaseResource(Uid uid)
 	{
-		if (uid < 0 || uid >= resources.size())
+        if (uid >= resources.size())
 		{
 			Log::Instance().writeError("Inadequate resource UID");
 			return;
@@ -105,7 +106,7 @@ namespace SystemInterface
 		if (it == nameMap.cend())
 		{
 			// there are no resource and info about it
-			IUseCounter::Uid uid = (IUseCounter::Uid)resources.size();
+            IUseCounter::Uid uid = static_cast<IUseCounter::Uid>(resources.size());
 			nameMap.insert({ texturePath, uid });
 			Base* unsafePointer = new Base(uid, destroyResource);
 			fillResource(unsafePointer);
@@ -116,13 +117,13 @@ namespace SystemInterface
 		{
 			IUseCounter::Uid uid = it->second;
 
-			if (uid < 0 || uid >= resources.size())
+            if (uid >= resources.size())
 			{
 				Log::Instance().writeError("Inadequate resource UID");
 				return T(useCounter, nullptr);
 			}
 
-			Base* unsafePointer = dynamic_cast<T::Base*>(resources[uid].get());
+            Base* unsafePointer = dynamic_cast<Base*>(resources[uid].get());
 			if (unsafePointer)
 			{
 				return T(useCounter, unsafePointer);
@@ -242,7 +243,7 @@ namespace SystemInterface
 		{
 			graphicInfoFile.open(mGraphicInfoFileName);
 		}
-		catch (std::exception)
+        catch (std::exception&)
 		{
 			return spriteInfo;
 		}

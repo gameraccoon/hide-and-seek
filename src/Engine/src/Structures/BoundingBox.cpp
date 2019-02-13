@@ -2,11 +2,11 @@
 
 
 BoundingBox::BoundingBox(float minX, float minY, float maxX, float maxY)
+    : minX(minX)
+    , minY(minY)
+    , maxX(maxX)
+    , maxY(maxY)
 {
-	minX = minX;
-	minY = minY;
-	maxX = maxX;
-	maxY = maxY;
 }
 
 BoundingBox::BoundingBox(Vector2D minPoint, Vector2D maxPoint)

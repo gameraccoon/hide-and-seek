@@ -10,7 +10,7 @@ namespace Game
 	{
 		mWorld = std::make_unique<World>();
 		mMainCamera = std::make_unique<Camera>(mWorld.get(),
-			Vector2D((float)getEngine()->getWidth(), (float)getEngine()->getHeight()),
+            Vector2D(static_cast<float>(getEngine()->getWidth()), static_cast<float>(getEngine()->getHeight())),
 			Vector2D(0.0f, 0.0f));
 
 		// start the main loop

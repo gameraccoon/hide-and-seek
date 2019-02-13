@@ -22,10 +22,6 @@ Vector2D::Vector2D(const Rotator& rotator)
 	y = std::sin(rotation);
 }
 
-Vector2D::~Vector2D()
-{
-}
-
 float Vector2D::size() const
 {
 	return sqrt((x * x) + (y * y));

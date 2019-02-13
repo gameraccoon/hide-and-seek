@@ -26,7 +26,7 @@ int SqliteValue::asInt()
 
 float SqliteValue::asFloat()
 {
-	return (float)sqlite3_column_double(this->ppStmt, this->columnIndex);
+    return static_cast<float>(sqlite3_column_double(this->ppStmt, this->columnIndex));
 }
 
 std::string SqliteValue::asString()
@@ -41,7 +41,7 @@ const void* SqliteValue::asVariant()
 
 SqliteDataReader::SqliteDataReader(const std::string& query, sqlite3* db)
 {
-	int rc = sqlite3_prepare(db, query.c_str(), (int)query.length(), &this->ppStmt, 0);
+    int rc = sqlite3_prepare(db, query.c_str(), static_cast<int>(query.length()), &this->ppStmt, nullptr);
 
 	if (rc != 0)
 	{

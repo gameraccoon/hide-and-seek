@@ -25,7 +25,7 @@ void PlayerRole::onHearNoise(SoundVolume *)
 {
 }
 
-void PlayerRole::gotoState(std::string )
+void PlayerRole::gotoState(const std::string& )
 {
 }
 

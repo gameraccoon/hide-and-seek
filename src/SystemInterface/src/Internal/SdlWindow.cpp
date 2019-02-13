@@ -16,7 +16,7 @@ namespace SystemInterface
 				, height
 				, SDL_WINDOW_HIDDEN | SDL_WINDOW_OPENGL), SDL_DestroyWindow)
 		{
-			if (mSDLWindow == false)
+            if (mSDLWindow == nullptr)
 			{
 				throw std::runtime_error(std::string("Error creating window: ") + SDL_GetError());
 			}

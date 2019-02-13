@@ -54,7 +54,7 @@ void AiRole::onHearNoise(SoundVolume *sound)
 	checkStates();
 }
 
-void AiRole::gotoState(std::string stateName)
+void AiRole::gotoState(const std::string& stateName)
 {
 	//states.push(new LuaAiState(getWorld(), getBody(), this, stateName));
 }

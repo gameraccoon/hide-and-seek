@@ -1,6 +1,7 @@
 #include "Core/Actor.h"
 
 #include <sstream>
+#include <memory>
 
 namespace
 {
@@ -13,14 +14,14 @@ Actor::Ptr Actor::Create(World * world, Vector2D location, Rotator rotation)
 }
 
 Actor::Actor(World *world, Vector2D location, Rotator rotation)
-	: mLocation(location)
-	, mScale(1.f, 1.f)
-	, mOriginalSize(1.f, 1.f)
-	, mCalculatedSize(1.f, 1.f)
-	, mDirection(rotation)
-	, mColideBox(location, location)
-	, mOwnerWorld(world)
-	, mType(ActorType::Ghost)
+    : mOwnerWorld(world)
+    , mType(ActorType::Ghost)
+    , mLocation(location)
+    , mScale(1.f, 1.f)
+    , mOriginalSize(1.f, 1.f)
+    , mCalculatedSize(1.f, 1.f)
+    , mDirection(rotation)
+    , mColideBox(location, location)
 	, mIsWaitDestruction(false)
 	, mLifetime(0)
 {

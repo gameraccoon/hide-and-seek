@@ -1,12 +1,11 @@
 #include "AI/AiState.h"
 
 AiState::AiState(World *world, IBody *body, Role *role)
+    : mBody(body)
+    , mRole(role)
+    , mWorld(world)
 {
 	mLastExecutionTime = 0.f;
-
-	body = body;
-	role = role;
-	world = world;
 
 	mEnded = false;
 }

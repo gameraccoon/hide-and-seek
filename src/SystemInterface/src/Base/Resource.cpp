@@ -10,8 +10,8 @@ namespace SystemInterface
 	}
 
 	Resource::Resource(const Resource& resource)
-		: mUid(resource.mUid)
-		, mUseCounter(resource.mUseCounter)
+        : mUseCounter(resource.mUseCounter)
+        , mUid(resource.mUid)
 	{
 		mUseCounter->beginUse(resource.mUid);
 	}

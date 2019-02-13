@@ -16,7 +16,7 @@ public:
 	virtual void onSeeEnemy(IActor *enemy) override;
 	virtual void onHearNoise(SoundVolume *sound) override;
 
-	virtual void gotoState(std::string stateName) override;
+    virtual void gotoState(const std::string& stateName) override;
 	virtual void endCurrentState() override;
 private:
 	std::stack<IAiState*> mStates;

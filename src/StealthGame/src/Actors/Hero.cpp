@@ -4,7 +4,7 @@
 
 #include <Modules/Collide.h>
 
-Hero::Hero(World *world, Vector2D location, Vector2D scale, Rotator )
+Hero::Hero(World *world, Vector2D location, Vector2D /*scale*/, Rotator )
 	: Body(world, location)
 	, mStep(ZERO_VECTOR)
 {

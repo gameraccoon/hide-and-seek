@@ -8,7 +8,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glew/glew.h>
 #include <glm/glm.hpp>
-#include <sdl/Sdl.h>
 
 #include "../Internal/FontInternal.h"
 #include "../Internal/GlContext.h"
@@ -41,12 +40,12 @@ namespace SystemInterface
 		Impl()
 			: mSdl(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_NOPARACHUTE)
 			, mSdlWindow(WindowWidth, WindowHeight)
-			, mGlContext(mSdlWindow)
-			, mMouseX(WindowWidth * 0.5f)
-			, mMouseY(WindowHeight * 0.5f)
-			, mMouseButtonDown(false)
-			, mQuit(false)
-			, mGame(nullptr)
+            , mGlContext(mSdlWindow)
+            , mGame(nullptr)
+            , mQuit(false)
+            , mMouseX(WindowWidth * 0.5f)
+            , mMouseY(WindowHeight * 0.5f)
+            , mMouseButtonDown(false)
 			, mElapsedTicks(static_cast<float>(SDL_GetTicks()))
 		{
 		}
@@ -126,7 +125,7 @@ namespace SystemInterface
 	{
 		glm::mat4 transformation;
 		transformation = glm::translate(transformation, glm::vec3(x, y, 0.0f));
-		if (rotation)
+        if (rotation > 0.001f || rotation < -0.001f)
 		{
 			transformation = glm::rotate(transformation, rotation, glm::vec3(0.0f, 0.0f, 1.0f));
 		}
@@ -191,7 +190,7 @@ namespace SystemInterface
 	{
 		glm::mat4 transformation;
 		transformation = glm::translate(transformation, glm::vec3(x, y, 0.0f));
-		if (rotation)
+        if (rotation > 0.001f || rotation < -0.001f)
 		{
 			transformation = glm::rotate(transformation, rotation, glm::vec3(0.0f, 0.0f, 1.0f));
 			transformation = glm::translate(transformation, glm::vec3(-calculateStringWidth(text) / 2.0f, -20.0f, 0.0f));
