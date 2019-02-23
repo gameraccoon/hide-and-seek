@@ -13,11 +13,11 @@ PathFinder::~PathFinder()
 }
 
 CalculationPoint::CalculationPoint(PathPoint* point, float g, float h, CalculationPoint* cameFrom)
-	: f(g + h)
-	, g(g)
-	, h(h)
-	, point(point)
-	, cameFrom(cameFrom)
+	: Point(point)
+	, F(g + h)
+	, G(g)
+	, H(h)
+	, CameFrom(cameFrom)
 {
 }
 
@@ -27,8 +27,8 @@ void PathFinder::reconstructPath(CalculationPoint* end)
 	CalculationPoint *currentPoint = end;
 	while (currentPoint != nullptr)
 	{
-		mPath.insert(mPath.begin(), currentPoint->point); // back order
-		currentPoint = currentPoint->cameFrom;
+		mPath.insert(mPath.begin(), currentPoint->Point); // back order
+		currentPoint = currentPoint->CameFrom;
 	}
 
 	// free closed set
@@ -75,15 +75,20 @@ bool PathFinder::createNewPath(Vector2D startPoint, Vector2D endPoint)
 	while (OpenSet.size() > 0)
 	{
 		float minF = 1000000.0;
-		CalculationPoint *currentPoint;
+		CalculationPoint *currentPoint = nullptr;
 		// find point with minimal heuristic
 		for (const auto& openSetPoint : OpenSet)
 		{
-			if (openSetPoint->f < minF)
+			if (openSetPoint->F < minF)
 			{
-				minF = openSetPoint->f;
+				minF = openSetPoint->F;
 				currentPoint = openSetPoint;
 			}
+		}
+
+		if (currentPoint == nullptr)
+		{
+			return false;
 		}
 
 		// move point to closed set from open set
@@ -91,7 +96,7 @@ bool PathFinder::createNewPath(Vector2D startPoint, Vector2D endPoint)
 		OpenSet.erase(currentPoint);
 
 		// if we got it
-		if (currentPoint->point == lastPoint)
+		if (currentPoint->Point == lastPoint)
 		{
 			// free open set
 			while (OpenSet.size() > 0)
@@ -108,12 +113,12 @@ bool PathFinder::createNewPath(Vector2D startPoint, Vector2D endPoint)
 			return true;
 		}
 
-		for (auto const &neighbor : currentPoint->point->legalPoints)
+		for (auto const &neighbor : currentPoint->Point->legalPoints)
 		{
 			bool bPointInClosedSet = false;
 			for (auto const &alreadyFound : mClosedSet)
 			{
-				if (neighbor == alreadyFound->point)
+				if (neighbor == alreadyFound->Point)
 				{
 					bPointInClosedSet = true;
 					break;
@@ -126,14 +131,14 @@ bool PathFinder::createNewPath(Vector2D startPoint, Vector2D endPoint)
 				continue;
 			}
 			
-			float g = currentPoint->g + (currentPoint->point->location - neighbor->location).size();
+			float g = currentPoint->G + (currentPoint->Point->location - neighbor->location).size();
 			float h = (lastPoint->location - neighbor->location).size();
 			float f = g + h;
 			bool bPointInOpenSet = false;
 			CalculationPoint* openPoint = nullptr;
 			for (auto const &openSetPoint : OpenSet)
 			{
-				if (openSetPoint->point == neighbor)
+				if (openSetPoint->Point == neighbor)
 				{
 					bPointInOpenSet = true;
 					openPoint = openSetPoint;
@@ -147,12 +152,12 @@ bool PathFinder::createNewPath(Vector2D startPoint, Vector2D endPoint)
 			// skip if we have better path for this point
 			if (bPointInOpenSet)
 			{
-				if (f < openPoint->f)
+				if (f < openPoint->F)
 				{
-					openPoint->f = f;
-					openPoint->g = g;
-					openPoint->h = h;
-					openPoint->cameFrom = currentPoint;
+					openPoint->F = f;
+					openPoint->G = g;
+					openPoint->H = h;
+					openPoint->CameFrom = currentPoint;
 				}
 			}
 			else

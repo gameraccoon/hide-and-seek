@@ -40,13 +40,13 @@ namespace SystemInterface
 		Impl()
 			: mSdl(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_NOPARACHUTE)
 			, mSdlWindow(WindowWidth, WindowHeight)
-            , mGlContext(mSdlWindow)
-            , mGame(nullptr)
-            , mQuit(false)
-            , mMouseX(WindowWidth * 0.5f)
-            , mMouseY(WindowHeight * 0.5f)
-            , mMouseButtonDown(false)
+			, mGlContext(mSdlWindow)
 			, mElapsedTicks(static_cast<float>(SDL_GetTicks()))
+			, mGame(nullptr)
+			, mQuit(false)
+			, mMouseX(WindowWidth * 0.5f)
+			, mMouseY(WindowHeight * 0.5f)
+			, mMouseButtonDown(false)
 		{
 		}
 
@@ -68,7 +68,7 @@ namespace SystemInterface
 
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		glOrtho(0.0f, WindowWidth, WindowHeight, 0.0f, -1.0f, 1.0f);
+		glOrtho(0.0, WindowWidth, WindowHeight, 0.0, -1.0, 1.0);
 		glMatrixMode(GL_MODELVIEW);
 	}
 
@@ -96,9 +96,9 @@ namespace SystemInterface
 		mPimpl->mQuit = true;
 	}
 
-	void Engine::start(IGame& game)
+	void Engine::start(IGame* game)
 	{
-		mPimpl->mGame = &game;
+		mPimpl->mGame = game;
 		mPimpl->mSdlWindow.show();
 		mPimpl->start();
 	}

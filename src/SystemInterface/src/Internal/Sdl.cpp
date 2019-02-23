@@ -7,7 +7,7 @@ namespace SystemInterface
 {
 	namespace Internal
 	{
-		Sdl::Sdl(int flags)
+		Sdl::Sdl(unsigned int flags)
 		{
 			if (SDL_Init(flags) != 0)
 			{

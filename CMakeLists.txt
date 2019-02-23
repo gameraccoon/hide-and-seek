@@ -4,7 +4,7 @@ set(APP_NAME StealthGamePrototype)
 project(${APP_NAME})
 
 # parameters
-option(DEBUG_MODE "Debug?" OFF)
+option(DEBUG_MODE "Debug?" ON)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
@@ -110,13 +110,19 @@ add_executable(${APP_NAME} src/main/win32/main.cpp)
 target_link_libraries(${APP_NAME}
     ${SDL2_LIBRARY}
     ${SDL2_IMAGE_LIBRARY}
-    #glew32s
-    #liblua52
-    #sqlite3
-
-    #opengl32
     GL
-    #glut
+
+#    sqlite3
+#    liblua52
+
+# need to be fixed for win32 target
+#    glew32
+#    glew32s
+#    SDL2
+#    SDL2_image
+#    SDL2main
+#    SDL2test
+#    opengl32
 
     MainAppLib
     StealthGameLib

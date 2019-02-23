@@ -10,9 +10,11 @@
 struct CalculationPoint
 {
 	CalculationPoint(PathPoint* point, float g, float h, CalculationPoint* cameFrom);
-	PathPoint* point;
-	float f, g, h;
-	CalculationPoint* cameFrom;
+	PathPoint* Point;
+	float F;
+	float G;
+	float H;
+	CalculationPoint* CameFrom;
 };
 
 /**

@@ -79,7 +79,7 @@ void LevelLoader::load(World* world, const std::string levelName)
 	{
 		mapFile.open(std::string("./maps/").append(levelName).append(std::string(".map")));
 	}
-	catch(std::exception)
+	catch(std::exception*)
 	{
 		return;
 	}
@@ -141,7 +141,7 @@ void LevelLoader::load(World* world, const std::string levelName)
 	}
 
 	// put paths into the world
-	for (int i = 0, pointsSize = (int)points.size(); i < pointsSize; i++)
+	for (int i = 0, pointsSize = static_cast<int>(points.size()); i < pointsSize; i++)
 	{
 		world->addPathPoint(points.at(i));
 	}

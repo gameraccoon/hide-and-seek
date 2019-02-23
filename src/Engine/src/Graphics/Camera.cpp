@@ -3,24 +3,17 @@
 #include "Base/Engine.h"
 
 Camera::Camera(const World* world, Vector2D resolution, Vector2D location)
-	: mLocation(location)
+	: mBrowsableWorld(world)
+	, mLocation(location)
 	, mResolution(resolution)
 	, mCenterPos(resolution / 2)
+	, mAngle(0)
+	, mShownSize(512.0f)
+	, mFogWidth(512.0f)
 {
-	mBrowsableWorld = world;
-	mAngle = 0;
-
-	/*engine = engine;
-
-	// Set max distantion (on screen) where we draw actors
-	shownSize = 512.0f;
-
-	// Set fog texture size
-	fogWidth = 512.0f;
-	// Set scale of fog sprite
-	fogScale = shownSize * 0.9f / (fogWidth / 2.0f);
-
-	renderTarget = engine->Target_Create((int) resolution.x, (int) resolution.y, false);
+	mFogScale = mShownSize * 0.9f / (mFogWidth / 2.0f);
+	/*
+	mRenderTarget = mEngine->Target_Create((int) mResolution.x, (int) mResolution.y, false);
 	zone = engine->Target_Create((int) shownSize, (int) shownSize, false);
 
 	collisionSprite = GraphicLoader::Instance().getSprite("collision");
@@ -107,13 +100,13 @@ void Camera::render()
 	{
 		//renderShadows();
 	}
-
+*/
 	// Render player's fog
-	if (bRenderFog)
+	if (mIsRenderFog)
 	{
-		renderFog(resolution.x, resolution.y, fogScale);
+		renderFog(mResolution.x, mResolution.y, mFogScale);
 	}
-
+/*
 	// Bounding boxes
 	if (bShowAABB)
 	{
@@ -160,7 +153,7 @@ void Camera::renderActors(const LightEmitter *light)
 			continue;
 
 		// Get sprite
-		/*engineSprite* sprite = GraphicLoader::Instance().getSprite(actorToRender->getClassID());
+		/* engineSprite* sprite = GraphicLoader::Instance().getSprite(actorToRender->getClassID());
 
 		// if there no sprite for this actor then go to the next actor
 		if (sprite == nullptr)
@@ -234,7 +227,7 @@ Vector2D Camera::deProject(const Vector2D &screenPoint) const
 void Camera::renderFog(float width, float height, float size)
 {
 	// render fog sprite
-	//fogSprite->RenderEx(width/2, height/2, 0, size, size);
+	//mFogTexture->RenderEx(width/2, height/2, 0, size, size);
 
 	// left shadow quad
 	drawQuad(Vector2D(-2000.f, -2000.f), Vector2D(-2000.f, 2000.f),

@@ -4,9 +4,16 @@
 
 #include <Core/Vector2D.h>
 #include <Core/World.h>
-#include "Core/Actor.h"
+#include <Core/Actor.h>
+
+#include <EngineFwd.h>
 
 #include <Actors/LightEmitter.h>
+
+namespace Graphics
+{
+	class Texture;
+}
 
 class Camera
 {
@@ -68,13 +75,13 @@ protected:
 	/** Rotation */
 	float mAngle;
 	/** Pointer of the Engine subsystem */
-	//Engine *engine;
+	std::unique_ptr<SystemInterface::Engine> mEngine;
 	/** Sprite of the actor */
-	//engineSprite *collisionSprite;
+	//engineSprite* mCollisionSprite;
 	/** Render target */
-	//HTARGET renderTarget;
-	/** Sprite of fog */
-	//engineSprite *fogSprite;
+	//HTARGET mRenderTarget;
+	/** Fog texture */
+	Graphics::Texture* mFogTexture;
 	/** Is camera shows AABB? */
 	bool mIsShowAABB;
 	/** Maximum distans of renderable objects from camera */

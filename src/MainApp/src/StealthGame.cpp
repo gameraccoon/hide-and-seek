@@ -1,5 +1,7 @@
 #define GLM_FORCE_RADIANS
 
+#include <memory>
+
 #include "StealthGame.h"
 
 #include "Base/Engine.h"
@@ -14,7 +16,7 @@ namespace Game
 			Vector2D(0.0f, 0.0f));
 
 		// start the main loop
-		getEngine()->start(*this);
+		getEngine()->start(this);
 	}
 
 	void StealthGame::update(float dt)

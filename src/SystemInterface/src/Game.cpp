@@ -4,8 +4,8 @@
 namespace SystemInterface
 {
 	Game::Game()
+		: mEngine(new Engine())
 	{
-		mEngine.reset(new Engine());
 		mResourceManager.reset(new ResourceManager(mEngine.get()));
 	}
 

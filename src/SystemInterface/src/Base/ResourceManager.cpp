@@ -147,23 +147,23 @@ namespace SystemInterface
 			mPimpl->resources,
 			mPimpl.get(),
 			[&texturePath, engine](Graphics::Texture::Base* textureBase)
-		{
-			textureBase->surface = new Internal::SdlSurface(texturePath.c_str());
-			textureBase->engine = engine;
-		},
+			{
+				textureBase->surface = new Internal::SdlSurface(texturePath.c_str());
+				textureBase->engine = engine;
+			},
 			[](Resource::Base* resourceBase)
-		{
-			Graphics::Texture::Base* textureBase = dynamic_cast<Graphics::Texture::Base*>(resourceBase);
-			if (textureBase)
 			{
-				delete textureBase->surface;
-				textureBase->surface = nullptr;
+				Graphics::Texture::Base* textureBase = dynamic_cast<Graphics::Texture::Base*>(resourceBase);
+				if (textureBase)
+				{
+					delete textureBase->surface;
+					textureBase->surface = nullptr;
+				}
+				else
+				{
+					Log::Instance().writeError("Trying to destruct non-texture resource with texture destructer");
+				}
 			}
-			else
-			{
-				Log::Instance().writeError("Trying to destruct non-texture resource with texture destructer");
-			}
-		}
 		);
 	}
 

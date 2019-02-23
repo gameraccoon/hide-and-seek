@@ -10,6 +10,8 @@ namespace Game
 	class StealthGame : public SystemInterface::Game
 	{
 	public:
+		StealthGame() = default;
+
 		void start();
 		virtual void update(float dt) override;
 		virtual void draw() override;

@@ -16,6 +16,7 @@ namespace SystemInterface
 		{
 			if (mSurface == nullptr)
 			{
+				// well.. this is bad
 				throw std::runtime_error(std::string("Unable to load texture ") + filename);
 			}
 
@@ -35,6 +36,7 @@ namespace SystemInterface
 				mode = GL_LUMINANCE_ALPHA;
 				break;
 			default:
+				// stop throwing exceptions from constructor
 				throw std::runtime_error("Image with unknown channel profile");
 				break;
 			}

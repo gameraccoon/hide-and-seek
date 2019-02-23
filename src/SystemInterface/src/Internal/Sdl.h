@@ -7,7 +7,7 @@ namespace SystemInterface
 		class Sdl
 		{
 		public:
-			Sdl(int flags);
+			Sdl(unsigned int flags);
 			~Sdl();
 
 		private:

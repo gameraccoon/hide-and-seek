@@ -25,7 +25,7 @@ namespace SystemInterface
 		float getMouseY() const;
 		bool getMouseButtonDown() const;
 
-		void start(IGame& game);
+		void start(IGame* game);
 		void quit();
 
 		void render(Internal::SdlSurface* surface, const glm::mat4& transform, float alpha = 1.0f);
