@@ -1,5 +1,7 @@
 #include "Graphics/Camera.h"
 
+#include <Base/ResourceManager.h>
+
 #include "Base/Engine.h"
 
 Camera::Camera(const World* world, Vector2D resolution, Vector2D location)
@@ -43,6 +45,7 @@ Camera::~Camera()
 
 void Camera::render()
 {
+	renderActors(nullptr);
 	/*
 	// clean lights cached map
 	engine->Gfx_BeginScene(renderTarget);
@@ -53,8 +56,7 @@ void Camera::render()
 	for (auto const &actor : browsableWorld->allActors)
 	{
 		if (actor->getType() == ActorType::Light)
-		{
-			
+		{		
 			LightEmitter *light = dynamic_cast<LightEmitter*>(actor);
 			if (light == nullptr)
 				continue;
@@ -136,46 +138,47 @@ void Camera::render()
 	*/
 }
 
-void Camera::renderActors(const LightEmitter *light)
+void Camera::renderActors(const LightEmitter* /*light*/)
 {
-	const Vector2D lightPos = light->getLocation();
-	const float lightBrightness = light->getBrightness();
+//	const Vector2D lightPos = light->getLocation();
+//	const float lightBrightness = light->getBrightness();
 	// for each actors in the world
-	for (const auto& actorToRender : mBrowsableWorld->getAllActors())
+//	for (const auto& actorToRender : mBrowsableWorld->getAllActors())
 	{
 		// Get actor's camera local location
-		Vector2D screenLoc(actorToRender->getLocation() - lightPos);
+//		Vector2D screenLoc(actorToRender->getLocation() - lightPos);
 		// Get distance from center of screen
-		float distanceFromCamera = screenLoc.size();
+//		float distanceFromCamera = screenLoc.size();
 
 		// if actor is not far of drawing zone
-		if (distanceFromCamera >= mShownSize * lightBrightness)
-			continue;
+		//if (distanceFromCamera >= mShownSize * lightBrightness)
+		//	continue;
 
 		// Get sprite
-		/* engineSprite* sprite = GraphicLoader::Instance().getSprite(actorToRender->getClassID());
+//		auto sprite = mBrowsableWorld->getSprite(actorToRender->getClassID());
 
-		// if there no sprite for this actor then go to the next actor
-		if (sprite == nullptr)
-			continue;
-			*/
+//		if (sprite == nullptr)
+//		{
+//			continue;
+//		}
 
 		// calc actor screen location
-		Vector2D newScreenLoc(Vector2D(screenLoc.rotation() + mAngle) * distanceFromCamera);
+//		Vector2D newScreenLoc(Vector2D(screenLoc.rotation() + mAngle) * distanceFromCamera);
 		// get scaled localtion
-		Vector2D scaledLocation(newScreenLoc + Vector2D(mShownSize/2, mShownSize/2));
+//		Vector2D scaledLocation(newScreenLoc + Vector2D(mShownSize/2, mShownSize/2));
 
 		// render actor
 		//sprite->RenderEx(scaledLocation.x, scaledLocation.y,
 		//	(actorToRender->getRotation() + angle).getValue(),
 		//	actorToRender->getScale().x, actorToRender->getScale().y);
+//		auto loc = actorToRender->getLocation();
 	}
 }
 
 void Camera::renderCollisionBoxes()
 {
 	// for each actors in the world
-	for (const auto& actor : mBrowsableWorld->getAllActors())
+/*	for (const auto& actor : mBrowsableWorld->getAllActors())
 	{
 		if (actor->getType() != ActorType::Bullet
 			&& actor->getType() != ActorType::Light
@@ -191,7 +194,7 @@ void Camera::renderCollisionBoxes()
 			// render collision sprite
 			//collisionSprite->RenderEx(shift.x, shift.y, angle, size.x/64.0f, size.y/64.0f);
 		}
-	}
+	}*/
 }
 
 Vector2D Camera::project(const Vector2D &worldPoint) const
@@ -328,7 +331,7 @@ void Camera::renderLightShadows(const LightEmitter *light)
 			// get actors geometry
 			const Hull *hull = actor->getGeometry();
 			// for each border of actor's geometry
-			for (int j = 0; j < (int) hull->borders.size(); j++)
+			for (size_t j = 0; j < hull->borders.size(); j++)
 			{
 				// if border's normal and camera view on border have different directions (angle > PI/2)
 				if (abs((
@@ -363,7 +366,7 @@ void Camera::renderShadows()
 			// get actors geometry
 			const Hull *hull = actor->getGeometry();
 			// for each border of actor's geometry
-			for (int j = 0; j < (int) hull->borders.size(); j++)
+			for (size_t j = 0; j < hull->borders.size(); j++)
 			{
 				// if border's normal and camera view on border have different directions (angle > PI/2)
 				if (abs((
@@ -400,7 +403,7 @@ void Camera::renderHulls()
 			// get actors geometry
 			const Hull *hull = actor->getGeometry();
 			// for each border of actor's geometry
-			for (int j = 0; j < (int) hull->borders.size(); j++)
+			for (size_t j = 0; j < hull->borders.size(); j++)
 			{
 				// draw border
 				Vector2D A(actor->getLocation() + hull->borders[j].getA()), B(actor->getLocation() + hull->borders[j].getB());
@@ -411,7 +414,7 @@ void Camera::renderHulls()
 
 				// draw normal
 				Vector2D LinePos(actor->getLocation() + (hull->borders[j].getA() + hull->borders[j].getB()) / 2);
-				Vector2D Norm(LinePos + hull->borders[j].getNormal() * (float)normal_length);
+				Vector2D Norm(LinePos + hull->borders[j].getNormal() * static_cast<float>(normal_length));
 
 				LinePos = project(LinePos);
 				Norm = project(Norm);
@@ -430,7 +433,7 @@ void Camera::renderLights()
 		// if actor - static
 		if (actor->getType() == ActorType::Light)
 		{
-			Vector2D lightLocation(project(actor->getLocation()));
+//			Vector2D lightLocation(project(actor->getLocation()));
 			//engine->Gfx_RenderLine(lightLocation.x - 5, lightLocation.y, lightLocation.x + 5, lightLocation.y, 0xFFAA6600, 0);
 			//engine->Gfx_RenderLine(lightLocation.x, lightLocation.y - 5, lightLocation.x, lightLocation.y + 5, 0xFFAA6600, 0);
 		}

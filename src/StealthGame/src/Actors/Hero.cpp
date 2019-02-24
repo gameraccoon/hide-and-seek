@@ -22,12 +22,12 @@ Hero::Hero(World *world, Vector2D location, Vector2D /*scale*/, Rotator )
 
 void Hero::move(Vector2D step)
 {
-	step += step;
+	mStep += step;
 }
 
 void Hero::update(float deltatime)
 {
-	Vector2D step =  step * deltatime;
+	Vector2D step =  mStep * deltatime;
 
 	// if actor's path is free
 	if (!Collide::isWillCollide(this, getOwnerWorld(), step))

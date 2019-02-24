@@ -24,7 +24,7 @@ public:
 	static Ptr Create(World *world, Vector2D location, Rotator rotation);
 
 	Actor(World *world, Vector2D location, Rotator rotation);
-	virtual ~Actor();
+	virtual ~Actor() override;
 	
 	/** Set new location of the actor in the World */
 	virtual void setLocation(const Vector2D& newLocations) override final;

@@ -21,7 +21,7 @@ public:
 	/** Initialization of a new man standing at a given point */
 	Body(World *world, Vector2D location);
 
-	virtual ~Body();
+	virtual ~Body() override;
 
 	virtual void moveTo(Vector2D step) override;
 	virtual void follow(const IActor *target) override;

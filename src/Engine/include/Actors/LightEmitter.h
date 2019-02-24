@@ -6,7 +6,7 @@ class LightEmitter : public Actor
 {
 public:
 	LightEmitter(World *world, Vector2D location, Vector2D scale, Rotator rotation);
-	~LightEmitter();
+	~LightEmitter() override;
 
 	float getBrightness() const;
 	void setBrightness(float brightness);

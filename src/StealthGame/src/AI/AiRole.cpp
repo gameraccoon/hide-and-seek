@@ -6,18 +6,18 @@
 
 AiRole::AiRole(World* world, IBody *body) : Role(world, body)
 {
-	SqliteConnection connection("testdb.db");
-	SqlDataReader::Ptr conn = connection.execQuery("select * from test");
+//	SqliteConnection connection("testdb.db");
+//	SqlDataReader::Ptr conn = connection.execQuery("select * from test");
 
-	std::string firstStateName;
-	if (conn->next())
-	{
-		firstStateName = conn->getValueByName("test")->asString();
-	}
-	else
-	{
-		throw std::runtime_error("can't read from table 'test' of database 'testdb'");
-	}
+//	std::string firstStateName;
+//	if (conn->next())
+//	{
+//		firstStateName = conn->getValueByName("test")->asString();
+//	}
+//	else
+//	{
+//		throw std::runtime_error("can't read from table 'test' of database 'testdb'");
+//	}
 	//states.push(new LuaAiState(world, body, this, firstStateName));
 }
 
@@ -73,7 +73,7 @@ void AiRole::endCurrentState()
 
 void AiRole::checkStates()
 {
-	if (mStates.top()->isEnded())
+	if (!mStates.empty() && mStates.top()->isEnded())
 	{
 		IAiState * stateToDelete = mStates.top();
 		mStates.pop();
