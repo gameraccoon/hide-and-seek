@@ -1,6 +1,8 @@
 #include "Graphics/Camera.h"
 
 #include <Base/ResourceManager.h>
+#include <Components/MovementComponent.h>
+#include <Components/CollisionComponent.h>
 
 #include "Base/Engine.h"
 
@@ -138,7 +140,7 @@ void Camera::render()
 	*/
 }
 
-void Camera::renderActors(const LightEmitter* /*light*/)
+void Camera::renderActors(const LightComponent::Ptr /*light*/)
 {
 //	const Vector2D lightPos = light->getLocation();
 //	const float lightBrightness = light->getBrightness();
@@ -307,9 +309,16 @@ void Camera::drawQuad(const Vector2D &, const Vector2D &, const Vector2D &, cons
 	engine->Gfx_RenderQuad(&quad);*/
 }
 
-void Camera::renderLightShadows(const LightEmitter *light)
+void Camera::renderLightShadows(const LightComponent::Ptr light)
 {
-	const Vector2D lightPos = light->getLocation();
+	auto movementWeak = light->getMovementComponent();
+	auto movement = movementWeak.lock();
+	if (movement == nullptr)
+	{
+		return;
+	}
+
+	const Vector2D lightPos = movement->getLocation();
 	const float lightBrightness = light->getBrightness();
 
 	Vector2D lightCenterPos(mShownSize/2, mShownSize/2);
@@ -319,8 +328,22 @@ void Camera::renderLightShadows(const LightEmitter *light)
 		// if actor - static
 		if (actor->getType() == ActorType::Static)
 		{
+			auto actorMovementComponent = actor->getSingleComponent<MovementComponent>();
+			if (actorMovementComponent == nullptr)
+			{
+				continue;
+			}
+
+			auto actorCollisionComponent = actor->getSingleComponent<CollisionComponent>();
+			if (actorCollisionComponent == nullptr)
+			{
+				continue;
+			}
+
+			Vector2D actorLocation = actorMovementComponent->getLocation();
+
 			// Get actor's camera local location
-			Vector2D screenLoc(actor->getLocation() - lightPos);
+			Vector2D screenLoc(actorLocation - lightPos);
 			// Get distance from center of screen
 			float distanceFromCamera = screenLoc.size();
 
@@ -329,19 +352,19 @@ void Camera::renderLightShadows(const LightEmitter *light)
 				continue;
 
 			// get actors geometry
-			const Hull *hull = actor->getGeometry();
+			const Hull *hull = actorCollisionComponent->getGeometry();
 			// for each border of actor's geometry
 			for (size_t j = 0; j < hull->borders.size(); j++)
 			{
 				// if border's normal and camera view on border have different directions (angle > PI/2)
 				if (abs((
 						hull->borders[j].getNormal().rotation()
-						- (actor->getLocation() + (hull->borders[j].getA() + hull->borders[j].getB())/2 - lightPos).rotation()
+						- (actorLocation + (hull->borders[j].getA() + hull->borders[j].getB())/2 - lightPos).rotation()
 					).getValue()) < PI/2)
 				{
 					// Get border's points
-					Vector2D a(actor->getLocation() + hull->borders[j].getA());
-					Vector2D b(actor->getLocation() + hull->borders[j].getB());
+					Vector2D a(actorLocation + hull->borders[j].getA());
+					Vector2D b(actorLocation + hull->borders[j].getB());
 
 					// project them on screen
 					a = projectFrom(a, lightPos);
@@ -363,20 +386,34 @@ void Camera::renderShadows()
 		// if actor - static
 		if (actor->getType() == ActorType::Static)
 		{
+			auto actorMovementComponent = actor->getSingleComponent<MovementComponent>();
+			if (actorMovementComponent == nullptr)
+			{
+				continue;
+			}
+
+			auto actorCollisionComponent = actor->getSingleComponent<CollisionComponent>();
+			if (actorCollisionComponent == nullptr)
+			{
+				continue;
+			}
+
+			Vector2D actorLocation = actorMovementComponent->getLocation();
+
 			// get actors geometry
-			const Hull *hull = actor->getGeometry();
+			const Hull *hull = actorCollisionComponent->getGeometry();
 			// for each border of actor's geometry
 			for (size_t j = 0; j < hull->borders.size(); j++)
 			{
 				// if border's normal and camera view on border have different directions (angle > PI/2)
 				if (abs((
 						hull->borders[j].getNormal().rotation()
-						- (actor->getLocation() + (hull->borders[j].getA() + hull->borders[j].getB())/2 - mLocation).rotation()
+						- (actorLocation + (hull->borders[j].getA() + hull->borders[j].getB())/2 - mLocation).rotation()
 					).getValue()) < PI/2)
 				{
 					// Get border's points
-					Vector2D a(actor->getLocation() + hull->borders[j].getA());
-					Vector2D b(actor->getLocation() + hull->borders[j].getB());
+					Vector2D a(actorLocation + hull->borders[j].getA());
+					Vector2D b(actorLocation + hull->borders[j].getB());
 
 					// project them on screen
 					a = project(a);
@@ -400,20 +437,34 @@ void Camera::renderHulls()
 		// if actor - static
 		if (actor->getType() != ActorType::Light && actor->getType() != ActorType::Special)
 		{
+			auto actorMovementComponent = actor->getSingleComponent<MovementComponent>();
+			if (actorMovementComponent == nullptr)
+			{
+				continue;
+			}
+
+			auto actorCollisionComponent = actor->getSingleComponent<CollisionComponent>();
+			if (actorCollisionComponent == nullptr)
+			{
+				continue;
+			}
+
+			Vector2D actorLocation = actorMovementComponent->getLocation();
+
 			// get actors geometry
-			const Hull *hull = actor->getGeometry();
+			const Hull *hull = actorCollisionComponent->getGeometry();
 			// for each border of actor's geometry
 			for (size_t j = 0; j < hull->borders.size(); j++)
 			{
 				// draw border
-				Vector2D A(actor->getLocation() + hull->borders[j].getA()), B(actor->getLocation() + hull->borders[j].getB());
+				Vector2D A(actorLocation + hull->borders[j].getA()), B(actorLocation + hull->borders[j].getB());
 				A = project(A);
 				B = project(B);
 				
 				//engine->Gfx_RenderLine(A.x, A.y, B.x, B.y, 0xFFFF00FF);
 
 				// draw normal
-				Vector2D LinePos(actor->getLocation() + (hull->borders[j].getA() + hull->borders[j].getB()) / 2);
+				Vector2D LinePos(actorLocation + (hull->borders[j].getA() + hull->borders[j].getB()) / 2);
 				Vector2D Norm(LinePos + hull->borders[j].getNormal() * static_cast<float>(normal_length));
 
 				LinePos = project(LinePos);

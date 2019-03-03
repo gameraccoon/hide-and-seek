@@ -1,5 +1,8 @@
 #include "Modules/Collide.h"
 
+#include <Components/CollisionComponent.h>
+#include <Components/MovementComponent.h>
+
 namespace Collide
 {
 	inline float SignedArea(const Vector2D &a, const Vector2D &b, const Vector2D &c)
@@ -73,6 +76,18 @@ namespace Collide
 
 	bool isWillCollide(const IActor* actor1, const World* world, Vector2D step)
 	{
+		auto actor1CollisionComponent = actor1->getSingleComponent<CollisionComponent>();
+		if (actor1CollisionComponent == nullptr)
+		{
+			return false;
+		}
+
+		auto actor1MovementComponent = actor1->getSingleComponent<MovementComponent>();
+		if (actor1MovementComponent == nullptr)
+		{
+			return false;
+		}
+
 		// for each actors in the world
 		for (const auto& actor : world->getAllActors())
 		{
@@ -82,9 +97,21 @@ namespace Collide
 				&& actor->getType() != ActorType::Special
 				&& actor->getType() != ActorType::Bullet))
 			{
+				auto actorCollisionComponent = actor->getSingleComponent<CollisionComponent>();
+				if (actorCollisionComponent == nullptr)
+				{
+					continue;
+				}
+
+				auto actorMovementComponent = actor1->getSingleComponent<MovementComponent>();
+				if (actorMovementComponent == nullptr)
+				{
+					continue;
+				}
+
 				// get an actor's AABB (axis-aligned bounding box)
-				BoundingBox box = actor->getBoundingBox();
-				BoundingBox ourBox = actor1->getBoundingBox();
+				BoundingBox box = actorCollisionComponent->getBoundingBox();
+				BoundingBox ourBox = actor1CollisionComponent->getBoundingBox();
 				// if the actor's AABB intersects with the Man's AABB (in new Man location)
 				if ((box.minX < ourBox.maxX + step.x
 						&& ourBox.minX + step.x < box.maxX)
@@ -92,8 +119,8 @@ namespace Collide
 						&& ourBox.minY + step.y  < box.maxY))
 				{
 					// actor's path is not free
-					return IsCollideGeometry(actor1->getGeometry(), actor->getGeometry(),
-						actor1->getLocation() + step, actor->getLocation());
+					return IsCollideGeometry(actor1CollisionComponent->getGeometry(), actorCollisionComponent->getGeometry(),
+						actor1MovementComponent->getLocation() + step, actorMovementComponent->getLocation());
 				}
 			}
 		}

@@ -8,11 +8,16 @@
 
 #include <EngineFwd.h>
 
-#include <Actors/LightEmitter.h>
+#include <Components/LightComponent.h>
 
 namespace Graphics
 {
 	class Texture;
+}
+
+namespace SystemInterface
+{
+	class ResourceManager;
 }
 
 class Camera
@@ -50,14 +55,14 @@ public:
 
 protected:
 	/** Render all seen actors */
-	void renderActors(const LightEmitter *light);
+	void renderActors(const LightComponent::Ptr light);
 	/** Render collision AABB to screen */
 	void renderCollisionBoxes();
 	/** Render dark ring like fog */
 	virtual void renderFog(float width, float height, float size);
 	/** Render shadows of player view */
 	void renderShadows();
-	void renderLightShadows(const LightEmitter *light);
+	void renderLightShadows(const LightComponent::Ptr light);
 	/** Render hulls */
 	void renderHulls();
 	/** Render lights centers */

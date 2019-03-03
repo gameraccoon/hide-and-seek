@@ -9,7 +9,7 @@
 #include "Inventory/Weapon.h"
 #include "Core/Actor.h"
 
-class Body:public Actor, public IBody
+class Body : public Actor, public IBody
 {
 public:
 	enum class Fraction
@@ -40,9 +40,8 @@ public:
 
 	Fraction getFraction();
 protected:
-	/* events */
-	virtual void onUpdateLocation() override;
-	virtual void onUpdateRotation() override;
+	void onUpdateLocation();
+	void onUpdateRotation();
 	/** */
 	void findNextPathPoint();
 	void clearTargets();
@@ -65,7 +64,7 @@ protected:
 	/** Is we shooting */
 	bool mIsShooting;
 	/** AI */
-	Role *mRole;
+	std::unique_ptr<Role> mRole;
 	/** The target that the man follows */
 	IActor const *mFollowingTarget;
 	/** The location that the man moving to */

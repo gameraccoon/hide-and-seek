@@ -14,16 +14,16 @@ void LevelLoader::save(World* world, const std::string levelName)
 	for (const auto& actor : world->getAllActors())
 	{
 		mapFile << actor->getClassID();
-		mapFile << " ";
-		mapFile << actor->getLocation().x;
-		mapFile << " ";
-		mapFile << actor->getLocation().y;
-		mapFile << " ";
-		mapFile << actor->getScale().x;
-		mapFile << " ";
-		mapFile << actor->getScale().y;
-		mapFile << " ";
-		mapFile << actor->getRotation().getValue();
+//		mapFile << " ";
+//		mapFile << actor->getLocation().x;
+//		mapFile << " ";
+//		mapFile << actor->getLocation().y;
+//		mapFile << " ";
+//		mapFile << actor->getScale().x;
+//		mapFile << " ";
+//		mapFile << actor->getScale().y;
+//		mapFile << " ";
+//		mapFile << actor->getRotation().getValue();
 		mapFile << "\n";
 	}
 	mapFile.close();

@@ -1,8 +1,16 @@
 #include "Actors/Corpse.h"
 
-Corpse::Corpse(World *world, Vector2D location, Vector2D /*scale*/, Rotator rotation) :
-	Actor(world, location, rotation)
+#include <Components/MovementComponent.h>
+#include <Components/RenderComponent.h>
+#include <Components/CollisionComponent.h>
+
+Corpse::Corpse(World *world, const Vector2D location, const Rotator rotation) :
+	Actor(world)
 {
+	auto movementComponent = makeAndAddComponent<MovementComponent>();
+	movementComponent->setLocation(location);
+	movementComponent->setRotation(rotation);
+	makeAndAddComponent<RenderComponent>();
 	updateActorId("Corpse");
 }
 

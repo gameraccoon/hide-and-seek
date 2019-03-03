@@ -4,27 +4,38 @@
 
 #include "Actors/LightEmitter.h"
 
+#include <Components/MovementComponent.h>
+#include <Components/LightComponent.h>
+#include <Components/CollisionComponent.h>
+#include <Components/RenderComponent.h>
+
 #include <cmath>
 
 Body::Body(World *world, Vector2D location)
-	: Actor(world, location, Rotator(0.0f))
+	: Actor(world)
 	, mNavigator(world)
 	, mTempLocation(location)
 {
+	auto movementComponent = makeAndAddComponent<MovementComponent>();
+	movementComponent->overrideOnUpdateLocationCallback([this](){this->onUpdateLocation();});
+	movementComponent->overrideOnUpdateRotationCallback([this](){this->onUpdateRotation();});
+	makeAndAddComponent<CollisionComponent>();
+	auto renderComponent = makeAndAddComponent<RenderComponent>();
+	renderComponent->setMovementComponent(movementComponent);
+
 	setType(ActorType::Living);
 
 	mSpeed = 12.0f;
-
-	setOriginalSize(Vector2D(32.0f, 32.0f));
 	
 	mHealthValue = 10000.0f;
 
-	Hull geometry;
-	geometry.type = Hull::Type::Circular;
-	geometry.setRadius(16.0f);
-	setGeometry(geometry);
+//	setOriginalSize(Vector2D(32.0f, 32.0f));
+//	Hull geometry;
+//	geometry.type = Hull::Type::Circular;
+//	geometry.setRadius(16.0f);
+//	setGeometry(geometry);
 	
-	updateGeometry();
+//	updateGeometry();
 
 	mArmedWeapon = nullptr;
 
@@ -36,11 +47,6 @@ Body::Body(World *world, Vector2D location)
 
 Body::~Body()
 {
-	if (mRole != nullptr)
-	{
-		delete mRole;
-		mRole = nullptr;
-	}
 }
 
 void Body::moveTo(Vector2D step)
@@ -83,7 +89,12 @@ void Body::startShoting(Vector2D targetLocation)
 {
 	if (mArmedWeapon != nullptr)
 	{
-		mArmedWeapon->startShooting(getLocation(), (targetLocation - getLocation()).rotation());
+		auto movementComponent = getSingleComponent<MovementComponent>();
+		if (movementComponent != nullptr)
+		{
+			Vector2D location = movementComponent->getLocation();
+			mArmedWeapon->startShooting(location, (targetLocation - location).rotation());
+		}
 	}
 }
 
@@ -112,7 +123,13 @@ void Body::hit(IActor *, float damageValue, Vector2D impulse)
 	{
 		mHealthValue = 0.0f;
 		mSpeed = 0.0f;
-		ActorFactory::Factory().spawnActor("Corpse", getOwnerWorld(), getLocation(), Vector2D(1.f, 1.f), getRotation());
+		auto movementComponent = getSingleComponent<MovementComponent>();
+		if (movementComponent != nullptr)
+		{
+			Vector2D location = movementComponent->getLocation();
+			Rotator rotation = movementComponent->getRotation();
+			ActorFactory::Factory().spawnActor("Corpse", getOwnerWorld(), location, Vector2D(1.f, 1.f), rotation);
+		}
 		destroy();
 	}
 	else
@@ -144,7 +161,11 @@ void Body::onUpdateLocation()
 {
 	if (mArmedWeapon != nullptr)
 	{
-		mArmedWeapon->setLocation(getLocation());
+		auto movementComponent = getSingleComponent<MovementComponent>();
+		if (movementComponent != nullptr)
+		{
+			mArmedWeapon->setLocation(movementComponent->getLocation());
+		}
 	}
 }
 
@@ -152,7 +173,11 @@ void Body::onUpdateRotation()
 {
 	if (mArmedWeapon != nullptr)
 	{
-		mArmedWeapon->changeDirection(getRotation());
+		auto movementComponent = getSingleComponent<MovementComponent>();
+		if (movementComponent != nullptr)
+		{
+			mArmedWeapon->changeDirection(movementComponent->getRotation());
+		}
 	}
 }
 
@@ -183,22 +208,36 @@ bool Body::canSeeEnemy(const Body *enemy) const
 	const float viewDistance = 400.f;
 	const float attentiveness = 1.5f;
 
-	// if enemy farther than viewDistance
-	if ((getLocation() - enemy->getLocation()).size() > viewDistance)
+	auto movementComponent = getSingleComponent<MovementComponent>();
+	if (movementComponent == nullptr)
+	{
+		return false;
+	}
+	auto enemyMovementComponent = getSingleComponent<MovementComponent>();
+	if (enemyMovementComponent == nullptr)
 	{
 		return false;
 	}
 
-	Vector2D loc = enemy->getLocation();
-	Rotator angle = (loc - getLocation()).rotation();
+	Vector2D location = movementComponent->getLocation();
+	Rotator rotation = movementComponent->getRotation();
+	Vector2D enemyLocation = enemyMovementComponent->getLocation();
+
+	// if enemy farther than viewDistance
+	if ((location - enemyLocation).size() > viewDistance)
+	{
+		return false;
+	}
+
+	Rotator angle = (enemyLocation - location).rotation();
 
 	// if actor isn't on the front
-	if (abs((angle - getRotation()).getValue()) > angleOfView)
+	if (abs((angle - rotation).getValue()) > angleOfView)
 	{
 		return false;
 	}
 
-	IActor *tracedActor = RayTrace::trace(getOwnerWorld(), getLocation(), enemy->getLocation());
+	IActor *tracedActor = RayTrace::trace(getOwnerWorld(), location, enemyLocation);
 	if (tracedActor != enemy)
 	{
 		return false;
@@ -206,26 +245,23 @@ bool Body::canSeeEnemy(const Body *enemy) const
 
 	float lightness = 0.f;
 
-	// ToDo: need to refactor next fragment
-	for (const auto& actor : getOwnerWorld()->getAllActors())
+	for (const auto& lightComponent : getOwnerWorld()->getComponents<LightComponent>())
 	{
-		if (actor->getType() == ActorType::Light)
+		MovementComponent::WeakPtr movementComponent = lightComponent->getMovementComponent();
+		if (MovementComponent::Ptr lockedMovementComponent = movementComponent.lock())
 		{
-			LightEmitter *light = dynamic_cast<LightEmitter*>(actor.get());
-			if (light != nullptr)
+			Vector2D lightLocation = lockedMovementComponent->getLocation();
+			if ((lightLocation - enemyLocation).size() < lightComponent->getBrightness() * 512)
 			{
-				if ((light->getLocation() - enemy->getLocation()).size() < light->getBrightness() * 512)
+				IActor *tracedActor2 = RayTrace::trace(getOwnerWorld(), lightLocation, enemyLocation);
+				if (tracedActor2 == enemy)
 				{
-					IActor *tracedActor2 = RayTrace::trace(getOwnerWorld(), light->getLocation(), enemy->getLocation());
-					if (tracedActor2 == enemy)
-					{
-						float sz = (light->getLocation() - enemy->getLocation()).size();
-						
-						if (sz < 0.1f)
-							sz = 0.1f;
-						
-						lightness += (light->getBrightness() * 256) / sz;
-					}
+					float sz = (lightLocation - enemyLocation).size();
+
+					if (sz < 0.1f)
+						sz = 0.1f;
+
+					lightness += (lightComponent->getBrightness() * 256) / sz;
 				}
 			}
 		}
@@ -243,29 +279,43 @@ bool Body::canSeeEnemy(const Body *enemy) const
 
 void Body::findNextPathPoint()
 {
+	auto movementComponent = getSingleComponent<MovementComponent>();
+	if (movementComponent == nullptr)
+	{
+		return;
+	}
+	auto targetMovementComponent = getSingleComponent<MovementComponent>();
+	if (targetMovementComponent == nullptr)
+	{
+		return;
+	}
+
+	Vector2D location = movementComponent->getLocation();
+	Vector2D targetLocation = targetMovementComponent->getLocation();
+
 	if (mFollowingTarget != nullptr)
 	{
-		IActor* tracedActor = RayTrace::trace(getOwnerWorld(), getLocation(), mFollowingTarget->getLocation());
+		IActor* tracedActor = RayTrace::trace(getOwnerWorld(), location, targetLocation);
 
 		if (tracedActor == mFollowingTarget)
 		{
-			mTempLocation = mFollowingTarget->getLocation();
+			mTempLocation = targetLocation;
 		}
 		else
 		{
-			mNavigator.createNewPath(getLocation(), mFollowingTarget->getLocation());
+			mNavigator.createNewPath(location, targetLocation);
 			mTempLocation = mNavigator.getNextPoint();
-			if (mTempLocation == getLocation())
+			if (mTempLocation == location)
 			{
 				mTempLocation = mNavigator.getNextPoint();
 			}
 		}
 
-		setRotation((mTempLocation - getLocation()).rotation());
+		movementComponent->setRotation((mTempLocation - location).rotation());
 	}
 	else if (mMovingToLocation != nullptr)
 	{
-		IActor* tracedActor = RayTrace::trace(getOwnerWorld(), getLocation(), *mMovingToLocation);
+		IActor* tracedActor = RayTrace::trace(getOwnerWorld(), location, *mMovingToLocation);
 
 		if (tracedActor == nullptr)
 		{
@@ -273,15 +323,15 @@ void Body::findNextPathPoint()
 		}
 		else
 		{
-			mNavigator.createNewPath(getLocation(), *mMovingToLocation);
+			mNavigator.createNewPath(location, *mMovingToLocation);
 			mTempLocation = mNavigator.getNextPoint();
-			if (mTempLocation == getLocation())
+			if (mTempLocation == location)
 			{
 				mTempLocation = mNavigator.getNextPoint();
 			}
 		}
 
-		setRotation((mTempLocation - getLocation()).rotation());
+		movementComponent->setRotation((mTempLocation - location).rotation());
 	}
 }
 

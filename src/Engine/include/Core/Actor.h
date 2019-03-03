@@ -21,23 +21,10 @@ public:
 	using Ptr = std::unique_ptr<Actor>;
 
 public:
-	static Ptr Create(World *world, Vector2D location, Rotator rotation);
+	static Ptr Create(World *world);
 
-	Actor(World *world, Vector2D location, Rotator rotation);
+	Actor(World *world);
 	virtual ~Actor() override;
-	
-	/** Set new location of the actor in the World */
-	virtual void setLocation(const Vector2D& newLocations) override final;
-	/** Get actor's world location */
-	virtual Vector2D getLocation() const override final;
-	/** Set actor's rotation */
-	virtual void setRotation(const Rotator& newRotation) override final;
-	/** Get actor's rotation */
-	virtual Rotator getRotation() const override final;
-	/** Set actor's scale */
-	virtual void setScale(const Vector2D& newScale) override final;
-	/** Get actor's scale */
-	virtual Vector2D getScale() const override final;
 	/** Process moving and other actions of the Actor */
 	virtual void update(float deltatime) override;
 	/** Say to actor, that it mast be destroyed now */
@@ -46,10 +33,6 @@ public:
 	virtual bool isWaitDestruction() const override final;
 	/** Get actor type */
 	virtual ActorType getType() const override final;
-	/** Get axis-aligned bounding box */
-	virtual BoundingBox getBoundingBox() const override final;
-	/** Get actor's hull */
-	virtual const Hull* getGeometry() const override final;
 	/** Returns the class identificator of this actor's class */
 	virtual std::string getClassID() const override final;
 	/** Returns the specific identificator of current object */
@@ -58,48 +41,24 @@ public:
 	virtual void hit(IActor *instigator, float damageValue, Vector2D impulse) override;
 
 	/** Add a new component to this actor */
-	virtual void AddComponent(const ActorComponent::Ptr& component) override;
+	virtual void addComponent(const ActorComponent::Ptr& component) override;
+	virtual std::vector<ActorComponent::Ptr>& getAllComponents() override;
 
 protected:
-	/* events */
-	virtual void onUpdateLocation();
-	virtual void onUpdateRotation();
-	virtual void onUpdateSize();
 	/** Update classId and actorId */
 	virtual void updateActorId(std::string classId);
 	
 	float getLifetime() const;
 	World* getOwnerWorld() const;
-	Vector2D getCalculatedSize() const;
 	void setType(ActorType newType);
-	void setOriginalSize(Vector2D newOriginalSize);
-	Vector2D getOriginalSize();
-	void setGeometry(Hull newGeometry);
-	void updateGeometry();
 	void setClassId(std::string newClassId);
 	void setActorId(std::string newActorId);
 
 private:
-	/** */
-	void updateCollision();
-	void setColideBox(BoundingBox newColideBox);
 	/** Pointer to the owner World */
 	World* mOwnerWorld;
 	/** Type of the actor */
 	ActorType mType;
-	/** Location of the actor in the world */
-	Vector2D mLocation;
-	Vector2D mScale;
-	Vector2D mOriginalSize;
-	Vector2D mCalculatedSize;
-	/** Angle between world's x-axis and actor's x-axis */
-	Rotator mDirection;
-	/** Bounding box */
-	BoundingBox mColideBox;
-	/** Geometry for physics and shadows calculation */
-	Hull mInitialGeometry;
-	/** Scaled and rotated geometry */
-	Hull mGeometry;
 	/** Specific class identificator */
 	std::string mClassId;
 	/** Actor's identificator */

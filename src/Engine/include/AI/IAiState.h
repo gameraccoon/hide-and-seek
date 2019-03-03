@@ -6,7 +6,7 @@
 class IAiState
 {
 public:
-	virtual ~IAiState() {};
+	virtual ~IAiState() = 0;
 	/**
 	 * Event that executed when body takes damage
 	 */

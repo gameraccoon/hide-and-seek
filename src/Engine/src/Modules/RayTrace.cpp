@@ -1,5 +1,8 @@
 #include "Modules/RayTrace.h"
 
+#include <Components/CollisionComponent.h>
+#include <Components/MovementComponent.h>
+
 #include <algorithm>
 
 namespace RayTrace
@@ -12,7 +15,7 @@ namespace RayTrace
 		const int TOP_BIT = 8;
 	
 		//
-		const double EPS = 1E-4;
+		const float EPS = 1E-4f;
 	}
 	inline int getDotCode(const BoundingBox &box, const Vector2D &dot)
 	{
@@ -40,7 +43,7 @@ namespace RayTrace
 		return a * d - b * c;
 	}
 
-	inline bool IsBetween(const float a, const float b, const double c)
+	inline bool IsBetween(const float a, const float b, const float c)
 	{
 		return std::min(a, b) <= c + EPS && c <= std::max(a, b) + EPS;
 	}
@@ -113,10 +116,10 @@ namespace RayTrace
 		float zn = RayTrace::Det(DA1, DB1, DA2, DB2);
 	
 		// if lines are not parallel
-		if (zn != 0)
+		if (zn < -EPS || zn > EPS)
 		{
-			float x = (float) (-RayTrace::Det(DC1, DB1, DC2, DB2) * 1. / zn);
-			float y = (float) (-RayTrace::Det(DA1, DC1, DA2, DC2) * 1. / zn);
+			float x = -RayTrace::Det(DC1, DB1, DC2, DB2) / zn;
+			float y = -RayTrace::Det(DA1, DC1, DA2, DC2) / zn;
 
 			if (RayTrace::IsBetween(A1.x, A2.x, x) && RayTrace::IsBetween(A1.y, A2.y, y)
 				&& RayTrace::IsBetween(B1.x, B2.x, x) && RayTrace::IsBetween(B1.y, B2.y, y))
@@ -134,10 +137,24 @@ namespace RayTrace
 		for (const auto& currentActor : world->getAllActors())
 		{
 			if (currentActor->getType() == ActorType::Light || currentActor->getType() == ActorType::Special)
+			{
 				continue;
+			}
+
+			auto actorCollisionComponent = currentActor->getSingleComponent<CollisionComponent>();
+			if (actorCollisionComponent == nullptr)
+			{
+				continue;
+			}
+
+			auto actorMovementComponent = currentActor->getSingleComponent<MovementComponent>();
+			if (actorMovementComponent == nullptr)
+			{
+				continue;
+			}
 		
 			// get bounding box of current actor
-			BoundingBox box = currentActor->getBoundingBox();
+			BoundingBox box = actorCollisionComponent->getBoundingBox();
 			// get cohen's code for start point
 			int a = RayTrace::getDotCode(box, startPoint);
 			// get cohen's code for end point
@@ -159,12 +176,12 @@ namespace RayTrace
 			{
 				//return true;
 				// get hull of current actor
-				const Hull *hull = currentActor->getGeometry();
+				const Hull *hull = actorCollisionComponent->getGeometry();
 
 				// for each border
 				for (auto &border : hull->borders)
 				{
-					Vector2D actorsLocation(currentActor->getLocation());
+					Vector2D actorsLocation(actorMovementComponent->getLocation());
 					// if ray have different direction with normal
 					if (abs((border.getNormal().rotation() - (endPoint - startPoint).rotation()).getValue()) <= PI/2)
 						continue;
@@ -195,10 +212,24 @@ namespace RayTrace
 		for (const auto& currentActor : world->getAllActors())
 		{
 			if (currentActor->getType() == ActorType::Light || currentActor->getType() == ActorType::Special)
+			{
 				continue;
+			}
+
+			auto actorCollisionComponent = currentActor->getSingleComponent<CollisionComponent>();
+			if (actorCollisionComponent == nullptr)
+			{
+				continue;
+			}
+
+			auto actorMovementComponent = currentActor->getSingleComponent<MovementComponent>();
+			if (actorMovementComponent == nullptr)
+			{
+				continue;
+			}
 
 			// get bounding box of current actor
-			BoundingBox box = currentActor->getBoundingBox();
+			BoundingBox box = actorCollisionComponent->getBoundingBox();
 			// get cohen's code for start point
 			int a = RayTrace::getDotCode(box, startPoint);
 			// get cohen's code for end point
@@ -220,12 +251,12 @@ namespace RayTrace
 			{
 				//return true;
 				// get hull of current actor
-				const Hull *hull = currentActor->getGeometry();
+				const Hull *hull = actorCollisionComponent->getGeometry();
 
 				// for each border
 				for (auto &border : hull->borders)
 				{
-					Vector2D actorsLocation(currentActor->getLocation());
+					Vector2D actorsLocation(actorMovementComponent->getLocation());
 
 					// if ray have different direction with normal
 					if (abs((border.getNormal().rotation() - (endPoint - startPoint).rotation()).getValue()) <= PI/2)

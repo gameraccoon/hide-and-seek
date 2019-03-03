@@ -3,8 +3,9 @@
 #include <AI/PlayerRole.h>
 
 #include <Modules/Collide.h>
+#include <Components/MovementComponent.h>
 
-Hero::Hero(World *world, Vector2D location, Vector2D /*scale*/, Rotator )
+Hero::Hero(World *world, Vector2D location)
 	: Body(world, location)
 	, mStep(ZERO_VECTOR)
 {
@@ -14,10 +15,7 @@ Hero::Hero(World *world, Vector2D location, Vector2D /*scale*/, Rotator )
 
 	setFraction(Fraction::GoodGuys);
 	
-	if (mRole != nullptr)
-		delete mRole;
-
-	mRole = new PlayerRole(world, this);
+	mRole = std::make_unique<PlayerRole>(world, this);
 }
 
 void Hero::move(Vector2D step)
@@ -32,8 +30,12 @@ void Hero::update(float deltatime)
 	// if actor's path is free
 	if (!Collide::isWillCollide(this, getOwnerWorld(), step))
 	{
-		// accept new position of the man
-		setLocation(getLocation() + step);
+		auto movementComponent = getSingleComponent<MovementComponent>();
+		if (movementComponent != nullptr)
+		{
+			// accept new position of the man
+			movementComponent->setLocation(movementComponent->getLocation() + step);
+		}
 	}
 
 	step = ZERO_VECTOR;

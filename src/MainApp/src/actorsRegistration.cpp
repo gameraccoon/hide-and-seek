@@ -8,9 +8,9 @@ IActor* CreateBullet(World *world, const Vector2D location, const Vector2D scale
 }
 
 #include <Actors/LightEmitter.h>
-IActor* CreateLightEmitter(World *world, const Vector2D location, const Vector2D scale, const Rotator rotation)
+IActor* CreateLightEmitter(World *world, const Vector2D location, const Vector2D /*scale*/, const Rotator rotation)
 {
-	return new LightEmitter(world, location, scale, rotation);
+	return new LightEmitter(world, location, rotation);
 }
 
 #include <Actors/Wall.h>
@@ -28,9 +28,9 @@ IActor* CreateMan(World *world, const Vector2D location, const Vector2D scale, c
 }
 
 #include <Actors/Corpse.h>
-IActor* CreateCorpse(World *world, const Vector2D location, const Vector2D scale, const Rotator rotation)
+IActor* CreateCorpse(World *world, const Vector2D location, const Vector2D /*scale*/, const Rotator rotation)
 {
-	return new Corpse(world, location, scale, rotation);
+	return new Corpse(world, location, rotation);
 }
 
 

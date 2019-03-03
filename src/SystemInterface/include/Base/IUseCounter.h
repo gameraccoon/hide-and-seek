@@ -10,6 +10,8 @@ namespace SystemInterface
 	class IUseCounter
 	{
 	public:
+		virtual ~IUseCounter() = default;
+
 		using Uid = uint32_t;
 
 	public:

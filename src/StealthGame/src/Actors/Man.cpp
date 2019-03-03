@@ -3,9 +3,11 @@
 #include "AI/AiRole.h"
 
 #include <Modules/Collide.h>
+#include <Components/MovementComponent.h>
 
 
-Man::Man(World *world, Vector2D location, Vector2D /*scale*/, Rotator ) : Body(world, location)
+Man::Man(World *world, Vector2D location, Vector2D /*scale*/, Rotator )
+	: Body(world, location)
 {
 	setType(ActorType::Living);
 
@@ -15,40 +17,43 @@ Man::Man(World *world, Vector2D location, Vector2D /*scale*/, Rotator ) : Body(w
 
 	setFraction(Fraction::BadGuys);
 
-	if (mRole != nullptr)
-		delete mRole;
-	mRole = new AiRole(world, this);
+	mRole = std::make_unique<AiRole>(world, this);
 }
 
 void Man::update(float deltatime)
 {
-	if (mTempLocation == getLocation())
+	auto movementComponent = getSingleComponent<MovementComponent>();
+	if (movementComponent != nullptr)
 	{
-		findNextPathPoint();
-	}
-
-	float stepSize = mSpeed * deltatime;
-
-	if (stepSize < (mTempLocation - getLocation()).size())
-	{
-		Vector2D step = (mTempLocation - getLocation()).ort() * stepSize;
-
-		// if actor's path is free
-		if (!Collide::isWillCollide(this, getOwnerWorld(), step))
-		{
-			// accept new position of the man
-			setLocation(getLocation() + step);
-		}
-		else
+		Vector2D location = movementComponent->getLocation();
+		if (mTempLocation == location)
 		{
 			findNextPathPoint();
 		}
-	}
-	else
-	{
-		setLocation(mTempLocation);
-	}
 
+		float stepSize = mSpeed * deltatime;
+
+		Vector2D diffLocation = mTempLocation - location;
+		if (stepSize < diffLocation.size())
+		{
+			Vector2D step = diffLocation.ort() * stepSize;
+
+			// if actor's path is free
+			if (!Collide::isWillCollide(this, getOwnerWorld(), step))
+			{
+				// accept new position of the man
+				movementComponent->setLocation(location + step);
+			}
+			else
+			{
+				findNextPathPoint();
+			}
+		}
+		else
+		{
+			movementComponent->setLocation(mTempLocation);
+		}
+	}
 	// use superclass method
 	Body::update(deltatime);
 }

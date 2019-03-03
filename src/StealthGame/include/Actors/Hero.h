@@ -8,9 +8,9 @@ class Hero:public Body
 {
 public:
 	/** Initialization of a new Hero standing at a given point */
-	Hero(World *world, Vector2D location, Vector2D scale, Rotator rotation);
+	Hero(World *world, Vector2D location);
 
-	~Hero() = default;
+	~Hero() override = default;
 
 	/** Process moving and other actions of the man */
 	virtual void update(float deltatime) override;

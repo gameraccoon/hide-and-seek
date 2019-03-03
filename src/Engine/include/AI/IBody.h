@@ -9,6 +9,7 @@
 class IBody
 {
 public:
+	virtual ~IBody() = default;
 	/** Say that the body must go to the location */
 	virtual void moveTo(Vector2D location) = 0;
 	/**

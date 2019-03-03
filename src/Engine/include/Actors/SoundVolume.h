@@ -5,7 +5,7 @@
 class SoundVolume : public Actor
 {
 public:
-	SoundVolume(World *world, Vector2D location, float loudness);
+	SoundVolume(World *world, float loudness);
 	~SoundVolume() override;
 
 	float getLoudness() const;

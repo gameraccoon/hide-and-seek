@@ -25,6 +25,20 @@ public:
 	/** */
 	const std::vector<PathPoint::Ptr>& getNavigationMap() const;
 
+	/** SUPER NOT OPTIMAL for now */
+	template<typename T>
+	std::vector<std::shared_ptr<T>> getComponents() const
+	{
+		std::vector<std::shared_ptr<T>> resultVector;
+		auto& actors = getAllActors();
+		for (auto& actor : actors)
+		{
+			auto components = actor->getComponents<T>();
+			resultVector.insert(resultVector.end(), components.begin(), components.end());
+		}
+		return resultVector;
+	}
+
 private:
 	/** Destroy actors that waits to be destroyed */
 	void cleanDestroyedActors();

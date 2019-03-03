@@ -8,7 +8,7 @@ class Bullet : public Actor
 {
 public:
 	Bullet(World *world, Vector2D location, Vector2D scale, Rotator rotation);
-        ~Bullet() override;
+	~Bullet() override;
 	/** Process moving and other actions of the Actor */
 	virtual void update(float deltatime) override;
 
