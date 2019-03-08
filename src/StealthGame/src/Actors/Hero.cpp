@@ -3,12 +3,17 @@
 #include <AI/PlayerRole.h>
 
 #include <Modules/Collide.h>
-#include <Components/MovementComponent.h>
+#include <Components/TransformComponent.h>
+#include <Components/CameraComponent.h>
 
 Hero::Hero(World *world, Vector2D location)
 	: Body(world, location)
 	, mStep(ZERO_VECTOR)
 {
+	auto cameraComponent = makeAndAddComponent<CameraComponent>();
+	cameraComponent->setTransformComponent(getSingleComponent<TransformComponent>());
+	world->setMainCamera(cameraComponent);
+
 	mSpeed = 1.f;
 
 	updateActorId("Hero");
@@ -30,16 +35,15 @@ void Hero::update(float deltatime)
 	// if actor's path is free
 	if (!Collide::isWillCollide(this, getOwnerWorld(), step))
 	{
-		auto movementComponent = getSingleComponent<MovementComponent>();
-		if (movementComponent != nullptr)
+		auto transform = getSingleComponent<TransformComponent>();
+		if (transform != nullptr)
 		{
 			// accept new position of the man
-			movementComponent->setLocation(movementComponent->getLocation() + step);
+			transform->setLocation(transform->getLocation() + step);
 		}
 	}
 
 	step = ZERO_VECTOR;
 
-	// use superclass method
 	Body::update(deltatime);
 }

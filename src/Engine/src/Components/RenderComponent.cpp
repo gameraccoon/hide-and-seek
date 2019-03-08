@@ -6,14 +6,14 @@ RenderComponent::RenderComponent()
 {
 }
 
-MovementComponent::WeakPtr RenderComponent::getMovementComponent() const
+TransformComponent::WeakPtr RenderComponent::getTransformComponent() const
 {
-	return mMovementComponent;
+	return mTransformComponent;
 }
 
-void RenderComponent::setMovementComponent(MovementComponent::WeakPtr newMovementComponent)
+void RenderComponent::setTransformComponent(TransformComponent::WeakPtr newTransformComponent)
 {
-	mMovementComponent = newMovementComponent;
+	mTransformComponent = newTransformComponent;
 }
 
 Vector2D RenderComponent::getScale() const
@@ -24,4 +24,14 @@ Vector2D RenderComponent::getScale() const
 void RenderComponent::setScale(const Vector2D& newScale)
 {
 	mScale = newScale;
+}
+
+void RenderComponent::setTexturePath(const std::string& newTexturePath)
+{
+	mTexturePath = newTexturePath;
+}
+
+std::string RenderComponent::getTexturePath()
+{
+	return mTexturePath;
 }

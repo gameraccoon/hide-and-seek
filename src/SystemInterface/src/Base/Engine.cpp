@@ -227,7 +227,6 @@ namespace SystemInterface
 			if (mGame)
 			{
 				mGame->update(lastFrameSeconds);
-				mGame->draw();
 			}
 		}
 	}
@@ -242,12 +241,11 @@ namespace SystemInterface
 				mQuit = true;
 				break;
 			case SDL_KEYDOWN:
-			{
-				if (event.key.keysym.sym == SDLK_ESCAPE)
-				{
-					mQuit = true;
-				}
-			} break;
+				mGame->setKeyState(event.key.keysym.sym, true);
+				break;
+			case SDL_KEYUP:
+				mGame->setKeyState(event.key.keysym.sym, false);
+				break;
 			case SDL_MOUSEBUTTONDOWN:
 				mMouseButtonDown = true;
 				break;

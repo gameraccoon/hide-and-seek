@@ -4,7 +4,7 @@
 
 #include "Actors/LightEmitter.h"
 
-#include <Components/MovementComponent.h>
+#include <Components/TransformComponent.h>
 #include <Components/LightComponent.h>
 #include <Components/CollisionComponent.h>
 #include <Components/RenderComponent.h>
@@ -16,12 +16,11 @@ Body::Body(World *world, Vector2D location)
 	, mNavigator(world)
 	, mTempLocation(location)
 {
-	auto movementComponent = makeAndAddComponent<MovementComponent>();
-	movementComponent->overrideOnUpdateLocationCallback([this](){this->onUpdateLocation();});
-	movementComponent->overrideOnUpdateRotationCallback([this](){this->onUpdateRotation();});
+	auto transformComponent = makeAndAddComponent<TransformComponent>();
 	makeAndAddComponent<CollisionComponent>();
 	auto renderComponent = makeAndAddComponent<RenderComponent>();
-	renderComponent->setMovementComponent(movementComponent);
+	renderComponent->setTransformComponent(transformComponent);
+	renderComponent->setTexturePath("resources/textures/hero.png");
 
 	setType(ActorType::Living);
 
@@ -89,10 +88,10 @@ void Body::startShoting(Vector2D targetLocation)
 {
 	if (mArmedWeapon != nullptr)
 	{
-		auto movementComponent = getSingleComponent<MovementComponent>();
-		if (movementComponent != nullptr)
+		auto transformComponent = getSingleComponent<TransformComponent>();
+		if (transformComponent != nullptr)
 		{
-			Vector2D location = movementComponent->getLocation();
+			Vector2D location = transformComponent->getLocation();
 			mArmedWeapon->startShooting(location, (targetLocation - location).rotation());
 		}
 	}
@@ -123,11 +122,11 @@ void Body::hit(IActor *, float damageValue, Vector2D impulse)
 	{
 		mHealthValue = 0.0f;
 		mSpeed = 0.0f;
-		auto movementComponent = getSingleComponent<MovementComponent>();
-		if (movementComponent != nullptr)
+		auto transformComponent = getSingleComponent<TransformComponent>();
+		if (transformComponent != nullptr)
 		{
-			Vector2D location = movementComponent->getLocation();
-			Rotator rotation = movementComponent->getRotation();
+			Vector2D location = transformComponent->getLocation();
+			Rotator rotation = transformComponent->getRotation();
 			ActorFactory::Factory().spawnActor("Corpse", getOwnerWorld(), location, Vector2D(1.f, 1.f), rotation);
 		}
 		destroy();
@@ -157,30 +156,6 @@ Body::Fraction Body::getFraction()
 	return mFraction;
 }
 
-void Body::onUpdateLocation()
-{
-	if (mArmedWeapon != nullptr)
-	{
-		auto movementComponent = getSingleComponent<MovementComponent>();
-		if (movementComponent != nullptr)
-		{
-			mArmedWeapon->setLocation(movementComponent->getLocation());
-		}
-	}
-}
-
-void Body::onUpdateRotation()
-{
-	if (mArmedWeapon != nullptr)
-	{
-		auto movementComponent = getSingleComponent<MovementComponent>();
-		if (movementComponent != nullptr)
-		{
-			mArmedWeapon->changeDirection(movementComponent->getRotation());
-		}
-	}
-}
-
 void Body::look()
 {
 	for (const auto& actor : getOwnerWorld()->getAllActors())
@@ -208,20 +183,20 @@ bool Body::canSeeEnemy(const Body *enemy) const
 	const float viewDistance = 400.f;
 	const float attentiveness = 1.5f;
 
-	auto movementComponent = getSingleComponent<MovementComponent>();
-	if (movementComponent == nullptr)
+	auto transformComponent = getSingleComponent<TransformComponent>();
+	if (transformComponent == nullptr)
 	{
 		return false;
 	}
-	auto enemyMovementComponent = getSingleComponent<MovementComponent>();
-	if (enemyMovementComponent == nullptr)
+	auto enemyTransformComponent = getSingleComponent<TransformComponent>();
+	if (enemyTransformComponent == nullptr)
 	{
 		return false;
 	}
 
-	Vector2D location = movementComponent->getLocation();
-	Rotator rotation = movementComponent->getRotation();
-	Vector2D enemyLocation = enemyMovementComponent->getLocation();
+	Vector2D location = transformComponent->getLocation();
+	Rotator rotation = transformComponent->getRotation();
+	Vector2D enemyLocation = enemyTransformComponent->getLocation();
 
 	// if enemy farther than viewDistance
 	if ((location - enemyLocation).size() > viewDistance)
@@ -247,10 +222,10 @@ bool Body::canSeeEnemy(const Body *enemy) const
 
 	for (const auto& lightComponent : getOwnerWorld()->getComponents<LightComponent>())
 	{
-		MovementComponent::WeakPtr movementComponent = lightComponent->getMovementComponent();
-		if (MovementComponent::Ptr lockedMovementComponent = movementComponent.lock())
+		TransformComponent::WeakPtr transformComponent = lightComponent->getTransformComponent();
+		if (TransformComponent::Ptr lockedTransformComponent = transformComponent.lock())
 		{
-			Vector2D lightLocation = lockedMovementComponent->getLocation();
+			Vector2D lightLocation = lockedTransformComponent->getLocation();
 			if ((lightLocation - enemyLocation).size() < lightComponent->getBrightness() * 512)
 			{
 				IActor *tracedActor2 = RayTrace::trace(getOwnerWorld(), lightLocation, enemyLocation);
@@ -279,19 +254,19 @@ bool Body::canSeeEnemy(const Body *enemy) const
 
 void Body::findNextPathPoint()
 {
-	auto movementComponent = getSingleComponent<MovementComponent>();
-	if (movementComponent == nullptr)
+	auto transformComponent = getSingleComponent<TransformComponent>();
+	if (transformComponent == nullptr)
 	{
 		return;
 	}
-	auto targetMovementComponent = getSingleComponent<MovementComponent>();
-	if (targetMovementComponent == nullptr)
+	auto targetTransformComponent = getSingleComponent<TransformComponent>();
+	if (targetTransformComponent == nullptr)
 	{
 		return;
 	}
 
-	Vector2D location = movementComponent->getLocation();
-	Vector2D targetLocation = targetMovementComponent->getLocation();
+	Vector2D location = transformComponent->getLocation();
+	Vector2D targetLocation = targetTransformComponent->getLocation();
 
 	if (mFollowingTarget != nullptr)
 	{
@@ -311,7 +286,7 @@ void Body::findNextPathPoint()
 			}
 		}
 
-		movementComponent->setRotation((mTempLocation - location).rotation());
+		transformComponent->setRotation((mTempLocation - location).rotation());
 	}
 	else if (mMovingToLocation != nullptr)
 	{
@@ -331,7 +306,7 @@ void Body::findNextPathPoint()
 			}
 		}
 
-		movementComponent->setRotation((mTempLocation - location).rotation());
+		transformComponent->setRotation((mTempLocation - location).rotation());
 	}
 }
 

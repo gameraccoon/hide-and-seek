@@ -3,10 +3,10 @@
 #include "AI/AiRole.h"
 
 #include <Modules/Collide.h>
-#include <Components/MovementComponent.h>
+#include <Components/TransformComponent.h>
 
 
-Man::Man(World *world, Vector2D location, Vector2D /*scale*/, Rotator )
+Man::Man(World *world, Vector2D location)
 	: Body(world, location)
 {
 	setType(ActorType::Living);
@@ -22,10 +22,10 @@ Man::Man(World *world, Vector2D location, Vector2D /*scale*/, Rotator )
 
 void Man::update(float deltatime)
 {
-	auto movementComponent = getSingleComponent<MovementComponent>();
-	if (movementComponent != nullptr)
+	auto transformComponent = getSingleComponent<TransformComponent>();
+	if (transformComponent != nullptr)
 	{
-		Vector2D location = movementComponent->getLocation();
+		Vector2D location = transformComponent->getLocation();
 		if (mTempLocation == location)
 		{
 			findNextPathPoint();
@@ -42,7 +42,7 @@ void Man::update(float deltatime)
 			if (!Collide::isWillCollide(this, getOwnerWorld(), step))
 			{
 				// accept new position of the man
-				movementComponent->setLocation(location + step);
+				transformComponent->setLocation(location + step);
 			}
 			else
 			{
@@ -51,7 +51,7 @@ void Man::update(float deltatime)
 		}
 		else
 		{
-			movementComponent->setLocation(mTempLocation);
+			transformComponent->setLocation(mTempLocation);
 		}
 	}
 	// use superclass method

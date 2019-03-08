@@ -1,7 +1,7 @@
 #include "Graphics/Camera.h"
 
 #include <Base/ResourceManager.h>
-#include <Components/MovementComponent.h>
+#include <Components/TransformComponent.h>
 #include <Components/CollisionComponent.h>
 
 #include "Base/Engine.h"
@@ -110,13 +110,13 @@ void Camera::render()
 	{
 		renderFog(mResolution.x, mResolution.y, mFogScale);
 	}
-/*
+
 	// Bounding boxes
-	if (bShowAABB)
+	if (mIsShowAABB)
 	{
 		renderCollisionBoxes();
 	}
-
+	/*
 	// Borders
 	if (bShowBorders)
 	{
@@ -179,23 +179,19 @@ void Camera::renderActors(const LightComponent::Ptr /*light*/)
 
 void Camera::renderCollisionBoxes()
 {
+	/*
 	// for each actors in the world
-/*	for (const auto& actor : mBrowsableWorld->getAllActors())
+	for (const auto& collisions : mBrowsableWorld->getComponents<CollisionComponent>())
 	{
-		if (actor->getType() != ActorType::Bullet
-			&& actor->getType() != ActorType::Light
-			&& actor->getType() != ActorType::Ghost)
-		{
-			// get location and size of actor's AABB (axis-aligned bounding box)
-			Vector2D min = actor->getBoundingBox().getFirst();
-			Vector2D size = actor->getBoundingBox().getThird() - min;
+		// get location and size of actor's AABB (axis-aligned bounding box)
+		Vector2D min = collisions->getBoundingBox().getFirst();
+		Vector2D size = collisions->getBoundingBox().getThird() - min;
 
-			// project location on the screen
-			Vector2D shift = project(min);
+		// project location on the screen
+		Vector2D shift = project(min);
 
-			// render collision sprite
-			//collisionSprite->RenderEx(shift.x, shift.y, angle, size.x/64.0f, size.y/64.0f);
-		}
+		// render collision sprite
+		//mCollisionTexture->RenderEx(shift.x, shift.y, angle, size.x/64.0f, size.y/64.0f);
 	}*/
 }
 
@@ -311,7 +307,7 @@ void Camera::drawQuad(const Vector2D &, const Vector2D &, const Vector2D &, cons
 
 void Camera::renderLightShadows(const LightComponent::Ptr light)
 {
-	auto movementWeak = light->getMovementComponent();
+	auto movementWeak = light->getTransformComponent();
 	auto movement = movementWeak.lock();
 	if (movement == nullptr)
 	{
@@ -328,8 +324,8 @@ void Camera::renderLightShadows(const LightComponent::Ptr light)
 		// if actor - static
 		if (actor->getType() == ActorType::Static)
 		{
-			auto actorMovementComponent = actor->getSingleComponent<MovementComponent>();
-			if (actorMovementComponent == nullptr)
+			auto actorTransformComponent = actor->getSingleComponent<TransformComponent>();
+			if (actorTransformComponent == nullptr)
 			{
 				continue;
 			}
@@ -340,7 +336,7 @@ void Camera::renderLightShadows(const LightComponent::Ptr light)
 				continue;
 			}
 
-			Vector2D actorLocation = actorMovementComponent->getLocation();
+			Vector2D actorLocation = actorTransformComponent->getLocation();
 
 			// Get actor's camera local location
 			Vector2D screenLoc(actorLocation - lightPos);
@@ -386,8 +382,8 @@ void Camera::renderShadows()
 		// if actor - static
 		if (actor->getType() == ActorType::Static)
 		{
-			auto actorMovementComponent = actor->getSingleComponent<MovementComponent>();
-			if (actorMovementComponent == nullptr)
+			auto actorTransformComponent= actor->getSingleComponent<TransformComponent>();
+			if (actorTransformComponent == nullptr)
 			{
 				continue;
 			}
@@ -398,7 +394,7 @@ void Camera::renderShadows()
 				continue;
 			}
 
-			Vector2D actorLocation = actorMovementComponent->getLocation();
+			Vector2D actorLocation = actorTransformComponent->getLocation();
 
 			// get actors geometry
 			const Hull *hull = actorCollisionComponent->getGeometry();
@@ -437,8 +433,8 @@ void Camera::renderHulls()
 		// if actor - static
 		if (actor->getType() != ActorType::Light && actor->getType() != ActorType::Special)
 		{
-			auto actorMovementComponent = actor->getSingleComponent<MovementComponent>();
-			if (actorMovementComponent == nullptr)
+			auto actorTransformComponent = actor->getSingleComponent<TransformComponent>();
+			if (actorTransformComponent == nullptr)
 			{
 				continue;
 			}
@@ -449,7 +445,7 @@ void Camera::renderHulls()
 				continue;
 			}
 
-			Vector2D actorLocation = actorMovementComponent->getLocation();
+			Vector2D actorLocation = actorTransformComponent->getLocation();
 
 			// get actors geometry
 			const Hull *hull = actorCollisionComponent->getGeometry();

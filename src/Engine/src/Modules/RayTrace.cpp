@@ -1,7 +1,7 @@
 #include "Modules/RayTrace.h"
 
 #include <Components/CollisionComponent.h>
-#include <Components/MovementComponent.h>
+#include <Components/TransformComponent.h>
 
 #include <algorithm>
 
@@ -147,8 +147,8 @@ namespace RayTrace
 				continue;
 			}
 
-			auto actorMovementComponent = currentActor->getSingleComponent<MovementComponent>();
-			if (actorMovementComponent == nullptr)
+			auto actorTransformComponent = currentActor->getSingleComponent<TransformComponent>();
+			if (actorTransformComponent == nullptr)
 			{
 				continue;
 			}
@@ -181,7 +181,7 @@ namespace RayTrace
 				// for each border
 				for (auto &border : hull->borders)
 				{
-					Vector2D actorsLocation(actorMovementComponent->getLocation());
+					Vector2D actorsLocation(actorTransformComponent->getLocation());
 					// if ray have different direction with normal
 					if (abs((border.getNormal().rotation() - (endPoint - startPoint).rotation()).getValue()) <= PI/2)
 						continue;
@@ -222,8 +222,8 @@ namespace RayTrace
 				continue;
 			}
 
-			auto actorMovementComponent = currentActor->getSingleComponent<MovementComponent>();
-			if (actorMovementComponent == nullptr)
+			auto actorTransformComponent = currentActor->getSingleComponent<TransformComponent>();
+			if (actorTransformComponent == nullptr)
 			{
 				continue;
 			}
@@ -256,7 +256,7 @@ namespace RayTrace
 				// for each border
 				for (auto &border : hull->borders)
 				{
-					Vector2D actorsLocation(actorMovementComponent->getLocation());
+					Vector2D actorsLocation(actorTransformComponent->getLocation());
 
 					// if ray have different direction with normal
 					if (abs((border.getNormal().rotation() - (endPoint - startPoint).rotation()).getValue()) <= PI/2)

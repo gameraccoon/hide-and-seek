@@ -1,6 +1,6 @@
 #include "Actors/Wall.h"
 #include "Components/RenderComponent.h"
-#include "Components/MovementComponent.h"
+#include "Components/TransformComponent.h"
 
 Wall::Wall(World *world, const Vector2D location, const Vector2D scale, const Rotator rotation)
 	: Actor(world)
@@ -8,9 +8,9 @@ Wall::Wall(World *world, const Vector2D location, const Vector2D scale, const Ro
 	setType(ActorType::Static);
 
 //	setOriginalSize(Vector2D(20, 20));
-	auto movementComponent = makeAndAddComponent<MovementComponent>();
-	movementComponent->setLocation(location);
-	movementComponent->setRotation(rotation);
+	auto transformComponent = makeAndAddComponent<TransformComponent>();
+	transformComponent->setLocation(location);
+	transformComponent->setRotation(rotation);
 	auto renderComponent = makeAndAddComponent<RenderComponent>();
 	renderComponent->setScale(scale);
 
@@ -33,7 +33,3 @@ Wall::~Wall()
 {
 }
 
-void Wall::update(float deltatime)
-{
-	Actor::update(deltatime);
-}

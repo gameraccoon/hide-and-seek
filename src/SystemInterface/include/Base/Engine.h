@@ -25,6 +25,8 @@ namespace SystemInterface
 		float getMouseY() const;
 		bool getMouseButtonDown() const;
 
+		bool getKeyState(char key);
+
 		void start(IGame* game);
 		void quit();
 

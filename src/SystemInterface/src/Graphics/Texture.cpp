@@ -19,17 +19,17 @@ namespace Graphics
 	{
 	}
 
-	int Texture::GetHeight() const
+	int Texture::getHeight() const
 	{
 		return mBase->surface->height();
 	}
 
-	int Texture::GetWidth() const
+	int Texture::getWidth() const
 	{
 		return mBase->surface->width();
 	}
 
-	void Texture::Draw(float x, float y, float rotation, float alpha)
+	void Texture::draw(float x, float y, float rotation, float alpha)
 	{
 		mBase->engine->render(mBase->surface, x, y, rotation, alpha);
 	}

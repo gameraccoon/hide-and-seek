@@ -39,6 +39,12 @@ public:
 		return resultVector;
 	}
 
+	std::shared_ptr<class CameraComponent> getMainCamera() { return mMainCamera; }
+	void setMainCamera(std::shared_ptr<class CameraComponent> newCamera) { mMainCamera = newCamera; }
+
+	std::shared_ptr<class TransformComponent> getPlayerControlledTransform() { return mPlayerControlledTransform; }
+	void setPlayerControlledTransform(std::shared_ptr<class TransformComponent> newTransform) { mPlayerControlledTransform = newTransform; }
+
 private:
 	/** Destroy actors that waits to be destroyed */
 	void cleanDestroyedActors();
@@ -46,4 +52,8 @@ private:
 	std::vector<IActor::Ptr> mAllActors;
 	/** All pathpoints of this world */
 	std::vector<PathPoint::Ptr> mNavigationMap;
+
+	std::shared_ptr<class CameraComponent> mMainCamera;
+
+	std::shared_ptr<class TransformComponent> mPlayerControlledTransform;
 };

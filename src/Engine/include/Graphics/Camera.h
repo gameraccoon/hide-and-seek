@@ -82,11 +82,11 @@ protected:
 	/** Pointer of the Engine subsystem */
 	std::unique_ptr<SystemInterface::Engine> mEngine;
 	/** Sprite of the actor */
-	//engineSprite* mCollisionSprite;
+	std::unique_ptr<Graphics::Texture> mCollisionTexture;
 	/** Render target */
 	//HTARGET mRenderTarget;
 	/** Fog texture */
-	Graphics::Texture* mFogTexture;
+	std::unique_ptr<Graphics::Texture> mFogTexture;
 	/** Is camera shows AABB? */
 	bool mIsShowAABB;
 	/** Maximum distans of renderable objects from camera */

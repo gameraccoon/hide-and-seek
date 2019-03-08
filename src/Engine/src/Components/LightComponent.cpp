@@ -10,12 +10,12 @@ void LightComponent::setBrightness(float newBrightness)
 	mBrightness = newBrightness;
 }
 
-MovementComponent::WeakPtr LightComponent::getMovementComponent() const
+TransformComponent::WeakPtr LightComponent::getTransformComponent() const
 {
-	return mMovementComponent;
+	return mTransformComponent;
 }
 
-void LightComponent::setMovementComponent(MovementComponent::WeakPtr newMovementComponent)
+void LightComponent::setTransformComponent(TransformComponent::WeakPtr newTransformComponent)
 {
-	mMovementComponent = newMovementComponent;
+	mTransformComponent = newTransformComponent;
 }

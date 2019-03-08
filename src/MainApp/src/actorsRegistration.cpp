@@ -20,11 +20,19 @@ IActor* CreateWall(World *world, const Vector2D location, const Vector2D scale, 
 }
 
 #include <Actors/Man.h>
-IActor* CreateMan(World *world, const Vector2D location, const Vector2D scale, const Rotator rotation)
+IActor* CreateMan(World *world, const Vector2D location, const Vector2D /*scale*/, const Rotator /*rotation*/)
 {
-	Man *man = new Man(world, location, scale, rotation);
+	Man *man = new Man(world, location);
 	man->giveWeapon(new Weapon);
 	return man;
+}
+
+#include <Actors/Hero.h>
+IActor* CreateHero(World *world, const Vector2D location, const Vector2D /*scale*/, const Rotator /*rotation*/)
+{
+	Hero *hero = new Hero(world, location);
+	hero->giveWeapon(new Weapon);
+	return hero;
 }
 
 #include <Actors/Corpse.h>
@@ -42,6 +50,7 @@ namespace FactoryActors
 		ActorFactory::Factory().registerActor("LightEmitter", ::CreateLightEmitter);
 		ActorFactory::Factory().registerActor("Wall", ::CreateWall);
 		ActorFactory::Factory().registerActor("Man", ::CreateMan);
+		ActorFactory::Factory().registerActor("Hero", ::CreateHero);
 		ActorFactory::Factory().registerActor("Corpse", ::CreateCorpse);
 	}
 }

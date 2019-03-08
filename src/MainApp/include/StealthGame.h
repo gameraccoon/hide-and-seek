@@ -4,6 +4,7 @@
 
 #include <Core/World.h>
 #include <Graphics/Camera.h>
+#include <Modules/SystemsManager.h>
 
 namespace Game
 {
@@ -14,10 +15,11 @@ namespace Game
 
 		void start();
 		virtual void update(float dt) override;
-		virtual void draw() override;
+		virtual void setKeyState(int key, bool isPressed) override;
 
 	private:
 		std::unique_ptr<World> mWorld;
-		std::unique_ptr<Camera> mMainCamera;
+		std::unordered_map<int, bool> mKeyStates;
+		std::unique_ptr<SystemsManager> mSystemsManager;
 	};
 }

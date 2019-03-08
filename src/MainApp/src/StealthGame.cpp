@@ -8,29 +8,39 @@
 
 #include <Modules/ActorFactory.h>
 
+#include <Systems/RenderSystem.h>
+#include <Systems/ControlSystem.h>
+
 namespace Game
 {
 	void StealthGame::start()
 	{
 		mWorld = std::make_unique<World>();
-		mMainCamera = std::make_unique<Camera>(mWorld.get(),
-            Vector2D(static_cast<float>(getEngine()->getWidth()), static_cast<float>(getEngine()->getHeight())),
-			Vector2D(0.0f, 0.0f));
 
-		ActorFactory::Factory().spawnActor("Man", mWorld.get(), Vector2D(10, 10),
+		mSystemsManager = std::make_unique<SystemsManager>();
+		mSystemsManager->registerSystem<ControlSystem>(getEngine(), &mKeyStates);
+		mSystemsManager->registerSystem<RenderSystem>(getResourceManager());
+
+		IActor* hero = ActorFactory::Factory().spawnActor("Hero", mWorld.get(), Vector2D(10, 10),
 			Vector2D(1, 1), Rotator(0));
+
+		if (auto transformComponent = hero->getSingleComponent<TransformComponent>())
+		{
+			mWorld->setPlayerControlledTransform(transformComponent);
+		}
 
 		// start the main loop
 		getEngine()->start(this);
 	}
 
+	void StealthGame::setKeyState(int key, bool isPressed)
+	{
+		mKeyStates[key] = isPressed;
+	}
+
 	void StealthGame::update(float dt)
 	{
 		mWorld->update(dt);
-	}
-
-	void StealthGame::draw()
-	{
-		mMainCamera->render();
+		mSystemsManager->update(mWorld.get(), dt);
 	}
 }

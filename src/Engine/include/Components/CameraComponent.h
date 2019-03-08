@@ -7,25 +7,20 @@
 #include "Core/Vector2D.h"
 
 /**
- * Component that stores information about a light emitter
+ * Component that contains camera-relating information
  */
-class LightComponent : public ActorComponent
+class CameraComponent : public ActorComponent
 {
 public:
-	using Ptr = std::shared_ptr<LightComponent>;
-	using WeakPtr = std::weak_ptr<LightComponent>;
+	using Ptr = std::shared_ptr<CameraComponent>;
+	using WeakPtr = std::weak_ptr<CameraComponent>;
 
 public:
-	virtual ~LightComponent() = default;
-
-	float getBrightness() const;
-	void setBrightness(float newSize);
+	virtual ~CameraComponent() = default;
 
 	TransformComponent::WeakPtr getTransformComponent() const;
 	void setTransformComponent(TransformComponent::WeakPtr newTransformComponent);
 
 private:
-	float mBrightness;
-
 	TransformComponent::WeakPtr mTransformComponent;
 };

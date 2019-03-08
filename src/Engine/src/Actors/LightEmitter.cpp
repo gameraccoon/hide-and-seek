@@ -1,14 +1,14 @@
 #include "Actors/LightEmitter.h"
 
-#include <Components/MovementComponent.h>
+#include <Components/TransformComponent.h>
 #include <Components/LightComponent.h>
 
 LightEmitter::LightEmitter(World *world, Vector2D location, Rotator rotation)
 	: Actor(world)
 {
-	auto movement = makeAndAddComponent<MovementComponent>(location, rotation);
+	auto movement = makeAndAddComponent<TransformComponent>(location, rotation);
 	auto light = std::make_shared<LightComponent>();
-	light->setMovementComponent(movement);
+	light->setTransformComponent(movement);
 	addComponent(light);
 
 	setType(ActorType::Light);

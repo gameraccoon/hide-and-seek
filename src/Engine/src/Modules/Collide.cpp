@@ -1,7 +1,7 @@
 #include "Modules/Collide.h"
 
 #include <Components/CollisionComponent.h>
-#include <Components/MovementComponent.h>
+#include <Components/TransformComponent.h>
 
 namespace Collide
 {
@@ -82,8 +82,8 @@ namespace Collide
 			return false;
 		}
 
-		auto actor1MovementComponent = actor1->getSingleComponent<MovementComponent>();
-		if (actor1MovementComponent == nullptr)
+		auto actor1TransformComponent = actor1->getSingleComponent<TransformComponent>();
+		if (actor1TransformComponent == nullptr)
 		{
 			return false;
 		}
@@ -103,8 +103,8 @@ namespace Collide
 					continue;
 				}
 
-				auto actorMovementComponent = actor1->getSingleComponent<MovementComponent>();
-				if (actorMovementComponent == nullptr)
+				auto actorTransformComponent = actor1->getSingleComponent<TransformComponent>();
+				if (actorTransformComponent == nullptr)
 				{
 					continue;
 				}
@@ -120,7 +120,7 @@ namespace Collide
 				{
 					// actor's path is not free
 					return IsCollideGeometry(actor1CollisionComponent->getGeometry(), actorCollisionComponent->getGeometry(),
-						actor1MovementComponent->getLocation() + step, actorMovementComponent->getLocation());
+						actor1TransformComponent->getLocation() + step, actorTransformComponent->getLocation());
 				}
 			}
 		}

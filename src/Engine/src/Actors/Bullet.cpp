@@ -1,11 +1,11 @@
 #include "Actors/Bullet.h"
-#include <Components/MovementComponent.h>
+#include <Components/TransformComponent.h>
 
 
 Bullet::Bullet(World *world, Vector2D location, Vector2D /*scale*/, Rotator rotation)
 	: Actor(world)
 {
-	addComponent(std::make_shared<MovementComponent>(location, rotation));
+	addComponent(std::make_shared<TransformComponent>(location, rotation));
 	mSpeed = 10.0f;
 	setType(ActorType::Bullet);
 
@@ -20,11 +20,11 @@ Bullet::~Bullet()
 
 void Bullet::update(float deltatime)
 {
-	auto movementComponent = getSingleComponent<MovementComponent>();
-	if (movementComponent != nullptr)
+	auto transformComponent = getSingleComponent<TransformComponent>();
+	if (transformComponent != nullptr)
 	{
-		auto bulletLocation = movementComponent->getLocation();
-		auto bulletRotation = movementComponent->getRotation();
+		auto bulletLocation = transformComponent->getLocation();
+		auto bulletRotation = transformComponent->getRotation();
 
 		Vector2D newLocation = bulletLocation + deltatime * mSpeed * Vector2D(bulletRotation);
 
@@ -34,7 +34,7 @@ void Bullet::update(float deltatime)
 		// if there nothing to hit
 		if (trasedActor == nullptr)
 		{
-			movementComponent->setLocation(newLocation);
+			transformComponent->setLocation(newLocation);
 		}
 		else // bullet is hiting some actor
 		{

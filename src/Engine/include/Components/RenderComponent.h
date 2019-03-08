@@ -3,10 +3,10 @@
 #include <memory>
 
 #include "Core/ActorComponent.h"
-#include "Components/MovementComponent.h"
+#include "Components/TransformComponent.h"
 
 /**
- *
+ * Component that stores information about renderable part of an object
  */
 class RenderComponent : public ActorComponent
 {
@@ -18,14 +18,20 @@ public:
 	RenderComponent();
 	virtual ~RenderComponent() = default;
 
-	MovementComponent::WeakPtr getMovementComponent() const;
-	void setMovementComponent(MovementComponent::WeakPtr newMovementComponent);
+	TransformComponent::WeakPtr getTransformComponent() const;
+	void setTransformComponent(TransformComponent::WeakPtr newTransformComponent);
 
 	Vector2D getScale() const;
 	void setScale(const Vector2D& newScale);
 
+	void setTexturePath(const std::string& newTexturePath);
+	std::string getTexturePath();
+
 private:
-	MovementComponent::WeakPtr mMovementComponent;
+	TransformComponent::WeakPtr mTransformComponent;
 
 	Vector2D mScale;
+
+	// just for now
+	std::string mTexturePath;
 };

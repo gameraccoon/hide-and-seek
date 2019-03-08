@@ -39,10 +39,10 @@ namespace Graphics
 		Texture(Texture&&) = default;
         virtual ~Texture() override;
 
-        int GetHeight() const;
-        int GetWidth() const;
+		int getHeight() const;
+		int getWidth() const;
 
-		void Draw(float x, float y, float rotation = 0.0f, float alpha = 1.0f);
+		void draw(float x, float y, float rotation = 0.0f, float alpha = 1.0f);
 
 		virtual bool isValid() const override;
 
