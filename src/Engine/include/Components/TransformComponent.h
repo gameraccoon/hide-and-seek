@@ -3,14 +3,14 @@
 #include <functional>
 #include <memory>
 
-#include "Core/ActorComponent.h"
+#include "Core/Component.h"
 
 #include <Core/Vector2D.h>
 
 /**
  * Component that stores informtaon about position and movement
  */
-class TransformComponent : public ActorComponent
+class TransformComponent : public BaseComponent
 {
 public:
 	using Ptr = std::shared_ptr<TransformComponent>;

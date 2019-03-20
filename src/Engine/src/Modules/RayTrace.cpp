@@ -132,168 +132,168 @@ namespace RayTrace
 		return ZERO_VECTOR;
 	}
 
-	bool fastTrace(World * world, const Vector2D &startPoint, const Vector2D &endPoint)
+	bool fastTrace(World* /*world*/, const Vector2D& /*startPoint*/, const Vector2D& /*endPoint*/)
 	{
-		for (const auto& currentActor : world->getAllActors())
-		{
-			if (currentActor->getType() == ActorType::Light || currentActor->getType() == ActorType::Special)
-			{
-				continue;
-			}
+//		for (const auto& currentActor : world->getAllActors())
+//		{
+//			if (currentActor->getType() == ActorType::Light || currentActor->getType() == ActorType::Special)
+//			{
+//				continue;
+//			}
 
-			auto actorCollisionComponent = currentActor->getSingleComponent<CollisionComponent>();
-			if (actorCollisionComponent == nullptr)
-			{
-				continue;
-			}
+//			auto actorCollisionComponent = currentActor->getSingleComponent<CollisionComponent>();
+//			if (actorCollisionComponent == nullptr)
+//			{
+//				continue;
+//			}
 
-			auto actorTransformComponent = currentActor->getSingleComponent<TransformComponent>();
-			if (actorTransformComponent == nullptr)
-			{
-				continue;
-			}
+//			auto actorTransformComponent = currentActor->getSingleComponent<TransformComponent>();
+//			if (actorTransformComponent == nullptr)
+//			{
+//				continue;
+//			}
 		
-			// get bounding box of current actor
-			BoundingBox box = actorCollisionComponent->getBoundingBox();
-			// get cohen's code for start point
-			int a = RayTrace::getDotCode(box, startPoint);
-			// get cohen's code for end point
-			int b = RayTrace::getDotCode(box, endPoint);
+//			// get bounding box of current actor
+//			BoundingBox box = actorCollisionComponent->getBoundingBox();
+//			// get cohen's code for start point
+//			int a = RayTrace::getDotCode(box, startPoint);
+//			// get cohen's code for end point
+//			int b = RayTrace::getDotCode(box, endPoint);
 
-			// if points on some side of BB
-			if ((a & b) != 0)
-			{
-				// go to the next actor
-				continue;
-			}
+//			// if points on some side of BB
+//			if ((a & b) != 0)
+//			{
+//				// go to the next actor
+//				continue;
+//			}
 
-			// if raytrace intersect AABB of this actor
-			if (((a == 0 || b == 0)	&& (a | b) != 0)	// one point is in BB another is out BB
-				||
-				((a | b) == 3 || (a | b) == 12)			// points on opposite sides of BB // 0011 or 1100 
-				||
-				RayTrace::checkIntersectAABBLine(box, startPoint, endPoint))	// other cases of intersection
-			{
-				//return true;
-				// get hull of current actor
-				const Hull *hull = actorCollisionComponent->getGeometry();
+//			// if raytrace intersect AABB of this actor
+//			if (((a == 0 || b == 0)	&& (a | b) != 0)	// one point is in BB another is out BB
+//				||
+//				((a | b) == 3 || (a | b) == 12)			// points on opposite sides of BB // 0011 or 1100
+//				||
+//				RayTrace::checkIntersectAABBLine(box, startPoint, endPoint))	// other cases of intersection
+//			{
+//				//return true;
+//				// get hull of current actor
+//				const Hull *hull = actorCollisionComponent->getGeometry();
 
-				// for each border
-				for (auto &border : hull->borders)
-				{
-					Vector2D actorsLocation(actorTransformComponent->getLocation());
-					// if ray have different direction with normal
-					if (abs((border.getNormal().rotation() - (endPoint - startPoint).rotation()).getValue()) <= PI/2)
-						continue;
+//				// for each border
+//				for (auto &border : hull->borders)
+//				{
+//					Vector2D actorsLocation(actorTransformComponent->getLocation());
+//					// if ray have different direction with normal
+//					if (abs((border.getNormal().rotation() - (endPoint - startPoint).rotation()).getValue()) <= PI/2)
+//						continue;
 
-					// if raytrace intersect this border
-					if (RayTrace::checkIntersect2Lines(actorsLocation + border.getA(), actorsLocation + border.getB(),
-						startPoint, endPoint))
-					{
-						return true;
-					}
-				}
-			}
-		}
+//					// if raytrace intersect this border
+//					if (RayTrace::checkIntersect2Lines(actorsLocation + border.getA(), actorsLocation + border.getB(),
+//						startPoint, endPoint))
+//					{
+//						return true;
+//					}
+//				}
+//			}
+//		}
 		return false;
 	}
 
-	IActor* trace(World * world, const Vector2D &startPoint, const Vector2D &endPoint,
-		Vector2D *outPoint, Vector2D *outNormal)
-	{
-		// nearest actor that intersects ray
-		IActor *nearestActor = nullptr;
-		// hitpoint of nearest actor
-		Vector2D nearestHitPoint(ZERO_VECTOR);
-		Vector2D nearestNormal(ZERO_VECTOR);
-		float minRayLength = (startPoint - endPoint).size() + 20.0f;
+//	IActor* trace(World * world, const Vector2D &startPoint, const Vector2D &endPoint,
+//		Vector2D *outPoint, Vector2D *outNormal)
+//	{
+//		// nearest actor that intersects ray
+//		IActor *nearestActor = nullptr;
+//		// hitpoint of nearest actor
+//		Vector2D nearestHitPoint(ZERO_VECTOR);
+//		Vector2D nearestNormal(ZERO_VECTOR);
+//		float minRayLength = (startPoint - endPoint).size() + 20.0f;
 
-		// for each actor in the world
-		for (const auto& currentActor : world->getAllActors())
-		{
-			if (currentActor->getType() == ActorType::Light || currentActor->getType() == ActorType::Special)
-			{
-				continue;
-			}
+//		// for each actor in the world
+//		for (const auto& currentActor : world->getAllActors())
+//		{
+//			if (currentActor->getType() == ActorType::Light || currentActor->getType() == ActorType::Special)
+//			{
+//				continue;
+//			}
 
-			auto actorCollisionComponent = currentActor->getSingleComponent<CollisionComponent>();
-			if (actorCollisionComponent == nullptr)
-			{
-				continue;
-			}
+//			auto actorCollisionComponent = currentActor->getSingleComponent<CollisionComponent>();
+//			if (actorCollisionComponent == nullptr)
+//			{
+//				continue;
+//			}
 
-			auto actorTransformComponent = currentActor->getSingleComponent<TransformComponent>();
-			if (actorTransformComponent == nullptr)
-			{
-				continue;
-			}
+//			auto actorTransformComponent = currentActor->getSingleComponent<TransformComponent>();
+//			if (actorTransformComponent == nullptr)
+//			{
+//				continue;
+//			}
 
-			// get bounding box of current actor
-			BoundingBox box = actorCollisionComponent->getBoundingBox();
-			// get cohen's code for start point
-			int a = RayTrace::getDotCode(box, startPoint);
-			// get cohen's code for end point
-			int b = RayTrace::getDotCode(box, endPoint);
+//			// get bounding box of current actor
+//			BoundingBox box = actorCollisionComponent->getBoundingBox();
+//			// get cohen's code for start point
+//			int a = RayTrace::getDotCode(box, startPoint);
+//			// get cohen's code for end point
+//			int b = RayTrace::getDotCode(box, endPoint);
 
-			// if points on some side of BB
-			if ((a & b) != 0)
-			{
-				// go to the next actor
-				continue;
-			}
+//			// if points on some side of BB
+//			if ((a & b) != 0)
+//			{
+//				// go to the next actor
+//				continue;
+//			}
 
-			// if raytrace intersect AABB of this actor
-			if (((a == 0 || b == 0)	&& (a | b) != 0)	// one point is in BB another is out BB
-				||
-				((a | b) == 3 || (a | b) == 12)			// points on opposite sides of BB // 0011 or 1100 
-				||
-				RayTrace::checkIntersectAABBLine(box, startPoint, endPoint))	// other cases of intersection
-			{
-				//return true;
-				// get hull of current actor
-				const Hull *hull = actorCollisionComponent->getGeometry();
+//			// if raytrace intersect AABB of this actor
+//			if (((a == 0 || b == 0)	&& (a | b) != 0)	// one point is in BB another is out BB
+//				||
+//				((a | b) == 3 || (a | b) == 12)			// points on opposite sides of BB // 0011 or 1100
+//				||
+//				RayTrace::checkIntersectAABBLine(box, startPoint, endPoint))	// other cases of intersection
+//			{
+//				//return true;
+//				// get hull of current actor
+//				const Hull *hull = actorCollisionComponent->getGeometry();
 
-				// for each border
-				for (auto &border : hull->borders)
-				{
-					Vector2D actorsLocation(actorTransformComponent->getLocation());
+//				// for each border
+//				for (auto &border : hull->borders)
+//				{
+//					Vector2D actorsLocation(actorTransformComponent->getLocation());
 
-					// if ray have different direction with normal
-					if (abs((border.getNormal().rotation() - (endPoint - startPoint).rotation()).getValue()) <= PI/2)
-						continue;
+//					// if ray have different direction with normal
+//					if (abs((border.getNormal().rotation() - (endPoint - startPoint).rotation()).getValue()) <= PI/2)
+//						continue;
 
-					// if raytrace intersect this border
-					if (!RayTrace::checkIntersect2Lines(actorsLocation + border.getA(), actorsLocation + border.getB(), startPoint, endPoint))
-						continue;
+//					// if raytrace intersect this border
+//					if (!RayTrace::checkIntersect2Lines(actorsLocation + border.getA(), actorsLocation + border.getB(), startPoint, endPoint))
+//						continue;
 
-					Vector2D hitLocation = RayTrace::getPointIntersect2Lines(actorsLocation + border.getA(), actorsLocation + border.getB(),
-						startPoint, endPoint);
+//					Vector2D hitLocation = RayTrace::getPointIntersect2Lines(actorsLocation + border.getA(), actorsLocation + border.getB(),
+//						startPoint, endPoint);
 							
-					float rayLength = (startPoint - hitLocation).size();
+//					float rayLength = (startPoint - hitLocation).size();
 
-					// if currentActor nearer than last
-					if (rayLength < minRayLength)
-					{
-						minRayLength = rayLength;
-						nearestActor = currentActor.get();
-						nearestHitPoint = hitLocation;
-						nearestNormal = border.getNormal();
-					}
-				}
-			}
-		}
+//					// if currentActor nearer than last
+//					if (rayLength < minRayLength)
+//					{
+//						minRayLength = rayLength;
+//						nearestActor = currentActor.get();
+//						nearestHitPoint = hitLocation;
+//						nearestNormal = border.getNormal();
+//					}
+//				}
+//			}
+//		}
 
-		// return all values
-		if (outPoint != nullptr)
-		{
-			*outPoint = nearestHitPoint;
-		}
+//		// return all values
+//		if (outPoint != nullptr)
+//		{
+//			*outPoint = nearestHitPoint;
+//		}
 
-		if (outNormal != nullptr)
-		{
-			*outNormal = nearestNormal;
-		}
+//		if (outNormal != nullptr)
+//		{
+//			*outNormal = nearestNormal;
+//		}
 
-		return nearestActor;
-	}
+//		return nearestActor;
+//	}
 }

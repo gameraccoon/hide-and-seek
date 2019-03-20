@@ -1,76 +1,61 @@
 #include "Core/World.h"
 
 #include <algorithm>
+#include <random>
 
 World::~World()
 {
 }
 
-void World::addActor(IActor::Ptr& actor)
+Entity World::addEntity()
 {
-	mAllActors.emplace_back(actor.release());
+	// ToDo: use generators
+	Entity::EntityID id = static_cast<Entity::EntityID>(std::rand());
+	mEntityIndexMap.emplace(id, mMaxEntityIndex++);
+	return Entity(id);
 }
 
-void World::update(float deltatime)
+void World::removeEntity(Entity entity)
 {
-	for (auto& actor : mAllActors)
+	auto entityIdxItr = mEntityIndexMap.find(entity.getID());
+	if (entityIdxItr == mEntityIndexMap.end())
 	{
-		if (!actor->isWaitDestruction())
+		return;
+	}
+	EntityIndex oldEntityIdx = entityIdxItr->second;
+
+	for (auto& componentVector : mComponents)
+	{
+		// if the vector containts deleted entity
+		if (componentVector.second.size() > oldEntityIdx)
 		{
-			actor->update(deltatime);
+			// if the vector containts the last entity
+			if (componentVector.second.size() < mMaxEntityIndex - 1)
+			{
+				// swap with the last and drop it
+				std::swap(componentVector.second[oldEntityIdx], componentVector.second[mMaxEntityIndex - 1]);
+				componentVector.second.pop_back();
+			}
+			else
+			{
+				// emulate swapping with nonexsistent nullptr Component
+				componentVector.second[entity.getID()] = nullptr;
+			}
 		}
 	}
 
-	cleanDestroyedActors();
+	--mMaxEntityIndex;
+
+	mEntityIndexMap.erase(entity.getID());
+
+	// relink maps
+	Entity::EntityID entityID = mIndexEntityMap[mMaxEntityIndex];
+	mEntityIndexMap[entityID] = oldEntityIdx;
+	mIndexEntityMap[oldEntityIdx] = entityID;
+	mIndexEntityMap.erase(mMaxEntityIndex);
 }
 
 void World::addPathPoint(PathPoint::Ptr& pathPoint)
 {
 	mNavigationMap.emplace_back(pathPoint.release());
-}
-
-void World::cleanDestroyedActors()
-{
-	auto i = mAllActors.begin(), iEnd = mAllActors.end();
-	while (i != iEnd)
-	{
-		IActor* currentActor = i->get();
-
-		if (currentActor->isWaitDestruction())
-		{
-			i = mAllActors.erase(i);
-		}
-		else
-		{
-			i++;
-		}
-	}
-}
-
-IActor* World::getActorById(const std::string& id)
-{
-	for (const auto &actor : mAllActors)
-	{
-		if (id == actor->getActorId())
-		{
-			return actor.get();
-		}
-	}
-
-	return nullptr;
-}
-
-std::vector<IActor::Ptr>& World::getAllActors()
-{
-	return mAllActors;
-}
-
-const std::vector<IActor::Ptr>& World::getAllActors() const
-{
-	return mAllActors;
-}
-
-const std::vector<PathPoint::Ptr>& World::getNavigationMap() const
-{
-	return mNavigationMap;
 }

@@ -50,7 +50,6 @@ include_directories(
     ${SOURCE_ROOT}/SystemInterface/include
     ${SOURCE_ROOT}/SqliteInterface/include
     ${SOURCE_ROOT}/StealthGame/include
-    ${SOURCE_ROOT}/MainApp/include
     ${SOURCE_ROOT}/Editor/include
 
     ${CMAKE_SOURCE_DIR}/MainApp
@@ -99,7 +98,6 @@ add_folder_as_library(${SOURCE_ROOT}/SystemInterface SystemInterfaceLib)
 add_folder_as_library(${SOURCE_ROOT}/SqliteInterface SqliteInterfaceLib)
 add_folder_as_library(${SOURCE_ROOT}/StealthGame StealthGameLib)
 
-add_folder_as_library(${SOURCE_ROOT}/MainApp MainAppLib)
 #add_folder_as_library(${SOURCE_ROOT}/Editor)
 
 if (NOT ${PROJECT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR})
@@ -124,7 +122,6 @@ target_link_libraries(${APP_NAME}
 #    SDL2test
 #    opengl32
 
-    MainAppLib
     StealthGameLib
     SqliteInterfaceLib
     SystemInterfaceLib

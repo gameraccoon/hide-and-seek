@@ -1,8 +1,7 @@
 #pragma once
 
-#include "../Core/Vector2D.h"
-#include "../Core/World.h"
-#include "../Actors/Bullet.h"
+#include <Core/Vector2D.h>
+#include <Core/World.h>
 
 #include "InventoryItem.h"
 

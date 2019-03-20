@@ -11,9 +11,9 @@ void LevelLoader::save(World* world, const std::string levelName)
 	// saving all actors in this world
 	std::ofstream mapFile;
 	mapFile.open(std::string("./maps/").append(levelName).append(std::string(".map")));
-	for (const auto& actor : world->getAllActors())
-	{
-		mapFile << actor->getClassID();
+//	for (const auto& actor : world->getAllActors())
+//	{
+//		mapFile << actor->getClassID();
 //		mapFile << " ";
 //		mapFile << actor->getLocation().x;
 //		mapFile << " ";
@@ -24,8 +24,8 @@ void LevelLoader::save(World* world, const std::string levelName)
 //		mapFile << actor->getScale().y;
 //		mapFile << " ";
 //		mapFile << actor->getRotation().getValue();
-		mapFile << "\n";
-	}
+//		mapFile << "\n";
+//	}
 	mapFile.close();
 
 	// saving paths
@@ -103,8 +103,8 @@ void LevelLoader::load(World* world, const std::string levelName)
 		mapFile >> yScale;
 		mapFile >> angle;
 
-		ActorFactory::Factory().spawnActor(className, world, Vector2D(xPos, yPos),
-			Vector2D(xScale, yScale), Rotator(angle));
+//		ActorFactory::Factory().spawnActor(className, world, Vector2D(xPos, yPos),
+//			Vector2D(xScale, yScale), Rotator(angle));
 	}
 	mapFile.close();
 

@@ -11,6 +11,9 @@
 #include <Systems/RenderSystem.h>
 #include <Systems/ControlSystem.h>
 
+#include <Components/TransformComponent.h>
+#include <Components/RenderComponent.h>
+
 namespace Game
 {
 	void StealthGame::start()
@@ -21,13 +24,13 @@ namespace Game
 		mSystemsManager->registerSystem<ControlSystem>(getEngine(), &mKeyStates);
 		mSystemsManager->registerSystem<RenderSystem>(getResourceManager());
 
-		IActor* hero = ActorFactory::Factory().spawnActor("Hero", mWorld.get(), Vector2D(10, 10),
-			Vector2D(1, 1), Rotator(0));
+		Entity hero = mWorld->addEntity();
+		auto transformComponent = mWorld->addComponent<TransformComponent>(hero);
+		transformComponent->setLocation(Vector2D(10, 10));
+		auto renderComponent = mWorld->addComponent<RenderComponent>(hero);
+		renderComponent->setTexturePath("resources/textures/hero.png");
 
-		if (auto transformComponent = hero->getSingleComponent<TransformComponent>())
-		{
-			mWorld->setPlayerControlledTransform(transformComponent);
-		}
+		mWorld->setPlayerControlledEntity(hero);
 
 		// start the main loop
 		getEngine()->start(this);
@@ -40,7 +43,6 @@ namespace Game
 
 	void StealthGame::update(float dt)
 	{
-		mWorld->update(dt);
 		mSystemsManager->update(mWorld.get(), dt);
 	}
 }

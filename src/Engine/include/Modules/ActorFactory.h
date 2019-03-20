@@ -15,7 +15,7 @@
 class ActorFactory
 {
 public:
-	using CreateActorCallback = std::function<IActor*(World *world, const Vector2D location, const Vector2D scale, const Rotator rotation)>;
+//	using CreateActorCallback = std::function<IActor*(World *world, const Vector2D location, const Vector2D scale, const Rotator rotation)>;
 
 public:
 	/**
@@ -29,7 +29,7 @@ public:
 	 *
 	 * @return true if class wasn't registered earlier
 	 */
-	bool registerActor(std::string actorId, CreateActorCallback createFn);
+//	bool registerActor(std::string actorId, CreateActorCallback createFn);
 
 	/**
 	 * Unregister already registred class.
@@ -43,13 +43,13 @@ public:
 	 *
 	 * @throws runtime_error when actorId is unknown
 	 */
-	IActor* spawnActor(std::string actorId, World *world, const Vector2D location, const Vector2D size, const Rotator rotation);
+//	IActor* spawnActor(std::string actorId, World *world, const Vector2D location, const Vector2D size, const Rotator rotation);
 
 private:
-	using CallbackMap = std::map<std::string, CreateActorCallback>;
+//	using CallbackMap = std::map<std::string, CreateActorCallback>;
 
 private:
-	CallbackMap mCallbacks;
+//	CallbackMap mCallbacks;
 
 	/*
 	 * Turn off unusable operations

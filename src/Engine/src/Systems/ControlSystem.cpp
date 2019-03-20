@@ -3,6 +3,7 @@
 #include <sdl/SDL_keycode.h>
 
 #include <Components/RenderComponent.h>
+#include <Components/TransformComponent.h>
 
 ControlSystem::ControlSystem(SystemInterface::Engine* engine, KeyStatesMap* keyStatesMap)
 	: mEngine(engine)
@@ -37,9 +38,12 @@ void ControlSystem::update(World* world, float dt)
 
 	if (direction != ZERO_VECTOR)
 	{
-		if (auto transform = world->getPlayerControlledTransform())
+		if (NullableEntity controlledEntity = world->getPlayerControlledEntity(); controlledEntity.isValid())
 		{
-			transform->setLocation(transform->getLocation() + direction * speed * dt);
+			if (TransformComponent::Ptr transform = std::get<0>(world->getEntityComponents<TransformComponent>(controlledEntity.getEntity())))
+			{
+				transform->setLocation(transform->getLocation() + direction * speed * dt);
+			}
 		}
 	}
 }

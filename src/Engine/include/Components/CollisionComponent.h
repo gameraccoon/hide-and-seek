@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "Core/ActorComponent.h"
+#include "Core/Component.h"
 
 #include <Structures/Hull.h>
 #include <Structures/BoundingBox.h>
@@ -12,7 +12,7 @@
 /**
  * Component that stores informtaon and logic about position and movement
  */
-class CollisionComponent : public ActorComponent
+class CollisionComponent : public BaseComponent
 {
 public:
 	using Ptr = std::shared_ptr<CollisionComponent>;

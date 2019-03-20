@@ -1,9 +1,7 @@
 #pragma once
 
-#include "../Inventory/Weapon.h"
-#include "../Actors/SoundVolume.h"
-#include "../Core/Vector2D.h"
-#include "../Core/IActor.h"
+#include <Inventory/Weapon.h>
+#include <Core/Vector2D.h>
 
 
 class IBody
@@ -17,7 +15,7 @@ public:
 	 * @param target target those the body follows. It's constant that
 	 * helps prevent a direct change of the target.
 	 */
-	virtual void follow(const IActor *target) = 0;
+//	virtual void follow(const IActor *target) = 0;
 
 	virtual float getHealthValue() = 0;
 

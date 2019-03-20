@@ -2,13 +2,14 @@
 
 #include <memory>
 
-#include "Core/ActorComponent.h"
-#include "Components/TransformComponent.h"
+#include "Core/Component.h"
+
+#include "Core/Vector2D.h"
 
 /**
  * Component that stores information about renderable part of an object
  */
-class RenderComponent : public ActorComponent
+class RenderComponent : public BaseComponent
 {
 public:
 	using Ptr = std::shared_ptr<RenderComponent>;
@@ -18,9 +19,6 @@ public:
 	RenderComponent();
 	virtual ~RenderComponent() = default;
 
-	TransformComponent::WeakPtr getTransformComponent() const;
-	void setTransformComponent(TransformComponent::WeakPtr newTransformComponent);
-
 	Vector2D getScale() const;
 	void setScale(const Vector2D& newScale);
 
@@ -28,8 +26,6 @@ public:
 	std::string getTexturePath();
 
 private:
-	TransformComponent::WeakPtr mTransformComponent;
-
 	Vector2D mScale;
 
 	// just for now

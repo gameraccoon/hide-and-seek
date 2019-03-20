@@ -36,23 +36,23 @@ void AiRole::update(float )
 	checkStates();
 }
 
-void AiRole::onTakeDamage(IActor* instigator, float damageValue, Vector2D impulse)
-{
-	mStates.top()->onTakeDamage(instigator, damageValue, impulse);
-	checkStates();
-}
+//void AiRole::onTakeDamage(IActor* instigator, float damageValue, Vector2D impulse)
+//{
+//	mStates.top()->onTakeDamage(instigator, damageValue, impulse);
+//	checkStates();
+//}
 
-void AiRole::onSeeEnemy(IActor *enemy)
-{
-	mStates.top()->onSeeEnemy(enemy);
-	checkStates();
-}
+//void AiRole::onSeeEnemy(IActor *enemy)
+//{
+//	mStates.top()->onSeeEnemy(enemy);
+//	checkStates();
+//}
 
-void AiRole::onHearNoise(SoundVolume *sound)
-{
-	mStates.top()->onHearNoise(sound);
-	checkStates();
-}
+//void AiRole::onHearNoise(SoundVolume *sound)
+//{
+//	mStates.top()->onHearNoise(sound);
+//	checkStates();
+//}
 
 void AiRole::gotoState(const std::string& /*stateName*/)
 {

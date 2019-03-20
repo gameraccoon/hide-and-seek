@@ -4,7 +4,6 @@
 
 #include <Core/Vector2D.h>
 #include <Core/World.h>
-#include <Core/Actor.h>
 
 #include <EngineFwd.h>
 

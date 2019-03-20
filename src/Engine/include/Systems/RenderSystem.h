@@ -20,8 +20,5 @@ public:
 	virtual void update(World* world, float dt) override;
 
 private:
-	std::shared_ptr<CameraComponent> getMainCameraComponent(World* world);
-
-private:
 	std::weak_ptr<SystemInterface::ResourceManager> mResourceManager;
 };

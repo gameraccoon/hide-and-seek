@@ -2,14 +2,13 @@
 
 #include <memory>
 
-#include "Core/ActorComponent.h"
-#include "Components/TransformComponent.h"
+#include "Core/Component.h"
 #include "Core/Vector2D.h"
 
 /**
  * Component that contains camera-relating information
  */
-class CameraComponent : public ActorComponent
+class CameraComponent : public BaseComponent
 {
 public:
 	using Ptr = std::shared_ptr<CameraComponent>;
@@ -17,10 +16,4 @@ public:
 
 public:
 	virtual ~CameraComponent() = default;
-
-	TransformComponent::WeakPtr getTransformComponent() const;
-	void setTransformComponent(TransformComponent::WeakPtr newTransformComponent);
-
-private:
-	TransformComponent::WeakPtr mTransformComponent;
 };

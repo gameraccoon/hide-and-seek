@@ -3,8 +3,6 @@
 
 int main(int, char**)
 {
-	FactoryActors::RegisterAll();
-
     Game::StealthGame game;
     game.start();
 

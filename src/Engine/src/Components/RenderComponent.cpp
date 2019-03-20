@@ -6,16 +6,6 @@ RenderComponent::RenderComponent()
 {
 }
 
-TransformComponent::WeakPtr RenderComponent::getTransformComponent() const
-{
-	return mTransformComponent;
-}
-
-void RenderComponent::setTransformComponent(TransformComponent::WeakPtr newTransformComponent)
-{
-	mTransformComponent = newTransformComponent;
-}
-
 Vector2D RenderComponent::getScale() const
 {
 	return mScale;

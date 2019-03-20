@@ -305,186 +305,186 @@ void Camera::drawQuad(const Vector2D &, const Vector2D &, const Vector2D &, cons
 	engine->Gfx_RenderQuad(&quad);*/
 }
 
-void Camera::renderLightShadows(const LightComponent::Ptr light)
+void Camera::renderLightShadows(const LightComponent::Ptr /*light*/)
 {
-	auto movementWeak = light->getTransformComponent();
-	auto movement = movementWeak.lock();
-	if (movement == nullptr)
-	{
-		return;
-	}
+//	auto movementWeak = light->getTransformComponent();
+//	auto movement = movementWeak.lock();
+//	if (movement == nullptr)
+//	{
+//		return;
+//	}
 
-	const Vector2D lightPos = movement->getLocation();
-	const float lightBrightness = light->getBrightness();
+//	const Vector2D lightPos = movement->getLocation();
+//	const float lightBrightness = light->getBrightness();
 
-	Vector2D lightCenterPos(mShownSize/2, mShownSize/2);
-	// for each actors in the world
-	for (const auto& actor : mBrowsableWorld->getAllActors())
-	{
-		// if actor - static
-		if (actor->getType() == ActorType::Static)
-		{
-			auto actorTransformComponent = actor->getSingleComponent<TransformComponent>();
-			if (actorTransformComponent == nullptr)
-			{
-				continue;
-			}
+//	Vector2D lightCenterPos(mShownSize/2, mShownSize/2);
+//	// for each actors in the world
+//	for (const auto& actor : mBrowsableWorld->getAllActors())
+//	{
+//		// if actor - static
+//		if (actor->getType() == ActorType::Static)
+//		{
+//			auto actorTransformComponent = actor->getSingleComponent<TransformComponent>();
+//			if (actorTransformComponent == nullptr)
+//			{
+//				continue;
+//			}
 
-			auto actorCollisionComponent = actor->getSingleComponent<CollisionComponent>();
-			if (actorCollisionComponent == nullptr)
-			{
-				continue;
-			}
+//			auto actorCollisionComponent = actor->getSingleComponent<CollisionComponent>();
+//			if (actorCollisionComponent == nullptr)
+//			{
+//				continue;
+//			}
 
-			Vector2D actorLocation = actorTransformComponent->getLocation();
+//			Vector2D actorLocation = actorTransformComponent->getLocation();
 
-			// Get actor's camera local location
-			Vector2D screenLoc(actorLocation - lightPos);
-			// Get distance from center of screen
-			float distanceFromCamera = screenLoc.size();
+//			// Get actor's camera local location
+//			Vector2D screenLoc(actorLocation - lightPos);
+//			// Get distance from center of screen
+//			float distanceFromCamera = screenLoc.size();
 
-			// if actor is not far of drawing zone
-			if (distanceFromCamera >= mShownSize * lightBrightness)
-				continue;
+//			// if actor is not far of drawing zone
+//			if (distanceFromCamera >= mShownSize * lightBrightness)
+//				continue;
 
-			// get actors geometry
-			const Hull *hull = actorCollisionComponent->getGeometry();
-			// for each border of actor's geometry
-			for (size_t j = 0; j < hull->borders.size(); j++)
-			{
-				// if border's normal and camera view on border have different directions (angle > PI/2)
-				if (abs((
-						hull->borders[j].getNormal().rotation()
-						- (actorLocation + (hull->borders[j].getA() + hull->borders[j].getB())/2 - lightPos).rotation()
-					).getValue()) < PI/2)
-				{
-					// Get border's points
-					Vector2D a(actorLocation + hull->borders[j].getA());
-					Vector2D b(actorLocation + hull->borders[j].getB());
+//			// get actors geometry
+//			const Hull *hull = actorCollisionComponent->getGeometry();
+//			// for each border of actor's geometry
+//			for (size_t j = 0; j < hull->borders.size(); j++)
+//			{
+//				// if border's normal and camera view on border have different directions (angle > PI/2)
+//				if (abs((
+//						hull->borders[j].getNormal().rotation()
+//						- (actorLocation + (hull->borders[j].getA() + hull->borders[j].getB())/2 - lightPos).rotation()
+//					).getValue()) < PI/2)
+//				{
+//					// Get border's points
+//					Vector2D a(actorLocation + hull->borders[j].getA());
+//					Vector2D b(actorLocation + hull->borders[j].getB());
 
-					// project them on screen
-					a = projectFrom(a, lightPos);
-					b = projectFrom(b, lightPos);
+//					// project them on screen
+//					a = projectFrom(a, lightPos);
+//					b = projectFrom(b, lightPos);
 
-					// Draw shadow's quad of this border to far of the screen
-					drawQuad(a, b, b + (b - lightCenterPos).ort() * 3000, a + (a - lightCenterPos).ort() * 3000);
-				}
-			}
-		}
-	}
+//					// Draw shadow's quad of this border to far of the screen
+//					drawQuad(a, b, b + (b - lightCenterPos).ort() * 3000, a + (a - lightCenterPos).ort() * 3000);
+//				}
+//			}
+//		}
+//	}
 }
 
 void Camera::renderShadows()
 {
-	// for each actors in the world
-	for (const auto& actor : mBrowsableWorld->getAllActors())
-	{
-		// if actor - static
-		if (actor->getType() == ActorType::Static)
-		{
-			auto actorTransformComponent= actor->getSingleComponent<TransformComponent>();
-			if (actorTransformComponent == nullptr)
-			{
-				continue;
-			}
+//	// for each actors in the world
+//	for (const auto& actor : mBrowsableWorld->getAllActors())
+//	{
+//		// if actor - static
+//		if (actor->getType() == ActorType::Static)
+//		{
+//			auto actorTransformComponent= actor->getSingleComponent<TransformComponent>();
+//			if (actorTransformComponent == nullptr)
+//			{
+//				continue;
+//			}
 
-			auto actorCollisionComponent = actor->getSingleComponent<CollisionComponent>();
-			if (actorCollisionComponent == nullptr)
-			{
-				continue;
-			}
+//			auto actorCollisionComponent = actor->getSingleComponent<CollisionComponent>();
+//			if (actorCollisionComponent == nullptr)
+//			{
+//				continue;
+//			}
 
-			Vector2D actorLocation = actorTransformComponent->getLocation();
+//			Vector2D actorLocation = actorTransformComponent->getLocation();
 
-			// get actors geometry
-			const Hull *hull = actorCollisionComponent->getGeometry();
-			// for each border of actor's geometry
-			for (size_t j = 0; j < hull->borders.size(); j++)
-			{
-				// if border's normal and camera view on border have different directions (angle > PI/2)
-				if (abs((
-						hull->borders[j].getNormal().rotation()
-						- (actorLocation + (hull->borders[j].getA() + hull->borders[j].getB())/2 - mLocation).rotation()
-					).getValue()) < PI/2)
-				{
-					// Get border's points
-					Vector2D a(actorLocation + hull->borders[j].getA());
-					Vector2D b(actorLocation + hull->borders[j].getB());
+//			// get actors geometry
+//			const Hull *hull = actorCollisionComponent->getGeometry();
+//			// for each border of actor's geometry
+//			for (size_t j = 0; j < hull->borders.size(); j++)
+//			{
+//				// if border's normal and camera view on border have different directions (angle > PI/2)
+//				if (abs((
+//						hull->borders[j].getNormal().rotation()
+//						- (actorLocation + (hull->borders[j].getA() + hull->borders[j].getB())/2 - mLocation).rotation()
+//					).getValue()) < PI/2)
+//				{
+//					// Get border's points
+//					Vector2D a(actorLocation + hull->borders[j].getA());
+//					Vector2D b(actorLocation + hull->borders[j].getB());
 
-					// project them on screen
-					a = project(a);
-					b = project(b);
+//					// project them on screen
+//					a = project(a);
+//					b = project(b);
 
-					// Draw shadow's quad of this border to far of the screen
-					drawQuad(a, b, b + (b - mCenterPos).ort() * 3000, a + (a - mCenterPos).ort() * 3000);
-				}
-			}
-		}
-	}
+//					// Draw shadow's quad of this border to far of the screen
+//					drawQuad(a, b, b + (b - mCenterPos).ort() * 3000, a + (a - mCenterPos).ort() * 3000);
+//				}
+//			}
+//		}
+//	}
 }
 
 void Camera::renderHulls()
 {
-	const int normal_length = 10;
+//	const int normal_length = 10;
 
-	// for each actors in the world
-	for (const auto& actor : mBrowsableWorld->getAllActors())
-	{
-		// if actor - static
-		if (actor->getType() != ActorType::Light && actor->getType() != ActorType::Special)
-		{
-			auto actorTransformComponent = actor->getSingleComponent<TransformComponent>();
-			if (actorTransformComponent == nullptr)
-			{
-				continue;
-			}
+//	// for each actors in the world
+//	for (const auto& actor : mBrowsableWorld->getAllActors())
+//	{
+//		// if actor - static
+//		if (actor->getType() != ActorType::Light && actor->getType() != ActorType::Special)
+//		{
+//			auto actorTransformComponent = actor->getSingleComponent<TransformComponent>();
+//			if (actorTransformComponent == nullptr)
+//			{
+//				continue;
+//			}
 
-			auto actorCollisionComponent = actor->getSingleComponent<CollisionComponent>();
-			if (actorCollisionComponent == nullptr)
-			{
-				continue;
-			}
+//			auto actorCollisionComponent = actor->getSingleComponent<CollisionComponent>();
+//			if (actorCollisionComponent == nullptr)
+//			{
+//				continue;
+//			}
 
-			Vector2D actorLocation = actorTransformComponent->getLocation();
+//			Vector2D actorLocation = actorTransformComponent->getLocation();
 
-			// get actors geometry
-			const Hull *hull = actorCollisionComponent->getGeometry();
-			// for each border of actor's geometry
-			for (size_t j = 0; j < hull->borders.size(); j++)
-			{
-				// draw border
-				Vector2D A(actorLocation + hull->borders[j].getA()), B(actorLocation + hull->borders[j].getB());
-				A = project(A);
-				B = project(B);
+//			// get actors geometry
+//			const Hull *hull = actorCollisionComponent->getGeometry();
+//			// for each border of actor's geometry
+//			for (size_t j = 0; j < hull->borders.size(); j++)
+//			{
+//				// draw border
+//				Vector2D A(actorLocation + hull->borders[j].getA()), B(actorLocation + hull->borders[j].getB());
+//				A = project(A);
+//				B = project(B);
 				
-				//engine->Gfx_RenderLine(A.x, A.y, B.x, B.y, 0xFFFF00FF);
+//				//engine->Gfx_RenderLine(A.x, A.y, B.x, B.y, 0xFFFF00FF);
 
-				// draw normal
-				Vector2D LinePos(actorLocation + (hull->borders[j].getA() + hull->borders[j].getB()) / 2);
-				Vector2D Norm(LinePos + hull->borders[j].getNormal() * static_cast<float>(normal_length));
+//				// draw normal
+//				Vector2D LinePos(actorLocation + (hull->borders[j].getA() + hull->borders[j].getB()) / 2);
+//				Vector2D Norm(LinePos + hull->borders[j].getNormal() * static_cast<float>(normal_length));
 
-				LinePos = project(LinePos);
-				Norm = project(Norm);
+//				LinePos = project(LinePos);
+//				Norm = project(Norm);
 
-				//engine->Gfx_RenderLine(LinePos.x, LinePos.y, Norm.x, Norm.y, 0xFF0000FF);
-			}
-		}
-	}
+//				//engine->Gfx_RenderLine(LinePos.x, LinePos.y, Norm.x, Norm.y, 0xFF0000FF);
+//			}
+//		}
+//	}
 }
 
 void Camera::renderLights()
 {
-	// for each actors in the world
-	for (const auto& actor : mBrowsableWorld->getAllActors())
-	{
-		// if actor - static
-		if (actor->getType() == ActorType::Light)
-		{
-//			Vector2D lightLocation(project(actor->getLocation()));
-			//engine->Gfx_RenderLine(lightLocation.x - 5, lightLocation.y, lightLocation.x + 5, lightLocation.y, 0xFFAA6600, 0);
-			//engine->Gfx_RenderLine(lightLocation.x, lightLocation.y - 5, lightLocation.x, lightLocation.y + 5, 0xFFAA6600, 0);
-		}
-	}
+//	// for each actors in the world
+//	for (const auto& actor : mBrowsableWorld->getAllActors())
+//	{
+//		// if actor - static
+//		if (actor->getType() == ActorType::Light)
+//		{
+////			Vector2D lightLocation(project(actor->getLocation()));
+//			//engine->Gfx_RenderLine(lightLocation.x - 5, lightLocation.y, lightLocation.x + 5, lightLocation.y, 0xFFAA6600, 0);
+//			//engine->Gfx_RenderLine(lightLocation.x, lightLocation.y - 5, lightLocation.x, lightLocation.y + 5, 0xFFAA6600, 0);
+//		}
+//	}
 }
 
 void Camera::renderPaths()

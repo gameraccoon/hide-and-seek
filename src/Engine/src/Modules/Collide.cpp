@@ -74,57 +74,57 @@ namespace Collide
 		return false;
 	}
 
-	bool isWillCollide(const IActor* actor1, const World* world, Vector2D step)
-	{
-		auto actor1CollisionComponent = actor1->getSingleComponent<CollisionComponent>();
-		if (actor1CollisionComponent == nullptr)
-		{
-			return false;
-		}
+//	bool isWillCollide(const IActor* actor1, const World* world, Vector2D step)
+//	{
+//		auto actor1CollisionComponent = actor1->getSingleComponent<CollisionComponent>();
+//		if (actor1CollisionComponent == nullptr)
+//		{
+//			return false;
+//		}
 
-		auto actor1TransformComponent = actor1->getSingleComponent<TransformComponent>();
-		if (actor1TransformComponent == nullptr)
-		{
-			return false;
-		}
+//		auto actor1TransformComponent = actor1->getSingleComponent<TransformComponent>();
+//		if (actor1TransformComponent == nullptr)
+//		{
+//			return false;
+//		}
 
-		// for each actors in the world
-		for (const auto& actor : world->getAllActors())
-		{
-			// if the actor is not this man
-			if (actor.get() != actor1
-				&& (actor->getType() != ActorType::Light
-				&& actor->getType() != ActorType::Special
-				&& actor->getType() != ActorType::Bullet))
-			{
-				auto actorCollisionComponent = actor->getSingleComponent<CollisionComponent>();
-				if (actorCollisionComponent == nullptr)
-				{
-					continue;
-				}
+//		// for each actors in the world
+//		for (const auto& actor : world->getAllActors())
+//		{
+//			// if the actor is not this man
+//			if (actor.get() != actor1
+//				&& (actor->getType() != ActorType::Light
+//				&& actor->getType() != ActorType::Special
+//				&& actor->getType() != ActorType::Bullet))
+//			{
+//				auto actorCollisionComponent = actor->getSingleComponent<CollisionComponent>();
+//				if (actorCollisionComponent == nullptr)
+//				{
+//					continue;
+//				}
 
-				auto actorTransformComponent = actor1->getSingleComponent<TransformComponent>();
-				if (actorTransformComponent == nullptr)
-				{
-					continue;
-				}
+//				auto actorTransformComponent = actor1->getSingleComponent<TransformComponent>();
+//				if (actorTransformComponent == nullptr)
+//				{
+//					continue;
+//				}
 
-				// get an actor's AABB (axis-aligned bounding box)
-				BoundingBox box = actorCollisionComponent->getBoundingBox();
-				BoundingBox ourBox = actor1CollisionComponent->getBoundingBox();
-				// if the actor's AABB intersects with the Man's AABB (in new Man location)
-				if ((box.minX < ourBox.maxX + step.x
-						&& ourBox.minX + step.x < box.maxX)
-					&& (box.minY < ourBox.maxY + step.y
-						&& ourBox.minY + step.y  < box.maxY))
-				{
-					// actor's path is not free
-					return IsCollideGeometry(actor1CollisionComponent->getGeometry(), actorCollisionComponent->getGeometry(),
-						actor1TransformComponent->getLocation() + step, actorTransformComponent->getLocation());
-				}
-			}
-		}
+//				// get an actor's AABB (axis-aligned bounding box)
+//				BoundingBox box = actorCollisionComponent->getBoundingBox();
+//				BoundingBox ourBox = actor1CollisionComponent->getBoundingBox();
+//				// if the actor's AABB intersects with the Man's AABB (in new Man location)
+//				if ((box.minX < ourBox.maxX + step.x
+//						&& ourBox.minX + step.x < box.maxX)
+//					&& (box.minY < ourBox.maxY + step.y
+//						&& ourBox.minY + step.y  < box.maxY))
+//				{
+//					// actor's path is not free
+//					return IsCollideGeometry(actor1CollisionComponent->getGeometry(), actorCollisionComponent->getGeometry(),
+//						actor1TransformComponent->getLocation() + step, actorTransformComponent->getLocation());
+//				}
+//			}
+//		}
 
-		return false;
-	}
+//		return false;
+//	}
 }

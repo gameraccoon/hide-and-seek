@@ -13,17 +13,17 @@ void PlayerRole::update(float )
 {
 }
 
-void PlayerRole::onTakeDamage(IActor* , float , Vector2D )
-{
-}
+//void PlayerRole::onTakeDamage(IActor* , float , Vector2D )
+//{
+//}
 
-void PlayerRole::onSeeEnemy(IActor *)
-{
-}
+//void PlayerRole::onSeeEnemy(IActor *)
+//{
+//}
 
-void PlayerRole::onHearNoise(SoundVolume *)
-{
-}
+//void PlayerRole::onHearNoise(SoundVolume *)
+//{
+//}
 
 void PlayerRole::gotoState(const std::string& )
 {
