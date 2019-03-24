@@ -1,7 +1,7 @@
-#ifndef LOG_H
-#define LOG_H
+#pragma once
 
 #include <string>
+#include "StringHelpers.h"
 
 /**
  * Class that helps to write log messages.
@@ -54,4 +54,26 @@ private:
 	void operator=(const Log&) = delete;
 };
 
-#endif
+template<typename... Args>
+void LogInit(const std::string& message, Args... args)
+{
+	Log::Instance().writeInit(FormatString(message, args...));
+}
+
+template<typename... Args>
+void LogInfo(const std::string& message, Args... args)
+{
+	Log::Instance().writeLog(FormatString(message, args...));
+}
+
+template<typename... Args>
+void LogWarning(const std::string& message, Args... args)
+{
+	Log::Instance().writeWarning(FormatString(message, args...));
+}
+
+template<typename... Args>
+void LogError(const std::string& message, Args... args)
+{
+	Log::Instance().writeError(FormatString(message, args...));
+}

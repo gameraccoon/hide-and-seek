@@ -39,7 +39,7 @@ void World::removeEntity(Entity entity)
 			else
 			{
 				// emulate swapping with nonexsistent nullptr Component
-				componentVector.second[entity.getID()] = nullptr;
+				componentVector.second[oldEntityIdx] = nullptr;
 			}
 		}
 	}

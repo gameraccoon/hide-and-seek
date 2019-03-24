@@ -18,6 +18,7 @@ set(SOURCE_ROOT ${CMAKE_SOURCE_DIR}/src)
 if(DEBUG_MODE)
     set(CMAKE_BUILD_TYPE DEBUG)
     add_definitions(-D_DEBUG)
+    add_definitions(-DDEBUG)
 else(DEBUG_MODE)
     set(CMAKE_BUILD_TYPE RELEASE)
 endif(DEBUG_MODE)
@@ -105,7 +106,7 @@ if (NOT ${PROJECT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR})
 endif()
 
 add_executable(${APP_NAME} src/main/win32/main.cpp)
-target_link_libraries(${APP_NAME}
+set(GENERAL_SOURCES
     ${SDL2_LIBRARY}
     ${SDL2_IMAGE_LIBRARY}
     GL
@@ -129,4 +130,24 @@ target_link_libraries(${APP_NAME}
     DebugHelpersLib
     stdc++fs
 )
+
+target_link_libraries(${APP_NAME}
+        ${GENERAL_SOURCES}
+)
 install(TARGETS ${APP_NAME} RUNTIME DESTINATION ${BIN_DIR})
+
+set(TESTS_NAME UnitTests)
+set(TESTS_SRC
+        win32/tests_main.cpp
+)
+aux_source_directory(src/UnitTests TESTS_SRC)
+
+add_folder_as_library(${SOURCE_ROOT}/gtest gtest)
+add_executable(${TESTS_NAME} ${TESTS_SRC})
+target_link_libraries(${TESTS_NAME}
+        ${GENERAL_SOURCES}
+        gtest
+)
+#set_target_properties(${TESTS_NAME} PROPERTIES
+#        RUNTIME_OUTPUT_DIRECTORY "${APP_BIN_DIR}"
+#)

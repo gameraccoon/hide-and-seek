@@ -81,7 +81,7 @@ public:
 
 			auto components = getEntityComponentSet<FirstComponent, Components...>(entityIndex, componentVectors);
 
-			if (std::get<componentsSize - 1>(components) != nullptr)
+			if (std::get<componentsSize>(components) != nullptr)
 			{
 				result.push_back(components);
 			}
@@ -97,7 +97,7 @@ public:
 
 		decltype(auto) componentVectors = std::make_tuple(firstComponentVector, mComponents[typeid(Components)]...);
 
-		constexpr unsigned componentsSize = sizeof...(Components) + 1;
+		constexpr unsigned componentsSize = sizeof...(Components);
 
 		for (EntityIndex entityIndex = 0, i_size = firstComponentVector.size(); entityIndex < i_size; ++entityIndex)
 		{
@@ -109,7 +109,7 @@ public:
 
 			auto components = getEntityComponentSet<FirstComponent, Components...>(entityIndex, componentVectors);
 
-			if (std::get<componentsSize - 1>(components) == nullptr)
+			if (std::get<componentsSize>(components) == nullptr)
 			{
 				continue;
 			}
