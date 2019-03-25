@@ -15,35 +15,39 @@ void ControlSystem::update(World* world, float dt)
 {
 	const float speed = 50.0f;
 
-	Vector2D direction(0.0f, 0.0f);
+	Vector2D movementDirection(0.0f, 0.0f);
 	if (auto it = mKeyStatesMap->find(SDLK_LEFT); it != mKeyStatesMap->end() && it->second)
 	{
-		direction += LEFT_DIRECTION;
+		movementDirection += LEFT_DIRECTION;
 	}
 
 	if (auto it = mKeyStatesMap->find(SDLK_RIGHT); it != mKeyStatesMap->end() && it->second)
 	{
-		direction += RIGHT_DIRECTION;
+		movementDirection += RIGHT_DIRECTION;
 	}
 
 	if (auto it = mKeyStatesMap->find(SDLK_UP); it != mKeyStatesMap->end() && it->second)
 	{
-		direction += UP_DIRECTION;
+		movementDirection += UP_DIRECTION;
 	}
 
 	if (auto it = mKeyStatesMap->find(SDLK_DOWN); it != mKeyStatesMap->end() && it->second)
 	{
-		direction += DOWN_DIRECTION;
+		movementDirection += DOWN_DIRECTION;
 	}
 
-	if (direction != ZERO_VECTOR)
+	if (NullableEntity controlledEntity = world->getPlayerControlledEntity(); controlledEntity.isValid())
 	{
-		if (NullableEntity controlledEntity = world->getPlayerControlledEntity(); controlledEntity.isValid())
+		if (TransformComponent::Ptr transform = std::get<0>(world->getEntityComponents<TransformComponent>(controlledEntity.getEntity())))
 		{
-			if (TransformComponent::Ptr transform = std::get<0>(world->getEntityComponents<TransformComponent>(controlledEntity.getEntity())))
+			if (movementDirection != ZERO_VECTOR)
 			{
-				transform->setLocation(transform->getLocation() + direction * speed * dt);
+				transform->setLocation(transform->getLocation() + movementDirection * speed * dt);
 			}
+
+			Vector2D mousePos(mEngine->getMouseX(), mEngine->getMouseY());
+			Vector2D direction = mousePos - transform->getLocation();
+			transform->setRotation(direction.rotation());
 		}
 	}
 }

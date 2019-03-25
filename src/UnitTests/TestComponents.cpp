@@ -22,17 +22,19 @@ TEST(Components, EntityCreationAndRemovement)
 
 TEST(Components, ComponentsAttachment)
 {
+	Vector2D location(Vector2D(1.0f, 0.0f));
+
 	World world;
 	Entity testEntity = world.addEntity();
 	TransformComponent::Ptr transform = world.addComponent<TransformComponent>(testEntity);
-	transform->setLocation(Vector2D(1.0f, 0.0f));
+	transform->setLocation(location);
 
 	std::tuple<TransformComponent::Ptr> components = world.getEntityComponents<TransformComponent>(testEntity);
 
 	TransformComponent::Ptr resultTransform = std::get<0>(components);
 
 	EXPECT_NE(nullptr, transform);
-	EXPECT_TRUE(Vector2D(1.0f, 0.0f) == resultTransform->getLocation());
+	EXPECT_TRUE(location == resultTransform->getLocation());
 }
 
 TEST(Components, RemoveEntityWithComponents)

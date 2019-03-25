@@ -42,7 +42,7 @@ namespace Graphics
 		int getHeight() const;
 		int getWidth() const;
 
-		void draw(float x, float y, float rotation = 0.0f, float alpha = 1.0f);
+		void draw(float x, float y, float ancX = 0.0f, float ancY = 0.0f, float rotation = 0.0f, float alpha = 1.0f);
 
 		virtual bool isValid() const override;
 

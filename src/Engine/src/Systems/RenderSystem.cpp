@@ -16,21 +16,21 @@ void RenderSystem::update(World* world, float /*dt*/)
 		return;
 	}
 
-//	NullableEntity mainCamera = world->getMainCamera();
-//	if (mainCamera.isNull())
-//	{
-//		return;
-//	}
+	NullableEntity mainCamera = world->getMainCamera();
+	if (!mainCamera.isValid())
+	{
+		return;
+	}
 
-//	TransformComponent::Ptr cameraTransformComponent = std::get<0>(world->getEntityComponents<TransformComponent>(mainCamera.getEntity()));
-//	if (cameraTransformComponent == nullptr)
-//	{
-//			return;
-//	}
+	TransformComponent::Ptr cameraTransformComponent = std::get<0>(world->getEntityComponents<TransformComponent>(mainCamera.getEntity()));
+	if (cameraTransformComponent == nullptr)
+	{
+			return;
+	}
 
-	//auto cameraLocation = cameraTransformComponent->getLocation();
+	auto cameraLocation = cameraTransformComponent->getLocation();
 
-	world->forEachEntity<RenderComponent, TransformComponent>(std::function<bool(std::tuple<std::shared_ptr<RenderComponent>, std::shared_ptr<TransformComponent>>)>([&sharedResourceManager/*, &cameraLocation*/](std::tuple<std::shared_ptr<RenderComponent>, std::shared_ptr<TransformComponent>> components) -> bool {
+	world->forEachEntity(std::function<bool(std::tuple<std::shared_ptr<RenderComponent>, std::shared_ptr<TransformComponent>>)>([&sharedResourceManager, &cameraLocation](std::tuple<std::shared_ptr<RenderComponent>, std::shared_ptr<TransformComponent>> components) -> bool {
 		auto renderComponent = std::get<0>(components);
 		auto transformComponent = std::get<1>(components);
 
@@ -43,8 +43,9 @@ void RenderSystem::update(World* world, float /*dt*/)
 
 		Graphics::Texture texure = sharedResourceManager->getTexture(texturePath);
 
-		auto location = transformComponent->getLocation();// - cameraLocation;
-		texure.draw(location.x, location.y, transformComponent->getRotation().getValue(), 1.0f);
+		auto location = transformComponent->getLocation() - cameraLocation;
+		auto anchor = renderComponent->getAnchor();
+		texure.draw(location.x, location.y, anchor.x, anchor.y, transformComponent->getRotation().getValue(), 1.0f);
 		return true;
 	}));
 }

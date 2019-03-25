@@ -25,12 +25,17 @@ namespace Game
 		mSystemsManager->registerSystem<RenderSystem>(getResourceManager());
 
 		Entity hero = mWorld->addEntity();
-		auto transformComponent = mWorld->addComponent<TransformComponent>(hero);
-		transformComponent->setLocation(Vector2D(10, 10));
-		auto renderComponent = mWorld->addComponent<RenderComponent>(hero);
-		renderComponent->setTexturePath("resources/textures/hero.png");
-
+		auto heroTransformComponent = mWorld->addComponent<TransformComponent>(hero);
+		heroTransformComponent->setLocation(Vector2D(10.0f, 10.0f));
+		auto heroRenderComponent = mWorld->addComponent<RenderComponent>(hero);
+		heroRenderComponent->setTexturePath("resources/textures/hero.png");
 		mWorld->setPlayerControlledEntity(hero);
+
+		Entity camera = mWorld->addEntity();
+		mWorld->addComponent<CameraComponent>(camera);
+		auto cameraTransformComponent = mWorld->addComponent<TransformComponent>(camera);
+		cameraTransformComponent->setLocation(Vector2D(0.0f, 0.0f));
+		mWorld->setMainCamera(camera);
 
 		// start the main loop
 		getEngine()->start(this);

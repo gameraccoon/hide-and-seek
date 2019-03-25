@@ -22,11 +22,16 @@ public:
 	Vector2D getScale() const;
 	void setScale(const Vector2D& newScale);
 
+	Vector2D getAnchor() const;
+	void setAnchor(const Vector2D& newAnchor);
+
 	void setTexturePath(const std::string& newTexturePath);
 	std::string getTexturePath();
 
 private:
 	Vector2D mScale;
+
+	Vector2D mAnchor;
 
 	// just for now
 	std::string mTexturePath;

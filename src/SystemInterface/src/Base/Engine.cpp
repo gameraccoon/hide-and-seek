@@ -109,10 +109,7 @@ namespace SystemInterface
 		surface->bind();
 
 		glBegin(GL_QUADS);
-		if (alpha != 1.0f)
-		{
-			glColor4f(1.0f, 1.0f, 1.0f, alpha);
-		}
+		glColor4f(1.0f, 1.0f, 1.0f, alpha);
 		glTexCoord2i(0, 1); glVertex2i(0, surface->height());
 		glTexCoord2i(1, 1); glVertex2i(surface->width(), surface->height());
 		glTexCoord2i(1, 0); glVertex2i(surface->width(), 0);
@@ -121,14 +118,12 @@ namespace SystemInterface
 		glEnd();
 	}
 
-	void Engine::render(Internal::SdlSurface* surface, float x, float y, float rotation, float alpha)
+	void Engine::render(Internal::SdlSurface* surface, float x, float y, float ancX, float ancY, float rotation, float alpha)
 	{
 		glm::mat4 transformation;
 		transformation = glm::translate(transformation, glm::vec3(x, y, 0.0f));
-        if (rotation > 0.001f || rotation < -0.001f)
-		{
-			transformation = glm::rotate(transformation, rotation, glm::vec3(0.0f, 0.0f, 1.0f));
-		}
+		transformation = glm::rotate(transformation, rotation, glm::vec3(0.0f, 0.0f, 1.0f));
+		transformation = glm::translate(transformation, glm::vec3(-surface->width()*ancX, -surface->height()*ancY, 0.0f));
 		render(surface, transformation, alpha);
 	}
 

@@ -29,9 +29,9 @@ namespace Graphics
 		return mBase->surface->width();
 	}
 
-	void Texture::draw(float x, float y, float rotation, float alpha)
+	void Texture::draw(float x, float y, float ancX, float ancY, float rotation, float alpha)
 	{
-		mBase->engine->render(mBase->surface, x, y, rotation, alpha);
+		mBase->engine->render(mBase->surface, x, y, ancX, ancY, rotation, alpha);
 	}
 
 	bool Texture::isValid() const
