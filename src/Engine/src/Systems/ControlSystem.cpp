@@ -36,18 +36,29 @@ void ControlSystem::update(World* world, float dt)
 		movementDirection += DOWN_DIRECTION;
 	}
 
+	Vector2D screenHalfSize = Vector2D(mEngine->getWidth(), mEngine->getHeight()) * 0.5f;
+	Vector2D mouseScreenPos(mEngine->getMouseX(), mEngine->getMouseY());
+
+	Vector2D controlledEntityPosition(0.0f, 0.0f);
 	if (NullableEntity controlledEntity = world->getPlayerControlledEntity(); controlledEntity.isValid())
 	{
 		if (TransformComponent::Ptr transform = std::get<0>(world->getEntityComponents<TransformComponent>(controlledEntity.getEntity())))
 		{
-			if (movementDirection != ZERO_VECTOR)
-			{
-				transform->setLocation(transform->getLocation() + movementDirection * speed * dt);
-			}
+			controlledEntityPosition = transform->getLocation() + movementDirection * speed * dt;
+			transform->setLocation(controlledEntityPosition);
 
-			Vector2D mousePos(mEngine->getMouseX(), mEngine->getMouseY());
-			Vector2D direction = mousePos - transform->getLocation();
+			Vector2D direction = mouseScreenPos - transform->getLocation() - screenHalfSize;
 			transform->setRotation(direction.rotation());
+		}
+	}
+
+	if (NullableEntity mainCamera = world->getMainCamera(); mainCamera.isValid())
+	{
+		if (TransformComponent::Ptr cameraTransform = std::get<0>(world->getEntityComponents<TransformComponent>(mainCamera.getEntity())))
+		{
+			Vector2D cameraLocation = cameraTransform->getLocation();
+			Vector2D mouseWorldPos = mouseScreenPos - cameraLocation - screenHalfSize;
+			cameraTransform->setLocation((mouseWorldPos + controlledEntityPosition) * 0.5f);
 		}
 	}
 }

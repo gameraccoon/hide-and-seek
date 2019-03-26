@@ -22,7 +22,7 @@ namespace Game
 
 		mSystemsManager = std::make_unique<SystemsManager>();
 		mSystemsManager->registerSystem<ControlSystem>(getEngine(), &mKeyStates);
-		mSystemsManager->registerSystem<RenderSystem>(getResourceManager());
+		mSystemsManager->registerSystem<RenderSystem>(getEngine(), getResourceManager());
 
 		Entity hero = mWorld->addEntity();
 		auto heroTransformComponent = mWorld->addComponent<TransformComponent>(hero);
