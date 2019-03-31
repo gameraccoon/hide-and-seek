@@ -13,7 +13,7 @@ namespace SystemInterface
 	class ResourceManager::Impl : public IUseCounter
 	{
 	public:
-        virtual ~Impl() = default;
+		virtual ~Impl() override = default;
 		std::vector<std::unique_ptr<Resource::Base>> resources;
 		std::map<std::string, IUseCounter::Uid> texturesMap;
 		std::map<std::string, IUseCounter::Uid> fontsMap;
@@ -161,7 +161,7 @@ namespace SystemInterface
 				}
 				else
 				{
-					Log::Instance().writeError("Trying to destruct non-texture resource with texture destructer");
+					Log::Instance().writeError("Trying to destruct non-texture resource with texture destructor");
 				}
 			}
 		);
@@ -176,23 +176,23 @@ namespace SystemInterface
 			mPimpl->resources,
 			mPimpl.get(),
 			[&texturePath, engine](Graphics::Font::Base* textureBase)
-		{
-			textureBase->surface = new Internal::SdlSurface(texturePath.c_str());
-			textureBase->engine = engine;
-		},
+			{
+				textureBase->surface = new Internal::SdlSurface(texturePath.c_str());
+				textureBase->engine = engine;
+			},
 			[](Resource::Base* resourceBase)
-		{
-			Graphics::Font::Base* textureBase = dynamic_cast<Graphics::Font::Base*>(resourceBase);
-			if (textureBase)
 			{
-				delete textureBase->surface;
-				textureBase->surface = nullptr;
+				Graphics::Font::Base* textureBase = dynamic_cast<Graphics::Font::Base*>(resourceBase);
+				if (textureBase)
+				{
+					delete textureBase->surface;
+					textureBase->surface = nullptr;
+				}
+				else
+				{
+					Log::Instance().writeError("Trying to destruct non-font resource with font destructor");
+				}
 			}
-			else
-			{
-				Log::Instance().writeError("Trying to destruct non-texture resource with texture destructer");
-			}
-		}
 		);
 	}
 

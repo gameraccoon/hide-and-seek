@@ -10,5 +10,7 @@
 namespace Collide
 {
 	bool doCollide(const CollisionComponent::Ptr& collisionA, const TransformComponent::Ptr& transformA,
-				   const CollisionComponent::Ptr& collisionB, const TransformComponent::Ptr& transformB);
+				   const CollisionComponent::Ptr& collisionB, const TransformComponent::Ptr& transformB, Vector2D& outResist);
+
+	void updateOriginalBoundingBox(const CollisionComponent::Ptr& collision);
 }

@@ -118,11 +118,12 @@ namespace SystemInterface
 		glEnd();
 	}
 
-	void Engine::render(Internal::SdlSurface* surface, float x, float y, float ancX, float ancY, float rotation, float alpha)
+	void Engine::render(Internal::SdlSurface* surface, float x, float y, float ancX, float ancY, float scaleX, float scaleY, float rotation, float alpha)
 	{
 		glm::mat4 transformation;
 		transformation = glm::translate(transformation, glm::vec3(x, y, 0.0f));
 		transformation = glm::rotate(transformation, rotation, glm::vec3(0.0f, 0.0f, 1.0f));
+		transformation = glm::scale(transformation, glm::vec3(scaleX, scaleY, 1.0f));
 		transformation = glm::translate(transformation, glm::vec3(-surface->width()*ancX, -surface->height()*ancY, 0.0f));
 		render(surface, transformation, alpha);
 	}

@@ -24,8 +24,8 @@ namespace Game
 
 		mSystemsManager = std::make_unique<SystemsManager>();
 		mSystemsManager->registerSystem<ControlSystem>(getEngine(), &mKeyStates);
-		mSystemsManager->registerSystem<RenderSystem>(getEngine());
 		mSystemsManager->registerSystem<CollisionSystem>();
+		mSystemsManager->registerSystem<RenderSystem>(getEngine(), getResourceManager());
 
 		Entity hero = mWorld->addEntity();
 		mWorld->setPlayerControlledEntity(hero);
@@ -48,10 +48,10 @@ namespace Game
 		auto wallTransformComponent = mWorld->addComponent<TransformComponent>(wall);
 		wallTransformComponent->setLocation(Vector2D(-60.0f, -60.0f));
 		auto wallRenderComponent = mWorld->addComponent<RenderComponent>(wall, getResourceManager()->getTexture("resources/textures/testTexture.png"));
-		wallRenderComponent->setScale(Vector2D(10.0f, 50.0f));
+		wallRenderComponent->calcScaleFromSize(Vector2D(120.0f, 120.0f));
 		auto wallCollisionComponent = mWorld->addComponent<CollisionComponent>(wall);
 		Hull wallHull;
-		wallHull.type = Hull::Type::Rectangular;
+		wallHull.type = Hull::Type::Angular;
 		wallHull.points.push_back(Vector2D(-60.0, -60.0));
 		wallHull.points.push_back(Vector2D(-60.0, 60.0));
 		wallHull.points.push_back(Vector2D(60.0, 60.0));

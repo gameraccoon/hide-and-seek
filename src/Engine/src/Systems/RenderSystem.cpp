@@ -4,8 +4,12 @@
 #include <Components/TransformComponent.h>
 #include <Base/Engine.h>
 
-RenderSystem::RenderSystem(SystemInterface::Engine* engine)
+RenderSystem::RenderSystem(SystemInterface::Engine* engine, std::shared_ptr<SystemInterface::ResourceManager> resourceManager)
 	: mEngine(engine)
+	, mResourceManager(resourceManager)
+#ifdef DEBUG
+	, mDebugDrawer(resourceManager)
+#endif // DEBUG
 {
 }
 
@@ -26,15 +30,23 @@ void RenderSystem::update(World* world, float /*dt*/)
 	Vector2D cameraLocation = cameraTransformComponent->getLocation();
 	Vector2D screenHalfSize = Vector2D(mEngine->getWidth(), mEngine->getHeight()) * 0.5f;
 
-	world->forEachEntity<RenderComponent, TransformComponent>([&cameraLocation, &screenHalfSize](std::tuple<std::shared_ptr<RenderComponent>, std::shared_ptr<TransformComponent>> components) -> bool {
+	Vector2D drawShift = screenHalfSize - cameraLocation;
+
+	world->forEachEntity<RenderComponent, TransformComponent>([&drawShift](std::tuple<RenderComponent::Ptr, TransformComponent::Ptr>& components) {
 		auto renderComponent = std::get<0>(components);
 		auto transformComponent = std::get<1>(components);
 
 		Graphics::Texture texure = renderComponent->getTexture();
 
-		auto location = transformComponent->getLocation() - cameraLocation + screenHalfSize;
+		auto location = transformComponent->getLocation() + drawShift;
 		auto anchor = renderComponent->getAnchor();
-		texure.draw(location.x, location.y, anchor.x, anchor.y, transformComponent->getRotation().getValue(), 1.0f);
+		auto scale = renderComponent->getScale();
+		texure.draw(location.x, location.y, anchor.x, anchor.y, scale.x, scale.y, transformComponent->getRotation().getValue(), 1.0f);
+
 		return true;
 	});
+
+#ifdef DEBUG
+	mDebugDrawer.render(world, drawShift);
+#endif // DEBUG
 }

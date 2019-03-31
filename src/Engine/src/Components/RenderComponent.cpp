@@ -2,7 +2,7 @@
 
 
 RenderComponent::RenderComponent(const Graphics::Texture& texture)
-	: mScale(0.0f, 0.0f)
+	: mScale(1.0f, 1.0f)
 	, mAnchor(0.5f, 0.5f)
 	, mTexture(texture)
 {
@@ -26,6 +26,11 @@ Vector2D RenderComponent::getAnchor() const
 void RenderComponent::setAnchor(const Vector2D& newAnchor)
 {
 	mAnchor = newAnchor;
+}
+
+void RenderComponent::calcScaleFromSize(const Vector2D& size)
+{
+	mScale = Vector2D(size.x / mTexture.getWidth(), size.y / mTexture.getHeight());
 }
 
 const Graphics::Texture& RenderComponent::getTexture() const

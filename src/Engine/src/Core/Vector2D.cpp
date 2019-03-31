@@ -57,7 +57,7 @@ Vector2D Vector2D::mirrorV() const
 
 Vector2D Vector2D::normal() const
 {
-	return rotation() - PI/2;
+	return Vector2D(rotation() - PI/2.0f);
 }
 
 Vector2D Vector2D::project(Vector2D base) const

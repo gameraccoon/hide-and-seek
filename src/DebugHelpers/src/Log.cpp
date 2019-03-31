@@ -118,5 +118,5 @@ void Log::writeLine(const std::string& text)
 		*mLogFileStream << text << std::endl;
 	}
 
-	std::clog << text;
+	std::clog << text << "\n";
 }

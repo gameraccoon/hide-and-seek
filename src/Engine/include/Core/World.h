@@ -95,7 +95,7 @@ public:
 	{
 		auto& firstComponentVector = mComponents[typeid(FirstComponent)];
 
-		decltype(auto) componentVectors = std::make_tuple(firstComponentVector, mComponents[typeid(Components)]...);
+		auto componentVectors = std::make_tuple(firstComponentVector, mComponents[typeid(Components)]...);
 
 		constexpr unsigned componentsSize = sizeof...(Components);
 

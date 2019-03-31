@@ -25,8 +25,7 @@ public:
 	Vector2D getAnchor() const;
 	void setAnchor(const Vector2D& newAnchor);
 
-	void setTexturePath(const std::string& newTexturePath);
-	std::string getTexturePath();
+	void calcScaleFromSize(const Vector2D& size);
 
 	const Graphics::Texture& getTexture() const;
 
