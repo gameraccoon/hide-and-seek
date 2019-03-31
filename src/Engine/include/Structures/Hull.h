@@ -10,7 +10,7 @@ class Hull
 public:
 	enum class Type
 	{
-		Angular
+		Rectangular
 		,Circular
 		,None
 	};

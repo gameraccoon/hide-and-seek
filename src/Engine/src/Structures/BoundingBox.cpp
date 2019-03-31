@@ -40,3 +40,8 @@ Vector2D BoundingBox::getFourth()
 {
 	return Vector2D(minX, maxY);
 }
+
+BoundingBox operator+(const BoundingBox& left, const Vector2D& right)
+{
+	return BoundingBox(left.minX + right.x, left.minY + right.y, left.maxX + right.x, left.maxY + right.y);
+}

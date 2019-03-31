@@ -90,8 +90,8 @@ public:
 		return result;
 	}
 
-	template<typename FirstComponent, typename... Components>
-	void forEachEntity(typename std::function<bool(std::tuple<std::shared_ptr<FirstComponent>, std::shared_ptr<Components>...>)> processor)
+	template<typename FirstComponent, typename... Components, typename FunctionType>
+	void forEachEntity(FunctionType processor)
 	{
 		auto& firstComponentVector = mComponents[typeid(FirstComponent)];
 

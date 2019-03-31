@@ -15,5 +15,5 @@ public:
 	using WeakPtr = std::weak_ptr<CameraComponent>;
 
 public:
-	virtual ~CameraComponent() = default;
+	virtual ~CameraComponent() override = default;
 };

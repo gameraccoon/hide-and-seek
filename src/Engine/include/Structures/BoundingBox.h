@@ -26,4 +26,6 @@ public:
 	float maxX;
 	/** Y-pos of bottom border */
 	float maxY;
+
+	friend BoundingBox operator+(const BoundingBox& left, const Vector2D& right);
 };

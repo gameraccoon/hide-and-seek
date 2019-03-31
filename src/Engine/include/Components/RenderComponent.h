@@ -3,8 +3,8 @@
 #include <memory>
 
 #include "Core/Component.h"
-
 #include "Core/Vector2D.h"
+#include <Graphics/Texture.h>
 
 /**
  * Component that stores information about renderable part of an object
@@ -16,8 +16,8 @@ public:
 	using WeakPtr = std::weak_ptr<RenderComponent>;
 
 public:
-	RenderComponent();
-	virtual ~RenderComponent() = default;
+	RenderComponent(const Graphics::Texture& texture);
+	virtual ~RenderComponent() override = default;
 
 	Vector2D getScale() const;
 	void setScale(const Vector2D& newScale);
@@ -28,11 +28,10 @@ public:
 	void setTexturePath(const std::string& newTexturePath);
 	std::string getTexturePath();
 
+	const Graphics::Texture& getTexture() const;
+
 private:
 	Vector2D mScale;
-
 	Vector2D mAnchor;
-
-	// just for now
-	std::string mTexturePath;
+	Graphics::Texture mTexture;
 };

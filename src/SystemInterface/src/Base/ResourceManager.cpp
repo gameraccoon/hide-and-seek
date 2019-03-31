@@ -105,7 +105,7 @@ namespace SystemInterface
 
 		if (it == nameMap.cend())
 		{
-			// there are no resource and info about it
+			// there is no resource and info about it
             IUseCounter::Uid uid = static_cast<IUseCounter::Uid>(resources.size());
 			nameMap.insert({ texturePath, uid });
 			Base* unsafePointer = new Base(uid, destroyResource);

@@ -16,7 +16,7 @@ public:
 	using WeakPtr = std::weak_ptr<LightComponent>;
 
 public:
-	virtual ~LightComponent() = default;
+	virtual ~LightComponent() override = default;
 
 	float getBrightness() const;
 	void setBrightness(float newSize);

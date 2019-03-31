@@ -19,7 +19,7 @@ public:
 public:
 	TransformComponent();
 	TransformComponent(const Vector2D& location, const Rotator& rotation);
-	virtual ~TransformComponent() = default;
+	virtual ~TransformComponent() override = default;
 
 	Vector2D getLocation() const;
 	void setLocation(const Vector2D& newLocation);

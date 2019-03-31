@@ -117,4 +117,6 @@ void Log::writeLine(const std::string& text)
         *mLogFileStream << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %X");
 		*mLogFileStream << text << std::endl;
 	}
+
+	std::clog << text;
 }

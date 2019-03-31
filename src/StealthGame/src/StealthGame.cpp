@@ -10,9 +10,11 @@
 
 #include <Systems/RenderSystem.h>
 #include <Systems/ControlSystem.h>
+#include <Systems/CollisionSystem.h>
 
 #include <Components/TransformComponent.h>
 #include <Components/RenderComponent.h>
+#include <Components/CollisionComponent.h>
 
 namespace Game
 {
@@ -22,20 +24,40 @@ namespace Game
 
 		mSystemsManager = std::make_unique<SystemsManager>();
 		mSystemsManager->registerSystem<ControlSystem>(getEngine(), &mKeyStates);
-		mSystemsManager->registerSystem<RenderSystem>(getEngine(), getResourceManager());
+		mSystemsManager->registerSystem<RenderSystem>(getEngine());
+		mSystemsManager->registerSystem<CollisionSystem>();
 
 		Entity hero = mWorld->addEntity();
+		mWorld->setPlayerControlledEntity(hero);
 		auto heroTransformComponent = mWorld->addComponent<TransformComponent>(hero);
 		heroTransformComponent->setLocation(Vector2D(10.0f, 10.0f));
-		auto heroRenderComponent = mWorld->addComponent<RenderComponent>(hero);
-		heroRenderComponent->setTexturePath("resources/textures/hero.png");
-		mWorld->setPlayerControlledEntity(hero);
+		auto heroRenderComponent = mWorld->addComponent<RenderComponent>(hero, getResourceManager()->getTexture("resources/textures/hero.png"));
+		auto heroCollisionComponent = mWorld->addComponent<CollisionComponent>(hero);
+		Hull heroHull;
+		heroHull.type = Hull::Type::Circular;
+		heroHull.setRadius(10.0f);
+		heroCollisionComponent->setGeometry(heroHull);
 
 		Entity camera = mWorld->addEntity();
+		mWorld->setMainCamera(camera);
 		mWorld->addComponent<CameraComponent>(camera);
 		auto cameraTransformComponent = mWorld->addComponent<TransformComponent>(camera);
 		cameraTransformComponent->setLocation(Vector2D(0.0f, 0.0f));
-		mWorld->setMainCamera(camera);
+
+		Entity wall = mWorld->addEntity();
+		auto wallTransformComponent = mWorld->addComponent<TransformComponent>(wall);
+		wallTransformComponent->setLocation(Vector2D(-60.0f, -60.0f));
+		auto wallRenderComponent = mWorld->addComponent<RenderComponent>(wall, getResourceManager()->getTexture("resources/textures/testTexture.png"));
+		wallRenderComponent->setScale(Vector2D(10.0f, 50.0f));
+		auto wallCollisionComponent = mWorld->addComponent<CollisionComponent>(wall);
+		Hull wallHull;
+		wallHull.type = Hull::Type::Rectangular;
+		wallHull.points.push_back(Vector2D(-60.0, -60.0));
+		wallHull.points.push_back(Vector2D(-60.0, 60.0));
+		wallHull.points.push_back(Vector2D(60.0, 60.0));
+		wallHull.points.push_back(Vector2D(60.0, -60.0));
+		wallHull.generateBorders();
+		wallCollisionComponent->setGeometry(wallHull);
 
 		// start the main loop
 		getEngine()->start(this);

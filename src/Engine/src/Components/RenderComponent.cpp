@@ -1,9 +1,10 @@
 #include "Components/RenderComponent.h"
 
 
-RenderComponent::RenderComponent()
+RenderComponent::RenderComponent(const Graphics::Texture& texture)
 	: mScale(0.0f, 0.0f)
 	, mAnchor(0.5f, 0.5f)
+	, mTexture(texture)
 {
 }
 
@@ -27,12 +28,7 @@ void RenderComponent::setAnchor(const Vector2D& newAnchor)
 	mAnchor = newAnchor;
 }
 
-void RenderComponent::setTexturePath(const std::string& newTexturePath)
+const Graphics::Texture& RenderComponent::getTexture() const
 {
-	mTexturePath = newTexturePath;
-}
-
-std::string RenderComponent::getTexturePath()
-{
-	return mTexturePath;
+	return mTexture;
 }

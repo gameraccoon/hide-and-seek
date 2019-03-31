@@ -19,11 +19,24 @@ public:
 	using WeakPtr = std::weak_ptr<CollisionComponent>;
 
 public:
-	virtual ~CollisionComponent();
+	virtual ~CollisionComponent() override = default;
 
-	const Hull* getGeometry() const {return &mGeometry; }
-	BoundingBox getBoundingBox() const {return BoundingBox(0.0f, 0.0f, 0.0f, 0.0f); }
+	const Hull& getGeometry() const;
+	void setGeometry(const Hull& geometry);
+
+	const BoundingBox& getBoundingBox() const;
+	void setBoundingBox(const BoundingBox& boundingBox);
+
+	bool isBoundingBoxDirty() const;
+
+	const BoundingBox& getOriginalBoundingBox() const;
+	void setOriginalBoundingBox(const BoundingBox& originalBoundingBox);
 
 private:
 	Hull mGeometry;
+	bool mBoundingBoxDirty = true;
+	BoundingBox mBoundingBox = BoundingBox(Vector2D(0.0f, 0.0f), Vector2D(0.0f, 0.0f));
+	BoundingBox mOriginalBoundingBox = BoundingBox(Vector2D(0.0f, 0.0f), Vector2D(0.0f, 0.0f));
 };
+
+
