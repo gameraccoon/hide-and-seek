@@ -17,12 +17,12 @@ TEST(Vector2D, Creation)
 
 TEST(Vector2D, InitializationFromAngle)
 {
-	Rotator angle = 0.0f;
+	Rotator angle(0.0f);
 	Vector2D testVectorA(angle);
 
 	EXPECT_EQ(Vector2D(1.0, 0.0), testVectorA);
 
-	angle = PI/2;
+	angle = Rotator(PI * 0.5f);
 	testVectorA = Vector2D(angle);
 
 	EXPECT_EQ(Vector2D(0.0, 1.0), testVectorA);

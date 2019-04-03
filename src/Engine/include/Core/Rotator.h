@@ -7,7 +7,7 @@ extern const float PI;
 class Rotator
 {
 public:
-	Rotator(float angle);
+	explicit Rotator(float angle);
 
 	/** Get value of angle */
 	float getValue() const;

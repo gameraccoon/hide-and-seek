@@ -39,7 +39,7 @@ namespace Game
 		heroCollisionComponent->setGeometry(heroHull);
 		mWorld->addComponent<MovementComponent>(hero);
 		auto heroRenderComponent = mWorld->addComponent<RenderComponent>(hero, getResourceManager()->getTexture("resources/textures/hero.png"));
-		heroRenderComponent->calcScaleFromSize(Vector2D(heroHull.getRadius()));
+		heroRenderComponent->calcScaleFromSize(Vector2D(heroHull.getRadius(), heroHull.getRadius()));
 
 		Entity camera = mWorld->addEntity();
 		mWorld->setMainCamera(camera);

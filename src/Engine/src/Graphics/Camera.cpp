@@ -200,7 +200,7 @@ Vector2D Camera::project(const Vector2D &worldPoint) const
 	// calc camera-location
 	Vector2D screenLoc(worldPoint - mLocation);
 	// calc screen-coordinates relativety camera center
-	Vector2D newScreenLoc(Vector2D(screenLoc.rotation() + mAngle) * screenLoc.size());
+	Vector2D newScreenLoc(Vector2D(screenLoc.rotation() + Rotator(mAngle)) * screenLoc.size());
 	// calc absolute screen-coordinates
 	return mCenterPos + newScreenLoc;
 }
@@ -210,7 +210,7 @@ Vector2D Camera::projectFrom(const Vector2D &worldPoint, const Vector2D &project
 	// calc camera-location
 	Vector2D screenLoc(worldPoint - projectionCenter);
 	// calc screen-coordinates relativety camera center
-	Vector2D newScreenLoc(Vector2D(screenLoc.rotation() + mAngle) * screenLoc.size());
+	Vector2D newScreenLoc(Vector2D(screenLoc.rotation() + Rotator(mAngle)) * screenLoc.size());
 	// calc absolute screen-coordinates
 	return Vector2D(mShownSize/2, mShownSize/2) + newScreenLoc;
 }
@@ -220,7 +220,7 @@ Vector2D Camera::deProject(const Vector2D &screenPoint) const
 	// calc relative screen-coordinates
 	Vector2D relScreenLoc(screenPoint - mCenterPos);
 	// calc world-coordinates relativety camera
-	Vector2D screenLoc = Vector2D(relScreenLoc.rotation() - mAngle) * relScreenLoc.size();
+	Vector2D screenLoc = Vector2D(relScreenLoc.rotation() - Rotator(mAngle)) * relScreenLoc.size();
 	// calc world location
 	return mLocation + screenLoc;
 }
@@ -538,7 +538,7 @@ Vector2D Camera::getResolution() const
 
 void Camera::setRotation(Rotator angle)
 {
-	angle = angle.getValue();
+	angle = Rotator(angle.getValue());
 }
 
 void Camera::showAABB(bool show)

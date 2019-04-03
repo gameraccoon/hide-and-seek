@@ -42,7 +42,7 @@ Vector2D Vector2D::ort() const
 
 Rotator Vector2D::rotation() const
 {
-	return atan2(y, x);
+	return Rotator(atan2(y, x));
 }
 
 Vector2D Vector2D::mirrorH() const
@@ -57,7 +57,7 @@ Vector2D Vector2D::mirrorV() const
 
 Vector2D Vector2D::normal() const
 {
-	return Vector2D(rotation() - PI/2.0f);
+	return Vector2D(rotation() - Rotator(PI * 0.5f));
 }
 
 Vector2D Vector2D::project(Vector2D base) const

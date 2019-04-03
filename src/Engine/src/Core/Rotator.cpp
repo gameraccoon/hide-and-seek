@@ -50,7 +50,7 @@ bool operator!=(const Rotator& left, const Rotator& right)
 
 Rotator operator+(const Rotator& left, const Rotator& right)
 {
-	return left.getValue() + right.getValue();
+	return Rotator(left.getValue() + right.getValue());
 }
 
 Rotator operator+=(Rotator& left, const Rotator& right)
@@ -60,12 +60,12 @@ Rotator operator+=(Rotator& left, const Rotator& right)
 	left.mValue = newValue;
 	left.reset();
 
-	return newValue;
+	return Rotator(newValue);
 }
 
 Rotator operator-(const Rotator& left, const Rotator& right)
 {
-	return left.getValue() - right.getValue();
+	return Rotator(left.getValue() - right.getValue());
 }
 
 Rotator operator-=(Rotator& left, const Rotator& right)
@@ -75,5 +75,5 @@ Rotator operator-=(Rotator& left, const Rotator& right)
 	left.mValue = newValue;
 	left.reset();
 
-	return newValue;
+	return Rotator(newValue);
 }
