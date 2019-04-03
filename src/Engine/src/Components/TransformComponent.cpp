@@ -2,7 +2,8 @@
 
 
 TransformComponent::TransformComponent()
-	: TransformComponent(Vector2D(0.0f, 0.0f), Rotator(0.0f))
+	: mLocation(0.0f, 0.0f)
+	, mRotation(0.0f)
 {
 }
 
@@ -22,6 +23,11 @@ void TransformComponent::setLocation(const Vector2D& newLocation)
 	mLocation = newLocation;
 }
 
+void TransformComponent::shiftLocation(const Vector2D& deltaLocation)
+{
+	mLocation += deltaLocation;
+}
+
 Rotator TransformComponent::getRotation() const
 {
 	return mRotation;
@@ -30,4 +36,9 @@ Rotator TransformComponent::getRotation() const
 void TransformComponent::setRotation(const Rotator& newRotation)
 {
 	mRotation = newRotation;
+}
+
+void TransformComponent::shiftRotation(const Rotator& deltaRotation)
+{
+	mRotation += deltaRotation;
 }

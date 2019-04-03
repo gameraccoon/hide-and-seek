@@ -19,7 +19,7 @@ void CollisionComponent::setOriginalBoundingBox(const BoundingBox& originalBound
 
 void CollisionComponent::setBoundingBox(const BoundingBox& boundingBox)
 {
-	mBoundingBox = boundingBox;
+    mBoundingBox = boundingBox;
 }
 
 const Hull& CollisionComponent::getGeometry() const

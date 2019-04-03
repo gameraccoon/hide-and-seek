@@ -15,6 +15,7 @@
 #include <Components/TransformComponent.h>
 #include <Components/RenderComponent.h>
 #include <Components/CollisionComponent.h>
+#include <Components/MovementComponent.h>
 
 namespace Game
 {
@@ -31,12 +32,14 @@ namespace Game
 		mWorld->setPlayerControlledEntity(hero);
 		auto heroTransformComponent = mWorld->addComponent<TransformComponent>(hero);
 		heroTransformComponent->setLocation(Vector2D(10.0f, 10.0f));
-		auto heroRenderComponent = mWorld->addComponent<RenderComponent>(hero, getResourceManager()->getTexture("resources/textures/hero.png"));
 		auto heroCollisionComponent = mWorld->addComponent<CollisionComponent>(hero);
 		Hull heroHull;
 		heroHull.type = Hull::Type::Circular;
-		heroHull.setRadius(10.0f);
+		heroHull.setRadius(32.0f);
 		heroCollisionComponent->setGeometry(heroHull);
+		mWorld->addComponent<MovementComponent>(hero);
+		auto heroRenderComponent = mWorld->addComponent<RenderComponent>(hero, getResourceManager()->getTexture("resources/textures/hero.png"));
+		heroRenderComponent->calcScaleFromSize(Vector2D(heroHull.getRadius()));
 
 		Entity camera = mWorld->addEntity();
 		mWorld->setMainCamera(camera);

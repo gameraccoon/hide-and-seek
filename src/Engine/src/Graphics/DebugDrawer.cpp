@@ -13,13 +13,13 @@ void DebugDrawer::render(World* world, const Vector2D& drawShift)
 {
 	if (mDrawCollision)
 	{
-		world->forEachEntity<CollisionComponent>([collisionTexture = mCollisionTexture, drawShift](std::tuple<CollisionComponent::Ptr>& component)
+		world->forEachEntity<CollisionComponent>([collisionTexture = mCollisionTexture, drawShift](CollisionComponent* collisionComponent)
 		{
-			collisionTexture.draw(std::get<0>(component)->getBoundingBox().minX + drawShift.x,
-								  std::get<0>(component)->getBoundingBox().minY + drawShift.y,
+			collisionTexture.draw(collisionComponent->getBoundingBox().minX + drawShift.x,
+								  collisionComponent->getBoundingBox().minY + drawShift.y,
 								  0.0f, 0.0f,
-								  (std::get<0>(component)->getBoundingBox().maxX - std::get<0>(component)->getBoundingBox().minX) / collisionTexture.getWidth(),
-								  (std::get<0>(component)->getBoundingBox().maxY - std::get<0>(component)->getBoundingBox().minY) / collisionTexture.getHeight());
+								  (collisionComponent->getBoundingBox().maxX - collisionComponent->getBoundingBox().minX) / collisionTexture.getWidth(),
+								  (collisionComponent->getBoundingBox().maxY - collisionComponent->getBoundingBox().minY) / collisionTexture.getHeight());
 			return true;
 		});
 	}

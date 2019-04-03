@@ -151,8 +151,8 @@ namespace Collide
 		return false;
 	}
 
-	bool doCollide(const CollisionComponent::Ptr& collisionA, const TransformComponent::Ptr& transformA,
-				   const CollisionComponent::Ptr& collisionB, const TransformComponent::Ptr& transformB, Vector2D& outResist)
+	bool doCollide(const CollisionComponent* collisionA, const Vector2D& locationA,
+				   const CollisionComponent* collisionB, const Vector2D& locationB, Vector2D& outResist)
 	{
 		// get AABB of the actors
 		BoundingBox box = collisionA->getBoundingBox();
@@ -164,12 +164,12 @@ namespace Collide
 			&& ourBox.minY < box.maxY))
 		{
 			return IsCollideGeometry(collisionA->getGeometry(), collisionB->getGeometry(),
-				transformA->getLocation(), transformB->getLocation(), outResist);
+				locationA, locationB, outResist);
 		}
 		return false;
 	}
 
-	void updateOriginalBoundingBox(const CollisionComponent::Ptr& collision)
+	void updateOriginalBoundingBox(CollisionComponent* collision)
 	{
 		const Hull& geometry = collision->getGeometry();
 

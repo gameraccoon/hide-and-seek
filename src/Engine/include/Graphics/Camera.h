@@ -54,14 +54,14 @@ public:
 
 protected:
 	/** Render all seen actors */
-	void renderActors(const LightComponent::Ptr light);
+	void renderActors(const LightComponent* light);
 	/** Render collision AABB to screen */
 	void renderCollisionBoxes();
 	/** Render dark ring like fog */
 	virtual void renderFog(float width, float height, float size);
 	/** Render shadows of player view */
 	void renderShadows();
-	void renderLightShadows(const LightComponent::Ptr light);
+	void renderLightShadows(const LightComponent* light);
 	/** Render hulls */
 	void renderHulls();
 	/** Render lights centers */

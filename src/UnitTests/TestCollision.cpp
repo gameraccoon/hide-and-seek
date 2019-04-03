@@ -3,24 +3,22 @@
 #include <Core/World.h>
 #include <Modules/Collide.h>
 
-static std::tuple<CollisionComponent::Ptr, TransformComponent::Ptr> prepareCollision(World& world, const Vector2D& location, const Hull& hull)
+static CollisionComponent* prepareCollision(World& world, const Vector2D& location, const Hull& hull)
 {
 	auto entity = world.addEntity();
-	auto transform = world.addComponent<TransformComponent>(entity);
-	transform->setLocation(location);
 	auto collision = world.addComponent<CollisionComponent>(entity);
 	collision->setGeometry(hull);
 	Collide::updateOriginalBoundingBox(collision);
 	collision->setBoundingBox(collision->getOriginalBoundingBox() + location);
-	return std::make_tuple(collision, transform);
+	return collision;
 }
 
 static bool getCollisionResult(World& world, const Vector2D& location1, const Hull& hull1, const Vector2D& location2, const Hull& hull2, Vector2D& outResist)
 {
-	auto collision1Data = prepareCollision(world, location1, hull1);
-	auto collision2Data = prepareCollision(world, location2, hull2);
+	auto collision1 = prepareCollision(world, location1, hull1);
+	auto collision2 = prepareCollision(world, location2, hull2);
 
-	return Collide::doCollide(std::get<0>(collision1Data), std::get<1>(collision1Data), std::get<0>(collision2Data), std::get<1>(collision2Data), outResist);
+	return Collide::doCollide(collision1, location1, collision2, location2, outResist);
 }
 
 TEST(Collision, Circular)

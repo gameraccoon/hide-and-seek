@@ -2,6 +2,7 @@
 
 #include <Components/CollisionComponent.h>
 #include <Components/TransformComponent.h>
+#include <Components/MovementComponent.h>
 #include <Modules/Collide.h>
 
 void CollisionSystem::update(World* world, float /*dt*/)
@@ -21,18 +22,20 @@ void CollisionSystem::update(World* world, float /*dt*/)
 		collisionComponent->setBoundingBox(collisionComponent->getOriginalBoundingBox() + transformComponent->getLocation());
 	}
 
-	Vector2D resist = ZERO_VECTOR;
-	for (size_t i = 1; i < components.size(); ++i)
+	world->forEachEntity<CollisionComponent, TransformComponent, MovementComponent>([&components](CollisionComponent* collisionComponent, TransformComponent* transformComponent, MovementComponent* /*movementComponent*/)
 	{
-		for (size_t j = 0; j < i; ++j)
+		Vector2D resist = ZERO_VECTOR;
+		for (auto& component : components)
 		{
-			bool doCollide = Collide::doCollide(std::get<0>(components[i]), std::get<1>(components[i]), std::get<0>(components[j]), std::get<1>(components[j]), resist);
-
-			if (doCollide)
+			if (std::get<0>(component) != collisionComponent)
 			{
-				std::get<1>(components[i])->setLocation(std::get<1>(components[i])->getLocation() + resist * 0.5f);
-				std::get<1>(components[j])->setLocation(std::get<1>(components[j])->getLocation() - resist * 0.5f);
+				bool doCollide = Collide::doCollide(collisionComponent, transformComponent->getLocation(), std::get<0>(component), std::get<1>(component)->getLocation(), resist);
+
+				if (doCollide)
+				{
+					transformComponent->shiftLocation(resist);
+				}
 			}
 		}
-	}
+	});
 }

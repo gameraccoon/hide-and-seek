@@ -12,10 +12,6 @@
 class LightComponent : public BaseComponent
 {
 public:
-	using Ptr = std::shared_ptr<LightComponent>;
-	using WeakPtr = std::weak_ptr<LightComponent>;
-
-public:
 	virtual ~LightComponent() override = default;
 
 	float getBrightness() const;

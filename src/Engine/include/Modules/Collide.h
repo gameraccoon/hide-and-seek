@@ -5,12 +5,11 @@
 #include <Core/World.h>
 
 #include <Components/CollisionComponent.h>
-#include <Components/TransformComponent.h>
 
 namespace Collide
 {
-	bool doCollide(const CollisionComponent::Ptr& collisionA, const TransformComponent::Ptr& transformA,
-				   const CollisionComponent::Ptr& collisionB, const TransformComponent::Ptr& transformB, Vector2D& outResist);
+	bool doCollide(const CollisionComponent* collisionA, const Vector2D& locationA,
+				   const CollisionComponent* collisionB, const Vector2D& locationB, Vector2D& outResist);
 
-	void updateOriginalBoundingBox(const CollisionComponent::Ptr& collision);
+	void updateOriginalBoundingBox(CollisionComponent* collision);
 }

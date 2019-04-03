@@ -1,15 +1,17 @@
 #pragma once
 
+#include <functional>
+#include <memory>
 #include <string>
 #include <tuple>
-#include <unordered_map>
-#include <typeinfo>
 #include <typeindex>
-#include <functional>
+#include <typeinfo>
+#include <unordered_map>
 
 #include "Component.h"
 #include "Entity.h"
 #include "Structures/PathPoint.h"
+
 
 class World
 {
@@ -21,7 +23,7 @@ public:
 	void removeEntity(Entity entity);
 
 	template<typename T, typename... Args>
-	std::shared_ptr<T> addComponent(const Entity& entity, Args&&... args)
+	T* addComponent(const Entity& entity, Args&&... args)
 	{
 		auto entityIdxItr = mEntityIndexMap.find(entity.getID());
 		if (entityIdxItr == mEntityIndexMap.end())
@@ -30,7 +32,7 @@ public:
 		}
 		EntityIndex entityIdx = entityIdxItr->second;
 
-		std::shared_ptr<T> component = std::make_shared<T>(std::forward<Args>(args)...);
+		T* component = new T(std::forward<Args>(args)...);
 		auto& componentsVector = mComponents[typeid(T)];
 		if (componentsVector.size() <= entityIdx)
 		{
@@ -45,12 +47,12 @@ public:
 	}
 
 	template<typename... Components>
-	std::tuple<std::shared_ptr<Components>...> getEntityComponents(const Entity& entity)
+	std::tuple<Components*...> getEntityComponents(const Entity& entity)
 	{
 		auto entityIdxItr = mEntityIndexMap.find(entity.getID());
 		if (entityIdxItr == mEntityIndexMap.end())
 		{
-			return std::make_tuple(std::shared_ptr<Components>(nullptr)...);
+			return std::make_tuple(static_cast<Components*>(nullptr)...);
 		}
 		EntityIndex entityIdx = entityIdxItr->second;
 
@@ -60,11 +62,11 @@ public:
 	}
 
 	template<typename FirstComponent, typename... Components>
-	std::vector<std::tuple<std::shared_ptr<FirstComponent>, std::shared_ptr<Components>...>> getComponents()
+	std::vector<std::tuple<FirstComponent*, Components*...>> getComponents()
 	{
 		auto& firstComponentVector = mComponents[typeid(FirstComponent)];
 
-		std::vector<std::tuple<std::shared_ptr<FirstComponent>, std::shared_ptr<Components>...>> result;
+		std::vector<std::tuple<FirstComponent*, Components*...>> result;
 		result.reserve(firstComponentVector.size());
 
 		auto componentVectors = std::make_tuple(firstComponentVector, mComponents[typeid(Components)]...);
@@ -114,11 +116,7 @@ public:
 				continue;
 			}
 
-			bool isGood = processor(components);
-			if (!isGood)
-			{
-				break;
-			}
+			std::apply(processor, components);
 		}
 	}
 
@@ -143,9 +141,9 @@ private:
 	}
 
 	template<typename FirstComponent, typename... Components>
-	std::tuple<std::shared_ptr<FirstComponent>, std::shared_ptr<Components>...> getEmptyComponents()
+	std::tuple<FirstComponent*, Components*...> getEmptyComponents()
 	{
-		return std::tuple_cat(std::tuple<std::shared_ptr<FirstComponent>>(nullptr), getEmptyComponents<Components...>());
+		return std::tuple_cat(std::tuple<FirstComponent*>(nullptr), getEmptyComponents<Components...>());
 	}
 
 	template<unsigned Index, typename Datas>
@@ -155,7 +153,7 @@ private:
 	}
 
 	template<unsigned Index, typename Datas, typename FirstComponent, typename... Components>
-	std::tuple<std::shared_ptr<FirstComponent>, std::shared_ptr<Components>...> getEntityComponentSetInner(EntityIndex entityIdx, Datas& componentVectors)
+	std::tuple<FirstComponent*, Components*...> getEntityComponentSetInner(EntityIndex entityIdx, Datas& componentVectors)
 	{
 		if (std::get<Index>(componentVectors).size() <= entityIdx)
 		{
@@ -168,13 +166,13 @@ private:
 			return getEmptyComponents<FirstComponent, Components...>();
 		}
 
-		return std::tuple_cat(std::make_tuple(std::dynamic_pointer_cast<FirstComponent>(component)), getEntityComponentSetInner<Index + 1, Datas, Components...>(entityIdx, componentVectors));
+		return std::tuple_cat(std::make_tuple(static_cast<FirstComponent*>(component)), getEntityComponentSetInner<Index + 1, Datas, Components...>(entityIdx, componentVectors));
 	}
 
 	template<typename FirstComponent, typename... Components, typename... Data>
-	std::tuple<std::shared_ptr<FirstComponent>, std::shared_ptr<Components>...> getEntityComponentSet(EntityIndex entityIdx, std::tuple<std::vector<std::shared_ptr<Data>>...>& componentVectors)
+	std::tuple<FirstComponent*, Components*...> getEntityComponentSet(EntityIndex entityIdx, std::tuple<std::vector<Data*>...>& componentVectors)
 	{
-		using Datas = std::tuple<std::vector<std::shared_ptr<Data>>...>;
+		using Datas = std::tuple<std::vector<Data*>...>;
 		return getEntityComponentSetInner<0, Datas, FirstComponent, Components...>(entityIdx, componentVectors);
 	}
 
@@ -187,7 +185,7 @@ private:
 	NullableEntity mMainCamera;
 	NullableEntity mPlayerControlledEntity;
 
-	std::unordered_map<std::type_index, std::vector<BaseComponent::Ptr>> mComponents;
+	std::unordered_map<std::type_index, std::vector<BaseComponent*>> mComponents;
 	std::unordered_map<Entity::EntityID, EntityIndex> mEntityIndexMap;
 	std::unordered_map<EntityIndex, Entity::EntityID> mIndexEntityMap;
 

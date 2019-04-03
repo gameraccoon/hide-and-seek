@@ -21,10 +21,10 @@ void RenderSystem::update(World* world, float /*dt*/)
 		return;
 	}
 
-	TransformComponent::Ptr cameraTransformComponent = std::get<0>(world->getEntityComponents<TransformComponent>(mainCamera.getEntity()));
+	TransformComponent* cameraTransformComponent = std::get<0>(world->getEntityComponents<TransformComponent>(mainCamera.getEntity()));
 	if (cameraTransformComponent == nullptr)
 	{
-			return;
+		return;
 	}
 
 	Vector2D cameraLocation = cameraTransformComponent->getLocation();
@@ -32,18 +32,14 @@ void RenderSystem::update(World* world, float /*dt*/)
 
 	Vector2D drawShift = screenHalfSize - cameraLocation;
 
-	world->forEachEntity<RenderComponent, TransformComponent>([&drawShift](std::tuple<RenderComponent::Ptr, TransformComponent::Ptr>& components) {
-		auto renderComponent = std::get<0>(components);
-		auto transformComponent = std::get<1>(components);
-
+	world->forEachEntity<RenderComponent, TransformComponent>([&drawShift](RenderComponent* renderComponent, TransformComponent* transformComponent)
+	{
 		Graphics::Texture texure = renderComponent->getTexture();
 
 		auto location = transformComponent->getLocation() + drawShift;
 		auto anchor = renderComponent->getAnchor();
 		auto scale = renderComponent->getScale();
 		texure.draw(location.x, location.y, anchor.x, anchor.y, scale.x, scale.y, transformComponent->getRotation().getValue(), 1.0f);
-
-		return true;
 	});
 
 #ifdef DEBUG

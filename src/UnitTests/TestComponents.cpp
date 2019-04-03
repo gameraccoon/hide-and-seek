@@ -26,12 +26,10 @@ TEST(Components, ComponentsAttachment)
 
 	World world;
 	Entity testEntity = world.addEntity();
-	TransformComponent::Ptr transform = world.addComponent<TransformComponent>(testEntity);
+	TransformComponent* transform = world.addComponent<TransformComponent>(testEntity);
 	transform->setLocation(location);
 
-	std::tuple<TransformComponent::Ptr> components = world.getEntityComponents<TransformComponent>(testEntity);
-
-	TransformComponent::Ptr resultTransform = std::get<0>(components);
+	TransformComponent* resultTransform = std::get<0>(world.getEntityComponents<TransformComponent>(testEntity));
 
 	EXPECT_NE(nullptr, transform);
 	EXPECT_TRUE(location == resultTransform->getLocation());
@@ -45,14 +43,14 @@ TEST(Components, RemoveEntityWithComponents)
 
 	World world;
 	Entity testEntity1 = world.addEntity();
-	TransformComponent::Ptr transform1 = world.addComponent<TransformComponent>(testEntity1);
+	TransformComponent* transform1 = world.addComponent<TransformComponent>(testEntity1);
 	transform1->setLocation(location1);
 
 	Entity testEntity2 = world.addEntity();
-	TransformComponent::Ptr transform2 = world.addComponent<TransformComponent>(testEntity2);
+	TransformComponent* transform2 = world.addComponent<TransformComponent>(testEntity2);
 	transform2->setLocation(location2);
 
-	std::vector<std::tuple<TransformComponent::Ptr>> components = world.getComponents<TransformComponent>();
+	std::vector<std::tuple<TransformComponent*>> components = world.getComponents<TransformComponent>();
 	EXPECT_EQ(static_cast<size_t>(2), components.size());
 
 	bool location1Found = false;
@@ -79,7 +77,7 @@ TEST(Components, RemoveEntityWithComponents)
 	world.removeEntity(testEntity2);
 
 	Entity testEntity3 = world.addEntity();
-	TransformComponent::Ptr transform3 = world.addComponent<TransformComponent>(testEntity3);
+	TransformComponent* transform3 = world.addComponent<TransformComponent>(testEntity3);
 	transform3->setLocation(location3);
 
 	location1Found = false;

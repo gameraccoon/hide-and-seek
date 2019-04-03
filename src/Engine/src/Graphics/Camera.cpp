@@ -140,7 +140,7 @@ void Camera::render()
 	*/
 }
 
-void Camera::renderActors(const LightComponent::Ptr /*light*/)
+void Camera::renderActors(const LightComponent* /*light*/)
 {
 //	const Vector2D lightPos = light->getLocation();
 //	const float lightBrightness = light->getBrightness();
@@ -305,7 +305,7 @@ void Camera::drawQuad(const Vector2D &, const Vector2D &, const Vector2D &, cons
 	engine->Gfx_RenderQuad(&quad);*/
 }
 
-void Camera::renderLightShadows(const LightComponent::Ptr /*light*/)
+void Camera::renderLightShadows(const LightComponent* /*light*/)
 {
 //	auto movementWeak = light->getTransformComponent();
 //	auto movement = movementWeak.lock();

@@ -11,9 +11,5 @@
 class CameraComponent : public BaseComponent
 {
 public:
-	using Ptr = std::shared_ptr<CameraComponent>;
-	using WeakPtr = std::weak_ptr<CameraComponent>;
-
-public:
 	virtual ~CameraComponent() override = default;
 };

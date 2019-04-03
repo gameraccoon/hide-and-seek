@@ -34,11 +34,13 @@ void World::removeEntity(Entity entity)
 			{
 				// swap with the last and drop it
 				std::swap(componentVector.second[oldEntityIdx], componentVector.second[mMaxEntityIndex - 1]);
+				delete componentVector.second[mMaxEntityIndex - 1];
 				componentVector.second.pop_back();
 			}
 			else
 			{
 				// emulate swapping with nonexsistent nullptr Component
+				delete componentVector.second[oldEntityIdx];
 				componentVector.second[oldEntityIdx] = nullptr;
 			}
 		}

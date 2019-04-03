@@ -4,6 +4,7 @@
 
 #include <Components/RenderComponent.h>
 #include <Components/TransformComponent.h>
+#include <Components/MovementComponent.h>
 
 ControlSystem::ControlSystem(SystemInterface::Engine* engine, KeyStatesMap* keyStatesMap)
 	: mEngine(engine)
@@ -42,10 +43,10 @@ void ControlSystem::update(World* world, float dt)
 		return;
 	}
 
-	TransformComponent::Ptr cameraTransformComponent = std::get<0>(world->getEntityComponents<TransformComponent>(mainCamera.getEntity()));
+	TransformComponent* cameraTransformComponent = std::get<0>(world->getEntityComponents<TransformComponent>(mainCamera.getEntity()));
 	if (cameraTransformComponent == nullptr)
 	{
-			return;
+		return;
 	}
 
 	Vector2D screenHalfSize = Vector2D(mEngine->getWidth(), mEngine->getHeight()) * 0.5f;
@@ -56,19 +57,25 @@ void ControlSystem::update(World* world, float dt)
 	Vector2D controlledEntityPosition(0.0f, 0.0f);
 	if (NullableEntity controlledEntity = world->getPlayerControlledEntity(); controlledEntity.isValid())
 	{
-		if (TransformComponent::Ptr transform = std::get<0>(world->getEntityComponents<TransformComponent>(controlledEntity.getEntity())))
-		{
-			controlledEntityPosition = transform->getLocation() + movementDirection * speed * dt;
-			transform->setLocation(controlledEntityPosition);
+		TransformComponent* transform;
+		MovementComponent* movement;
+		std::tie(transform, movement) = world->getEntityComponents<TransformComponent, MovementComponent>(controlledEntity.getEntity());
 
-			Vector2D direction = mouseScreenPos - transform->getLocation() - drawShift;
+		if (transform != nullptr && movement != nullptr)
+		{
+			Vector2D oldLocation = transform->getLocation();
+			Vector2D move = speed * movementDirection;
+			movement->setSpeed(move);
+			transform->setLocation(oldLocation + move * dt);
+
+			Vector2D direction = mouseScreenPos - oldLocation - drawShift;
 			transform->setRotation(direction.rotation());
 		}
 	}
 
 	if (NullableEntity mainCamera = world->getMainCamera(); mainCamera.isValid())
 	{
-		if (TransformComponent::Ptr cameraTransform = std::get<0>(world->getEntityComponents<TransformComponent>(mainCamera.getEntity())))
+		if (TransformComponent* cameraTransform = std::get<0>(world->getEntityComponents<TransformComponent>(mainCamera.getEntity())))
 		{
 			Vector2D cameraLocation = cameraTransform->getLocation();
 			Vector2D mouseWorldPos = mouseScreenPos - cameraLocation - screenHalfSize;

@@ -15,10 +15,6 @@
 class CollisionComponent : public BaseComponent
 {
 public:
-	using Ptr = std::shared_ptr<CollisionComponent>;
-	using WeakPtr = std::weak_ptr<CollisionComponent>;
-
-public:
 	virtual ~CollisionComponent() override = default;
 
 	const Hull& getGeometry() const;

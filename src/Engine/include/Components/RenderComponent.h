@@ -12,10 +12,6 @@
 class RenderComponent : public BaseComponent
 {
 public:
-	using Ptr = std::shared_ptr<RenderComponent>;
-	using WeakPtr = std::weak_ptr<RenderComponent>;
-
-public:
 	RenderComponent(const Graphics::Texture& texture);
 	virtual ~RenderComponent() override = default;
 
