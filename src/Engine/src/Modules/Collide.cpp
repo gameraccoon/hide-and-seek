@@ -100,12 +100,14 @@ namespace Collide
 			}
 
 			// if not intersecting the border
-			if (nearestBorderQDistance > cHull->getQRadius())
+			if (nearestBorderQDistance >= cHull->getQRadius())
 			{
 				// if we outside the figure
-				if (nearestBorder != nullptr && SignedArea(*cCenter - (nearestBorder->getNormal() * cHull->getRadius()),
-					*rCenter + nearestBorder->getA(),
-					*rCenter + nearestBorder->getB()) <= 0.0f)
+				if (nearestBorder == nullptr
+					|| nearestBorderResistDir != ResistDir::Normal
+					|| SignedArea(*cCenter,
+						*rCenter + nearestBorder->getA(),
+						*rCenter + nearestBorder->getB()) <= 0.0f)
 				{
 					return false;
 				}
@@ -136,11 +138,11 @@ namespace Collide
 
 			if (cHull == &hull1)
 			{
-				outResist=resist;
+				outResist=-resist;
 			}
 			else
 			{
-				outResist=-resist;
+				outResist=resist;
 			}
 			return true;
 		}

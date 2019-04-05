@@ -55,10 +55,10 @@ namespace Game
 		auto wallCollisionComponent = mWorld->addComponent<CollisionComponent>(wall);
 		Hull wallHull;
 		wallHull.type = Hull::Type::Angular;
-		wallHull.points.push_back(Vector2D(-60.0, -60.0));
-		wallHull.points.push_back(Vector2D(-60.0, 60.0));
-		wallHull.points.push_back(Vector2D(60.0, 60.0));
 		wallHull.points.push_back(Vector2D(60.0, -60.0));
+		wallHull.points.push_back(Vector2D(60.0, 60.0));
+		wallHull.points.push_back(Vector2D(-60.0, 60.0));
+		wallHull.points.push_back(Vector2D(-60.0, -60.0));
 		wallHull.generateBorders();
 		wallCollisionComponent->setGeometry(wallHull);
 

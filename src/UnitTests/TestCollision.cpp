@@ -72,3 +72,24 @@ TEST(Collision, Angular)
 	EXPECT_FALSE(getCollisionResult(world, Vector2D(-6.0f, -8.0f), hull2, Vector2D(4.0f, 3.0f), hull1, resist));
 	EXPECT_TRUE(getCollisionResult(world, Vector2D(-6.0f, -8.0f), hull2, Vector2D(-4.5f, 4.2f), hull1, resist));
 }
+
+TEST(Collision, CornerCase1)
+{
+	World world;
+
+	Hull hull1;
+	hull1.type = Hull::Type::Circular;
+	hull1.setRadius(32.0f);
+
+	Hull hull2;
+	hull2.type = Hull::Type::Angular;
+	hull2.points.push_back(Vector2D(60.0, -60.0));
+	hull2.points.push_back(Vector2D(60.0, 60.0));
+	hull2.points.push_back(Vector2D(-60.0, 60.0));
+	hull2.points.push_back(Vector2D(-60.0, -60.0));
+	hull2.generateBorders();
+
+	Vector2D resist = ZERO_VECTOR;
+
+	EXPECT_FALSE(getCollisionResult(world, Vector2D(-0.00001f, 1002.0f), hull1, Vector2D(-60.0f, -60.0f), hull2, resist));
+}
