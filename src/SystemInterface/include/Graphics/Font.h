@@ -21,8 +21,8 @@ namespace Graphics
 		class Base : public Resource::Base
 		{
 		public:
-			Base(SystemInterface::IUseCounter::Uid uid, Destructor destructor)
-				: Resource::Base(uid, destructor)
+			Base(SystemInterface::IUseCounter::Uid uid)
+				: Resource::Base(uid)
 			{
 			}
 
@@ -35,9 +35,6 @@ namespace Graphics
 
 	public:
 		Font(SystemInterface::IUseCounter* useCounter, const Base* base);
-		Font(const Font&) = default;
-		Font(Font&&) = default;
-		virtual ~Font();
 
 		void Draw(const char* text, float x, float y, float rotation = 0.0f);
 

@@ -29,17 +29,12 @@ namespace SystemInterface
 		mUseCounter->endUse(mUid);
 	}
 
-	Resource::Base::Base(IUseCounter::Uid uid, Destructor destructor)
+	Resource::Base::Base(IUseCounter::Uid uid)
 		: uid(uid)
-		, destructor(destructor)
 	{
 	}
 
 	Resource::Base::~Base()
 	{
-		if (destructor)
-		{
-			destructor(this);
-		}
 	}
 }

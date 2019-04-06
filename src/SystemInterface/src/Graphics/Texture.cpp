@@ -7,15 +7,16 @@ namespace Graphics
 {
 	Texture::Base::~Base()
 	{
+		if (surface)
+		{
+			delete surface;
+			surface = nullptr;
+		}
 	}
 
 	Texture::Texture(SystemInterface::IUseCounter * useCounter, const Base* base)
         : Resource(useCounter, base ? base->uid : 0)
 		, mBase(base)
-	{
-	}
-
-	Texture::~Texture()
 	{
 	}
 

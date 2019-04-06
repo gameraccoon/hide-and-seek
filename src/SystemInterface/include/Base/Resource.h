@@ -19,12 +19,11 @@ namespace SystemInterface
 			using Destructor = std::function<void(Base*)>;
 
 		public:
-			Base(IUseCounter::Uid uid, Destructor destructor);
+			Base(IUseCounter::Uid uid);
 			virtual ~Base();
 
 			IUseCounter::Uid uid;
 			int useCount = 0;
-			Destructor destructor;
 		};
 
 	public:

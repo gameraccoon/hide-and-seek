@@ -6,15 +6,16 @@ namespace Graphics
 {
 	Font::Base::~Base()
 	{
+		if (surface)
+		{
+			delete surface;
+			surface = nullptr;
+		}
 	}
 
-	Font::Font(SystemInterface::IUseCounter * useCounter, const Base* base)
+	Font::Font(SystemInterface::IUseCounter* useCounter, const Base* base)
         : Resource(useCounter, base ? base->uid : 0)
 		, mBase(base)
-	{
-	}
-
-	Font::~Font()
 	{
 	}
 

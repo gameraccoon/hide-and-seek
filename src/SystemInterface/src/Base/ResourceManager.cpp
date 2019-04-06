@@ -97,8 +97,7 @@ namespace SystemInterface
 		std::map<std::string, IUseCounter::Uid>& nameMap,
 		std::vector<std::unique_ptr<Resource::Base>>& resources,
 		IUseCounter* useCounter,
-		std::function<void(Base*)> fillResource,
-		std::function<void(Resource::Base*)> destroyResource
+		std::function<void(Base*)> fillResource
 	)
 	{
 		std::map<std::string, IUseCounter::Uid>::const_iterator it = nameMap.find(texturePath);
@@ -108,7 +107,7 @@ namespace SystemInterface
 			// there is no resource and info about it
             IUseCounter::Uid uid = static_cast<IUseCounter::Uid>(resources.size());
 			nameMap.insert({ texturePath, uid });
-			Base* unsafePointer = new Base(uid, destroyResource);
+			Base* unsafePointer = new Base(uid);
 			fillResource(unsafePointer);
 			resources.emplace_back(unsafePointer);
 			return T(useCounter, unsafePointer);
@@ -130,7 +129,7 @@ namespace SystemInterface
 			}
 			else
 			{
-				unsafePointer = new Base(uid, destroyResource);
+				unsafePointer = new Base(uid);
 				fillResource(unsafePointer);
 				resources[uid].reset(unsafePointer);
 				return T(useCounter, unsafePointer);
@@ -150,19 +149,6 @@ namespace SystemInterface
 			{
 				textureBase->surface = new Internal::SdlSurface(texturePath.c_str());
 				textureBase->engine = engine;
-			},
-			[](Resource::Base* resourceBase)
-			{
-				Graphics::Texture::Base* textureBase = dynamic_cast<Graphics::Texture::Base*>(resourceBase);
-				if (textureBase)
-				{
-					delete textureBase->surface;
-					textureBase->surface = nullptr;
-				}
-				else
-				{
-					Log::Instance().writeError("Trying to destruct non-texture resource with texture destructor");
-				}
 			}
 		);
 	}
@@ -179,19 +165,6 @@ namespace SystemInterface
 			{
 				textureBase->surface = new Internal::SdlSurface(texturePath.c_str());
 				textureBase->engine = engine;
-			},
-			[](Resource::Base* resourceBase)
-			{
-				Graphics::Font::Base* textureBase = dynamic_cast<Graphics::Font::Base*>(resourceBase);
-				if (textureBase)
-				{
-					delete textureBase->surface;
-					textureBase->surface = nullptr;
-				}
-				else
-				{
-					Log::Instance().writeError("Trying to destruct non-font resource with font destructor");
-				}
 			}
 		);
 	}

@@ -21,8 +21,8 @@ namespace Graphics
 		class Base : public Resource::Base
 		{
 		public:
-			Base(SystemInterface::IUseCounter::Uid uid, Destructor destructor)
-				: Resource::Base(uid, destructor)
+			Base(SystemInterface::IUseCounter::Uid uid)
+				: Resource::Base(uid)
 			{
 			}
 
@@ -35,9 +35,6 @@ namespace Graphics
 
 	public:
 		Texture(SystemInterface::IUseCounter* useCounter, const Base* base);
-		Texture(const Texture&) = default;
-		Texture(Texture&&) = default;
-        virtual ~Texture() override;
 
 		int getHeight() const;
 		int getWidth() const;
