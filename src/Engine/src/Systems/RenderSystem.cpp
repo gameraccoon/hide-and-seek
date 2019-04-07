@@ -28,9 +28,10 @@ void RenderSystem::update(World* world, float /*dt*/)
 	}
 
 	Vector2D cameraLocation = cameraTransformComponent->getLocation();
+	Vector2D mouseScreenPos(mEngine->getMouseX(), mEngine->getMouseY());
 	Vector2D screenHalfSize = Vector2D(mEngine->getWidth(), mEngine->getHeight()) * 0.5f;
 
-	Vector2D drawShift = screenHalfSize - cameraLocation;
+	Vector2D drawShift = screenHalfSize - cameraLocation + (screenHalfSize - mouseScreenPos) * 0.5;
 
 	world->forEachEntity<RenderComponent, TransformComponent>([&drawShift](RenderComponent* renderComponent, TransformComponent* transformComponent)
 	{
