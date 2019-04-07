@@ -1,5 +1,7 @@
 #pragma once
 
+#include <nlohmann/json_fwd.hpp>
+
 // 3.1415...
 extern const float PI;
 
@@ -25,6 +27,9 @@ public:
     friend Rotator operator-(const Rotator& left, const Rotator& right);
 
     friend Rotator operator-=(Rotator& left, const Rotator& right);
+
+	friend void to_json(nlohmann::json& outJson, const Rotator& rotator);
+	friend void from_json(const nlohmann::json& json, Rotator& outRotator);
 
 private:
 	float mValue;

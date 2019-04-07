@@ -55,7 +55,7 @@ void DirectionArrow::render() const
 	if (!mIsDrawable)
 		return;
 	
-	Vector2D location = mCenterLocation + Vector2D(mDirection) * 50;
+//	Vector2D location = mCenterLocation + Vector2D(mDirection) * 50;
 	//arrowSprite->RenderEx(location.x, location.y, direction.getValue());
 }
 

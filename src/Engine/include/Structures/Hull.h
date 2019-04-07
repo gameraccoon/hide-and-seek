@@ -2,7 +2,9 @@
 
 #include <vector>
 
-#include "../Core/Vector2D.h"
+#include <nlohmann/json_fwd.hpp>
+
+#include <Core/Vector2D.h>
 #include "Border.h"
 
 class Hull
@@ -26,6 +28,9 @@ public:
 	void setRadius(float newRadius);
 	/** Calc borders from points */
 	void generateBorders();
+
+	friend void to_json(nlohmann::json& outJson, const Hull& hull);
+	friend void from_json(const nlohmann::json& json, Hull& hull);
 	
 	/** Corners of a hull's borders */
 	std::vector<Vector2D> points;

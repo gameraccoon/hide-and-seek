@@ -4,6 +4,8 @@
 #include <Log.h>
 #include <Assert.h>
 
+#include <nlohmann/json_fwd.hpp>
+
 class Entity
 {
 public:
@@ -17,6 +19,9 @@ public:
 	bool operator <(const Entity& b) const { return mId < b.mId; }
 
 	EntityID getID() const { return mId; }
+
+	friend void to_json(nlohmann::json& outJson, const Entity& entity);
+	friend void from_json(const nlohmann::json& json, Entity& outEntity);
 
 private:
 	EntityID mId;
@@ -42,6 +47,9 @@ public:
 		Assert(mIsValid, "Getting uninitialized entity");
 		return Entity(mId);
 	}
+
+	friend void to_json(nlohmann::json& outJson, const NullableEntity& entity);
+	friend void from_json(const nlohmann::json& json, NullableEntity& outEntity);
 
 public:
 	Entity::EntityID mId = 0;

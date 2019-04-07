@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <vector>
 
-#define GLM_FORCE_RADIANS 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glew/glew.h>
 //#include <glm/glm.hpp>

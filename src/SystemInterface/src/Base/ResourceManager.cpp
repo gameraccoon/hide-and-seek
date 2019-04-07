@@ -29,7 +29,7 @@ namespace SystemInterface
 	{
         if (uid >= resources.size())
 		{
-			Log::Instance().writeError("Inadequate resource UID");
+			LogError("Inadequate resource UID");
 			return;
 		}
 
@@ -40,7 +40,7 @@ namespace SystemInterface
 		}
 		else
 		{
-			Log::Instance().writeError("Trying to access released resource");
+			LogError("Trying to access released resource");
 		}
 	}
 
@@ -48,7 +48,7 @@ namespace SystemInterface
 	{
         if (uid >= resources.size())
 		{
-			Log::Instance().writeError("Inadequate resource UID");
+			LogError("Inadequate resource UID");
 			return;
 		}
 
@@ -64,7 +64,7 @@ namespace SystemInterface
 		}
 		else
 		{
-			Log::Instance().writeError("Trying to access released resource");
+			LogError("Trying to access released resource");
 		}
 	}
 
@@ -72,7 +72,7 @@ namespace SystemInterface
 	{
         if (uid >= resources.size())
 		{
-			Log::Instance().writeError("Inadequate resource UID");
+			LogError("Inadequate resource UID");
 			return;
 		}
 
@@ -89,26 +89,30 @@ namespace SystemInterface
 
 	ResourceManager::~ResourceManager()
 	{
-		Log::Instance().writeLog("ResourceManager destroyed");
+		LogInfo("ResourceManager destroyed");
 	}
 
 	template <typename T, typename Base>
-	T getResource(const std::string& texturePath,
+	T getResource(const std::string& resourcePath,
 		std::map<std::string, IUseCounter::Uid>& nameMap,
 		std::vector<std::unique_ptr<Resource::Base>>& resources,
 		IUseCounter* useCounter,
 		std::function<void(Base*)> fillResource
 	)
 	{
-		std::map<std::string, IUseCounter::Uid>::const_iterator it = nameMap.find(texturePath);
+		std::map<std::string, IUseCounter::Uid>::const_iterator it = nameMap.find(resourcePath);
 
 		if (it == nameMap.cend())
 		{
 			// there is no resource and info about it
             IUseCounter::Uid uid = static_cast<IUseCounter::Uid>(resources.size());
-			nameMap.insert({ texturePath, uid });
+			nameMap.insert({ resourcePath, uid });
 			Base* unsafePointer = new Base(uid);
-			fillResource(unsafePointer);
+			try {
+				fillResource(unsafePointer);
+			} catch(const std::exception&) {
+				LogError("Can't load resource %s", resourcePath.c_str());
+			}
 			resources.emplace_back(unsafePointer);
 			return T(useCounter, unsafePointer);
 		}
@@ -118,7 +122,7 @@ namespace SystemInterface
 
             if (uid >= resources.size())
 			{
-				Log::Instance().writeError("Inadequate resource UID");
+				LogError("Inadequate resource UID");
 				return T(useCounter, nullptr);
 			}
 
@@ -153,7 +157,7 @@ namespace SystemInterface
 		);
 	}
 
-	Graphics::Font ResourceManager::getFont(const std::string & texturePath)
+	Graphics::Font ResourceManager::getFont(const std::string& texturePath)
 	{
 		Engine* engine = mPimpl->engine;
 
@@ -175,7 +179,7 @@ namespace SystemInterface
 		if (mEngine == nullptr)
 		{
 			std::string error = "GraphicLoader isn't initialised";
-			Log::Instance().writeError(error);
+			LogError(error);
 			throw new std::runtime_error(error);
 		}
 

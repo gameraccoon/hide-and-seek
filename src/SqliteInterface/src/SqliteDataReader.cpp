@@ -45,7 +45,7 @@ SqliteDataReader::SqliteDataReader(const std::string& query, sqlite3* db)
 
 	if (rc != 0)
 	{
-		Log::Instance().writeError(std::string("Unable to execute SQL query \"").append(query)
+		LogError(std::string("Unable to execute SQL query \"").append(query)
 			.append("\" ").append(sqlite3_errmsg(db)));
 	}
 }
@@ -81,7 +81,7 @@ DbValue::Ptr SqliteDataReader::getValueByName(const std::string& columnName)
 		}
 	}
 
-	Log::Instance().writeError("SqliteDataReader error: Column not found: " + columnName);
+	LogError("SqliteDataReader error: Column not found: " + columnName);
 	return nullptr;
 }
 
@@ -89,7 +89,7 @@ DbValue::Ptr SqliteDataReader::getValueByIndex(int columnIndex)
 {
 	if (columnIndex >= sqlite3_column_count(this->ppStmt))
 	{
-		Log::Instance().writeError("SqliteDataReader error: Column not found: " + std::to_string(columnIndex));
+		LogError("SqliteDataReader error: Column not found: " + std::to_string(columnIndex));
 	}
 
 	return DbValue::Ptr(new SqliteValue(this->ppStmt, columnIndex));

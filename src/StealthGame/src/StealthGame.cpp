@@ -1,12 +1,10 @@
-#define GLM_FORCE_RADIANS
+#include "StealthGame.h"
 
 #include <memory>
 
-#include "StealthGame.h"
-
 #include "Base/Engine.h"
 
-#include <Modules/ActorFactory.h>
+#include <Modules/LevelLoader.h>
 
 #include <Systems/RenderSystem.h>
 #include <Systems/ControlSystem.h>
@@ -28,31 +26,31 @@ namespace Game
 		mSystemsManager->registerSystem<CollisionSystem>();
 		mSystemsManager->registerSystem<RenderSystem>(getEngine(), getResourceManager());
 
-		Entity hero = mWorld->addEntity();
+		Entity hero = mWorld->getEntityManger().addEntity();
 		mWorld->setPlayerControlledEntity(hero);
-		auto heroTransformComponent = mWorld->addComponent<TransformComponent>(hero);
+		auto heroTransformComponent = mWorld->getEntityManger().addComponent<TransformComponent>(hero);
 		heroTransformComponent->setLocation(Vector2D(10.0f, 10.0f));
-		auto heroCollisionComponent = mWorld->addComponent<CollisionComponent>(hero);
+		auto heroCollisionComponent = mWorld->getEntityManger().addComponent<CollisionComponent>(hero);
 		Hull heroHull;
 		heroHull.type = Hull::Type::Circular;
 		heroHull.setRadius(32.0f);
 		heroCollisionComponent->setGeometry(heroHull);
-		mWorld->addComponent<MovementComponent>(hero);
-		auto heroRenderComponent = mWorld->addComponent<RenderComponent>(hero, getResourceManager()->getTexture("resources/textures/hero.png"));
+		mWorld->getEntityManger().addComponent<MovementComponent>(hero);
+		auto heroRenderComponent = mWorld->getEntityManger().addComponent<RenderComponent>(hero, getResourceManager()->getTexture("resources/textures/hero.png"));
 		heroRenderComponent->calcScaleFromSize(Vector2D(heroHull.getRadius(), heroHull.getRadius()));
 
-		Entity camera = mWorld->addEntity();
+		Entity camera = mWorld->getEntityManger().addEntity();
 		mWorld->setMainCamera(camera);
-		mWorld->addComponent<CameraComponent>(camera);
-		auto cameraTransformComponent = mWorld->addComponent<TransformComponent>(camera);
+		mWorld->getEntityManger().addComponent<CameraComponent>(camera);
+		auto cameraTransformComponent = mWorld->getEntityManger().addComponent<TransformComponent>(camera);
 		cameraTransformComponent->setLocation(Vector2D(0.0f, 0.0f));
 
-		Entity wall = mWorld->addEntity();
-		auto wallTransformComponent = mWorld->addComponent<TransformComponent>(wall);
+		Entity wall = mWorld->getEntityManger().addEntity();
+		auto wallTransformComponent = mWorld->getEntityManger().addComponent<TransformComponent>(wall);
 		wallTransformComponent->setLocation(Vector2D(-60.0f, -60.0f));
-		auto wallRenderComponent = mWorld->addComponent<RenderComponent>(wall, getResourceManager()->getTexture("resources/textures/testTexture.png"));
+		auto wallRenderComponent = mWorld->getEntityManger().addComponent<RenderComponent>(wall, getResourceManager()->getTexture("resources/textures/testTexture.png"));
 		wallRenderComponent->calcScaleFromSize(Vector2D(120.0f, 120.0f));
-		auto wallCollisionComponent = mWorld->addComponent<CollisionComponent>(wall);
+		auto wallCollisionComponent = mWorld->getEntityManger().addComponent<CollisionComponent>(wall);
 		Hull wallHull;
 		wallHull.type = Hull::Type::Angular;
 		wallHull.points.push_back(Vector2D(60.0, -60.0));
@@ -61,6 +59,8 @@ namespace Game
 		wallHull.points.push_back(Vector2D(-60.0, -60.0));
 		wallHull.generateBorders();
 		wallCollisionComponent->setGeometry(wallHull);
+
+		LevelLoader::SaveWorld(mWorld.get(), "test");
 
 		// start the main loop
 		getEngine()->start(this);

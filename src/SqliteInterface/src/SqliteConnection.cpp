@@ -13,14 +13,14 @@ SqliteConnection::SqliteConnection(const std::string& databaseFile)
 	struct stat buffer;
 	if (stat(databaseFile.c_str(), &buffer) != 0)
 	{
-		Log::Instance().writeLog(std::string("Database file isn't exist (creating): ").append(databaseFile));
+		LogInfo(std::string("Database file isn't exist (creating): ").append(databaseFile));
 	}
 
 	int rc = sqlite3_open(databaseFile.c_str(), &_database);
 
 	if (rc != 0)
 	{
-		Log::Instance().writeError(std::string("Can't open database: ").append(sqlite3_errmsg(_database)));
+		LogError(std::string("Can't open database: ").append(sqlite3_errmsg(_database)));
 	}
 }
 
@@ -38,7 +38,7 @@ void SqliteConnection::execSql(const std::string& statement)
 {
 	if (sqlite3_exec(_database, statement.c_str(), nullptr, nullptr, nullptr) != 0)
 	{
-		Log::Instance().writeError(std::string("Unable to execute SQL statement \"").append(statement)
+		LogError(std::string("Unable to execute SQL statement \"").append(statement)
 			.append("\" ").append(sqlite3_errmsg(_database)));
 	}
 }

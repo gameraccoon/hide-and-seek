@@ -7,7 +7,7 @@
 
 void CollisionSystem::update(World* world, float /*dt*/)
 {
-	auto components = world->getComponents<CollisionComponent, TransformComponent>();
+	auto components = world->getEntityManger().getComponents<CollisionComponent, TransformComponent>();
 
 	for (auto component : components)
 	{
@@ -22,7 +22,7 @@ void CollisionSystem::update(World* world, float /*dt*/)
 		collisionComponent->setBoundingBox(collisionComponent->getOriginalBoundingBox() + transformComponent->getLocation());
 	}
 
-	world->forEachEntity<CollisionComponent, TransformComponent, MovementComponent>([&components](CollisionComponent* collisionComponent, TransformComponent* transformComponent, MovementComponent* /*movementComponent*/)
+	world->getEntityManger().forEachEntity<CollisionComponent, TransformComponent, MovementComponent>([&components](CollisionComponent* collisionComponent, TransformComponent* transformComponent, MovementComponent* /*movementComponent*/)
 	{
 		Vector2D resist = ZERO_VECTOR;
 		for (auto& component : components)

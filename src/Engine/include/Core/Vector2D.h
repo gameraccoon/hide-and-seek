@@ -4,13 +4,13 @@
 
 #include "Rotator.h"
 
+#include <nlohmann/json_fwd.hpp>
+
 class Vector2D
 {
 public:
 	Vector2D(float x, float y);
-	Vector2D(const Vector2D& vector);
 	explicit Vector2D(const Rotator& rotator);
-	~Vector2D() = default;
 
 	float x, y;
 
@@ -55,6 +55,9 @@ public:
 	friend Vector2D operator/=(Vector2D& vector, float scalar);
 
 	friend float DotProduct(const Vector2D& left, const Vector2D& right);
+
+	friend void to_json(nlohmann::json& outJson, const Vector2D& vector);
+	friend void from_json(const nlohmann::json& json, Vector2D& outVector);
 };
 
 extern const Vector2D LEFT_DIRECTION;

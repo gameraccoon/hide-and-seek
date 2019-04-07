@@ -412,13 +412,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		}
 		catch (std::runtime_error e)
 		{
-			Log::Instance().writeError(std::string("Game load filed with error: ").append(+ e.what()));
+			LogError(std::string("Game load filed with error: ").append(+ e.what()));
 		}
 	}
 	else
 	{
 		MessageBox(NULL, "System failed to initialize", "Error", MB_OK | MB_ICONERROR | MB_APPLMODAL);
-		Log::Instance().writeError("System failed to initialize");
+		LogError("System failed to initialize");
 	}
 
 	// Clean up and shutdown

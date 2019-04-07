@@ -1,10 +1,12 @@
 #pragma once
 
-#include "../Core/World.h"
+#include <string>
+
+class World;
 
 class LevelLoader
 {
 public:
-	static void save(World* world, const std::string levelName);
-	static void load(World* world, const std::string levelName);
+	static void SaveWorld(World* world, const std::string& levelName);
+	static void LoadWorld(World* world, const std::string& levelName);
 };

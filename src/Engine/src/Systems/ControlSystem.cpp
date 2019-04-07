@@ -43,7 +43,7 @@ void ControlSystem::update(World* world, float dt)
 		return;
 	}
 
-	TransformComponent* cameraTransformComponent = std::get<0>(world->getEntityComponents<TransformComponent>(mainCamera.getEntity()));
+	TransformComponent* cameraTransformComponent = std::get<0>(world->getEntityManger().getEntityComponents<TransformComponent>(mainCamera.getEntity()));
 	if (cameraTransformComponent == nullptr)
 	{
 		return;
@@ -59,7 +59,7 @@ void ControlSystem::update(World* world, float dt)
 	{
 		TransformComponent* transform;
 		MovementComponent* movement;
-		std::tie(transform, movement) = world->getEntityComponents<TransformComponent, MovementComponent>(controlledEntity.getEntity());
+		std::tie(transform, movement) = world->getEntityManger().getEntityComponents<TransformComponent, MovementComponent>(controlledEntity.getEntity());
 
 		if (transform != nullptr && movement != nullptr)
 		{
@@ -76,7 +76,7 @@ void ControlSystem::update(World* world, float dt)
 
 	if (NullableEntity mainCamera = world->getMainCamera(); mainCamera.isValid())
 	{
-		if (TransformComponent* cameraTransform = std::get<0>(world->getEntityComponents<TransformComponent>(mainCamera.getEntity())))
+		if (TransformComponent* cameraTransform = std::get<0>(world->getEntityManger().getEntityComponents<TransformComponent>(mainCamera.getEntity())))
 		{
 			// main camera follows the player
 			cameraTransform->setLocation(controlledEntityPosition);

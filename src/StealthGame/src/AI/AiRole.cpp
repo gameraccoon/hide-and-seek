@@ -67,7 +67,7 @@ void AiRole::endCurrentState()
 	}
 	else
 	{
-		Log::Instance().writeWarning("Trying to delete the last state");
+		LogWarning("Trying to delete the last state");
 	}
 }
 

@@ -1,5 +1,7 @@
 #include "Core/Rotator.h"
 
+#include <nlohmann/json.hpp>
+
 const float PI = 3.14159265358979323846f;
 
 Rotator::Rotator(float angle)
@@ -76,4 +78,14 @@ Rotator operator-=(Rotator& left, const Rotator& right)
 	left.reset();
 
 	return Rotator(newValue);
+}
+
+void to_json(nlohmann::json& outJson, const Rotator& rotator)
+{
+	outJson = nlohmann::json{{"v", rotator.mValue}};
+}
+
+void from_json(const nlohmann::json& json, Rotator& outRotator)
+{
+	json.at("v").get_to(outRotator.mValue);
 }

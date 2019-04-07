@@ -7,6 +7,8 @@
 
 #include <Core/Vector2D.h>
 
+#include <nlohmann/json_fwd.hpp>
+
 /**
  * Component that stores informtaon about position and movement
  */
@@ -24,6 +26,11 @@ public:
 	Rotator getRotation() const;
 	void setRotation(const Rotator& newRotation);
 	void shiftRotation(const Rotator& deltaRotation);
+
+	virtual void toJson(nlohmann::json& outJson) const override;
+
+	friend void to_json(nlohmann::json& outJson, const TransformComponent& transform);
+	friend void from_json(const nlohmann::json& json, TransformComponent& outTransform);
 
 private:
 	Vector2D mLocation;

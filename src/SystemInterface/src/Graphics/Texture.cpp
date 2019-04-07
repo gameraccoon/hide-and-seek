@@ -15,7 +15,7 @@ namespace Graphics
 	}
 
 	Texture::Texture(SystemInterface::IUseCounter * useCounter, const Base* base)
-        : Resource(useCounter, base ? base->uid : 0)
+		: Resource(useCounter, base->uid)
 		, mBase(base)
 	{
 	}
@@ -37,6 +37,6 @@ namespace Graphics
 
 	bool Texture::isValid() const
 	{
-		return mBase != nullptr;
+		return mBase->surface != nullptr;
 	}
 }

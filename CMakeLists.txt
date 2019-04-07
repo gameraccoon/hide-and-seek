@@ -24,6 +24,7 @@ else(DEBUG_MODE)
 endif(DEBUG_MODE)
 
 add_definitions(-DGLEW_NO_GLU)
+add_definitions(-DGLM_FORCE_RADIANS)
 
 # compiler parameters
 if (MSVC)

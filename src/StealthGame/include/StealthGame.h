@@ -3,7 +3,6 @@
 #include "Game.h"
 
 #include <Core/World.h>
-#include <Graphics/Camera.h>
 #include <Modules/SystemsManager.h>
 
 namespace Game

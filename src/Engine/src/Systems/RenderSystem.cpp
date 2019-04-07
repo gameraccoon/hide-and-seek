@@ -21,7 +21,7 @@ void RenderSystem::update(World* world, float /*dt*/)
 		return;
 	}
 
-	TransformComponent* cameraTransformComponent = std::get<0>(world->getEntityComponents<TransformComponent>(mainCamera.getEntity()));
+	TransformComponent* cameraTransformComponent = std::get<0>(world->getEntityManger().getEntityComponents<TransformComponent>(mainCamera.getEntity()));
 	if (cameraTransformComponent == nullptr)
 	{
 		return;
@@ -33,14 +33,17 @@ void RenderSystem::update(World* world, float /*dt*/)
 
 	Vector2D drawShift = screenHalfSize - cameraLocation + (screenHalfSize - mouseScreenPos) * 0.5;
 
-	world->forEachEntity<RenderComponent, TransformComponent>([&drawShift](RenderComponent* renderComponent, TransformComponent* transformComponent)
+	world->getEntityManger().forEachEntity<RenderComponent, TransformComponent>([&drawShift](RenderComponent* renderComponent, TransformComponent* transformComponent)
 	{
-		Graphics::Texture texure = renderComponent->getTexture();
+		Graphics::Texture texture = renderComponent->getTexture();
 
-		auto location = transformComponent->getLocation() + drawShift;
-		auto anchor = renderComponent->getAnchor();
-		auto scale = renderComponent->getScale();
-		texure.draw(location.x, location.y, anchor.x, anchor.y, scale.x, scale.y, transformComponent->getRotation().getValue(), 1.0f);
+		if (texture.isValid())
+		{
+			auto location = transformComponent->getLocation() + drawShift;
+			auto anchor = renderComponent->getAnchor();
+			auto scale = renderComponent->getScale();
+			texture.draw(location.x, location.y, anchor.x, anchor.y, scale.x, scale.y, transformComponent->getRotation().getValue(), 1.0f);
+		}
 	});
 
 #ifdef DEBUG

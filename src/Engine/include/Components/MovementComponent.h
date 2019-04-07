@@ -22,6 +22,11 @@ public:
 	Vector2D getLastStep() const;
 	void setLastStep(const Vector2D& lastStep);
 
+	virtual void toJson(nlohmann::json& outJson) const override;
+
+	friend void to_json(nlohmann::json& outJson, const MovementComponent& movement);
+	friend void from_json(const nlohmann::json& json, MovementComponent& outMovement);
+
 private:
 	Vector2D mSpeed;
 	Vector2D mLastStep;

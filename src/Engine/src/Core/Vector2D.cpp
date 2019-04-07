@@ -1,18 +1,20 @@
 #include "Core/Vector2D.h"
 #include <cmath>
 
-const float VECTOR_ERROR = 0.0001f;
+#include <nlohmann/json.hpp>
+
+static const float VECTOR_ERROR = 0.0001f;
+
+const Vector2D LEFT_DIRECTION(-1.0f, 0.0f);
+const Vector2D RIGHT_DIRECTION(1.0f, 0.0f);
+const Vector2D UP_DIRECTION(0.0f, -1.0f);
+const Vector2D DOWN_DIRECTION(0.0f, 1.0f);
+const Vector2D ZERO_VECTOR(0.0f, 0.0f);
 
 Vector2D::Vector2D(float x, float y)
 	: x(x)
 	, y(y)
 {
-}
-
-Vector2D::Vector2D(const Vector2D& vector)
-{
-	x = vector.x;
-	y = vector.y;
 }
 
 Vector2D::Vector2D(const Rotator& rotator)
@@ -191,8 +193,13 @@ float DotProduct(const Vector2D& left, const Vector2D& right)
 	return left.x * right.x + left.y * right.y;
 }
 
-const Vector2D LEFT_DIRECTION(-1.0f, 0.0f);
-const Vector2D RIGHT_DIRECTION(1.0f, 0.0f);
-const Vector2D UP_DIRECTION(0.0f, -1.0f);
-const Vector2D DOWN_DIRECTION(0.0f, 1.0f);
-const Vector2D ZERO_VECTOR(0.0f, 0.0f);
+void to_json(nlohmann::json& outJson, const Vector2D& vector)
+{
+	outJson = nlohmann::json{{"x", vector.x}, {"y", vector.y}};
+}
+
+void from_json(const nlohmann::json& json, Vector2D& outVector)
+{
+	json.at("name").get_to(outVector.x);
+	json.at("age").get_to(outVector.y);
+}

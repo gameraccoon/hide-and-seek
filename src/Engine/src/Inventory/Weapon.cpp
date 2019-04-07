@@ -1,7 +1,5 @@
 #include "Inventory/Weapon.h"
 
-#include "Modules/ActorFactory.h"
-
 Weapon::Weapon()
 	: mLocation(ZERO_VECTOR)
 	, mDirection(0.0f)

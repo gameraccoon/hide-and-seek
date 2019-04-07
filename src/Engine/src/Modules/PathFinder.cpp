@@ -41,29 +41,29 @@ void PathFinder::reconstructPath(CalculationPoint* end)
 	}
 }
 
-bool PathFinder::createNewPath(Vector2D startPoint, Vector2D endPoint)
+bool PathFinder::createNewPath(Vector2D /*startPoint*/, Vector2D endPoint)
 {
 	mDestinationPoint = endPoint;
 
 	// find first and last path points
-	float minDistStart = 1000000.f;
-	float minDistEnd = minDistStart;
+//	float minDistStart = 1000000.f;
+//	float minDistEnd = minDistStart;
 	PathPoint *firstPoint = nullptr, *lastPoint = nullptr;
 
-	for (auto const& pathPoint : mOwnerWorld->getNavigationMap())
-	{
-		if ((pathPoint->location - startPoint).size() < minDistStart)
-		{
-			firstPoint = pathPoint.get();
-			minDistStart = (firstPoint->location - startPoint).size();
-		}
+//	for (auto const& pathPoint : mOwnerWorld->getNavigationMap())
+//	{
+//		if ((pathPoint->location - startPoint).size() < minDistStart)
+//		{
+//			firstPoint = pathPoint.get();
+//			minDistStart = (firstPoint->location - startPoint).size();
+//		}
 
-		if ((pathPoint->location - endPoint).size() < minDistEnd)
-		{
-			lastPoint = pathPoint.get();
-			minDistEnd = (lastPoint->location - endPoint).size();
-		}
-	}
+//		if ((pathPoint->location - endPoint).size() < minDistEnd)
+//		{
+//			lastPoint = pathPoint.get();
+//			minDistEnd = (lastPoint->location - endPoint).size();
+//		}
+//	}
 
 	std::set<CalculationPoint*> OpenSet;
 

@@ -1,5 +1,6 @@
 #include "Graphics/DebugDrawer.h"
 
+#include <Core/World.h>
 #include <Components/CollisionComponent.h>
 
 DebugDrawer::DebugDrawer(std::shared_ptr<SystemInterface::ResourceManager> resourceManager)
@@ -13,7 +14,7 @@ void DebugDrawer::render(World* world, const Vector2D& drawShift)
 {
 	if (mDrawCollision)
 	{
-		world->forEachEntity<CollisionComponent>([collisionTexture = mCollisionTexture, drawShift](CollisionComponent* collisionComponent)
+		world->getEntityManger().forEachEntity<CollisionComponent>([collisionTexture = mCollisionTexture, drawShift](CollisionComponent* collisionComponent)
 		{
 			collisionTexture.draw(collisionComponent->getBoundingBox().minX + drawShift.x,
 								  collisionComponent->getBoundingBox().minY + drawShift.y,

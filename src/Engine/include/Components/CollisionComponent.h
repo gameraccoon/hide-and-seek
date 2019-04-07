@@ -28,6 +28,11 @@ public:
 	const BoundingBox& getOriginalBoundingBox() const;
 	void setOriginalBoundingBox(const BoundingBox& originalBoundingBox);
 
+	virtual void toJson(nlohmann::json& outJson) const override;
+
+	friend void to_json(nlohmann::json& outJson, const CollisionComponent& collision);
+	friend void from_json(const nlohmann::json& json, CollisionComponent& outCollision);
+
 private:
 	Hull mGeometry;
 	bool mBoundingBoxDirty = true;
