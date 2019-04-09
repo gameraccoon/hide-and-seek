@@ -33,6 +33,11 @@ void MovementComponent::toJson(nlohmann::json& outJson) const
 	to_json(outJson, *this);
 }
 
+void MovementComponent::fromJson(const nlohmann::json& json)
+{
+	from_json(json, *this);
+}
+
 void to_json(nlohmann::json& outJson, const MovementComponent& movement)
 {
 	outJson = nlohmann::json{

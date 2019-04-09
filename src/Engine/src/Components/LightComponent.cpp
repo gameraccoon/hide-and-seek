@@ -17,6 +17,11 @@ void LightComponent::toJson(nlohmann::json& outJson) const
 	to_json(outJson, *this);
 }
 
+void LightComponent::fromJson(const nlohmann::json& json)
+{
+	from_json(json, *this);
+}
+
 void to_json(nlohmann::json& outJson, const LightComponent& light)
 {
 	outJson = nlohmann::json{

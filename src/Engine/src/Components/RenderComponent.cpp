@@ -47,6 +47,11 @@ void RenderComponent::toJson(nlohmann::json& outJson) const
 	to_json(outJson, *this);
 }
 
+void RenderComponent::fromJson(const nlohmann::json& json)
+{
+	from_json(json, *this);
+}
+
 void to_json(nlohmann::json& outJson, const RenderComponent& render)
 {
 	outJson = nlohmann::json{

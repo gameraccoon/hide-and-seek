@@ -27,7 +27,10 @@ public:
 	void setRotation(const Rotator& newRotation);
 	void shiftRotation(const Rotator& deltaRotation);
 
+	static std::string GetClassName() { return "TransformComponent"; }
+
 	virtual void toJson(nlohmann::json& outJson) const override;
+	virtual void fromJson(const nlohmann::json& json) override;
 
 	friend void to_json(nlohmann::json& outJson, const TransformComponent& transform);
 	friend void from_json(const nlohmann::json& json, TransformComponent& outTransform);

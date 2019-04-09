@@ -22,7 +22,10 @@ public:
 	Vector2D getLastStep() const;
 	void setLastStep(const Vector2D& lastStep);
 
+	static std::string GetClassName() { return "MovementComponent"; }
+
 	virtual void toJson(nlohmann::json& outJson) const override;
+	virtual void fromJson(const nlohmann::json& json) override;
 
 	friend void to_json(nlohmann::json& outJson, const MovementComponent& movement);
 	friend void from_json(const nlohmann::json& json, MovementComponent& outMovement);

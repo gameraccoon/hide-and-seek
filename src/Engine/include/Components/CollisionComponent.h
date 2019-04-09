@@ -28,7 +28,10 @@ public:
 	const BoundingBox& getOriginalBoundingBox() const;
 	void setOriginalBoundingBox(const BoundingBox& originalBoundingBox);
 
+	static std::string GetClassName() { return "CollisionComponent"; }
+
 	virtual void toJson(nlohmann::json& outJson) const override;
+	virtual void fromJson(const nlohmann::json& json) override;
 
 	friend void to_json(nlohmann::json& outJson, const CollisionComponent& collision);
 	friend void from_json(const nlohmann::json& json, CollisionComponent& outCollision);

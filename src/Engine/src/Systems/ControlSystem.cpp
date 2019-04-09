@@ -57,9 +57,7 @@ void ControlSystem::update(World* world, float dt)
 	Vector2D controlledEntityPosition(0.0f, 0.0f);
 	if (NullableEntity controlledEntity = world->getPlayerControlledEntity(); controlledEntity.isValid())
 	{
-		TransformComponent* transform;
-		MovementComponent* movement;
-		std::tie(transform, movement) = world->getEntityManger().getEntityComponents<TransformComponent, MovementComponent>(controlledEntity.getEntity());
+		auto [transform, movement] = world->getEntityManger().getEntityComponents<TransformComponent, MovementComponent>(controlledEntity.getEntity());
 
 		if (transform != nullptr && movement != nullptr)
 		{

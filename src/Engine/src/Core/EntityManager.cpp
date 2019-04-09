@@ -80,8 +80,11 @@ void to_json(nlohmann::json& outJson, const EntityManager& world)
 	outJson["components"] = components;
 }
 
-void from_json(const nlohmann::json& json, EntityManager& outWorld)
+void from_json(const nlohmann::json& /*json*/, EntityManager& /*outWorld*/)
 {
-	json.at("entityIndexMap").get_to(outWorld.mEntityIndexMap);
-//	json.at("components").get_to(outWorld.mComponents);
+//	json.at("entityIndexMap").get_to(outWorld.mEntityIndexMap);
+//	for (auto& [id, components] : json.at("components").items())
+//	{
+
+//	}
 }

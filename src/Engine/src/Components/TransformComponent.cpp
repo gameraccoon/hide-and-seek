@@ -49,6 +49,11 @@ void TransformComponent::toJson(nlohmann::json& outJson) const
 	to_json(outJson, *this);
 }
 
+void TransformComponent::fromJson(const nlohmann::json& json)
+{
+	from_json(json, *this);
+}
+
 void to_json(nlohmann::json& outJson, const TransformComponent& transform)
 {
 	outJson = nlohmann::json{{"loc", transform.mLocation}, {"rot", transform.mRotation}};
