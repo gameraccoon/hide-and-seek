@@ -35,14 +35,14 @@ void RenderSystem::update(World* world, float /*dt*/)
 
 	world->getEntityManger().forEachEntity<RenderComponent, TransformComponent>([&drawShift](RenderComponent* renderComponent, TransformComponent* transformComponent)
 	{
-		Graphics::Texture texture = renderComponent->getTexture();
+		const Graphics::Texture* texture = renderComponent->getTexture();
 
-		if (texture.isValid())
+		if (texture && texture->isValid())
 		{
 			auto location = transformComponent->getLocation() + drawShift;
 			auto anchor = renderComponent->getAnchor();
 			auto scale = renderComponent->getScale();
-			texture.draw(location.x, location.y, anchor.x, anchor.y, scale.x, scale.y, transformComponent->getRotation().getValue(), 1.0f);
+			texture->draw(location.x, location.y, anchor.x, anchor.y, scale.x, scale.y, transformComponent->getRotation().getValue(), 1.0f);
 		}
 	});
 

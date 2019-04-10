@@ -2,10 +2,9 @@
 
 #include <nlohmann/json.hpp>
 
-RenderComponent::RenderComponent(const Graphics::Texture& texture)
-	: mScale(1.0f, 1.0f)
+RenderComponent::RenderComponent()
+	: mScale(0.0f, 0.0f)
 	, mAnchor(0.5f, 0.5f)
-	, mTexture(texture)
 {
 }
 
@@ -31,15 +30,20 @@ void RenderComponent::setAnchor(const Vector2D& newAnchor)
 
 void RenderComponent::calcScaleFromSize(const Vector2D& size)
 {
-	if (mTexture.isValid())
+	if (mTexture && mTexture->isValid())
 	{
-		mScale = Vector2D(size.x / mTexture.getWidth(), size.y / mTexture.getHeight());
+		mScale = Vector2D(size.x / mTexture->getWidth(), size.y / mTexture->getHeight());
 	}
 }
 
-const Graphics::Texture& RenderComponent::getTexture() const
+const Graphics::Texture* RenderComponent::getTexture() const
 {
-	return mTexture;
+	return mTexture.get();
+}
+
+void RenderComponent::setTexture(const Graphics::Texture& texture)
+{
+	mTexture = std::make_unique<Graphics::Texture>(texture);
 }
 
 void RenderComponent::toJson(nlohmann::json& outJson) const

@@ -11,12 +11,12 @@
 
 static const std::filesystem::path MAPS_PATH = "./resources/maps";
 
-void LevelLoader::SaveWorld(World* world, const std::string& levelName)
+void LevelLoader::SaveWorld(const World& world, const std::string& levelName, const ComponentFactory& componentFactory)
 {
 	std::filesystem::path levelPath = MAPS_PATH / (levelName + ".json");
 	try {
 		std::ofstream mapFile(levelPath);
-		nlohmann::json mapJson({{"world", *world}});
+		nlohmann::json mapJson({{"world", world.toJson(componentFactory)}});
 
 		mapFile << std::setw(4) << mapJson << std::endl;
 	} catch (const std::exception& e) {
@@ -24,7 +24,7 @@ void LevelLoader::SaveWorld(World* world, const std::string& levelName)
 	}
 }
 
-void LevelLoader::LoadWorld(World* world, const std::string& levelName)
+void LevelLoader::LoadWorld(World& world, const std::string& levelName, const ComponentFactory& componentFactory)
 {
 	std::filesystem::path levelPath = MAPS_PATH / (levelName + ".json");
 
@@ -34,14 +34,17 @@ void LevelLoader::LoadWorld(World* world, const std::string& levelName)
 		nlohmann::json mapJson;
 		mapFile >> mapJson;
 
-		auto entities = mapJson.at("world").get_to(*world);
+		if (const auto& worldObject = mapJson.at("world"); worldObject.is_object())
+		{
+			world.fromJson(worldObject, componentFactory);
+		}
 	}
-	catch(const nlohmann::detail::parse_error& e)
+	catch(const nlohmann::detail::exception& e)
 	{
 		LogError("Can't parse '%s': %s", levelPath.c_str(), e.what());
 	}
 	catch(const std::exception& e)
 	{
-		LogError("Can't open file '%s': %s", levelPath.c_str(), e.what());
+		LogError("Can't open '%s': %s", levelPath.c_str(), e.what());
 	}
 }

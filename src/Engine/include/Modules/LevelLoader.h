@@ -7,6 +7,6 @@ class World;
 class LevelLoader
 {
 public:
-	static void SaveWorld(World* world, const std::string& levelName);
-	static void LoadWorld(World* world, const std::string& levelName);
+	static void SaveWorld(const World& world, const std::string& levelName, const class ComponentFactory& componentFactory);
+	static void LoadWorld(World& world, const std::string& levelName, const class ComponentFactory& componentFactory);
 };

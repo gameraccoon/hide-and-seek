@@ -38,11 +38,16 @@ void Hull::setRadius(float newRadius)
 void to_json(nlohmann::json& outJson, const Hull& hull)
 {
 	outJson = nlohmann::json{
-		{"points", hull.points}
+		{"points", hull.points},
+		{"radius", hull.radius},
+		{"type", hull.type}
 	};
 }
 
-void from_json(const nlohmann::json& /*json*/, Hull& /*hull*/)
+void from_json(const nlohmann::json& json, Hull& hull)
 {
-	//json.at("points").get_to(hull.points);
+	json.at("points").get_to(hull.points);
+	hull.setRadius(json.at("radius").get<float>());
+	json.at("type").get_to(hull.type);
+	hull.generateBorders();
 }

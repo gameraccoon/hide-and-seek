@@ -13,8 +13,8 @@ public:
 	Entity addEntity();
 	void removeEntity(Entity entity);
 
-	template<typename T, typename... Args>
-	T* addComponent(const Entity& entity, Args&&... args)
+	template<typename T>
+	T* addComponent(const Entity& entity)
 	{
 		auto entityIdxItr = mEntityIndexMap.find(entity.getID());
 		if (entityIdxItr == mEntityIndexMap.end())
@@ -23,7 +23,7 @@ public:
 		}
 		EntityIndex entityIdx = entityIdxItr->second;
 
-		T* component = new T(std::forward<Args>(args)...);
+		T* component = new T();
 		auto& componentsVector = mComponents[typeid(T)];
 		if (componentsVector.size() <= entityIdx)
 		{
@@ -111,6 +111,9 @@ public:
 		}
 	}
 
+	nlohmann::json toJson(const class ComponentFactory& componentFactory) const;
+	void fromJson(const nlohmann::json& json, const class ComponentFactory& componentFactory);
+
 private:
 	typedef size_t EntityIndex;
 
@@ -156,9 +159,6 @@ private:
 		using Datas = std::tuple<std::vector<Data*>...>;
 		return getEntityComponentSetInner<0, Datas, FirstComponent, Components...>(entityIdx, componentVectors);
 	}
-
-	friend void to_json(nlohmann::json& outJson, const EntityManager& world);
-	friend void from_json(const nlohmann::json& json, EntityManager& outWorld);
 
 private:
 	std::unordered_map<std::type_index, std::vector<BaseComponent*>> mComponents;

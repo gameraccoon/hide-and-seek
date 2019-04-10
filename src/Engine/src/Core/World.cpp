@@ -2,18 +2,18 @@
 
 #include <nlohmann/json.hpp>
 
-void to_json(nlohmann::json& outJson, const World& world)
+nlohmann::json World::toJson(const ComponentFactory& componentFactory) const
 {
-	outJson = nlohmann::json{
-		{"entity_manager", world.mEntityManager},
-		{"player_controlled_entity", world.mPlayerControlledEntity},
-		{"main_camera", world.mMainCamera}
+	return nlohmann::json{
+		{"entity_manager", mEntityManager.toJson(componentFactory)},
+		{"player_controlled_entity", mPlayerControlledEntity},
+		{"main_camera", mMainCamera}
 	};
 }
 
-void from_json(const nlohmann::json& json, World& outWorld)
+void World::fromJson(const nlohmann::json& json, const ComponentFactory& componentFactory)
 {
-	json.at("entity_manager").get_to(outWorld);
-	json.at("player_controlled_entity").get_to(outWorld.mPlayerControlledEntity);
-	json.at("main_camera").get_to(outWorld.mMainCamera);
+	mEntityManager.fromJson(json.at("entity_manager"), componentFactory);
+	json.at("player_controlled_entity").get_to(mPlayerControlledEntity);
+	json.at("main_camera").get_to(mMainCamera);
 }

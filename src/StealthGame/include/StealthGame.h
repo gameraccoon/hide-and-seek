@@ -4,6 +4,7 @@
 
 #include <Core/World.h>
 #include <Modules/SystemsManager.h>
+#include <Modules/ComponentFactory.h>
 
 namespace Game
 {
@@ -17,8 +18,9 @@ namespace Game
 		virtual void setKeyState(int key, bool isPressed) override;
 
 	private:
-		std::unique_ptr<World> mWorld;
+		World mWorld;
 		std::unordered_map<int, bool> mKeyStates;
-		std::unique_ptr<SystemsManager> mSystemsManager;
+		SystemsManager mSystemsManager;
+		ComponentFactory mComponentFactory;
 	};
 }

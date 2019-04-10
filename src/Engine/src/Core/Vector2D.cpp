@@ -200,6 +200,6 @@ void to_json(nlohmann::json& outJson, const Vector2D& vector)
 
 void from_json(const nlohmann::json& json, Vector2D& outVector)
 {
-	json.at("name").get_to(outVector.x);
-	json.at("age").get_to(outVector.y);
+	json.at("x").get_to(outVector.x);
+	json.at("y").get_to(outVector.y);
 }

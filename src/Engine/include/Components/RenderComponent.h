@@ -12,8 +12,7 @@
 class RenderComponent : public BaseComponent
 {
 public:
-	RenderComponent(const Graphics::Texture& texture);
-	virtual ~RenderComponent() override = default;
+	RenderComponent();
 
 	Vector2D getScale() const;
 	void setScale(const Vector2D& newScale);
@@ -23,7 +22,8 @@ public:
 
 	void calcScaleFromSize(const Vector2D& size);
 
-	const Graphics::Texture& getTexture() const;
+	const Graphics::Texture* getTexture() const;
+	void setTexture(const Graphics::Texture& texture);
 
 	static std::string GetClassName() { return "RenderComponent"; }
 
@@ -36,5 +36,5 @@ public:
 private:
 	Vector2D mScale;
 	Vector2D mAnchor;
-	Graphics::Texture mTexture;
+	std::unique_ptr<Graphics::Texture> mTexture;
 };

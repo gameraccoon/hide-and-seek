@@ -14,7 +14,10 @@ void from_json(const nlohmann::json& json, Entity& outEntity)
 
 void to_json(nlohmann::json& outJson, const NullableEntity& entity)
 {
-	outJson = nlohmann::json{{"valid", entity.mIsValid},{"id", entity.mId}};
+	outJson = nlohmann::json{
+		{"valid", entity.mIsValid},
+		{"id", entity.mId}
+	};
 }
 
 void from_json(const nlohmann::json& json, NullableEntity& outEntity)

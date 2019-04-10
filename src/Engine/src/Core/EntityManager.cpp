@@ -5,6 +5,8 @@
 
 #include <nlohmann/json.hpp>
 
+#include <Modules/ComponentFactory.h>
+
 Entity EntityManager::addEntity()
 {
 	// ToDo: use generators
@@ -55,15 +57,15 @@ void EntityManager::removeEntity(Entity entity)
 	mIndexEntityMap.erase(mMaxEntityIndex);
 }
 
-void to_json(nlohmann::json& outJson, const EntityManager& world)
+nlohmann::json EntityManager::toJson(const ComponentFactory& componentFactory) const
 {
-	outJson = nlohmann::json{
-		{"entityIndexMap", world.mEntityIndexMap}
+	nlohmann::json outJson{
+		{"entityIndexMap", mEntityIndexMap}
 	};
 
 	auto components = nlohmann::json{};
 
-	for (auto& componentArray : world.mComponents)
+	for (auto& componentArray : mComponents)
 	{
 		auto componentArrayObject = nlohmann::json::array();
 		for (auto& component : componentArray.second)
@@ -75,16 +77,42 @@ void to_json(nlohmann::json& outJson, const EntityManager& world)
 			}
 			componentArrayObject.push_back(componenObj);
 		}
-		components[componentArray.first.name()] = componentArrayObject;
+		components[componentFactory.getStringFromTypeID(componentArray.first)] = componentArrayObject;
 	}
 	outJson["components"] = components;
+
+	return outJson;
 }
 
-void from_json(const nlohmann::json& /*json*/, EntityManager& /*outWorld*/)
+void EntityManager::fromJson(const nlohmann::json& json, const ComponentFactory& componentFactory)
 {
-//	json.at("entityIndexMap").get_to(outWorld.mEntityIndexMap);
-//	for (auto& [id, components] : json.at("components").items())
-//	{
+	json.at("entityIndexMap").get_to(mEntityIndexMap);
 
-//	}
+	for (const auto& item : mEntityIndexMap)
+	{
+		mIndexEntityMap[item.second] = item.first;
+	}
+
+	const auto& components = json.at("components");
+	for (auto& [type, vector] : components.items())
+	{
+		std::optional<std::type_index> typeIndex = componentFactory.getTypeIDFromString(type);
+		ComponentFactory::DeserializationFn deserializator = componentFactory.getDeserializator(type);
+		if (typeIndex.has_value() && deserializator != nullptr)
+		{
+			std::vector<BaseComponent*>& componentsVector = mComponents[typeIndex.value()];
+			componentsVector.reserve(vector.size());
+			for (const auto& component : vector)
+			{
+				if (!component.is_null())
+				{
+					componentsVector.push_back(deserializator(component));
+				}
+				else
+				{
+					componentsVector.push_back(nullptr);
+				}
+			}
+		}
+	}
 }

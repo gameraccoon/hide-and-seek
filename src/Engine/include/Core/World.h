@@ -13,8 +13,8 @@ public:
 
 	EntityManager& getEntityManger() { return mEntityManager; }
 
-	friend void to_json(nlohmann::json& outJson, const World& world);
-	friend void from_json(const nlohmann::json& json, World& outWorld);
+	nlohmann::json toJson(const ComponentFactory& componentFactory) const;
+	void fromJson(const nlohmann::json& json, const ComponentFactory& componentFactory);
 
 private:
 	NullableEntity mMainCamera;

@@ -15,5 +15,5 @@ private:
 
 	Graphics::Texture mCollisionTexture;
 
-	bool mDrawCollision = false;
+	bool mDrawCollision = true;
 };

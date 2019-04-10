@@ -58,5 +58,5 @@ void to_json(nlohmann::json& outJson, const CollisionComponent& collision)
 
 void from_json(const nlohmann::json& json, CollisionComponent& outCollision)
 {
-	json.at("geometry").get_to(outCollision.mGeometry);
+	outCollision.setGeometry(json.at("geometry").get<Hull>());
 }

@@ -2,16 +2,36 @@
 
 #include <Assert.h>
 
-BaseComponent*ComponentFactory::NewComponent(const std::string& type, const nlohmann::json& json)
+ComponentFactory::DeserializationFn ComponentFactory::getDeserializator(const std::string& type) const
 {
-	const auto it = mComponentConstructors.find(type);
-	if (it != mComponentConstructors.cend())
+	const auto& it = mComponentDeserializators.find(type);
+	if (it != mComponentDeserializators.cend())
 	{
-		BaseComponent* baseComponent = it->second();
-		baseComponent->fromJson(json);
-		return baseComponent;
+		return it->second;
 	}
 
-	ReportFailure("Unknown component type '%s'", type.c_str());
 	return nullptr;
+}
+
+std::optional<std::type_index> ComponentFactory::getTypeIDFromString(const std::string& type) const
+{
+	const auto& it = mStringToTypeID.find(type);
+	if (it != mStringToTypeID.end())
+	{
+		return it->second;
+	}
+
+	return std::nullopt;
+}
+
+std::string ComponentFactory::getStringFromTypeID(const std::type_index& typeID) const
+{
+	const auto& it = mTypeIDToString.find(typeID);
+	if (it != mTypeIDToString.end())
+	{
+		return it->second;
+	}
+
+	ReportFailure("Unknown type_index: '%s'", typeID.name());
+	return "";
 }

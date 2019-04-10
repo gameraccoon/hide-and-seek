@@ -7,21 +7,32 @@
 #include <nlohmann/json_fwd.hpp>
 
 #include <Core/Component.h>
+#include <typeindex>
 
 class ComponentFactory
 {
-	typedef std::function<BaseComponent*()> ConstructionFn;
+public:
+	typedef std::function<BaseComponent*(const nlohmann::json&)> DeserializationFn;
 
 	template<typename T>
-	void RegisterComponentConstructor(const std::string& type)
+	void registerComponent()
 	{
-		mComponentConstructors[type] = []() {
-			return new T();
+		mComponentDeserializators[T::GetClassName()] = [](const nlohmann::json& json) {
+			T* result = new T();
+			from_json(json, *result);
+			return result;
 		};
+		std::string className = T::GetClassName();
+		mStringToTypeID.emplace(className, typeid(T));
+		mTypeIDToString.emplace(typeid(T), className);
 	}
 
-	BaseComponent* NewComponent(const std::string& type, const nlohmann::json& json);
+	DeserializationFn getDeserializator(const std::string& type) const;
+	std::optional<std::type_index> getTypeIDFromString(const std::string& type) const;
+	std::string getStringFromTypeID(const std::type_index& typeID) const;
 
 private:
-	std::map<std::string, ConstructionFn> mComponentConstructors;
+	std::map<std::string, DeserializationFn> mComponentDeserializators;
+	std::map<std::string, std::type_index> mStringToTypeID;
+	std::map<std::type_index, std::string> mTypeIDToString;
 };
