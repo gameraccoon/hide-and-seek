@@ -6,7 +6,6 @@
 
 RenderSystem::RenderSystem(SystemInterface::Engine* engine, std::shared_ptr<SystemInterface::ResourceManager> resourceManager)
 	: mEngine(engine)
-	, mResourceManager(resourceManager)
 #ifdef DEBUG
 	, mDebugDrawer(resourceManager)
 #endif // DEBUG
@@ -35,14 +34,16 @@ void RenderSystem::update(World* world, float /*dt*/)
 
 	world->getEntityManger().forEachEntity<RenderComponent, TransformComponent>([&drawShift](RenderComponent* renderComponent, TransformComponent* transformComponent)
 	{
-		const Graphics::Texture* texture = renderComponent->getTexture();
-
-		if (texture && texture->isValid())
+		const auto& optionalTexture = renderComponent->getTexture();
+		if (optionalTexture.has_value())
 		{
-			auto location = transformComponent->getLocation() + drawShift;
-			auto anchor = renderComponent->getAnchor();
-			auto scale = renderComponent->getScale();
-			texture->draw(location.x, location.y, anchor.x, anchor.y, scale.x, scale.y, transformComponent->getRotation().getValue(), 1.0f);
+			if (const Graphics::Texture& texture = optionalTexture.value(); texture.isValid())
+			{
+				auto location = transformComponent->getLocation() + drawShift;
+				auto anchor = renderComponent->getAnchor();
+				auto scale = renderComponent->getScale();
+				texture.draw(location.x, location.y, anchor.x, anchor.y, scale.x, scale.y, transformComponent->getRotation().getValue(), 1.0f);
+			}
 		}
 	});
 

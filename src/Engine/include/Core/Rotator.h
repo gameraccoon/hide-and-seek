@@ -9,6 +9,8 @@ extern const float PI;
 class Rotator
 {
 public:
+	// leaves inner data uninitialized
+	explicit Rotator() = default;
 	explicit Rotator(float angle);
 
 	/** Get value of angle */

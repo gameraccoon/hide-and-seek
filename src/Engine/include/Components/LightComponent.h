@@ -17,6 +17,7 @@ public:
 	float getBrightness() const;
 	void setBrightness(float newSize);
 
+public:
 	static std::string GetClassName() { return "LightComponent"; }
 
 	virtual void toJson(nlohmann::json& outJson) const override;

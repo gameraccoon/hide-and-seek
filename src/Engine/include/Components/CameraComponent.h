@@ -13,6 +13,7 @@ class CameraComponent : public BaseComponent
 public:
 	virtual ~CameraComponent() override = default;
 
+public:
 	static std::string GetClassName() { return "CameraComponent"; }
 
 	virtual void toJson(nlohmann::json& outJson) const override;

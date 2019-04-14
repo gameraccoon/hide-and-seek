@@ -203,3 +203,7 @@ void from_json(const nlohmann::json& json, Vector2D& outVector)
 	json.at("x").get_to(outVector.x);
 	json.at("y").get_to(outVector.y);
 }
+
+static_assert(sizeof(Vector2D) == sizeof(int)*2, "Vector2D is too big");
+static_assert(std::is_pod<Vector2D>(), "Vector2D should be pod type");
+static_assert(std::is_trivially_copyable<Vector2D>(), "Vector2D should be trivially copyable");

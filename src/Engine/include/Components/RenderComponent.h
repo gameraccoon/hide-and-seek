@@ -20,11 +20,18 @@ public:
 	Vector2D getAnchor() const;
 	void setAnchor(const Vector2D& newAnchor);
 
-	void calcScaleFromSize(const Vector2D& size);
+	void calcScaleFromSize();
 
-	const Graphics::Texture* getTexture() const;
+	const std::optional<Graphics::Texture>& getTexture() const;
 	void setTexture(const Graphics::Texture& texture);
 
+	std::string getTexturePath() const;
+	void setTexturePath(const std::string& texturePath);
+
+	Vector2D getSize() const;
+	void setSize(const Vector2D& size);
+
+public:
 	static std::string GetClassName() { return "RenderComponent"; }
 
 	virtual void toJson(nlohmann::json& outJson) const override;
@@ -35,6 +42,8 @@ public:
 
 private:
 	Vector2D mScale;
+	Vector2D mSize;
 	Vector2D mAnchor;
-	std::unique_ptr<Graphics::Texture> mTexture;
+	std::optional<Graphics::Texture> mTexture;
+	std::string mTexturePath;
 };

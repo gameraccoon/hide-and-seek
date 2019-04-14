@@ -11,7 +11,7 @@
 namespace SystemInterface
 {
 	/**
-	 *
+	 * Class that manage static resources such as textures
 	 */
 	class ResourceManager
 	{

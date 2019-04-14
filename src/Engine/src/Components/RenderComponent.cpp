@@ -28,22 +28,25 @@ void RenderComponent::setAnchor(const Vector2D& newAnchor)
 	mAnchor = newAnchor;
 }
 
-void RenderComponent::calcScaleFromSize(const Vector2D& size)
+void RenderComponent::calcScaleFromSize()
 {
-	if (mTexture && mTexture->isValid())
+	if (mTexture.has_value() && mSize != ZERO_VECTOR)
 	{
-		mScale = Vector2D(size.x / mTexture->getWidth(), size.y / mTexture->getHeight());
+		if (const Graphics::Texture& texture = mTexture.value(); texture.isValid())
+		{
+			mScale = Vector2D(mSize.x / texture.getWidth(), mSize.y / texture.getHeight());
+		}
 	}
 }
 
-const Graphics::Texture* RenderComponent::getTexture() const
+const std::optional<Graphics::Texture>& RenderComponent::getTexture() const
 {
-	return mTexture.get();
+	return mTexture;
 }
 
 void RenderComponent::setTexture(const Graphics::Texture& texture)
 {
-	mTexture = std::make_unique<Graphics::Texture>(texture);
+	mTexture = texture;
 }
 
 void RenderComponent::toJson(nlohmann::json& outJson) const
@@ -56,10 +59,31 @@ void RenderComponent::fromJson(const nlohmann::json& json)
 	from_json(json, *this);
 }
 
+Vector2D RenderComponent::getSize() const
+{
+	return mSize;
+}
+
+void RenderComponent::setSize(const Vector2D& size)
+{
+	mSize = size;
+}
+
+std::string RenderComponent::getTexturePath() const
+{
+	return mTexturePath;
+}
+
+void RenderComponent::setTexturePath(const std::string& texturePath)
+{
+	mTexturePath = texturePath;
+}
+
 void to_json(nlohmann::json& outJson, const RenderComponent& render)
 {
 	outJson = nlohmann::json{
-//		{"texture", render.mTexture},
+		{"texture", render.mTexturePath},
+		{"size", render.mSize},
 		{"scale", render.mScale},
 		{"anchor", render.mAnchor}
 	};
@@ -67,7 +91,8 @@ void to_json(nlohmann::json& outJson, const RenderComponent& render)
 
 void from_json(const nlohmann::json& json, RenderComponent& outRender)
 {
-//	json.at("texture").get_to(outTransform.mTexture);
+	json.at("texture").get_to(outRender.mTexturePath);
+	json.at("size").get_to(outRender.mSize);
 	json.at("scale").get_to(outRender.mScale);
 	json.at("anchor").get_to(outRender.mAnchor);
 }

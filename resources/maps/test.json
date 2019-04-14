@@ -1,0 +1,142 @@
+{
+    "world": {
+        "entity_manager": {
+            "components": {
+                "CameraComponent": [
+                    null,
+                    null
+                ],
+                "CollisionComponent": [
+                    {
+                        "geometry": {
+                            "points": [],
+                            "radius": 32.0,
+                            "type": 1
+                        }
+                    },
+                    null,
+                    {
+                        "geometry": {
+                            "points": [
+                                {
+                                    "x": 60.0,
+                                    "y": -60.0
+                                },
+                                {
+                                    "x": 60.0,
+                                    "y": 60.0
+                                },
+                                {
+                                    "x": -60.0,
+                                    "y": 60.0
+                                },
+                                {
+                                    "x": -60.0,
+                                    "y": -60.0
+                                }
+                            ],
+                            "radius": 8.96831017167883e-44,
+                            "type": 0
+                        }
+                    }
+                ],
+                "MovementComponent": [
+                    {
+                        "last_step": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "speed": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
+                    }
+                ],
+                "RenderComponent": [
+                    {
+                        "anchor": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "scale": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 32.0,
+                            "y": 32.0
+                        },
+                        "texture": "resources/textures/hero.png"
+                    },
+                    null,
+                    {
+                        "anchor": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "scale": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "size": {
+                            "x": 120.0,
+                            "y": 120.0
+                        },
+                        "texture": "resources/textures/testTexture.png"
+                    }
+                ],
+                "TransformComponent": [
+                    {
+                        "loc": {
+                            "x": 10.0,
+                            "y": 10.0
+                        },
+                        "rot": {
+                            "v": 0.0
+                        }
+                    },
+                    {
+                        "loc": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rot": {
+                            "v": 0.0
+                        }
+                    },
+                    {
+                        "loc": {
+                            "x": -60.0,
+                            "y": -60.0
+                        },
+                        "rot": {
+                            "v": 0.0
+                        }
+                    }
+                ]
+            },
+            "entityIndexMap": [
+                [
+                    1681692777,
+                    2
+                ],
+                [
+                    1804289383,
+                    0
+                ],
+                [
+                    846930886,
+                    1
+                ]
+            ]
+        },
+        "main_camera": {
+            "id": 846930886,
+            "valid": true
+        },
+        "player_controlled_entity": {
+            "id": 1804289383,
+            "valid": true
+        }
+    }
+}
