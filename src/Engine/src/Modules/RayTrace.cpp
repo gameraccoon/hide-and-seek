@@ -104,7 +104,7 @@ namespace RayTrace
 		}
 	}
 
-	inline Vector2D getPointIntersect2Lines(const Vector2D &A1, const Vector2D &A2, const Vector2D &B1, const Vector2D &B2)
+	Vector2D GetPointIntersect2Lines(const Vector2D &A1, const Vector2D &A2, const Vector2D &B1, const Vector2D &B2)
 	{
 		float DA1 = A1.y - A2.y;
 		float DB1 = A2.x - A1.x;
@@ -121,18 +121,14 @@ namespace RayTrace
 			float x = -RayTrace::Det(DC1, DB1, DC2, DB2) / zn;
 			float y = -RayTrace::Det(DA1, DC1, DA2, DC2) / zn;
 
-			if (RayTrace::IsBetween(A1.x, A2.x, x) && RayTrace::IsBetween(A1.y, A2.y, y)
-				&& RayTrace::IsBetween(B1.x, B2.x, x) && RayTrace::IsBetween(B1.y, B2.y, y))
-			{
-				return Vector2D(x, y);
-			}
+			return Vector2D(x, y);
 		}
 
 		// if lines not intersected
 		return ZERO_VECTOR;
 	}
 
-	bool fastTrace(World* /*world*/, const Vector2D& /*startPoint*/, const Vector2D& /*endPoint*/)
+	bool FastTrace(World* /*world*/, const Vector2D& /*startPoint*/, const Vector2D& /*endPoint*/)
 	{
 //		for (const auto& currentActor : world->getAllActors())
 //		{

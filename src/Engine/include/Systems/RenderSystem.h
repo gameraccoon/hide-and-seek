@@ -25,9 +25,13 @@ public:
 	virtual void update(World* world, float dt) override;
 
 private:
+	void drawVisibilityPolygon(World* world, const Vector2D& fowSize, const Vector2D& drawShift);
+
+private:
 	SystemInterface::Engine* mEngine;
 
 #ifdef DEBUG
 	DebugDrawer mDebugDrawer;
 #endif // DEBUG
+        void addVisiblePoint();
 };

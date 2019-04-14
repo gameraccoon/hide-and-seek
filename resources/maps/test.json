@@ -10,7 +10,7 @@
                     {
                         "geometry": {
                             "points": [],
-                            "radius": 32.0,
+                            "radius": 16.0,
                             "type": 1
                         }
                     },
