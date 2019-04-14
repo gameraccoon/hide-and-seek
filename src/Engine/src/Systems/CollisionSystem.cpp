@@ -9,27 +9,24 @@ void CollisionSystem::update(World* world, float /*dt*/)
 {
 	auto components = world->getEntityManger().getComponents<CollisionComponent, TransformComponent>();
 
-	for (auto component : components)
+	for (auto& [collision, transform] : components)
 	{
-		auto& collisionComponent = std::get<0>(component);
-		auto& transformComponent = std::get<1>(component);
-
-		if (collisionComponent->isBoundingBoxDirty())
+		if (collision->isBoundingBoxDirty())
 		{
-			Collide::updateOriginalBoundingBox(collisionComponent);
+			Collide::updateOriginalBoundingBox(collision);
 		}
 
-		collisionComponent->setBoundingBox(collisionComponent->getOriginalBoundingBox() + transformComponent->getLocation());
+		collision->setBoundingBox(collision->getOriginalBoundingBox() + transform->getLocation());
 	}
 
 	world->getEntityManger().forEachEntity<CollisionComponent, TransformComponent, MovementComponent>([&components](CollisionComponent* collisionComponent, TransformComponent* transformComponent, MovementComponent* /*movementComponent*/)
 	{
 		Vector2D resist = ZERO_VECTOR;
-		for (auto& component : components)
+		for (auto& [collision, transform] : components)
 		{
-			if (std::get<0>(component) != collisionComponent)
+			if (collision != collisionComponent)
 			{
-				bool doCollide = Collide::doCollide(collisionComponent, transformComponent->getLocation(), std::get<0>(component), std::get<1>(component)->getLocation(), resist);
+				bool doCollide = Collide::doCollide(collisionComponent, transformComponent->getLocation(), collision, transform->getLocation(), resist);
 
 				if (doCollide)
 				{

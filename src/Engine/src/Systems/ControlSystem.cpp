@@ -43,7 +43,7 @@ void ControlSystem::update(World* world, float dt)
 		return;
 	}
 
-	TransformComponent* cameraTransformComponent = std::get<0>(world->getEntityManger().getEntityComponents<TransformComponent>(mainCamera.getEntity()));
+	auto [cameraTransformComponent] = world->getEntityManger().getEntityComponents<TransformComponent>(mainCamera.getEntity());
 	if (cameraTransformComponent == nullptr)
 	{
 		return;

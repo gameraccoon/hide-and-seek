@@ -29,7 +29,7 @@ TEST(Components, ComponentsAttachment)
 	TransformComponent* transform = entityManager.addComponent<TransformComponent>(testEntity);
 	transform->setLocation(location);
 
-	TransformComponent* resultTransform = std::get<0>(entityManager.getEntityComponents<TransformComponent>(testEntity));
+	auto [resultTransform] = entityManager.getEntityComponents<TransformComponent>(testEntity);
 
 	EXPECT_NE(nullptr, transform);
 	EXPECT_TRUE(location == resultTransform->getLocation());
@@ -55,9 +55,9 @@ TEST(Components, RemoveEntityWithComponents)
 
 	bool location1Found = false;
 	bool location2Found = false;
-	for (auto& component : components)
+	for (auto& [transform] : components)
 	{
-		Vector2D location = std::get<0>(component)->getLocation();
+		Vector2D location = transform->getLocation();
 		if (location == location1 && location1Found == false)
 		{
 			location1Found = true;
@@ -83,9 +83,9 @@ TEST(Components, RemoveEntityWithComponents)
 	location1Found = false;
 	location2Found = false;
 	bool location3Found = false;
-	for (auto& component : entityManager.getComponents<TransformComponent>())
+	for (auto& [transform] : entityManager.getComponents<TransformComponent>())
 	{
-		Vector2D location = std::get<0>(component)->getLocation();
+		Vector2D location = transform->getLocation();
 		if (location == location1 && location1Found == false)
 		{
 			location1Found = true;
