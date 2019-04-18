@@ -210,6 +210,29 @@ void RenderSystem::drawVisibilityPolygon(World* world, const Vector2D& fowSize, 
 	// sort points that we can iterate over them in clockwise order
 	std::sort(pointsToTrace.begin(), pointsToTrace.end(), LessPointAngle);
 
+	// fix a corner case with two or more points have exact same angles
+	for (size_t i = 1; i < pointsToTrace.size();)
+	{
+		AngledPoint& item = pointsToTrace[i];
+		AngledPoint& previousItem = pointsToTrace[i - 1];
+		// the problem is present only if the angles are exactly equal
+		if (item.angle != previousItem.angle)
+		{
+			++i;
+		}
+		else
+		{
+			if (item.coords.qSize() > previousItem.coords.qSize())
+			{
+				pointsToTrace.erase(pointsToTrace.begin() + static_cast<int>(i));
+			}
+			else
+			{
+				pointsToTrace.erase(pointsToTrace.begin() + static_cast<int>(i - 1));
+			}
+		}
+	}
+
 	std::vector<Vector2D> polygon;
 
 	// calculate visibility polygon
