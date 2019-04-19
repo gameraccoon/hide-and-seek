@@ -96,7 +96,33 @@ static bool LessPointAngle(const AngledPoint& a, const AngledPoint& b)
 	return a.angle < b.angle;
 }
 
-static void AddVisiblePoint(bool isVisible, bool isPreviousVisible, const Vector2D& a, std::vector<AngledPoint>& pointsToTrace)
+static bool NormalizePoint(Vector2D& point, const Vector2D& pair, float left, float right, float top, float bottom)
+{
+	if (point.x < left)
+	{
+		point = pair + abs((left - pair.x)/(point.x - pair.x)) * (point-pair);
+		return true;
+	}
+	else if (point.x > right)
+	{
+		point = pair + abs((pair.x - right)/(pair.x - point.x)) * (point-pair);
+		return true;
+	}
+
+	if (point.y < top)
+	{
+		point = pair + abs((top - pair.y)/(point.y - pair.y)) * (point-pair);
+		return true;
+	}
+	else if (point.y > bottom)
+	{
+		point = pair + abs((pair.y - bottom)/(pair.y - point.y)) * (point-pair);
+		return true;
+	}
+	return false;
+}
+
+static void AddPotentiallyVisiblePoint(bool isVisible, bool isPreviousVisible, const Vector2D& a, std::vector<AngledPoint>& pointsToTrace)
 {
 	if (isVisible)
 	{
@@ -169,10 +195,13 @@ void RenderSystem::drawVisibilityPolygon(World* world, const Vector2D& fowSize, 
 		bool isPreviousVisible = false;
 		bool isNotFirst = false;
 		bool isFirstVisible;
-		for (const Border& border : hull.borders)
+		// copy to be able to modify
+		std::vector<Vector2D> hullPoints = hull.points;
+		for (size_t i = 0; i < hullPoints.size(); ++i)
 		{
-			Vector2D a = border.getA() + shift;
-			Vector2D b = border.getB() + shift;
+			size_t j = (i < hullPoints.size() - 1) ? (i+1) : 0;
+			Vector2D a = hullPoints[i] + shift;
+			Vector2D b = hullPoints[j] + shift;
 			// keep only borders inside the draw area and facing the light source
 			bool isVisible = ((a.x > left && a.x < right && a.y > top && a.y < bottom)
 							  || (b.x > left && b.x < right && b.y > top && b.y < bottom)
@@ -180,12 +209,20 @@ void RenderSystem::drawVisibilityPolygon(World* world, const Vector2D& fowSize, 
 
 			if (isVisible)
 			{
+				if (NormalizePoint(a, b, left, right, top, bottom))
+				{
+					hullPoints[i] = a - shift;
+				}
+				if (NormalizePoint(b, a, left, right, top, bottom))
+				{
+					hullPoints[j] = b - shift;
+				}
 				borders.push_back({b, a});
 			}
 
 			if (isNotFirst)
 			{
-				AddVisiblePoint(isVisible, isPreviousVisible, a, pointsToTrace);
+				AddPotentiallyVisiblePoint(isVisible, isPreviousVisible, a, pointsToTrace);
 			}
 			else
 			{
@@ -195,10 +232,10 @@ void RenderSystem::drawVisibilityPolygon(World* world, const Vector2D& fowSize, 
 			isPreviousVisible = isVisible;
 		}
 
-		if (hull.borders.size() > 0)
+		if (hullPoints.size() > 1)
 		{
-			Vector2D a = hull.borders[0].getA() + shift;
-			AddVisiblePoint(isFirstVisible, isPreviousVisible, a, pointsToTrace);
+			Vector2D a = hullPoints[0] + shift;
+			AddPotentiallyVisiblePoint(isFirstVisible, isPreviousVisible, a, pointsToTrace);
 		}
 	}
 
@@ -248,9 +285,9 @@ void RenderSystem::drawVisibilityPolygon(World* world, const Vector2D& fowSize, 
 				&&
 				CalcClockwiseDirection(point.coords, border.b) > 0.0f)
 			{
-				if (CalcSignedArea(border.a, border.b, point.coords) < 0)
+				if (CalcSignedArea(border.a, border.b, point.coords) < 0.0f)
 				{
-					// this point is hidden by some obstacle
+					// this point is hidden behind some obstacle
 					needToSkip = true;
 					break;
 				}
