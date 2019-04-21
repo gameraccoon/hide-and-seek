@@ -3,6 +3,7 @@
 #include <map>
 #include <string>
 #include <functional>
+#include <optional>
 
 #include <nlohmann/json_fwd.hpp>
 

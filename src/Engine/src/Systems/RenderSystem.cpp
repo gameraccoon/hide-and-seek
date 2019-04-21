@@ -1,5 +1,7 @@
 #include "Systems/RenderSystem.h"
 
+#include <algorithm>
+
 #include <Components/RenderComponent.h>
 #include <Components/TransformComponent.h>
 #include <Components/CollisionComponent.h>
@@ -35,7 +37,7 @@ void RenderSystem::update(World* world, float /*dt*/)
 
 	Vector2D cameraLocation = cameraTransformComponent->getLocation();
 	Vector2D mouseScreenPos(mEngine->getMouseX(), mEngine->getMouseY());
-	Vector2D screenHalfSize = Vector2D(mEngine->getWidth(), mEngine->getHeight()) * 0.5f;
+	Vector2D screenHalfSize = Vector2D(static_cast<float>(mEngine->getWidth()), static_cast<float>(mEngine->getHeight())) * 0.5f;
 
 	Vector2D drawShift = screenHalfSize - cameraLocation + (screenHalfSize - mouseScreenPos) * 0.5;
 
@@ -194,7 +196,7 @@ void RenderSystem::drawVisibilityPolygon(World* world, const Vector2D& fowSize, 
 		const Hull& hull = collision->getGeometry();
 		bool isPreviousVisible = false;
 		bool isNotFirst = false;
-		bool isFirstVisible;
+		bool isFirstVisible = false;
 		// copy to be able to modify
 		std::vector<Vector2D> hullPoints = hull.points;
 		for (size_t i = 0; i < hullPoints.size(); ++i)

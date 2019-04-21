@@ -43,18 +43,17 @@ void ControlSystem::update(World* world, float dt)
 		return;
 	}
 
-	auto [cameraTransformComponent] = world->getEntityManger().getEntityComponents<TransformComponent>(mainCamera.getEntity());
-	if (cameraTransformComponent == nullptr)
+	auto [cameraTransform] = world->getEntityManger().getEntityComponents<TransformComponent>(mainCamera.getEntity());
+	if (cameraTransform == nullptr)
 	{
 		return;
 	}
 
-	Vector2D screenHalfSize = Vector2D(mEngine->getWidth(), mEngine->getHeight()) * 0.5f;
+	Vector2D screenHalfSize = Vector2D(static_cast<float>(mEngine->getWidth()), static_cast<float>(mEngine->getHeight())) * 0.5f;
 	Vector2D mouseScreenPos(mEngine->getMouseX(), mEngine->getMouseY());
 
-	Vector2D drawShift = screenHalfSize - cameraTransformComponent->getLocation();
+	Vector2D drawShift = screenHalfSize - cameraTransform->getLocation();
 
-	Vector2D controlledEntityPosition(0.0f, 0.0f);
 	if (NullableEntity controlledEntity = world->getPlayerControlledEntity(); controlledEntity.isValid())
 	{
 		auto [transform, movement] = world->getEntityManger().getEntityComponents<TransformComponent, MovementComponent>(controlledEntity.getEntity());
@@ -64,18 +63,12 @@ void ControlSystem::update(World* world, float dt)
 			Vector2D oldLocation = transform->getLocation();
 			Vector2D move = speed * movementDirection;
 			movement->setSpeed(move);
-			controlledEntityPosition = oldLocation + move * dt;
+			Vector2D controlledEntityPosition = oldLocation + move * dt;
 			transform->setLocation(controlledEntityPosition);
 
 			Vector2D direction = mouseScreenPos - oldLocation - drawShift;
 			transform->setRotation(direction.rotation());
-		}
-	}
 
-	if (NullableEntity mainCamera = world->getMainCamera(); mainCamera.isValid())
-	{
-		if (TransformComponent* cameraTransform = std::get<0>(world->getEntityManger().getEntityComponents<TransformComponent>(mainCamera.getEntity())))
-		{
 			// main camera follows the player
 			cameraTransform->setLocation(controlledEntityPosition);
 		}

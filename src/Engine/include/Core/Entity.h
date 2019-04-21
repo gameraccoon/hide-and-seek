@@ -1,8 +1,7 @@
 #pragma once
 
 #include <string>
-#include <Log.h>
-#include <Assert.h>
+#include <Debug/Assert.h>
 
 #include <nlohmann/json_fwd.hpp>
 

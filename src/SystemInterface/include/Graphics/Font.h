@@ -29,8 +29,8 @@ namespace Graphics
 			virtual ~Base();
 
 			// because std::unique_ptr doesn't like fwd
-			SystemInterface::Internal::SdlSurface* surface;
-			SystemInterface::Engine* engine;
+			SystemInterface::Internal::SdlSurface* surface = nullptr;
+			SystemInterface::Engine* engine = nullptr;
 		};
 
 	public:

@@ -1,6 +1,6 @@
 #include "Modules/ComponentFactory.h"
 
-#include <Assert.h>
+#include <Debug/Assert.h>
 
 ComponentFactory::DeserializationFn ComponentFactory::getDeserializator(const std::string& type) const
 {
@@ -32,6 +32,6 @@ std::string ComponentFactory::getStringFromTypeID(const std::type_index& typeID)
 		return it->second;
 	}
 
-	ReportFailure("Unknown type_index: '%s'", typeID.name());
+	//ReportFailure("Unknown type_index: '%s'", typeID.name());
 	return "";
 }

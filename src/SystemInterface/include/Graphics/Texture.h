@@ -29,7 +29,7 @@ namespace Graphics
 			virtual ~Base();
 
 			SystemInterface::Internal::SdlSurface* surface = nullptr;
-			SystemInterface::Engine* engine;
+			SystemInterface::Engine* engine = nullptr;
 		};
 
 	public:

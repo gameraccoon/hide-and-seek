@@ -30,8 +30,9 @@ add_definitions(-DGLM_FORCE_RADIANS)
 if (MSVC)
     if (CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
         string(REGEX REPLACE "/W[0-4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17")
     else()
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /std:c++17")
     endif()
 else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -Werror -std=c++17")
@@ -39,9 +40,12 @@ else()
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_RELEASE} -O2")
 endif()
 
+if (!WIN32)
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
 include_directories(${SDL2_INCLUDE_DIR})
+endif()
+
 include_directories(include)
 
 include_directories(
@@ -64,34 +68,34 @@ link_directories(
 )
 
 function(add_src_folder local_path global_path)
-   file(GLOB src "${global_path}/*.h")
-   aux_source_directory(${global_path} src)
-   if(WIN32)
-       string(REPLACE "/" "\\" _group_path "${local_path}")
-       source_group(${_group_path} FILES ${src})
-   else()
+    file(GLOB src "${global_path}/*.h")
+    aux_source_directory(${global_path} src)
+    if(WIN32)
+        string(REPLACE "/" "\\" _group_path "${local_path}")
+        source_group(${_group_path} FILES ${src})
+    else()
         source_group(${local_path} FILES ${src})
-   endif()
-   set(TEMP_SRC1 ${TEMP_SRC1} ${src} PARENT_SCOPE)
+    endif()
+    set(TEMP_SRC1 ${TEMP_SRC1} ${src} PARENT_SCOPE)
 endfunction()
 
 function(recursive_add_src_folders root_path folder_path)
-   set(TEMP_SRC1 "")
-   add_src_folder(${folder_path} "${root_path}/${folder_path}")
-   file(GLOB folders RELATIVE "${root_path}" "${root_path}/${folder_path}/*")
-   foreach(folder ${folders})
-           recursive_add_src_folders(${root_path} ${folder})
-   endforeach()
-   set(TEMP_SRC ${TEMP_SRC} ${TEMP_SRC1} PARENT_SCOPE)
+    set(TEMP_SRC1 "")
+    add_src_folder(${folder_path} "${root_path}/${folder_path}")
+    file(GLOB folders RELATIVE "${root_path}" "${root_path}/${folder_path}/*")
+    foreach(folder ${folders})
+        recursive_add_src_folders(${root_path} ${folder})
+    endforeach()
+    set(TEMP_SRC ${TEMP_SRC} ${TEMP_SRC1} PARENT_SCOPE)
 endfunction()
 
 function(add_folder_as_library folder_path name)
-   set(TEMP_SRC "")
+    set(TEMP_SRC "")
 
-   recursive_add_src_folders(${folder_path} src)
-   recursive_add_src_folders(${folder_path} include)
+    recursive_add_src_folders(${folder_path} src)
+    recursive_add_src_folders(${folder_path} include)
 
-   add_library(${name} ${TEMP_SRC})
+    add_library(${name} ${TEMP_SRC})
 endfunction()
 
 add_folder_as_library(${SOURCE_ROOT}/DebugHelpers DebugHelpersLib)
@@ -107,48 +111,51 @@ if (NOT ${PROJECT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR})
 endif()
 
 add_executable(${APP_NAME} src/main/win32/main.cpp)
-set(GENERAL_SOURCES
-    ${SDL2_LIBRARY}
-    ${SDL2_IMAGE_LIBRARY}
-    GL
-
+set(GENERAL_PROJECT_LIBS
 #    sqlite3
 #    liblua52
-
-# need to be fixed for win32 target
-#    glew32
-#    glew32s
-#    SDL2
-#    SDL2_image
-#    SDL2main
-#    SDL2test
-#    opengl32
 
     StealthGameLib
     SqliteInterfaceLib
     SystemInterfaceLib
     EngineLib
     DebugHelpersLib
-    stdc++fs
 )
 
+if (WIN32)
+    set(GENERAL_PROJECT_LIBS
+        ${GENERAL_PROJECT_LIBS}
+        glew32
+        glew32s
+        SDL2
+        SDL2_image
+        SDL2main
+        SDL2test
+        opengl32
+    )
+else()
+    set(GENERAL_PROJECT_LIBS
+        ${GENERAL_PROJECT_LIBS}
+        ${SDL2_LIBRARY}
+        ${SDL2_IMAGE_LIBRARY}
+        GL
+        stdc++fs
+    )
+endif()
+
 target_link_libraries(${APP_NAME}
-        ${GENERAL_SOURCES}
+    ${GENERAL_PROJECT_LIBS}
 )
 install(TARGETS ${APP_NAME} RUNTIME DESTINATION ${BIN_DIR})
 
 set(TESTS_NAME UnitTests)
 set(TESTS_SRC
-        win32/tests_main.cpp
+    win32/tests_main.cpp
+    external/googletest/src/gtest-all.cc
 )
 aux_source_directory(src/UnitTests TESTS_SRC)
-
-add_folder_as_library(${SOURCE_ROOT}/gtest gtest)
+include_directories(external/googletest)
 add_executable(${TESTS_NAME} ${TESTS_SRC})
 target_link_libraries(${TESTS_NAME}
-        ${GENERAL_SOURCES}
-        gtest
+    ${GENERAL_PROJECT_LIBS}
 )
-#set_target_properties(${TESTS_NAME} PROPERTIES
-#        RUNTIME_OUTPUT_DIRECTORY "${APP_BIN_DIR}"
-#)

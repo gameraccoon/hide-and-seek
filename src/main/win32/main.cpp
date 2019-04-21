@@ -3,8 +3,8 @@
 
 int main(int, char**)
 {
-    Game::StealthGame game;
-    game.start();
+	Game::StealthGame game;
+	game.start();
 
 	return 0;
 }

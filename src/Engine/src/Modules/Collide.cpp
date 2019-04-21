@@ -2,6 +2,8 @@
 
 #include <stdlib.h>
 #include <cmath>
+#include <limits>
+
 
 #include <Components/CollisionComponent.h>
 #include <Components/TransformComponent.h>
@@ -54,7 +56,7 @@ namespace Collide
 			}
 
 			const Border *nearestBorder = nullptr;
-			float nearestBorderQDistance = MAXFLOAT;
+			float nearestBorderQDistance = std::numeric_limits<float>::max();
 			ResistDir nearestBorderResistDir = ResistDir::Normal;
 			for (auto &border : rHull->borders)
 			{

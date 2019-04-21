@@ -3,7 +3,7 @@
 #include <fstream>
 #include <vector>
 
-#include <Log.h>
+#include <Debug/Log.h>
 
 #include "Base/Engine.h"
 #include "../Internal/SdlSurface.h"

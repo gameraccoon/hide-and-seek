@@ -1,6 +1,6 @@
 #include "SqliteConnection.h"
 
-#include <Log.h>
+#include <Debug/Log.h>
 
 #include <sys/stat.h>
 #include <sqlite/sqlite3.h>

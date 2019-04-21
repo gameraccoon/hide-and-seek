@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <optional>
 
 #include "Core/Component.h"
 #include "Core/Vector2D.h"
