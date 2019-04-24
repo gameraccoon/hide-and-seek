@@ -2,11 +2,14 @@
 
 #include <string>
 #include <map>
+#include <unordered_map>
+
+#include <EngineFwd.h>
+
+#include <Structures/ResourceHandle.h>
 
 #include "Graphics/Texture.h"
 #include "Graphics/Font.h"
-
-#include <EngineFwd.h>
 
 namespace SystemInterface
 {
@@ -17,31 +20,30 @@ namespace SystemInterface
 	{
 	public:
 		ResourceManager(Engine* engine);
-		~ResourceManager();
 
-		Graphics::Texture getTexture(const std::string& texturePath);
-		Graphics::Font getFont(const std::string& texturePath);
+		const Graphics::Texture& getTexture(ResourceHandle handle);
+		const Graphics::Font& getFont(ResourceHandle handle);
+
+		ResourceHandle lockTexture(const std::string& path);
+		ResourceHandle lockFont(const std::string& path);
+
+		void unlockResource(ResourceHandle handle);
+
 	private:
-		// types
-		struct SpriteInfo
-		{
-			std::string id;
-			std::string textureName;
-			int posX, posY;
-			int sizeX, sizeY;
-			//DWORD color;
-			int hotSpotX, hotSpotY;
-			bool loaded;
-		};
+		void createResourceLock(const std::string& path);
 
-		class Impl;
-		std::unique_ptr<Impl> mPimpl;
+	private:
+		std::unordered_map<ResourceHandle::IndexType, std::unique_ptr<Resource>> mResources;
+		std::unordered_map<ResourceHandle::IndexType, int> mResourceLocksCount;
+		std::unordered_map<std::string, ResourceHandle::IndexType> mPathsMap;
+		std::map<ResourceHandle::IndexType, std::string> mPathFindMap;
+
+		Engine* mEngine;
 
 		std::string mGraphicInfoFileName;
 		std::string mImageFolder;
 
-		// methods
-		SpriteInfo loadSpriteInfo(const std::string& id);
+		int mHandleIdx = 0;
 
 		/*
 		 * Turn off unusable operations

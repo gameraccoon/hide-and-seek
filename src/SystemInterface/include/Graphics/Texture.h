@@ -2,8 +2,9 @@
 
 #include <memory>
 
-#include "Base/Resource.h"
 #include <EngineFwd.h>
+
+#include "Base/Resource.h"
 
 namespace SystemInterface
 {
@@ -18,31 +19,16 @@ namespace Graphics
 	class Texture : public SystemInterface::Resource
 	{
 	public:
-		class Base : public Resource::Base
-		{
-		public:
-			Base(SystemInterface::IUseCounter::Uid uid)
-				: Resource::Base(uid)
-			{
-			}
-
-			virtual ~Base();
-
-			SystemInterface::Internal::SdlSurface* surface = nullptr;
-			SystemInterface::Engine* engine = nullptr;
-		};
-
-	public:
-		Texture(SystemInterface::IUseCounter* useCounter, const Base* base);
+		Texture(SystemInterface::Internal::SdlSurface* surface);
 
 		int getHeight() const;
 		int getWidth() const;
 
-		void draw(float x, float y, float ancX = 0.0f, float ancY = 0.0f, float scaleX = 0.0f, float scaleY  = 0.0f, float rotation = 0.0f, float alpha = 1.0f) const;
+		SystemInterface::Internal::SdlSurface* getSurface() const;
 
 		virtual bool isValid() const override;
 
 	private:
-		const Texture::Base* mBase;
+		SystemInterface::Internal::SdlSurface* mSurface = nullptr;
 	};
 }

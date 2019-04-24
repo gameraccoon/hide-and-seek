@@ -16,7 +16,8 @@
 RenderSystem::RenderSystem(SystemInterface::Engine* engine, std::shared_ptr<SystemInterface::ResourceManager> resourceManager)
 	: mEngine(engine)
 #ifdef DEBUG
-	, mDebugDrawer(resourceManager)
+	, mResourceManager(resourceManager)
+	, mDebugDrawer(resourceManager, engine)
 #endif // DEBUG
 {
 }
@@ -43,17 +44,18 @@ void RenderSystem::update(World* world, float /*dt*/)
 
 	drawVisibilityPolygon(world, Vector2D(500.0f, 500.0f), drawShift);
 
-	world->getEntityManger().forEachEntity<RenderComponent, TransformComponent>([&drawShift](RenderComponent* renderComponent, TransformComponent* transformComponent)
+	world->getEntityManger().forEachEntity<RenderComponent, TransformComponent>([&drawShift, &resourceManager = mResourceManager, engine = mEngine](RenderComponent* renderComponent, TransformComponent* transformComponent)
 	{
-		const auto& optionalTexture = renderComponent->getTexture();
-		if (optionalTexture.has_value())
+		ResourceHandle textureHandle = renderComponent->getTextureHanle();
+		if (textureHandle.isValid())
 		{
-			if (const Graphics::Texture& texture = optionalTexture.value(); texture.isValid())
+			const Graphics::Texture& texture = resourceManager->getTexture(textureHandle);
+			if (texture.isValid())
 			{
 				auto location = transformComponent->getLocation() + drawShift;
 				auto anchor = renderComponent->getAnchor();
 				auto scale = renderComponent->getScale();
-				texture.draw(location.x, location.y, anchor.x, anchor.y, scale.x, scale.y, transformComponent->getRotation().getValue(), 1.0f);
+				engine->render(texture.getSurface(), location.x, location.y, anchor.x, anchor.y, scale.x, scale.y, transformComponent->getRotation().getValue(), 1.0f);
 			}
 		}
 	});

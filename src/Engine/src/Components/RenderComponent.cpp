@@ -28,27 +28,6 @@ void RenderComponent::setAnchor(const Vector2D& newAnchor)
 	mAnchor = newAnchor;
 }
 
-void RenderComponent::calcScaleFromSize()
-{
-	if (mTexture.has_value() && mSize != ZERO_VECTOR)
-	{
-		if (const Graphics::Texture& texture = mTexture.value(); texture.isValid())
-		{
-			mScale = Vector2D(mSize.x / texture.getWidth(), mSize.y / texture.getHeight());
-		}
-	}
-}
-
-const std::optional<Graphics::Texture>& RenderComponent::getTexture() const
-{
-	return mTexture;
-}
-
-void RenderComponent::setTexture(const Graphics::Texture& texture)
-{
-	mTexture = texture;
-}
-
 void RenderComponent::toJson(nlohmann::json& outJson) const
 {
 	to_json(outJson, *this);
@@ -57,6 +36,16 @@ void RenderComponent::toJson(nlohmann::json& outJson) const
 void RenderComponent::fromJson(const nlohmann::json& json)
 {
 	from_json(json, *this);
+}
+
+ResourceHandle RenderComponent::getTextureHanle() const
+{
+	return mTextureHanle;
+}
+
+void RenderComponent::setTextureHanle(const ResourceHandle& textureHanle)
+{
+	mTextureHanle = textureHanle;
 }
 
 Vector2D RenderComponent::getSize() const

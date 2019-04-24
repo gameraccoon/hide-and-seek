@@ -1,0 +1,4 @@
+#ifndef RESOURCEHANDLE_H
+#define RESOURCEHANDLE_H
+
+#endif // RESOURCEHANDLE_H

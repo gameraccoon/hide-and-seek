@@ -12,6 +12,7 @@ class EntityManager
 public:
 	Entity addEntity();
 	void removeEntity(Entity entity);
+	std::unordered_map<Entity::EntityID, size_t>& getEntities() { return mEntityIndexMap; }
 
 	template<typename T>
 	T* addComponent(const Entity& entity)

@@ -29,6 +29,7 @@ private:
 
 private:
 	SystemInterface::Engine* mEngine;
+	std::shared_ptr<SystemInterface::ResourceManager> mResourceManager;
 
 #ifdef DEBUG
 	DebugDrawer mDebugDrawer;

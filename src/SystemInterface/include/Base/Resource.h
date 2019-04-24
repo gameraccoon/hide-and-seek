@@ -1,10 +1,5 @@
 #pragma once
 
-#include <functional>
-#include <memory>
-
-#include "IUseCounter.h"
-
 namespace SystemInterface
 {
 	/**
@@ -13,30 +8,7 @@ namespace SystemInterface
 	class Resource
 	{
 	public:
-		class Base
-		{
-		public:
-			using Destructor = std::function<void(Base*)>;
-
-		public:
-			Base(IUseCounter::Uid uid);
-			virtual ~Base();
-
-			IUseCounter::Uid uid;
-			int useCount = 0;
-		};
-
-	public:
-		Resource(IUseCounter* useCounter, IUseCounter::Uid uid);
-		Resource(const Resource& resource);
-		Resource(Resource&& resource) = default;
-		void operator=(const Resource& resource);
-		virtual ~Resource();
-
+		virtual ~Resource() = default;
 		virtual bool isValid() const = 0;
-
-	private:
-		IUseCounter* mUseCounter;
-		IUseCounter::Uid mUid;
 	};
 }

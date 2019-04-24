@@ -1,11 +1,10 @@
 #pragma once
 
 #include <memory>
-#include <optional>
 
 #include "Core/Component.h"
 #include "Core/Vector2D.h"
-#include <Graphics/Texture.h>
+#include <Structures/ResourceHandle.h>
 
 /**
  * Component that stores information about renderable part of an object
@@ -21,16 +20,14 @@ public:
 	Vector2D getAnchor() const;
 	void setAnchor(const Vector2D& newAnchor);
 
-	void calcScaleFromSize();
-
-	const std::optional<Graphics::Texture>& getTexture() const;
-	void setTexture(const Graphics::Texture& texture);
-
 	std::string getTexturePath() const;
 	void setTexturePath(const std::string& texturePath);
 
 	Vector2D getSize() const;
 	void setSize(const Vector2D& size);
+
+	ResourceHandle getTextureHanle() const;
+	void setTextureHanle(const ResourceHandle& textureHanle);
 
 public:
 	static std::string GetClassName() { return "RenderComponent"; }
@@ -45,6 +42,6 @@ private:
 	Vector2D mScale;
 	Vector2D mSize;
 	Vector2D mAnchor;
-	std::optional<Graphics::Texture> mTexture;
 	std::string mTexturePath;
+	ResourceHandle mTextureHanle;
 };

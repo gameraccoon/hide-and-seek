@@ -115,7 +115,7 @@ void Log::writeLine(const std::string& text)
         auto in_time_t = std::chrono::system_clock::to_time_t(now);
 
         *mLogFileStream << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %X");
-		*mLogFileStream << text << std::endl;
+		*mLogFileStream << text << "\n";
 	}
 
 	std::clog << text << "\n";

@@ -4,254 +4,94 @@
 #include <vector>
 
 #include <Debug/Log.h>
+#include <Debug/Assert.h>
 
 #include "Base/Engine.h"
 #include "../Internal/SdlSurface.h"
 
 namespace SystemInterface
 {
-	class ResourceManager::Impl : public IUseCounter
-	{
-	public:
-		virtual ~Impl() override = default;
-		std::vector<std::unique_ptr<Resource::Base>> resources;
-		std::map<std::string, IUseCounter::Uid> texturesMap;
-		std::map<std::string, IUseCounter::Uid> fontsMap;
-
-		Engine* engine;
-
-		virtual void beginUse(Uid uid) override;
-		virtual void endUse(Uid uid) override;
-		void releaseResource(Uid uid);
-	};
-
-    void ResourceManager::Impl::beginUse(Uid uid)
-	{
-        if (uid >= resources.size())
-		{
-			LogError("Inadequate resource UID");
-			return;
-		}
-
-		auto& resourcePtr = resources[uid];
-		if (resourcePtr)
-		{
-			resourcePtr->useCount++;
-		}
-		else
-		{
-			LogError("Trying to access released resource");
-		}
-	}
-
-	void ResourceManager::Impl::endUse(Uid uid)
-	{
-        if (uid >= resources.size())
-		{
-			LogError("Inadequate resource UID");
-			return;
-		}
-
-		auto& resourcePtr = resources[uid];
-		if (resourcePtr)
-		{
-			resourcePtr->useCount--;
-
-			if (resourcePtr->useCount <= 0)
-			{
-				releaseResource(uid);
-			}
-		}
-		else
-		{
-			LogError("Trying to access released resource");
-		}
-	}
-
-	void ResourceManager::Impl::releaseResource(Uid uid)
-	{
-        if (uid >= resources.size())
-		{
-			LogError("Inadequate resource UID");
-			return;
-		}
-
-		// just release the resource but do not delete other related info
-		resources[uid].reset();
-	}
-
+	static Graphics::Texture EMPTY_TEXTURE = Graphics::Texture(nullptr);
+	static Graphics::Font EMPTY_FONT = Graphics::Font(nullptr);
 
 	ResourceManager::ResourceManager(Engine* engine)
-		: mPimpl(new Impl())
+		: mEngine(engine)
 	{
-		mPimpl->engine = engine;
 	}
 
-	ResourceManager::~ResourceManager()
+	const Graphics::Texture& ResourceManager::getTexture(ResourceHandle handle)
 	{
-		LogInfo("ResourceManager destroyed");
+		auto it = mResources.find(handle.ResourceIndex);
+		AssertRet(it != mResources.end(), EMPTY_TEXTURE, "Trying to access non loaded texture");
+		return static_cast<Graphics::Texture&>(*(it->second.get()));
 	}
 
-	template <typename T, typename Base>
-	T getResource(const std::string& resourcePath,
-		std::map<std::string, IUseCounter::Uid>& nameMap,
-		std::vector<std::unique_ptr<Resource::Base>>& resources,
-		IUseCounter* useCounter,
-		std::function<void(Base*)> fillResource
-	)
+	const Graphics::Font& ResourceManager::getFont(ResourceHandle handle)
 	{
-		std::map<std::string, IUseCounter::Uid>::const_iterator it = nameMap.find(resourcePath);
+		auto it = mResources.find(handle.ResourceIndex);
+		AssertRet(it != mResources.end(), EMPTY_FONT, "Trying to access non loaded font");
+		return static_cast<Graphics::Font&>(*(it->second.get()));
+	}
 
-		if (it == nameMap.cend())
+	void ResourceManager::createResourceLock(const std::string& path)
+	{
+		mPathsMap[path] = mHandleIdx;
+		mPathFindMap[mHandleIdx] = path;
+		mResourceLocksCount[mHandleIdx] = 1;
+	}
+
+	ResourceHandle ResourceManager::lockTexture(const std::string& path)
+	{
+		auto it = mPathsMap.find(path);
+		if (it != mPathsMap.end())
 		{
-			// there is no resource and info about it
-            IUseCounter::Uid uid = static_cast<IUseCounter::Uid>(resources.size());
-			nameMap.insert({ resourcePath, uid });
-			Base* unsafePointer = new Base(uid);
-			try {
-				fillResource(unsafePointer);
-			} catch(const std::exception&) {
-				LogError("Can't load resource %s", resourcePath.c_str());
-			}
-			resources.emplace_back(unsafePointer);
-			return T(useCounter, unsafePointer);
-		}
-		else
-		{
-			IUseCounter::Uid uid = it->second;
-
-            if (uid >= resources.size())
-			{
-				LogError("Inadequate resource UID");
-				return T(useCounter, nullptr);
-			}
-
-            Base* unsafePointer = dynamic_cast<Base*>(resources[uid].get());
-			if (unsafePointer)
-			{
-				return T(useCounter, unsafePointer);
-			}
-			else
-			{
-				unsafePointer = new Base(uid);
-				fillResource(unsafePointer);
-				resources[uid].reset(unsafePointer);
-				return T(useCounter, unsafePointer);
-			}
-		}
-	}
-
-	Graphics::Texture ResourceManager::getTexture(const std::string& texturePath)
-	{
-		Engine* engine = mPimpl->engine;
-
-		return getResource<Graphics::Texture, Graphics::Texture::Base>(texturePath,
-			mPimpl->texturesMap,
-			mPimpl->resources,
-			mPimpl.get(),
-			[&texturePath, engine](Graphics::Texture::Base* textureBase)
-			{
-				textureBase->surface = new Internal::SdlSurface(texturePath.c_str());
-				textureBase->engine = engine;
-			}
-		);
-	}
-
-	Graphics::Font ResourceManager::getFont(const std::string& texturePath)
-	{
-		Engine* engine = mPimpl->engine;
-
-		return getResource<Graphics::Font, Graphics::Font::Base>(texturePath,
-			mPimpl->texturesMap,
-			mPimpl->resources,
-			mPimpl.get(),
-			[&texturePath, engine](Graphics::Font::Base* textureBase)
-			{
-				textureBase->surface = new Internal::SdlSurface(texturePath.c_str());
-				textureBase->engine = engine;
-			}
-		);
-	}
-
-	/*
-	engineSprite* ResourceManager::getSprite(std::string spriteId)
-	{
-		if (mEngine == nullptr)
-		{
-			std::string error = "GraphicLoader isn't initialised";
-			LogError(error);
-			throw new std::runtime_error(error);
-		}
-
-		SpriteMap::iterator it = mSprites.find(spriteId);
-		if (it != mSprites.end())
-		{ // if we have this sprite in map
+			++mResourceLocksCount[it->second];
 			return it->second;
 		}
 		else
 		{
-			// get sprite info from outer source
-			SpriteInfo spriteInfo = loadSpriteInfo(spriteId);
-			// get existed texture or load from file
-			engineSprite* sprite = nullptr;
-
-			if (spriteInfo.loaded)
-			{
-				HTEXTURE texture = getTexture(spriteInfo.textureName);
-				sprite = new engineSprite(texture, (float)spriteInfo.posX, (float)spriteInfo.posY,
-					(float)spriteInfo.sizeX, (float)spriteInfo.sizeY);
-				sprite->SetColor(spriteInfo.color);
-				sprite->SetHotSpot((float)spriteInfo.hotSpotX, (float)spriteInfo.hotSpotY);
-			}
-
-			mSprites.insert(SpriteMap::value_type(spriteId, sprite));
-
-			return sprite;
+			createResourceLock(path);
+			mResources[mHandleIdx] = std::make_unique<Graphics::Texture>(new Internal::SdlSurface(path.c_str()));
+			return mHandleIdx++;
 		}
-	}*/
+	}
 
-	ResourceManager::SpriteInfo ResourceManager::loadSpriteInfo(const std::string& id)
+	ResourceHandle ResourceManager::lockFont(const std::string& path)
 	{
-		SpriteInfo spriteInfo;
-		spriteInfo.loaded = false;
-
-		std::ifstream graphicInfoFile;
-		try
+		auto it = mPathsMap.find(path);
+		if (it != mPathsMap.end())
 		{
-			graphicInfoFile.open(mGraphicInfoFileName);
+			++mResourceLocksCount[it->second];
+			return it->second;
 		}
-        catch (std::exception&)
+		else
 		{
-			return spriteInfo;
+			createResourceLock(path);
+			mResources[mHandleIdx] = std::make_unique<Graphics::Font>(new Internal::SdlSurface(path.c_str()));
+			return mHandleIdx++;
 		}
+	}
 
-		while (!graphicInfoFile.eof())
+	void ResourceManager::unlockResource(ResourceHandle handle)
+	{
+		auto it = mResourceLocksCount.find(handle.ResourceIndex);
+		AssertRetVoid(it != mResourceLocksCount.end(), "Unlocking non-locked resource");
+		if (it->second > 1)
 		{
-			std::string className;
-			graphicInfoFile >> className; // get from filestream
-
-			if (className.compare(std::string("[").append(id).append("]")) != 0)
-				continue;
-
-			// if we got required sprite
-			graphicInfoFile >> spriteInfo.textureName;
-			graphicInfoFile >> spriteInfo.posX;
-			graphicInfoFile >> spriteInfo.posY;
-			graphicInfoFile >> spriteInfo.sizeX;
-			graphicInfoFile >> spriteInfo.sizeY;
-			graphicInfoFile >> spriteInfo.hotSpotX;
-			graphicInfoFile >> spriteInfo.hotSpotY;
-			//graphicInfoFile >> spriteInfo.color;
-
-			std::string endDelimeter;
-			graphicInfoFile >> endDelimeter;
-
-			spriteInfo.loaded = endDelimeter.compare("end") == 0;
-
-			break;
+			--it->second;
+			return;
 		}
-		graphicInfoFile.close();
-
-		return spriteInfo;
+		else
+		{
+			// unload resource
+			mResources.erase(handle.ResourceIndex);
+			mResourceLocksCount.erase(handle.ResourceIndex);
+			auto pathIt = mPathFindMap.find(handle.ResourceIndex);
+			if (pathIt != mPathFindMap.end())
+			{
+				mPathsMap.erase(pathIt->second);
+			}
+			mPathFindMap.erase(handle.ResourceIndex);
+		}
 	}
 }

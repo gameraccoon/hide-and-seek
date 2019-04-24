@@ -1,5 +1,4 @@
 #include <StealthGame.h>
-#include <actorsRegistration.h>
 
 int main(int, char**)
 {

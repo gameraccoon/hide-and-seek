@@ -12,7 +12,7 @@ class DirectionArrow : public IGraphicElement
 {
 public:
 	DirectionArrow(SystemInterface::Engine *engine);
-	virtual ~DirectionArrow();
+	virtual ~DirectionArrow() override;
 	/** Set center of arrow in world coordinates */
 	virtual void setScreenLocation(const Vector2D& scrLocation) override;
 	virtual Vector2D getScreenLocation() const override;

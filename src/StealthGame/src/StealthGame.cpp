@@ -4,7 +4,7 @@
 
 #include "Base/Engine.h"
 
-#include <Modules/LevelLoader.h>
+#include <Modules/WorldLoader.h>
 
 #include <Systems/RenderSystem.h>
 #include <Systems/ControlSystem.h>
@@ -34,7 +34,7 @@ namespace Game
 		mComponentFactory.registerComponent<CameraComponent>();
 		mComponentFactory.registerComponent<LightComponent>();
 
-		LevelLoader::LoadWorld(mWorld, "test", mComponentFactory);
+		WorldLoader::LoadWorld(mWorld, "test", mComponentFactory);
 
 		// start the main loop
 		getEngine()->start(this);

@@ -11,7 +11,7 @@
 		} \
 	} while(0)
 #else
-	#define AssertInner(cond, message) \
+	#define AssertInner(cond, message, ...) \
 		do { (void)sizeof(cond); (void)sizeof(message); } while(0)
 #endif
 #define Assert(cond, ...) AssertInner(cond, ##__VA_ARGS__, 0)
