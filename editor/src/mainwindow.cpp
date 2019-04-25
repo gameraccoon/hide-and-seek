@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include "src/editorcommands/changeentitycommand.h"
+
 #include <Core/World.h>
 #include <Modules/WorldLoader.h>
 
@@ -25,6 +27,12 @@ MainWindow::MainWindow(QWidget *parent) :
 	mComponentFactory.registerComponent<MovementComponent>();
 	mComponentFactory.registerComponent<RenderComponent>();
 	mComponentFactory.registerComponent<TransformComponent>();
+
+	mCommandStack.bindFunctionToCommandChange([this]()
+	{
+		this->updateUndoRedo();
+	});
+	updateUndoRedo();
 }
 
 MainWindow::~MainWindow()
@@ -62,6 +70,7 @@ void MainWindow::on_actionOpen_World_triggered()
 void MainWindow::createWorld()
 {
 	mCurrentWorld = std::make_unique<World>();
+	mCommandStack.clear();
 }
 
 void MainWindow::updateWorldData()
@@ -78,20 +87,24 @@ void MainWindow::updateWorldData()
 	entitiesList->addItems(entitiesStringList);
 
 	QComboBox* controlledEntityCombobox = ui->centralWidget->findChild<QComboBox*>("controlledEntityCombobox");
+	controlledEntityCombobox->blockSignals(true);
 	controlledEntityCombobox->clear();
 	controlledEntityCombobox->addItems(entitiesStringList);
 	if (NullableEntity controlledEntity = mCurrentWorld->getPlayerControlledEntity(); controlledEntity.isValid())
 	{
 		controlledEntityCombobox->setCurrentText(QString::number(controlledEntity.mId));
 	}
+	controlledEntityCombobox->blockSignals(false);
 
 	QComboBox* cameraEntityCombobox = ui->centralWidget->findChild<QComboBox*>("cameraEntityCombobox");
+	cameraEntityCombobox->blockSignals(true);
 	cameraEntityCombobox->clear();
 	cameraEntityCombobox->addItems(entitiesStringList);
 	if (NullableEntity camera = mCurrentWorld->getMainCamera(); camera.isValid())
 	{
 		cameraEntityCombobox->setCurrentText(QString::number(camera.mId));
 	}
+	cameraEntityCombobox->blockSignals(false);
 
 	updateSelectedEntityComponents();
 }
@@ -106,14 +119,56 @@ void MainWindow::updateSelectedComponentData()
 
 }
 
+void MainWindow::updateUndoRedo()
+{
+	ui->actionUndo->setEnabled(mCommandStack.haveSomethingToUndo());
+	ui->actionRedo->setEnabled(mCommandStack.haveSomethingToRedo());
+}
+
 void MainWindow::on_controlledEntityCombobox_currentIndexChanged(const QString &arg1)
 {
+	if (mCurrentWorld == nullptr)
+	{
+		return;
+	}
 
+	NullableEntity entity;
+	int index = arg1.toInt();
+	if (index != 0)
+	{
+		entity = Entity(static_cast<Entity::EntityID>(index));
+	}
+
+	QComboBox* controlledEntityCombobox = ui->centralWidget->findChild<QComboBox*>("controlledEntityCombobox");
+	mCommandStack.executeNewCommand<ChangeEntityCommand>(mCurrentWorld.get(),
+														 this,
+														 &World::setPlayerControlledEntity,
+														 entity,
+														 mCurrentWorld->getPlayerControlledEntity(),
+														 controlledEntityCombobox);
 }
 
 void MainWindow::on_cameraEntityCombobox_currentIndexChanged(const QString &arg1)
 {
+	if (mCurrentWorld == nullptr)
+	{
+		return;
+	}
 
+	NullableEntity entity;
+	int index = arg1.toInt();
+	if (index != 0)
+	{
+		entity = Entity(static_cast<Entity::EntityID>(index));
+	}
+
+	QComboBox* cameraEntityCombobox = ui->centralWidget->findChild<QComboBox*>("cameraEntityCombobox");
+	mCommandStack.executeNewCommand<ChangeEntityCommand>(mCurrentWorld.get(),
+														 this,
+														 &World::setMainCamera,
+														 entity,
+														 mCurrentWorld->getMainCamera(),
+														 cameraEntityCombobox);
 }
 
 void MainWindow::on_actionSave_World_As_triggered()
@@ -150,10 +205,16 @@ void MainWindow::on_actionRun_Game_triggered()
 
 void MainWindow::on_actionUndo_triggered()
 {
-
+	if (mCurrentWorld)
+	{
+		mCommandStack.undo(mCurrentWorld.get(), this);
+	}
 }
 
 void MainWindow::on_actionRedo_triggered()
 {
-
+	if (mCurrentWorld)
+	{
+		mCommandStack.redo(mCurrentWorld.get(), this);
+	}
 }

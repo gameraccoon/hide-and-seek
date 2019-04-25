@@ -5,6 +5,7 @@
 
 #include <QMainWindow>
 
+#include "editorcommands/editorcommandsstack.h"
 #include <Modules/ComponentFactory.h>
 
 namespace Ui {
@@ -20,35 +21,29 @@ public:
 	~MainWindow();
 
 private slots:
-	 void on_actionNew_World_triggered();
-
-	 void on_actionOpen_World_triggered();
-
-	 void on_controlledEntityCombobox_currentIndexChanged(const QString &arg1);
-
-	 void on_cameraEntityCombobox_currentIndexChanged(const QString &arg1);
-
-	 void on_actionSave_World_As_triggered();
-
-	 void on_actionSave_World_triggered();
-
-	 void on_actionRun_Game_triggered();
-
-	 void on_actionUndo_triggered();
-
-	 void on_actionRedo_triggered();
+	void on_actionNew_World_triggered();
+	void on_actionOpen_World_triggered();
+	void on_controlledEntityCombobox_currentIndexChanged(const QString &arg1);
+	void on_cameraEntityCombobox_currentIndexChanged(const QString &arg1);
+	void on_actionSave_World_As_triggered();
+	void on_actionSave_World_triggered();
+	void on_actionRun_Game_triggered();
+	void on_actionUndo_triggered();
+	void on_actionRedo_triggered();
 
 private:
-	 void createWorld();
-	 void updateWorldData();
-	 void updateSelectedEntityComponents();
-	 void updateSelectedComponentData();
+	void createWorld();
+	void updateWorldData();
+	void updateSelectedEntityComponents();
+	void updateSelectedComponentData();
+	void updateUndoRedo();
 
 private:
 	Ui::MainWindow *ui;
 	std::unique_ptr<class World> mCurrentWorld;
 	ComponentFactory mComponentFactory;
 	std::string mOpenedWorldPath;
+	EditorCommandsStack mCommandStack;
 };
 
 #endif // MAINWINDOW_H
