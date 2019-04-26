@@ -20,7 +20,7 @@
 
 namespace Game
 {
-	void StealthGame::start()
+	void StealthGame::start(ArgumentsParser& arguments)
 	{
 		mSystemsManager.registerSystem<ControlSystem>(getEngine(), &mKeyStates);
 		mSystemsManager.registerSystem<CollisionSystem>();
@@ -34,7 +34,14 @@ namespace Game
 		mComponentFactory.registerComponent<CameraComponent>();
 		mComponentFactory.registerComponent<LightComponent>();
 
-		WorldLoader::LoadWorld(mWorld, "test", mComponentFactory);
+		if (arguments.hasArgument("world"))
+		{
+			WorldLoader::LoadWorld(mWorld, arguments.getArgumentValue("world"), mComponentFactory);
+		}
+		else
+		{
+			WorldLoader::LoadWorld(mWorld, "test", mComponentFactory);
+		}
 
 		// start the main loop
 		getEngine()->start(this);

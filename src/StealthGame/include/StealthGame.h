@@ -3,6 +3,7 @@
 #include "Game.h"
 
 #include <Core/World.h>
+#include <Modules/ArgumentsParser.h>
 #include <Modules/SystemsManager.h>
 #include <Modules/ComponentFactory.h>
 
@@ -13,7 +14,7 @@ namespace Game
 	public:
 		StealthGame() = default;
 
-		void start();
+		void start(ArgumentsParser& arguments);
 		virtual void update(float dt) override;
 		virtual void setKeyState(int key, bool isPressed) override;
 

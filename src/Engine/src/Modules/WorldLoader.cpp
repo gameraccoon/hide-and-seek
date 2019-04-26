@@ -15,7 +15,14 @@ namespace WorldLoader
 
 	void SaveWorld(const World& world, const std::string& levelName, const ComponentFactory& componentFactory)
 	{
-		std::filesystem::path levelPath = MAPS_PATH / (levelName + ".json");
+		std::filesystem::path levelPath = std::filesystem::path(levelName);
+
+		// if it's name, we search the map in maps folder
+		if (levelName.find_first_of("/\\.") == std::string::npos)
+		{
+			levelPath = MAPS_PATH / (levelName + ".json");
+		}
+
 		try {
 			std::ofstream mapFile(levelPath);
 			nlohmann::json mapJson({{"world", world.toJson(componentFactory)}});
@@ -28,7 +35,13 @@ namespace WorldLoader
 
 	void LoadWorld(World& world, const std::string& levelName, const ComponentFactory& componentFactory)
 	{
-		std::filesystem::path levelPath = MAPS_PATH / (levelName + ".json");
+		std::filesystem::path levelPath = std::filesystem::path(levelName);
+
+		// if it's name, we search the map in maps folder
+		if (levelName.find_first_of("/\\.") == std::string::npos)
+		{
+			levelPath = MAPS_PATH / (levelName + ".json");
+		}
 
 		try
 		{

@@ -7,6 +7,7 @@
 #include <Modules/WorldLoader.h>
 
 #include <QFileDialog>
+#include <QProcess>
 
 #include <Components/CameraComponent.h>
 #include <Components/CollisionComponent.h>
@@ -58,8 +59,6 @@ void MainWindow::on_actionOpen_World_triggered()
 		return;
 	}
 
-	fileName = fileName.substr(0, fileName.rfind(".json"));
-
 	createWorld();
 	WorldLoader::LoadWorld(*mCurrentWorld.get(), fileName, mComponentFactory);
 	updateWorldData();
@@ -71,6 +70,7 @@ void MainWindow::createWorld()
 {
 	mCurrentWorld = std::make_unique<World>();
 	mCommandStack.clear();
+	ui->actionRun_Game->setEnabled(true);
 }
 
 void MainWindow::updateWorldData()
@@ -181,8 +181,6 @@ void MainWindow::on_actionSave_World_As_triggered()
 		return;
 	}
 
-	fileName = fileName.substr(0, fileName.rfind(".json"));
-
 	WorldLoader::SaveWorld(*mCurrentWorld.get(), fileName, mComponentFactory);
 	mOpenedWorldPath = fileName;
 	ui->actionSave_World->setEnabled(true);
@@ -200,7 +198,9 @@ void MainWindow::on_actionSave_World_triggered()
 
 void MainWindow::on_actionRun_Game_triggered()
 {
-
+	static std::string tempWorldName = "./temp-editor-world.json";
+	WorldLoader::SaveWorld(*mCurrentWorld.get(), tempWorldName, mComponentFactory);
+	QProcess::startDetached("StealthGamePrototype", {"--world", QString::fromStdString(tempWorldName)});
 }
 
 void MainWindow::on_actionUndo_triggered()
