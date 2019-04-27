@@ -41,10 +41,10 @@ else()
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_RELEASE} -O2")
 endif()
 
-if (!WIN32)
-find_package(SDL2 REQUIRED)
-find_package(SDL2_image REQUIRED)
-include_directories(${SDL2_INCLUDE_DIR})
+if (NOT WIN32)
+    find_package(SDL2 REQUIRED)
+    find_package(SDL2_image REQUIRED)
+    include_directories(${SDL2_INCLUDE_DIR})
 endif()
 
 include_directories(include)
@@ -114,6 +114,10 @@ set(GENERAL_PROJECT_LIBS
     SystemInterfaceLib
     EngineLib
     DebugHelpersLib
+
+    SDL2
+    SDL2_image
+    SDL2main
 )
 
 if (WIN32)
@@ -121,9 +125,6 @@ if (WIN32)
         ${GENERAL_PROJECT_LIBS}
         glew32
         glew32s
-        SDL2
-        SDL2_image
-        SDL2main
         SDL2test
         opengl32
     )
