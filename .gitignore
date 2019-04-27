@@ -29,4 +29,5 @@ log.txt
 *.tlog
 *.lib
 *.cache
+/bin
 /build

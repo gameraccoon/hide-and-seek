@@ -13,6 +13,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 set(BIN_DIR ${CMAKE_SOURCE_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(SOURCE_ROOT ${CMAKE_SOURCE_DIR}/src)
+set(EXTERNALS_DIR ${CMAKE_SOURCE_DIR}/external)
 
 # definitions
 if(DEBUG_MODE)
@@ -49,7 +50,7 @@ endif()
 include_directories(include)
 
 include_directories(
-    ${CMAKE_SOURCE_DIR}/external/include
+    ${EXTERNALS_DIR}/include
 
     ${SOURCE_ROOT}/DebugHelpers/include
     ${SOURCE_ROOT}/Engine/include
@@ -62,7 +63,7 @@ include_directories(
 
 link_directories(
     /usr/local/lib
-    ${CMAKE_SOURCE_DIR}/external/lib
+    ${EXTERNALS_DIR}/lib
     ${CMAKE_SOURCE_DIR}/vs_project
 )
 
@@ -103,11 +104,7 @@ add_folder_as_library(${SOURCE_ROOT}/SystemInterface SystemInterfaceLib)
 add_folder_as_library(${SOURCE_ROOT}/SqliteInterface SqliteInterfaceLib)
 add_folder_as_library(${SOURCE_ROOT}/StealthGame StealthGameLib)
 
-if (NOT ${PROJECT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR})
-    file(COPY "${PROJECT_SOURCE_DIR}/resources" DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
-endif()
-
-add_executable(${APP_NAME} src/main/win32/main.cpp)
+add_executable(${APP_NAME} ${SOURCE_ROOT}/main/win32/main.cpp)
 set(GENERAL_PROJECT_LIBS
 #    sqlite3
 #    liblua52
@@ -147,12 +144,16 @@ install(TARGETS ${APP_NAME} RUNTIME DESTINATION ${BIN_DIR})
 
 set(TESTS_NAME UnitTests)
 set(TESTS_SRC
-    win32/tests_main.cpp
-    external/googletest/src/gtest-all.cc
+    ${SOURCE_ROOT}/main/win32/tests_main.cpp
+    ${EXTERNALS_DIR}/googletest/src/gtest-all.cc
 )
-aux_source_directory(src/UnitTests TESTS_SRC)
-include_directories(external/googletest)
+aux_source_directory(${SOURCE_ROOT}/UnitTests TESTS_SRC)
+include_directories(${EXTERNALS_DIR}/googletest)
 add_executable(${TESTS_NAME} ${TESTS_SRC})
 target_link_libraries(${TESTS_NAME}
     ${GENERAL_PROJECT_LIBS}
 )
+
+if (NOT ${PROJECT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR})
+    file(COPY "${PROJECT_SOURCE_DIR}/resources" DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+endif()
