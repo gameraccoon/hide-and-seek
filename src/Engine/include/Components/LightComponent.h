@@ -26,6 +26,8 @@ public:
 	friend void to_json(nlohmann::json& outJson, const LightComponent& light);
 	friend void from_json(const nlohmann::json& json, LightComponent& outLight);
 
+	std::string getComponentTypeName() const override { return GetClassName(); }
+
 private:
 	float mBrightness;
 };

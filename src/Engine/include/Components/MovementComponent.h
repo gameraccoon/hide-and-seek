@@ -31,6 +31,8 @@ public:
 	friend void to_json(nlohmann::json& outJson, const MovementComponent& movement);
 	friend void from_json(const nlohmann::json& json, MovementComponent& outMovement);
 
+	std::string getComponentTypeName() const override { return GetClassName(); }
+
 private:
 	Vector2D mSpeed;
 	Vector2D mLastStep;

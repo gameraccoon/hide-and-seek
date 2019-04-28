@@ -57,6 +57,24 @@ void EntityManager::removeEntity(Entity entity)
 	mIndexEntityMap.erase(mMaxEntityIndex);
 }
 
+std::vector<BaseComponent*> EntityManager::getAllEntityComponents(const Entity& entity)
+{
+	std::vector<BaseComponent*> components;
+	auto entityIdxItr = mEntityIndexMap.find(entity.getID());
+	if (entityIdxItr != mEntityIndexMap.end())
+	{
+		EntityIndex index = entityIdxItr->second;
+		for (auto& componentArray : mComponents)
+		{
+			if (componentArray.second.size() > index && componentArray.second[index] != nullptr)
+			{
+				components.push_back(componentArray.second[index]);
+			}
+		}
+	}
+	return components;
+}
+
 nlohmann::json EntityManager::toJson(const ComponentFactory& componentFactory) const
 {
 	nlohmann::json outJson{

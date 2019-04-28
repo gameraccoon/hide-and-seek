@@ -36,6 +36,8 @@ public:
 	friend void to_json(nlohmann::json& outJson, const TransformComponent& transform);
 	friend void from_json(const nlohmann::json& json, TransformComponent& outTransform);
 
+	std::string getComponentTypeName() const override { return GetClassName(); }
+
 private:
 	Vector2D mLocation;
 	Rotator mRotation;

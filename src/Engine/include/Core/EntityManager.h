@@ -14,6 +14,8 @@ public:
 	void removeEntity(Entity entity);
 	std::unordered_map<Entity::EntityID, size_t>& getEntities() { return mEntityIndexMap; }
 
+	std::vector<BaseComponent*> getAllEntityComponents(const Entity& entity);
+
 	template<typename T>
 	T* addComponent(const Entity& entity)
 	{

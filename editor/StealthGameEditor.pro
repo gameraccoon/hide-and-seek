@@ -31,13 +31,24 @@ SOURCES += \
     src/mainwindow.cpp \
     src/editorcommands/editorcommand.cpp \
     src/editorcommands/changeentitycommand.cpp \
-    src/editorcommands/editorcommandsstack.cpp
+    src/editorcommands/editorcommandsstack.cpp \
+    src/componenteditcontent/transformcomponenteditfactory.cpp \
+    src/componenteditcontent/abstracteditfactory.cpp \
+    src/componenteditcontent/componentcontentfactory.cpp \
+    src/componenteditcontent/componentregistration.cpp \
+    src/componenteditcontent/typeseditconstructor.cpp
 
 HEADERS += \
     src/mainwindow.h \
     src/editorcommands/editorcommand.h \
     src/editorcommands/changeentitycommand.h \
-    src/editorcommands/editorcommandsstack.h
+    src/editorcommands/editorcommandsstack.h \
+    src/componenteditcontent/transformcomponenteditfactory.h \
+    src/componenteditcontent/abstracteditfactory.h \
+    src/componenteditcontent/componentcontentfactory.h \
+    src/componenteditcontent/componentregistration.h \
+    src/componenteditcontent/typeseditconstructor.h \
+    src/componenteditcontent/typeeditconstructorhelpers.h
 
 FORMS += \
     forms/mainwindow.ui

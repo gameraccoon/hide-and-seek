@@ -2,6 +2,9 @@
 #include "ui_mainwindow.h"
 
 #include "src/editorcommands/changeentitycommand.h"
+#include "src/componenteditcontent/componentcontentfactory.h"
+
+#include "src/componenteditcontent/componentregistration.h"
 
 #include <Core/World.h>
 #include <Modules/WorldLoader.h>
@@ -16,18 +19,14 @@
 #include <Components/RenderComponent.h>
 #include <Components/TransformComponent.h>
 
-MainWindow::MainWindow(QWidget *parent) :
+MainWindow::MainWindow(QWidget* parent) :
 	QMainWindow(parent),
 	ui(new Ui::MainWindow)
 {
 	ui->setupUi(this);
 
-	mComponentFactory.registerComponent<CameraComponent>();
-	mComponentFactory.registerComponent<CollisionComponent>();
-	mComponentFactory.registerComponent<LightComponent>();
-	mComponentFactory.registerComponent<MovementComponent>();
-	mComponentFactory.registerComponent<RenderComponent>();
-	mComponentFactory.registerComponent<TransformComponent>();
+	ComponentRegistration::RegisterComponentFactory(mComponentFactory);
+	mComponentContentFactory.registerComponents();
 
 	mCommandStack.bindFunctionToCommandChange([this]()
 	{
@@ -105,18 +104,52 @@ void MainWindow::updateWorldData()
 		cameraEntityCombobox->setCurrentText(QString::number(camera.mId));
 	}
 	cameraEntityCombobox->blockSignals(false);
-
-	updateSelectedEntityComponents();
 }
 
-void MainWindow::updateSelectedEntityComponents()
+void MainWindow::updateSelectedEntityComponents(QListWidgetItem* selectedItem)
 {
-	updateSelectedComponentData();
+	QListWidget* componentsList = ui->componentsList;
+	componentsList->clear();
+
+	if (selectedItem && mCurrentWorld)
+	{
+		unsigned int entityUid = selectedItem->text().toUInt();
+		std::vector<BaseComponent*> components = mCurrentWorld->getEntityManger().getAllEntityComponents(Entity(entityUid));
+		for (auto& component : components)
+		{
+			componentsList->addItem(QString::fromStdString(component->getComponentTypeName()));
+		}
+	}
 }
 
-void MainWindow::updateSelectedComponentData()
+void MainWindow::updateSelectedComponentData(QListWidgetItem* selectedItem)
 {
+	bool validComponentIsSelected = false;
+	if (selectedItem != nullptr)
+	{
+		bool ok;
+		int index = ui->cameraEntityCombobox->currentText().toInt(&ok);
+		if (ok && index != 0)
+		{
+			Entity entity = Entity(static_cast<Entity::EntityID>(index));
+			std::vector<BaseComponent*> entityComponents = mCurrentWorld->getEntityManger().getAllEntityComponents(entity);
+			auto it = std::find_if(entityComponents.begin(), entityComponents.end(), [name = selectedItem->text().toStdString()](BaseComponent* component)
+			{
+				return component->getComponentTypeName().compare(name) == 0;
+			});
 
+			if (it != entityComponents.end())
+			{
+				mComponentContentFactory.replaceEditContent(ui->componentPropertiesContainer->layout(), *it);
+				validComponentIsSelected = true;
+			}
+		}
+	}
+
+	if (!validComponentIsSelected)
+	{
+		mComponentContentFactory.removeEditContent(ui->componentPropertiesContainer->layout());
+	}
 }
 
 void MainWindow::updateUndoRedo()
@@ -221,4 +254,14 @@ void MainWindow::on_actionRedo_triggered()
 	{
 		mCommandStack.redo(mCurrentWorld.get(), this);
 	}
+}
+
+void MainWindow::on_entitiesList_currentItemChanged(QListWidgetItem* current, QListWidgetItem* /*previous*/)
+{
+	updateSelectedEntityComponents(current);
+}
+
+void MainWindow::on_componentsList_currentItemChanged(QListWidgetItem* current, QListWidgetItem* /*previous*/)
+{
+	updateSelectedComponentData(current);
 }

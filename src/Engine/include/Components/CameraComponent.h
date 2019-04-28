@@ -21,4 +21,6 @@ public:
 
 	friend void to_json(nlohmann::json& outJson, const CameraComponent& camera);
 	friend void from_json(const nlohmann::json& json, CameraComponent& outCamera);
+
+	std::string getComponentTypeName() const override { return GetClassName(); }
 };

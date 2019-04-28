@@ -37,6 +37,8 @@ public:
 	friend void to_json(nlohmann::json& outJson, const CollisionComponent& collision);
 	friend void from_json(const nlohmann::json& json, CollisionComponent& outCollision);
 
+	std::string getComponentTypeName() const override { return GetClassName(); }
+
 private:
 	Hull mGeometry;
 	bool mBoundingBoxDirty = true;

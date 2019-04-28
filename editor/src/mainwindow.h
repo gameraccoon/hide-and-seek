@@ -4,8 +4,11 @@
 #include <memory>
 
 #include <QMainWindow>
+#include <QListWidgetItem>
 
 #include "editorcommands/editorcommandsstack.h"
+#include "componenteditcontent/componentcontentfactory.h"
+
 #include <Modules/ComponentFactory.h>
 
 namespace Ui {
@@ -17,31 +20,34 @@ class MainWindow : public QMainWindow
 	Q_OBJECT
 
 public:
-	explicit MainWindow(QWidget *parent = nullptr);
+	explicit MainWindow(QWidget* parent = nullptr);
 	~MainWindow();
 
 private slots:
 	void on_actionNew_World_triggered();
 	void on_actionOpen_World_triggered();
-	void on_controlledEntityCombobox_currentIndexChanged(const QString &arg1);
-	void on_cameraEntityCombobox_currentIndexChanged(const QString &arg1);
+	void on_controlledEntityCombobox_currentIndexChanged(const QString& arg1);
+	void on_cameraEntityCombobox_currentIndexChanged(const QString& arg1);
 	void on_actionSave_World_As_triggered();
 	void on_actionSave_World_triggered();
 	void on_actionRun_Game_triggered();
 	void on_actionUndo_triggered();
 	void on_actionRedo_triggered();
+	void on_entitiesList_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
+	void on_componentsList_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
 
 private:
 	void createWorld();
 	void updateWorldData();
-	void updateSelectedEntityComponents();
-	void updateSelectedComponentData();
+	void updateSelectedEntityComponents(QListWidgetItem *selectedItem);
+	void updateSelectedComponentData(QListWidgetItem* selectedItem);
 	void updateUndoRedo();
 
 private:
 	Ui::MainWindow *ui;
 	std::unique_ptr<class World> mCurrentWorld;
 	ComponentFactory mComponentFactory;
+	ComponentContentFactory mComponentContentFactory;
 	std::string mOpenedWorldPath;
 	EditorCommandsStack mCommandStack;
 };
