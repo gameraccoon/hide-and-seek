@@ -13,14 +13,14 @@ public:
 	typedef void (World::*SetterFunction)(const NullableEntity&);
 
 public:
-	ChangeEntityCommand(SetterFunction setterFunc, NullableEntity newEntity, NullableEntity oldEntity, QComboBox* affectedCombobox);
+	ChangeEntityCommand(SetterFunction setterFunc, NullableEntity oldEntity, NullableEntity newEntity, QComboBox* affectedCombobox);
 
-	void doCommand(World* world, MainWindow* editorWindow) override;
-	void undoCommand(World* world, MainWindow* editorWindow) override;
+	void doCommand(World* world) override;
+	void undoCommand(World* world) override;
 
 private:
-	NullableEntity mNewEntity;
 	NullableEntity mOldEntity;
+	NullableEntity mNewEntity;
 	QComboBox* mAffectedCombobox;
 	SetterFunction mSetterFunc;
 };

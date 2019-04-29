@@ -4,33 +4,34 @@
 #include <QLayout>
 
 #include "typeseditconstructor.h"
+#include "src/editorcommands/changetransformcomponentlocationcommand.h"
+#include "src/editorcommands/changetransformcomponentrotationcommand.h"
+#include "src/editorcommands/editorcommandsstack.h"
 
 #include <Debug/Log.h>
 #include <Components/TransformComponent.h>
 
-QWidget* TransformComponentEditData::newContentWidget(const BaseComponent* component)
+void TransformComponentEditData::fillContent(QLayout* layout, const Entity& entity, const BaseComponent* component, EditorCommandsStack& commandStack, World* world)
 {
-	QVBoxLayout *layout = new QVBoxLayout;
-
 	const TransformComponent* transform = dynamic_cast<const TransformComponent*>(component);
 
-	TypesEditConstructor::Edit<Vector2D>::Ptr transformEdit = TypesEditConstructor::FillVector2DEdit(layout, "location", transform->getLocation());
-	TypesEditConstructor::Edit<float>::Ptr rotationEdit = TypesEditConstructor::FillFloatEdit(layout, "rotation", transform->getRotation().getValue());
-
-	transformEdit->bindOnChange([](const Vector2D& oldValue, const Vector2D& newValue)
+	mLocationEdit = TypesEditConstructor::FillVector2DEdit(layout, "location", transform->getLocation());
+	mLocationEdit->bindOnChange([entity, &commandStack, world](const Vector2D& oldValue, const Vector2D& newValue)
 	{
-		LogInfo("test (%f, %f) (%f, %f)", oldValue.x, oldValue.y, newValue.x, newValue.y);
+		commandStack.executeNewCommand<ChangeTransformComponentLocationCommand>(world,
+			entity,
+			oldValue,
+			newValue);
 	});
 
-	rotationEdit->bindOnChange([](float oldValue, float newValue)
+	mRotationEdit = TypesEditConstructor::FillFloatEdit(layout, "rotation", transform->getRotation().getValue());
+	mRotationEdit->bindOnChange([entity, &commandStack, world](float oldValue, float newValue)
 	{
-		LogInfo("test2 %f %f", oldValue, newValue);
+		commandStack.executeNewCommand<ChangeTransformComponentRotationCommand>(world,
+			entity,
+			oldValue,
+			newValue);
 	});
-
-	layout->addStretch();
-	QWidget* container = new QWidget();
-	container->setLayout(layout);
-	return container;
 }
 
 std::shared_ptr<EditData> TransformComponentEditFactory::getEditData()

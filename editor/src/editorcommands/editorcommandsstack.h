@@ -8,7 +8,7 @@ class EditorCommandsStack
 {
 public:
 	template<typename T, typename... Args>
-	void executeNewCommand(World* world, MainWindow* editorWindow, Args... args)
+	void executeNewCommand(World* world, Args... args)
 	{
 		// clear old redo commands
 		if (haveSomethingToRedo())
@@ -18,7 +18,7 @@ public:
 
 		// add and activate
 		mCommands.emplace_back(new T(std::forward<Args>(args)...));
-		mCommands.back()->doCommand(world, editorWindow);
+		mCommands.back()->doCommand(world);
 		++mCurrentHeadIndex;
 
 		// clear old commands if exceed limits
@@ -33,8 +33,8 @@ public:
 		}
 	}
 
-	void undo(World* world, MainWindow* editorWindow);
-	void redo(World* world, MainWindow* editorWindow);
+	void undo(World* world);
+	void redo(World* world);
 	bool haveSomethingToUndo() const;
 	bool haveSomethingToRedo() const;
 	void clear();

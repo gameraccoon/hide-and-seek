@@ -7,24 +7,37 @@
 
 namespace TypesEditConstructor
 {
+	class BaseEdit
+	{
+	public:
+		typedef std::shared_ptr<BaseEdit> Ptr;
+	};
+
 	template<typename T>
-	class Edit
+	class Edit : public BaseEdit
 	{
 	public:
 		typedef std::shared_ptr<Edit> Ptr;
+		typedef std::weak_ptr<Edit> WeakPtr;
+		typedef std::function<void(const T&, const T&)> OnChangeFn;
 
 	public:
 		Edit(T initialValue)
-		: mPrevValue(std::forward<T>(initialValue))
+			: mPrevValue(std::forward<T>(initialValue))
 		{
 		}
 
-		void bindOnChange(std::function<void(const T&, const T&)> onChange)
+		~Edit()
 		{
-		mOnChange = onChange;
+			delete mOwner;
 		}
 
-		void changeValue(T newValue)
+		void bindOnChange(OnChangeFn onChange)
+		{
+			mOnChange = onChange;
+		}
+
+		void transmitValueChange(T newValue)
 		{
 			if (newValue != mPrevValue)
 			{
@@ -36,13 +49,22 @@ namespace TypesEditConstructor
 			}
 		}
 
-		QObject* getOwner() { return owner; }
+		void addChild(const QString& childName, BaseEdit::Ptr child)
+		{
+			mChildObjects.try_emplace(childName, child);
+		}
+
+		QObject* getOwner() { return mOwner; }
 		T getPreviousValue() const { return mPrevValue; }
+
+		Edit(const Edit&) = delete;
+		Edit& operator=(const Edit&) = delete;
 
 	private:
 		T mPrevValue;
-		std::function<void(const T&, const T&)> mOnChange;
-		QObject* owner = new QObject();
+		OnChangeFn mOnChange;
+		QObject* mOwner = new QObject();
+		std::map<QString, BaseEdit::Ptr> mChildObjects;
 	};
 }
 

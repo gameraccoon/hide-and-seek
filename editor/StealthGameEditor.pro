@@ -36,7 +36,9 @@ SOURCES += \
     src/componenteditcontent/abstracteditfactory.cpp \
     src/componenteditcontent/componentcontentfactory.cpp \
     src/componenteditcontent/componentregistration.cpp \
-    src/componenteditcontent/typeseditconstructor.cpp
+    src/componenteditcontent/typeseditconstructor.cpp \
+    src/editorcommands/changetransformcomponentlocationcommand.cpp \
+    src/editorcommands/changetransformcomponentrotationcommand.cpp
 
 HEADERS += \
     src/mainwindow.h \
@@ -48,7 +50,9 @@ HEADERS += \
     src/componenteditcontent/componentcontentfactory.h \
     src/componenteditcontent/componentregistration.h \
     src/componenteditcontent/typeseditconstructor.h \
-    src/componenteditcontent/typeeditconstructorhelpers.h
+    src/componenteditcontent/typeeditconstructorhelpers.h \
+    src/editorcommands/changetransformcomponentlocationcommand.h \
+    src/editorcommands/changetransformcomponentrotationcommand.h
 
 FORMS += \
     forms/mainwindow.ui

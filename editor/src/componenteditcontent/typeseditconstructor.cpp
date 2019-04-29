@@ -18,15 +18,24 @@ namespace TypesEditConstructor
 		FillLabel(layout, label);
 
 		QLineEdit* floatEdit = new QLineEdit();
+		floatEdit->setText(QString::number(static_cast<double>(initialValue)));
+
 		Edit<float>::Ptr edit = std::make_shared<Edit<float>>(initialValue);
-		floatEdit->connect(floatEdit, &QLineEdit::textChanged, edit->getOwner(), [edit](const QString& newValueStr) {
-			bool ok;
-			float newValue = newValueStr.toFloat(&ok);
-			if (ok)
+		Edit<float>::WeakPtr editWeakPtr = edit;
+
+		floatEdit->connect(floatEdit, &QLineEdit::textChanged, edit->getOwner(), [editWeakPtr](const QString& newValueStr)
+		{
+			if (Edit<float>::Ptr edit = editWeakPtr.lock())
 			{
-				edit->changeValue(newValue);
+				bool ok;
+				float newValue = newValueStr.toFloat(&ok);
+				if (ok)
+				{
+					edit->transmitValueChange(newValue);
+				}
 			}
 		});
+
 		layout->addWidget(floatEdit);
 		return edit;
 	}
@@ -38,15 +47,27 @@ namespace TypesEditConstructor
 		QHBoxLayout *innerLayout = new QHBoxLayout;
 
 		Edit<Vector2D>::Ptr edit = std::make_shared<Edit<Vector2D>>(initialValue);
-		Edit<float>::Ptr editX = FillFloatEdit(innerLayout, "x", initialValue.x);
-		Edit<float>::Ptr editY = FillFloatEdit(innerLayout, "y", initialValue.y);
+		Edit<Vector2D>::WeakPtr editWeakPtr = edit;
 
-		editX->bindOnChange([edit = edit](float /*oldValue*/, float newValue){
-			edit->changeValue(Vector2D(newValue, edit->getPreviousValue().y));
+		Edit<float>::Ptr editX = FillFloatEdit(innerLayout, "x", initialValue.x);
+		editX->bindOnChange([editWeakPtr](float /*oldValue*/, float newValue)
+		{
+			if (Edit<Vector2D>::Ptr edit = editWeakPtr.lock())
+			{
+				edit->transmitValueChange(Vector2D(newValue, edit->getPreviousValue().y));
+			}
 		});
-		editY->bindOnChange([edit](float /*oldValue*/, float newValue){
-			edit->changeValue(Vector2D(edit->getPreviousValue().x, newValue));
+		edit->addChild("x", editX);
+
+		Edit<float>::Ptr editY = FillFloatEdit(innerLayout, "y", initialValue.y);
+		editY->bindOnChange([editWeakPtr](float /*oldValue*/, float newValue)
+		{
+			if (Edit<Vector2D>::Ptr edit = editWeakPtr.lock())
+			{
+				edit->transmitValueChange(Vector2D(edit->getPreviousValue().x, newValue));
+			}
 		});
+		edit->addChild("y", editY);
 
 		innerLayout->addStretch();
 		QWidget* container = new QWidget();

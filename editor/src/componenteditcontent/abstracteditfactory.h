@@ -5,15 +5,19 @@
 
 #include <QObject>
 
+#include <Core/Entity.h>
 #include <Core/Component.h>
 
+#include "src/editorcommands/editorcommandsstack.h"
+
 class QWidget;
+class QLayout;
 
 class EditData : public QObject
 {
 public:
 	virtual ~EditData() = default;
-	virtual QWidget* newContentWidget(const BaseComponent* component) = 0;
+	virtual void fillContent(QLayout* layout, const Entity& entity, const BaseComponent* component, EditorCommandsStack& commandStack, World* world) = 0;
 };
 
 class AbstractEditFactory

@@ -41,6 +41,7 @@ private:
 	void updateWorldData();
 	void updateSelectedEntityComponents(QListWidgetItem *selectedItem);
 	void updateSelectedComponentData(QListWidgetItem* selectedItem);
+	void updateSelectedComponentData();
 	void updateUndoRedo();
 
 private:

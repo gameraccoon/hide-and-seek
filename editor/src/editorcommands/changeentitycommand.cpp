@@ -7,15 +7,15 @@
 #include "../mainwindow.h"
 
 
-ChangeEntityCommand::ChangeEntityCommand(ChangeEntityCommand::SetterFunction setterFunc, NullableEntity newEntity, NullableEntity oldEntity, QComboBox* affectedCombobox)
-	: mNewEntity(newEntity)
-	, mOldEntity(oldEntity)
+ChangeEntityCommand::ChangeEntityCommand(ChangeEntityCommand::SetterFunction setterFunc, NullableEntity oldEntity, NullableEntity newEntity, QComboBox* affectedCombobox)
+	: mOldEntity(oldEntity)
+	, mNewEntity(newEntity)
 	, mAffectedCombobox(affectedCombobox)
 	, mSetterFunc(setterFunc)
 {
 }
 
-void ChangeEntityCommand::doCommand(World* world, MainWindow* /*editorWindow*/)
+void ChangeEntityCommand::doCommand(World* world)
 {
 	(world->*mSetterFunc)(mNewEntity);
 	mAffectedCombobox->blockSignals(true);
@@ -23,7 +23,7 @@ void ChangeEntityCommand::doCommand(World* world, MainWindow* /*editorWindow*/)
 	mAffectedCombobox->blockSignals(false);
 }
 
-void ChangeEntityCommand::undoCommand(World* world, MainWindow* /*editorWindow*/)
+void ChangeEntityCommand::undoCommand(World* world)
 {
 	(world->*mSetterFunc)(mOldEntity);
 	mAffectedCombobox->blockSignals(true);

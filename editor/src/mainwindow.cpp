@@ -127,21 +127,25 @@ void MainWindow::updateSelectedComponentData(QListWidgetItem* selectedItem)
 	bool validComponentIsSelected = false;
 	if (selectedItem != nullptr)
 	{
-		bool ok;
-		int index = ui->cameraEntityCombobox->currentText().toInt(&ok);
-		if (ok && index != 0)
+		QListWidgetItem* currentItem = ui->entitiesList->currentItem();
+		if (currentItem != nullptr)
 		{
-			Entity entity = Entity(static_cast<Entity::EntityID>(index));
-			std::vector<BaseComponent*> entityComponents = mCurrentWorld->getEntityManger().getAllEntityComponents(entity);
-			auto it = std::find_if(entityComponents.begin(), entityComponents.end(), [name = selectedItem->text().toStdString()](BaseComponent* component)
+			bool ok;
+			int index = currentItem->text().toInt(&ok);
+			if (ok && index != 0)
 			{
-				return component->getComponentTypeName().compare(name) == 0;
-			});
+				Entity entity = Entity(static_cast<Entity::EntityID>(index));
+				std::vector<BaseComponent*> entityComponents = mCurrentWorld->getEntityManger().getAllEntityComponents(entity);
+				auto it = std::find_if(entityComponents.begin(), entityComponents.end(), [name = selectedItem->text().toStdString()](BaseComponent* component)
+				{
+					return component->getComponentTypeName().compare(name) == 0;
+				});
 
-			if (it != entityComponents.end())
-			{
-				mComponentContentFactory.replaceEditContent(ui->componentPropertiesContainer->layout(), *it);
-				validComponentIsSelected = true;
+				if (it != entityComponents.end())
+				{
+					mComponentContentFactory.replaceEditContent(ui->componentPropertiesContainer->layout(), entity, *it, mCommandStack, mCurrentWorld.get());
+					validComponentIsSelected = true;
+				}
 			}
 		}
 	}
@@ -149,6 +153,15 @@ void MainWindow::updateSelectedComponentData(QListWidgetItem* selectedItem)
 	if (!validComponentIsSelected)
 	{
 		mComponentContentFactory.removeEditContent(ui->componentPropertiesContainer->layout());
+	}
+}
+
+void MainWindow::updateSelectedComponentData()
+{
+	QListWidgetItem* currentItem = ui->componentsList->currentItem();
+	if (currentItem)
+	{
+		updateSelectedComponentData(currentItem);
 	}
 }
 
@@ -174,11 +187,10 @@ void MainWindow::on_controlledEntityCombobox_currentIndexChanged(const QString &
 
 	QComboBox* controlledEntityCombobox = ui->centralWidget->findChild<QComboBox*>("controlledEntityCombobox");
 	mCommandStack.executeNewCommand<ChangeEntityCommand>(mCurrentWorld.get(),
-														 this,
-														 &World::setPlayerControlledEntity,
-														 entity,
-														 mCurrentWorld->getPlayerControlledEntity(),
-														 controlledEntityCombobox);
+		&World::setPlayerControlledEntity,
+		mCurrentWorld->getPlayerControlledEntity(),
+		entity,
+		controlledEntityCombobox);
 }
 
 void MainWindow::on_cameraEntityCombobox_currentIndexChanged(const QString &arg1)
@@ -197,11 +209,10 @@ void MainWindow::on_cameraEntityCombobox_currentIndexChanged(const QString &arg1
 
 	QComboBox* cameraEntityCombobox = ui->centralWidget->findChild<QComboBox*>("cameraEntityCombobox");
 	mCommandStack.executeNewCommand<ChangeEntityCommand>(mCurrentWorld.get(),
-														 this,
-														 &World::setMainCamera,
-														 entity,
-														 mCurrentWorld->getMainCamera(),
-														 cameraEntityCombobox);
+		&World::setMainCamera,
+		mCurrentWorld->getMainCamera(),
+		entity,
+		cameraEntityCombobox);
 }
 
 void MainWindow::on_actionSave_World_As_triggered()
@@ -244,16 +255,18 @@ void MainWindow::on_actionUndo_triggered()
 {
 	if (mCurrentWorld)
 	{
-		mCommandStack.undo(mCurrentWorld.get(), this);
+		mCommandStack.undo(mCurrentWorld.get());
 	}
+	updateSelectedComponentData();
 }
 
 void MainWindow::on_actionRedo_triggered()
 {
 	if (mCurrentWorld)
 	{
-		mCommandStack.redo(mCurrentWorld.get(), this);
+		mCommandStack.redo(mCurrentWorld.get());
 	}
+	updateSelectedComponentData();
 }
 
 void MainWindow::on_entitiesList_currentItemChanged(QListWidgetItem* current, QListWidgetItem* /*previous*/)

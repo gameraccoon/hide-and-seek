@@ -1,11 +1,11 @@
 #include "editorcommandsstack.h"
 
 
-void EditorCommandsStack::undo(World* world, MainWindow* editorWindow)
+void EditorCommandsStack::undo(World* world)
 {
 	if (haveSomethingToUndo())
 	{
-		mCommands[static_cast<size_t>(mCurrentHeadIndex)]->undoCommand(world, editorWindow);
+		mCommands[static_cast<size_t>(mCurrentHeadIndex)]->undoCommand(world);
 		--mCurrentHeadIndex;
 
 		if (mChangeHandler)
@@ -15,12 +15,12 @@ void EditorCommandsStack::undo(World* world, MainWindow* editorWindow)
 	}
 }
 
-void EditorCommandsStack::redo(World* world, MainWindow* editorWindow)
+void EditorCommandsStack::redo(World* world)
 {
 	if (haveSomethingToRedo())
 	{
 		++mCurrentHeadIndex;
-		mCommands[static_cast<size_t>(mCurrentHeadIndex)]->doCommand(world, editorWindow);
+		mCommands[static_cast<size_t>(mCurrentHeadIndex)]->doCommand(world);
 
 		if (mChangeHandler)
 		{

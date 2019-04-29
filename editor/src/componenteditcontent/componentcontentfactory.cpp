@@ -10,7 +10,7 @@ void ComponentContentFactory::registerComponents()
 	ComponentRegistration::RegisterToEditFactory(mFactories);
 }
 
-void ComponentContentFactory::replaceEditContent(QLayout* layout, const BaseComponent* component)
+void ComponentContentFactory::replaceEditContent(QLayout* layout, const Entity& entity, const BaseComponent* component, EditorCommandsStack& commandStack, World* world)
 {
 	auto it = mFactories.find(component->getComponentTypeName());
 
@@ -18,7 +18,15 @@ void ComponentContentFactory::replaceEditContent(QLayout* layout, const BaseComp
 	if (it != mFactories.end())
 	{
 		mCurrentEdit = it->second->getEditData();
-		newContent = mCurrentEdit->newContentWidget(component);
+		newContent = new QWidget();
+		QVBoxLayout* innerLayout = new QVBoxLayout();
+		mCurrentEdit->fillContent(innerLayout, entity, component, commandStack, world);
+		innerLayout->addStretch();
+		newContent->setLayout(innerLayout);
+	}
+	else
+	{
+		mCurrentEdit = nullptr;
 	}
 
 	if (newContent != nullptr && mContentWidget == nullptr)
@@ -26,7 +34,7 @@ void ComponentContentFactory::replaceEditContent(QLayout* layout, const BaseComp
 		layout->addWidget(newContent);
 		newContent->show();
 	}
-	else if (newContent != nullptr && mContentWidget == nullptr)
+	else if (newContent != nullptr && mContentWidget != nullptr)
 	{
 		mContentWidget->hide();
 		layout->replaceWidget(mContentWidget, newContent);
