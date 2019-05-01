@@ -2,12 +2,6 @@
 
 #include <nlohmann/json.hpp>
 
-RenderComponent::RenderComponent()
-	: mScale(0.0f, 0.0f)
-	, mAnchor(0.5f, 0.5f)
-{
-}
-
 Vector2D RenderComponent::getScale() const
 {
 	return mScale;
@@ -16,6 +10,16 @@ Vector2D RenderComponent::getScale() const
 void RenderComponent::setScale(const Vector2D& newScale)
 {
 	mScale = newScale;
+}
+
+Vector2D RenderComponent::getSize() const
+{
+	return mSize;
+}
+
+void RenderComponent::setSize(const Vector2D& newSize)
+{
+	mSize = newSize;
 }
 
 Vector2D RenderComponent::getAnchor() const
@@ -28,6 +32,26 @@ void RenderComponent::setAnchor(const Vector2D& newAnchor)
 	mAnchor = newAnchor;
 }
 
+std::string RenderComponent::getTexturePath() const
+{
+	return mTexturePath;
+}
+
+void RenderComponent::setTexturePath(const std::string& newTexturePath)
+{
+	mTexturePath = newTexturePath;
+}
+
+ResourceHandle RenderComponent::getTextureHandle() const
+{
+	return mTextureHandle;
+}
+
+void RenderComponent::setTextureHandle(const ResourceHandle& newTextureHandle)
+{
+	mTextureHandle = newTextureHandle;
+}
+
 void RenderComponent::toJson(nlohmann::json& outJson) const
 {
 	to_json(outJson, *this);
@@ -36,36 +60,6 @@ void RenderComponent::toJson(nlohmann::json& outJson) const
 void RenderComponent::fromJson(const nlohmann::json& json)
 {
 	from_json(json, *this);
-}
-
-ResourceHandle RenderComponent::getTextureHanle() const
-{
-	return mTextureHanle;
-}
-
-void RenderComponent::setTextureHanle(const ResourceHandle& textureHanle)
-{
-	mTextureHanle = textureHanle;
-}
-
-Vector2D RenderComponent::getSize() const
-{
-	return mSize;
-}
-
-void RenderComponent::setSize(const Vector2D& size)
-{
-	mSize = size;
-}
-
-std::string RenderComponent::getTexturePath() const
-{
-	return mTexturePath;
-}
-
-void RenderComponent::setTexturePath(const std::string& texturePath)
-{
-	mTexturePath = texturePath;
 }
 
 void to_json(nlohmann::json& outJson, const RenderComponent& render)

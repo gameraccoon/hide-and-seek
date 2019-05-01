@@ -46,7 +46,7 @@ void RenderSystem::update(World* world, float /*dt*/)
 
 	world->getEntityManger().forEachEntity<RenderComponent, TransformComponent>([&drawShift, &resourceManager = mResourceManager, engine = mEngine](RenderComponent* renderComponent, TransformComponent* transformComponent)
 	{
-		ResourceHandle textureHandle = renderComponent->getTextureHanle();
+		ResourceHandle textureHandle = renderComponent->getTextureHandle();
 		if (textureHandle.isValid())
 		{
 			const Graphics::Texture& texture = resourceManager->getTexture(textureHandle);

@@ -1,26 +1,20 @@
 #pragma once
 
-#include <functional>
-#include <memory>
-
 #include "Core/Component.h"
 
-#include <Core/Vector2D.h>
+#include "Core/Vector2D.h"
 
 /**
- * Component that stores informtaon about position and movement
+ * Component that stores information about position and movement
  */
 class MovementComponent : public BaseComponent
 {
 public:
-	MovementComponent();
-	virtual ~MovementComponent() override = default;
-
 	Vector2D getSpeed() const;
-	void setSpeed(const Vector2D& speed);
+	void setSpeed(const Vector2D& newSpeed);
 
 	Vector2D getLastStep() const;
-	void setLastStep(const Vector2D& lastStep);
+	void setLastStep(const Vector2D& newLastStep);
 
 public:
 	static std::string GetClassName() { return "MovementComponent"; }
@@ -34,6 +28,6 @@ public:
 	std::string getComponentTypeName() const override { return GetClassName(); }
 
 private:
-	Vector2D mSpeed;
-	Vector2D mLastStep;
+	Vector2D mSpeed = ZERO_VECTOR;
+	Vector2D mLastStep = ZERO_VECTOR;
 };

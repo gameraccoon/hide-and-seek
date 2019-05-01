@@ -23,10 +23,10 @@ void ResourceStreamingSystem::update(World* world, float /*dt*/)
 {
 	world->getEntityManger().forEachEntity<RenderComponent>([&resourceManager = mResourceManager](RenderComponent* renderComponent)
 	{
-		if (ResourceHandle textureHandle = renderComponent->getTextureHanle(); !textureHandle.isValid())
+		if (ResourceHandle textureHandle = renderComponent->getTextureHandle(); !textureHandle.isValid())
 		{
-			renderComponent->setTextureHanle(resourceManager->lockTexture(renderComponent->getTexturePath()));
-			updateTextureScaleFromSize(renderComponent, resourceManager->getTexture(renderComponent->getTextureHanle()));
+			renderComponent->setTextureHandle(resourceManager->lockTexture(renderComponent->getTexturePath()));
+			updateTextureScaleFromSize(renderComponent, resourceManager->getTexture(renderComponent->getTextureHandle()));
 		}
 	});
 }

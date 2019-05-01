@@ -1,10 +1,6 @@
 #pragma once
 
-#include <memory>
-
 #include "Core/Component.h"
-#include "Components/TransformComponent.h"
-#include "Core/Vector2D.h"
 
 /**
  * Component that stores information about a light emitter
@@ -12,10 +8,8 @@
 class LightComponent : public BaseComponent
 {
 public:
-	virtual ~LightComponent() override = default;
-
 	float getBrightness() const;
-	void setBrightness(float newSize);
+	void setBrightness(float newBrightness);
 
 public:
 	static std::string GetClassName() { return "LightComponent"; }
@@ -29,5 +23,5 @@ public:
 	std::string getComponentTypeName() const override { return GetClassName(); }
 
 private:
-	float mBrightness;
+	float mBrightness = 1.0f;
 };

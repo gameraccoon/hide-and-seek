@@ -30,7 +30,7 @@ void CollisionSystem::update(World* world, float /*dt*/)
 
 				if (doCollide)
 				{
-					transformComponent->shiftLocation(resist);
+					transformComponent->setLocation(transformComponent->getLocation() + resist);
 				}
 			}
 		}
