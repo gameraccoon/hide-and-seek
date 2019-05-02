@@ -1,0 +1,33 @@
+[
+	{
+		"name": "attribute_includes",
+		"params": ["not_empty", "sort", "remove_duplicates"],
+		"value_to_empty_test": "attribute_include"
+	},
+	{
+		"name": "attributes_constructor_arguments",
+		"params": []
+	},
+	{
+		"name": "attribute_accessors_decl",
+		"params": []
+	},
+	{
+		"name": "attribute_fields",
+		"params": []
+	},
+	{
+		"name": "attribute_accessors_impl",
+		"params": []
+	},
+	{
+		"name": "attributes_json_serialization",
+		"params": [],
+		"blacklist": ["transient"]
+	},
+	{
+		"name": "attributes_json_deserialization",
+		"params": [],
+		"blacklist": ["transient"]
+	}
+]

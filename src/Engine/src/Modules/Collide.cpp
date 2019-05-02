@@ -5,8 +5,8 @@
 #include <limits>
 
 
-#include <Components/CollisionComponent.h>
-#include <Components/TransformComponent.h>
+#include <Components/CollisionComponent.generated.h>
+#include <Components/TransformComponent.generated.h>
 
 namespace Collide
 {

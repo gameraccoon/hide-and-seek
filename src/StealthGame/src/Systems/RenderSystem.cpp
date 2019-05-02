@@ -2,9 +2,9 @@
 
 #include <algorithm>
 
-#include <Components/RenderComponent.h>
-#include <Components/TransformComponent.h>
-#include <Components/CollisionComponent.h>
+#include <Components/RenderComponent.generated.h>
+#include <Components/TransformComponent.generated.h>
+#include <Components/CollisionComponent.generated.h>
 #include <Base/Engine.h>
 #include <Modules/RayTrace.h>
 

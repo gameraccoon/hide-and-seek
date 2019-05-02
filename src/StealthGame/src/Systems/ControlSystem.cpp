@@ -2,9 +2,9 @@
 
 #include <sdl/SDL_keycode.h>
 
-#include <Components/RenderComponent.h>
-#include <Components/TransformComponent.h>
-#include <Components/MovementComponent.h>
+#include <Components/RenderComponent.generated.h>
+#include <Components/TransformComponent.generated.h>
+#include <Components/MovementComponent.generated.h>
 
 ControlSystem::ControlSystem(SystemInterface::Engine* engine, KeyStatesMap* keyStatesMap)
 	: mEngine(engine)

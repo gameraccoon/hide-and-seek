@@ -1,6 +1,6 @@
 #include "changetransformcomponentrotationcommand.h"
 
-#include <Components/TransformComponent.h>
+#include <Components/TransformComponent.generated.h>
 
 static float RAD_TO_DEG = 180.0f / PI;
 static float DEG_TO_RAD = 1.0f / RAD_TO_DEG;

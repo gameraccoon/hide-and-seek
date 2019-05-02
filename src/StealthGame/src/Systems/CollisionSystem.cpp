@@ -1,8 +1,8 @@
 #include "Systems/CollisionSystem.h"
 
-#include <Components/CollisionComponent.h>
-#include <Components/TransformComponent.h>
-#include <Components/MovementComponent.h>
+#include <Components/CollisionComponent.generated.h>
+#include <Components/TransformComponent.generated.h>
+#include <Components/MovementComponent.generated.h>
 #include <Modules/Collide.h>
 
 void CollisionSystem::update(World* world, float /*dt*/)
@@ -11,7 +11,7 @@ void CollisionSystem::update(World* world, float /*dt*/)
 
 	for (auto& [collision, transform] : components)
 	{
-		if (collision->isBoundingBoxDirty())
+		if (collision->getIsBoundingBoxDirty())
 		{
 			Collide::updateOriginalBoundingBox(collision);
 		}

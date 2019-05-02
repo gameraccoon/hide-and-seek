@@ -165,3 +165,14 @@ if (NOT ${PROJECT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR})
     file(COPY "${PROJECT_SOURCE_DIR}/resources" DESTINATION ${BIN_DIR})
     file(COPY ${BUILT_STATIC_LIBS} DESTINATION ${BIN_DIR}/static-libs)
 endif()
+
+# code generation
+find_package(PythonInterp 3.5 REQUIRED)
+add_custom_target(
+    CodeGeneration
+    COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/build/cpp_code_generate.py ${CMAKE_SOURCE_DIR}
+    COMMENT "C++ code generation"
+)
+add_dependencies(EngineLib CodeGeneration)
+add_dependencies(SystemInterfaceLib CodeGeneration)
+add_dependencies(StealthGameLib CodeGeneration)

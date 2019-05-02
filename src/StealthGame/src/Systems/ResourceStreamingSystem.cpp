@@ -1,6 +1,6 @@
 #include "Systems/ResourceStreamingSystem.h"
 
-#include <Components/RenderComponent.h>
+#include <Components/RenderComponent.generated.h>
 
 ResourceStreamingSystem::ResourceStreamingSystem(std::shared_ptr<SystemInterface::ResourceManager> resourceManager)
 	: mResourceManager(resourceManager)

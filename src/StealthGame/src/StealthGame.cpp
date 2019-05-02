@@ -11,12 +11,12 @@
 #include <Systems/CollisionSystem.h>
 #include <Systems/ResourceStreamingSystem.h>
 
-#include <Components/TransformComponent.h>
-#include <Components/RenderComponent.h>
-#include <Components/CollisionComponent.h>
-#include <Components/MovementComponent.h>
-#include <Components/CameraComponent.h>
-#include <Components/LightComponent.h>
+#include <Components/TransformComponent.generated.h>
+#include <Components/RenderComponent.generated.h>
+#include <Components/CollisionComponent.generated.h>
+#include <Components/MovementComponent.generated.h>
+#include <Components/CameraComponent.generated.h>
+#include <Components/LightComponent.generated.h>
 
 namespace Game
 {

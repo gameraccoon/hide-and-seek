@@ -12,12 +12,12 @@
 #include <QFileDialog>
 #include <QProcess>
 
-#include <Components/CameraComponent.h>
-#include <Components/CollisionComponent.h>
-#include <Components/LightComponent.h>
-#include <Components/MovementComponent.h>
-#include <Components/RenderComponent.h>
-#include <Components/TransformComponent.h>
+#include <Components/CameraComponent.generated.h>
+#include <Components/CollisionComponent.generated.h>
+#include <Components/LightComponent.generated.h>
+#include <Components/MovementComponent.generated.h>
+#include <Components/RenderComponent.generated.h>
+#include <Components/TransformComponent.generated.h>
 
 MainWindow::MainWindow(QWidget* parent) :
 	QMainWindow(parent),

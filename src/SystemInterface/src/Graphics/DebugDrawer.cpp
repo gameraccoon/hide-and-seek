@@ -1,7 +1,7 @@
 #include "Graphics/DebugDrawer.h"
 
 #include <Core/World.h>
-#include <Components/CollisionComponent.h>
+#include <Components/CollisionComponent.generated.h>
 #include <Base/Engine.h>
 
 DebugDrawer::DebugDrawer(std::shared_ptr<SystemInterface::ResourceManager> resourceManager, SystemInterface::Engine* engine)

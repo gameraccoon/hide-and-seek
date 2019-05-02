@@ -3,7 +3,7 @@
 #include <memory>
 #include <Core/System.h>
 #include <Base/ResourceManager.h>
-#include <Components/CameraComponent.h>
+#include <Components/CameraComponent.generated.h>
 #include <EngineFwd.h>
 
 #ifdef DEBUG

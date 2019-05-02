@@ -9,7 +9,7 @@
 #include "src/editorcommands/editorcommandsstack.h"
 
 #include <Debug/Log.h>
-#include <Components/TransformComponent.h>
+#include <Components/TransformComponent.generated.h>
 
 void TransformComponentEditData::fillContent(QLayout* layout, const Entity& entity, const BaseComponent* component, EditorCommandsStack& commandStack, World* world)
 {

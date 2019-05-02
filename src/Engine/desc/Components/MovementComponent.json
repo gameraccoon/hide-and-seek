@@ -1,0 +1,19 @@
+
+{
+	"component": "movement",
+	"description": "Component that stores information about position and movement",
+	"attributes": [
+		{
+			"name": "speed",
+			"type": "Vector2D",
+			"default": " = ZERO_VECTOR",
+			"include": "\"Core/Vector2D.h\""
+		},
+		{
+			"name": "lastStep",
+			"type": "Vector2D",
+			"default": " = ZERO_VECTOR",
+			"include": "\"Core/Vector2D.h\""
+		}
+	]
+}

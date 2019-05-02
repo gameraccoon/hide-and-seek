@@ -1,0 +1,12 @@
+[
+	{
+		"name_template": "{class_name}.generated.h",
+		"template": "component_header",
+		"output_dir": "src/Engine/include/Components/"
+	},
+	{
+		"name_template": "{class_name}.generated.cpp",
+		"template": "component_source",
+		"output_dir": "src/Engine/src/Components/"
+	}
+]

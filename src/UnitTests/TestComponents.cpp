@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <Core/EntityManager.h>
-#include <Components/TransformComponent.h>
+#include <Components/TransformComponent.generated.h>
 
 TEST(Components, EntityCreationAndRemovement)
 {

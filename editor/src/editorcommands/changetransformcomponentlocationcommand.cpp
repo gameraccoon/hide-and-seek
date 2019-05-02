@@ -1,6 +1,6 @@
 #include "changetransformcomponentlocationcommand.h"
 
-#include <Components/TransformComponent.h>
+#include <Components/TransformComponent.generated.h>
 
 ChangeTransformComponentLocationCommand::ChangeTransformComponentLocationCommand(const Entity& entity, const Vector2D& oldLocation, const Vector2D& newLocation)
 	: mEntity(entity)

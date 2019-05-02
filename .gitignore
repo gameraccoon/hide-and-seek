@@ -20,6 +20,10 @@ cmake_install.cmake
 *.vcxproj
 *.sln
 
+# generated code
+*.generated.cpp
+*.generated.h
+
 # other
 *.log
 log.txt

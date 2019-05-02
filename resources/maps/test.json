@@ -42,7 +42,7 @@
                 ],
                 "MovementComponent": [
                     {
-                        "last_step": {
+                        "lastStep": {
                             "x": 0.0,
                             "y": 0.0
                         },
@@ -66,7 +66,7 @@
                             "x": 32.0,
                             "y": 32.0
                         },
-                        "texture": "resources/textures/hero.png"
+                        "texturePath": "resources/textures/hero.png"
                     },
                     null,
                     {
@@ -82,34 +82,34 @@
                             "x": 120.0,
                             "y": 120.0
                         },
-                        "texture": "resources/textures/testTexture.png"
+                        "texturePath": "resources/textures/testTexture.png"
                     }
                 ],
                 "TransformComponent": [
                     {
-                        "loc": {
+                        "location": {
                             "x": 10.0,
                             "y": 10.0
                         },
-                        "rot": {
+                        "rotation": {
                             "v": 0.0
                         }
                     },
                     {
-                        "loc": {
+                        "location": {
                             "x": 0.0,
                             "y": 0.0
                         },
-                        "rot": {
+                        "rotation": {
                             "v": 0.0
                         }
                     },
                     {
-                        "loc": {
+                        "location": {
                             "x": -60.0,
                             "y": -60.0
                         },
-                        "rot": {
+                        "rotation": {
                             "v": 0.0
                         }
                     }
