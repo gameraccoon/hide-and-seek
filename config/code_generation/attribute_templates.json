@@ -44,5 +44,11 @@
 		"name": "editor/attribute_edit_initialization",
 		"params": [],
 		"blacklist": ["transient"]
+	},
+	{
+		"name": "editor/editable_attribute_includes",
+		"params": ["not_empty", "sort", "remove_duplicates"],
+		"value_to_empty_test": "attribute_include",
+		"blacklist": ["transient"]
 	}
 ]

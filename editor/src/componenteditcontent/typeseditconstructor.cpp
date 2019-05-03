@@ -4,6 +4,9 @@
 #include <QLineEdit>
 #include <QHBoxLayout>
 
+#include <Core/Vector2D.h>
+#include <Structures/Hull.h>
+
 static const float RAD_TO_DEG = 180.0f / PI;
 static const float DEG_TO_RAD = 1.0f / RAD_TO_DEG;
 
@@ -16,7 +19,8 @@ namespace TypesEditConstructor
 		layout->addWidget(editLabel);
 	}
 
-	Edit<float>::Ptr FillFloatEdit(QLayout* layout, const QString& label, float initialValue)
+	template<>
+	Edit<float>::Ptr FillEdit<float>(QLayout* layout, const QString& label, const float& initialValue)
 	{
 		FillLabel(layout, label);
 
@@ -43,7 +47,37 @@ namespace TypesEditConstructor
 		return edit;
 	}
 
-	Edit<Rotator>::Ptr FillRotatorEdit(QLayout* layout, const QString& label, const Rotator& initialValue)
+	template<>
+	Edit<bool>::Ptr FillEdit<bool>(QLayout* layout, const QString& label, const bool& initialValue)
+	{
+		return std::make_shared<Edit<bool>>(initialValue);
+	}
+
+	template<>
+	Edit<std::string>::Ptr FillEdit<std::string>(QLayout* layout, const QString& label, const std::string& initialValue)
+	{
+		FillLabel(layout, label);
+
+		QLineEdit* stringEdit = new QLineEdit();
+		stringEdit->setText(QString::fromStdString(initialValue));
+
+		Edit<std::string>::Ptr edit = std::make_shared<Edit<std::string>>(initialValue);
+		Edit<std::string>::WeakPtr editWeakPtr = edit;
+
+		stringEdit->connect(stringEdit, &QLineEdit::textChanged, edit->getOwner(), [editWeakPtr](const QString& newValue)
+		{
+			if (Edit<std::string>::Ptr edit = editWeakPtr.lock())
+			{
+				edit->transmitValueChange(newValue.toStdString());
+			}
+		});
+
+		layout->addWidget(stringEdit);
+		return edit;
+	}
+
+	template<>
+	Edit<Rotator>::Ptr FillEdit<Rotator>(QLayout* layout, const QString& label, const Rotator& initialValue)
 	{
 		FillLabel(layout, label);
 
@@ -52,7 +86,7 @@ namespace TypesEditConstructor
 		Edit<Rotator>::Ptr edit = std::make_shared<Edit<Rotator>>(initialValue);
 		Edit<Rotator>::WeakPtr editWeakPtr = edit;
 
-		Edit<float>::Ptr editX = FillFloatEdit(innerLayout, "value", initialValue.getValue() * RAD_TO_DEG);
+		Edit<float>::Ptr editX = FillEdit<float>(innerLayout, "value", initialValue.getValue() * RAD_TO_DEG);
 		editX->bindOnChange([editWeakPtr](float /*oldValue*/, float newValue)
 		{
 			if (Edit<Rotator>::Ptr edit = editWeakPtr.lock())
@@ -69,7 +103,8 @@ namespace TypesEditConstructor
 		return edit;
 	}
 
-	Edit<Vector2D>::Ptr FillVector2DEdit(QLayout* layout, const QString& label, const Vector2D& initialValue)
+	template<>
+	Edit<Vector2D>::Ptr FillEdit<Vector2D>(QLayout* layout, const QString& label, const Vector2D& initialValue)
 	{
 		FillLabel(layout, label);
 
@@ -78,7 +113,7 @@ namespace TypesEditConstructor
 		Edit<Vector2D>::Ptr edit = std::make_shared<Edit<Vector2D>>(initialValue);
 		Edit<Vector2D>::WeakPtr editWeakPtr = edit;
 
-		Edit<float>::Ptr editX = FillFloatEdit(innerLayout, "x", initialValue.x);
+		Edit<float>::Ptr editX = FillEdit<float>(innerLayout, "x", initialValue.x);
 		editX->bindOnChange([editWeakPtr](float /*oldValue*/, float newValue)
 		{
 			if (Edit<Vector2D>::Ptr edit = editWeakPtr.lock())
@@ -88,7 +123,7 @@ namespace TypesEditConstructor
 		});
 		edit->addChild("x", editX);
 
-		Edit<float>::Ptr editY = FillFloatEdit(innerLayout, "y", initialValue.y);
+		Edit<float>::Ptr editY = FillEdit<float>(innerLayout, "y", initialValue.y);
 		editY->bindOnChange([editWeakPtr](float /*oldValue*/, float newValue)
 		{
 			if (Edit<Vector2D>::Ptr edit = editWeakPtr.lock())
@@ -103,5 +138,11 @@ namespace TypesEditConstructor
 		container->setLayout(innerLayout);
 		layout->addWidget(container);
 		return edit;
+	}
+
+	template<>
+	Edit<Hull>::Ptr FillEdit<Hull>(QLayout* layout, const QString& label, const Hull& initialValue)
+	{
+		return std::make_shared<Edit<Hull>>(initialValue);
 	}
 }

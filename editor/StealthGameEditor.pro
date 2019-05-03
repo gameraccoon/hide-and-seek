@@ -32,27 +32,63 @@ SOURCES += \
     src/editorcommands/editorcommand.cpp \
     src/editorcommands/changeentitycommand.cpp \
     src/editorcommands/editorcommandsstack.cpp \
-    src/componenteditcontent/generated/transformcomponenteditfactory.generated.cpp \
     src/componenteditcontent/abstracteditfactory.cpp \
     src/componenteditcontent/componentcontentfactory.cpp \
     src/componenteditcontent/componentregistration.cpp \
     src/componenteditcontent/typeseditconstructor.cpp \
-    src/editorcommands/generated/changetransformcomponentlocationcommand.generated.cpp \
-    src/editorcommands/generated/changetransformcomponentrotationcommand.generated.cpp
+    src/componenteditcontent/generated/CameraComponentEditFactory.generated.cpp \
+    src/componenteditcontent/generated/CollisionComponentEditFactory.generated.cpp \
+    src/componenteditcontent/generated/LightComponentEditFactory.generated.cpp \
+    src/componenteditcontent/generated/MovementComponentEditFactory.generated.cpp \
+    src/componenteditcontent/generated/RenderComponentEditFactory.generated.cpp \
+    src/componenteditcontent/generated/TransformComponentEditFactory.generated.cpp \
+    src/editorcommands/generated/ChangeCameraComponentIsFloatingCommand.generated.cpp \
+    src/editorcommands/generated/ChangeCollisionComponentBoundingBoxCommand.generated.cpp \
+    src/editorcommands/generated/ChangeCollisionComponentGeometryCommand.generated.cpp \
+    src/editorcommands/generated/ChangeCollisionComponentIsBoundingBoxDirtyCommand.generated.cpp \
+    src/editorcommands/generated/ChangeCollisionComponentOriginalBoundingBoxCommand.generated.cpp \
+    src/editorcommands/generated/ChangeLightComponentBrightnessCommand.generated.cpp \
+    src/editorcommands/generated/ChangeMovementComponentLastStepCommand.generated.cpp \
+    src/editorcommands/generated/ChangeMovementComponentSpeedCommand.generated.cpp \
+    src/editorcommands/generated/ChangeRenderComponentAnchorCommand.generated.cpp \
+    src/editorcommands/generated/ChangeRenderComponentScaleCommand.generated.cpp \
+    src/editorcommands/generated/ChangeRenderComponentSizeCommand.generated.cpp \
+    src/editorcommands/generated/ChangeRenderComponentTextureHandleCommand.generated.cpp \
+    src/editorcommands/generated/ChangeRenderComponentTexturePathCommand.generated.cpp \
+    src/editorcommands/generated/ChangeTransformComponentLocationCommand.generated.cpp \
+    src/editorcommands/generated/ChangeTransformComponentRotationCommand.generated.cpp
 
 HEADERS += \
     src/mainwindow.h \
     src/editorcommands/editorcommand.h \
     src/editorcommands/changeentitycommand.h \
     src/editorcommands/editorcommandsstack.h \
-    src/componenteditcontent/generated/transformcomponenteditfactory.generated.h \
     src/componenteditcontent/abstracteditfactory.h \
     src/componenteditcontent/componentcontentfactory.h \
     src/componenteditcontent/componentregistration.h \
     src/componenteditcontent/typeseditconstructor.h \
     src/componenteditcontent/typeeditconstructorhelpers.h \
-    src/editorcommands/generated/changetransformcomponentlocationcommand.generated.h \
-    src/editorcommands/generated/changetransformcomponentrotationcommand.generated.h
+    src/componenteditcontent/generated/CameraComponentEditFactory.generated.h \
+    src/componenteditcontent/generated/CollisionComponentEditFactory.generated.h \
+    src/componenteditcontent/generated/LightComponentEditFactory.generated.h \
+    src/componenteditcontent/generated/MovementComponentEditFactory.generated.h \
+    src/componenteditcontent/generated/RenderComponentEditFactory.generated.h \
+    src/componenteditcontent/generated/TransformComponentEditFactory.generated.h \
+    src/editorcommands/generated/ChangeCameraComponentIsFloatingCommand.generated.h \
+    src/editorcommands/generated/ChangeCollisionComponentBoundingBoxCommand.generated.h \
+    src/editorcommands/generated/ChangeCollisionComponentGeometryCommand.generated.h \
+    src/editorcommands/generated/ChangeCollisionComponentIsBoundingBoxDirtyCommand.generated.h \
+    src/editorcommands/generated/ChangeCollisionComponentOriginalBoundingBoxCommand.generated.h \
+    src/editorcommands/generated/ChangeMovementComponentLastStepCommand.generated.h \
+    src/editorcommands/generated/ChangeLightComponentBrightnessCommand.generated.h \
+    src/editorcommands/generated/ChangeMovementComponentSpeedCommand.generated.h \
+    src/editorcommands/generated/ChangeRenderComponentAnchorCommand.generated.h \
+    src/editorcommands/generated/ChangeRenderComponentScaleCommand.generated.h \
+    src/editorcommands/generated/ChangeRenderComponentSizeCommand.generated.h \
+    src/editorcommands/generated/ChangeRenderComponentTextureHandleCommand.generated.h \
+    src/editorcommands/generated/ChangeRenderComponentTexturePathCommand.generated.h \
+    src/editorcommands/generated/ChangeTransformComponentLocationCommand.generated.h \
+    src/editorcommands/generated/ChangeTransformComponentRotationCommand.generated.h
 
 FORMS += \
     forms/mainwindow.ui

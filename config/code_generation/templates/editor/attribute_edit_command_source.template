@@ -1,4 +1,4 @@
-#include "change{component_name}component{attribute_name}command.generated.h"
+#include "Change{class_name}{attribute_name_capital}Command.generated.h"
 
 #include <Components/{class_name}.generated.h>
 

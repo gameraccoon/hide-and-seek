@@ -1,4 +1,4 @@
-#include "{component_name}componenteditfactory.generated.h"
+#include "{class_name}EditFactory.generated.h"
 
 #include <QWidget>
 #include <QLayout>

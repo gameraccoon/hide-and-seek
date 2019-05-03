@@ -6,7 +6,8 @@
 			"name": "scale",
 			"type": "Vector2D",
 			"default": " = ZERO_VECTOR",
-			"include": "\"Core/Vector2D.h\""
+			"include": "\"Core/Vector2D.h\"",
+			"flags": ["transient"]
 		},
 		{
 			"name": "size",

@@ -10,23 +10,23 @@
 		"output_dir": "src/Engine/src/Components/"
 	},
 	{
-		"name_template": "{component_name}componenteditfactory.generated.h",
+		"name_template": "{class_name}EditFactory.generated.h",
 		"template": "editor/component_edit_factory_header",
 		"output_dir": "editor/src/componenteditcontent/generated/"
 	},
 	{
-		"name_template": "{component_name}componenteditfactory.generated.cpp",
+		"name_template": "{class_name}EditFactory.generated.cpp",
 		"template": "editor/component_edit_factory_source",
 		"output_dir": "editor/src/componenteditcontent/generated/"
 	},
 	{
-		"name_template": "change{component_name}component{attribute_name}command.generated.h",
+		"name_template": "Change{class_name}{attribute_name_capital}Command.generated.h",
 		"template": "editor/attribute_edit_command_header",
 		"output_dir": "editor/src/editorcommands/generated/",
 		"per_attribute": true
 	},
 	{
-		"name_template": "change{component_name}component{attribute_name}command.generated.cpp",
+		"name_template": "Change{class_name}{attribute_name_capital}Command.generated.cpp",
 		"template": "editor/attribute_edit_command_source",
 		"output_dir": "editor/src/editorcommands/generated/",
 		"per_attribute": true

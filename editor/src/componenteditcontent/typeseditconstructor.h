@@ -4,8 +4,6 @@
 #include <QLayout>
 #include <QString>
 
-#include <Core/Vector2D.h>
-
 #include "typeeditconstructorhelpers.h"
 
 namespace TypesEditConstructor
@@ -13,12 +11,8 @@ namespace TypesEditConstructor
 	// helpers
 	void FillLabel(QLayout* layout, const QString& label);
 
-	// base types
-	Edit<float>::Ptr FillFloatEdit(QLayout* layout, const QString& label, float initialValue);
-
-	// complex types
-	Edit<Vector2D>::Ptr FillVector2DEdit(QLayout* layout, const QString& label, const Vector2D& initialValue);
-	Edit<Rotator>::Ptr FillRotatorEdit(QLayout* layout, const QString& label, const Rotator& initialValue);
+	template<typename T>
+	typename Edit<T>::Ptr FillEdit(QLayout* layout, const QString& label, const T& initialValue);
 };
 
 #endif // TYPESEDITCONSTRUCTOR_H

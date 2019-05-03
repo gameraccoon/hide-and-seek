@@ -56,7 +56,12 @@ def get_attribute_data_dictionary(attribute):
 
     attribute_data_dictionary["attribute_name_capital"] = capitalize(attribute["name"])
 
-    # fill missing fields from defaults
+    if "include" in attribute and len(attribute["include"]) > 0:
+        attribute_data_dictionary["attribute_include_full"] = "#include " + attribute["include"]
+    else:
+        attribute_data_dictionary["attribute_include_full"] = ""
+
+# fill missing fields from defaults
     for field_name, field_value in attribute_optional_fields.items():
         if ("attribute_" + field_name) not in attribute_data_dictionary:
             attribute_data_dictionary["attribute_" + field_name] = field_value

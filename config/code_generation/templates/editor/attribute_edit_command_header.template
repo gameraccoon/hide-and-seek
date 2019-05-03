@@ -2,7 +2,7 @@
 
 #include "src/editorcommands/editorcommand.h"
 
-#include {attribute_include}
+{attribute_include_full}
 
 class Change{class_name}{attribute_name_capital}Command : public EditorCommand
 {{
