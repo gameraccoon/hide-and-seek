@@ -17,7 +17,8 @@ namespace TypesEditConstructor
 	Edit<float>::Ptr FillFloatEdit(QLayout* layout, const QString& label, float initialValue);
 
 	// complex types
-	Edit<Vector2D>::Ptr FillVector2DEdit(QLayout* layout, const QString& label, const Vector2D initialValue);
+	Edit<Vector2D>::Ptr FillVector2DEdit(QLayout* layout, const QString& label, const Vector2D& initialValue);
+	Edit<Rotator>::Ptr FillRotatorEdit(QLayout* layout, const QString& label, const Rotator& initialValue);
 };
 
 #endif // TYPESEDITCONSTRUCTOR_H

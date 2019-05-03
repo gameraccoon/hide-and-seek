@@ -1,6 +1,6 @@
 #include "componentregistration.h"
 
-#include "transformcomponenteditfactory.h"
+#include "generated/transformcomponenteditfactory.generated.h"
 
 #include <Components/CameraComponent.generated.h>
 #include <Components/CollisionComponent.generated.h>

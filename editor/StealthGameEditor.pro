@@ -32,27 +32,27 @@ SOURCES += \
     src/editorcommands/editorcommand.cpp \
     src/editorcommands/changeentitycommand.cpp \
     src/editorcommands/editorcommandsstack.cpp \
-    src/componenteditcontent/transformcomponenteditfactory.cpp \
+    src/componenteditcontent/generated/transformcomponenteditfactory.generated.cpp \
     src/componenteditcontent/abstracteditfactory.cpp \
     src/componenteditcontent/componentcontentfactory.cpp \
     src/componenteditcontent/componentregistration.cpp \
     src/componenteditcontent/typeseditconstructor.cpp \
-    src/editorcommands/changetransformcomponentlocationcommand.cpp \
-    src/editorcommands/changetransformcomponentrotationcommand.cpp
+    src/editorcommands/generated/changetransformcomponentlocationcommand.generated.cpp \
+    src/editorcommands/generated/changetransformcomponentrotationcommand.generated.cpp
 
 HEADERS += \
     src/mainwindow.h \
     src/editorcommands/editorcommand.h \
     src/editorcommands/changeentitycommand.h \
     src/editorcommands/editorcommandsstack.h \
-    src/componenteditcontent/transformcomponenteditfactory.h \
+    src/componenteditcontent/generated/transformcomponenteditfactory.generated.h \
     src/componenteditcontent/abstracteditfactory.h \
     src/componenteditcontent/componentcontentfactory.h \
     src/componenteditcontent/componentregistration.h \
     src/componenteditcontent/typeseditconstructor.h \
     src/componenteditcontent/typeeditconstructorhelpers.h \
-    src/editorcommands/changetransformcomponentlocationcommand.h \
-    src/editorcommands/changetransformcomponentrotationcommand.h
+    src/editorcommands/generated/changetransformcomponentlocationcommand.generated.h \
+    src/editorcommands/generated/changetransformcomponentrotationcommand.generated.h
 
 FORMS += \
     forms/mainwindow.ui

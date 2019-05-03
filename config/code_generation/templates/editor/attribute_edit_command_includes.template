@@ -1,0 +1,1 @@
+#include "src/editorcommands/change{component_name}component{attribute_name}command.h"{delim_endl}

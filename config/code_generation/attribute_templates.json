@@ -29,5 +29,20 @@
 		"name": "attributes_json_deserialization",
 		"params": [],
 		"blacklist": ["transient"]
+	},
+	{
+		"name": "editor/attribute_edit_fields",
+		"params": [],
+		"blacklist": ["transient"]
+	},
+	{
+		"name": "editor/attribute_edit_command_includes",
+		"params": [],
+		"blacklist": ["transient"]
+	},
+	{
+		"name": "editor/attribute_edit_initialization",
+		"params": [],
+		"blacklist": ["transient"]
 	}
 ]

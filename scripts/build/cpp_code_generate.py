@@ -6,12 +6,10 @@ from os import path
 
 import sys
 
-
 if len(sys.argv) > 1:
     working_dir = sys.argv[1]
 else:
     working_dir = os.getcwd()
-
 
 templates_dir = path.join(working_dir, "config/code_generation/templates")
 descriptions_dir = path.join(working_dir, "src/Engine/desc/Components")
@@ -67,9 +65,6 @@ def get_attribute_data_dictionary(attribute):
 
 
 def append_attributes_data_dictionary(data_dictionary, data_description):
-    for attribute in data_description["attributes"]:
-        attribute["data_dict"] = get_attribute_data_dictionary(attribute)
-
     for attribute_template_data in attribute_templates:
         template_name = attribute_template_data["name"]
 
@@ -95,16 +90,16 @@ def append_attributes_data_dictionary(data_dictionary, data_description):
             replacement_content_elements.append(attribute["data_dict"])
 
         # generate content
-        for data_dict in replacement_content_elements:
+        for replace_content_dict in replacement_content_elements:
             # skip delimiters for the last attribute
-            if data_dict is replacement_content_elements[len(replacement_content_elements) - 1]:
+            if replace_content_dict is replacement_content_elements[len(replacement_content_elements) - 1]:
                 delimiter_dict = empty_delimiter_dictionary
             else:
                 delimiter_dict = delimiter_dictionary
 
             new_replacement_line = replace_content(template, {
                 **data_dictionary,
-                **data_dict,
+                **replace_content_dict,
                 **delimiter_dict
             })
 
@@ -126,7 +121,7 @@ def get_full_data_dictionary(data_description):
     return full_data_dictionary
 
 
-def generate_cpp_file(template_name, destination_dir, file_name_template, full_data_dictionary):
+def generate_component_cpp_file(template_name, destination_dir, file_name_template, full_data_dictionary):
     template = read_template(template_name)
     generated_content = replace_content(template, full_data_dictionary)
     file_name = replace_content(file_name_template, full_data_dictionary)
@@ -137,12 +132,36 @@ def generate_cpp_file(template_name, destination_dir, file_name_template, full_d
     write_file(path.join(destination_dir, file_name), generated_content)
 
 
+def generate_per_attribute_cpp_files(data_description, template_name, destination_dir, file_name_template, full_data_dictionary):
+    template = read_template(template_name)
+    for attribute in data_description["attributes"]:
+        attribute_dict = {
+            **full_data_dictionary,
+            **attribute["data_dict"]
+        }
+
+        generated_content = replace_content(template, attribute_dict)
+        file_name = replace_content(file_name_template, attribute_dict)
+
+        if not os.path.exists(destination_dir):
+            os.makedirs(destination_dir)
+
+        write_file(path.join(destination_dir, file_name), generated_content)
+
+
 def generate_files(file_infos, data_description):
     full_data_dict = get_full_data_dictionary(data_description)
     for file_info in file_infos:
-        generate_cpp_file(file_info["template"],
-                          path.join(working_dir, file_info["output_dir"]),
-                          file_info["name_template"], full_data_dict)
+        if "per_attribute" in file_info and file_info["per_attribute"]:
+            generate_per_attribute_cpp_files(data_description, file_info["template"],
+                                             path.join(working_dir, file_info["output_dir"]),
+                                             file_info["name_template"],
+                                             full_data_dict)
+        else:
+            generate_component_cpp_file(file_info["template"],
+                                        path.join(working_dir, file_info["output_dir"]),
+                                        file_info["name_template"],
+                                        full_data_dict)
 
 
 def load_json(file_path):
@@ -151,7 +170,12 @@ def load_json(file_path):
 
 
 def load_component_data_description(file_path):
-    return load_json(file_path)
+    component_data = load_json(file_path)
+
+    for attribute in component_data["attributes"]:
+        attribute["data_dict"] = get_attribute_data_dictionary(attribute)
+
+    return component_data
 
 
 def generate_all():

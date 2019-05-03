@@ -1,0 +1,28 @@
+#include "change{component_name}component{attribute_name}command.generated.h"
+
+#include <Components/{class_name}.generated.h>
+
+Change{class_name}{attribute_name_capital}Command::Change{class_name}{attribute_name_capital}Command(const Entity& entity, const {attribute_type}& old{attribute_name_capital}, const {attribute_type}& new{attribute_name_capital})
+	: mEntity(entity)
+	, mOld{attribute_name_capital}(old{attribute_name_capital})
+	, mNew{attribute_name_capital}(new{attribute_name_capital})
+{{
+}}
+
+void Change{class_name}{attribute_name_capital}Command::doCommand(World* world)
+{{
+	auto [component] = world->getEntityManger().getEntityComponents<{class_name}>(mEntity);
+	if (component)
+	{{
+		component->set{attribute_name_capital}(mNew{attribute_name_capital});
+	}}
+}}
+
+void Change{class_name}{attribute_name_capital}Command::undoCommand(World* world)
+{{
+	auto [component] = world->getEntityManger().getEntityComponents<{class_name}>(mEntity);
+	if (component)
+	{{
+		component->set{attribute_name_capital}(mOld{attribute_name_capital});
+	}}
+}}

@@ -4,6 +4,9 @@
 #include <QLineEdit>
 #include <QHBoxLayout>
 
+static const float RAD_TO_DEG = 180.0f / PI;
+static const float DEG_TO_RAD = 1.0f / RAD_TO_DEG;
+
 namespace TypesEditConstructor
 {
 	void FillLabel(QLayout* layout, const QString& label)
@@ -40,7 +43,33 @@ namespace TypesEditConstructor
 		return edit;
 	}
 
-	Edit<Vector2D>::Ptr FillVector2DEdit(QLayout* layout, const QString& label, const Vector2D initialValue)
+	Edit<Rotator>::Ptr FillRotatorEdit(QLayout* layout, const QString& label, const Rotator& initialValue)
+	{
+		FillLabel(layout, label);
+
+		QHBoxLayout *innerLayout = new QHBoxLayout;
+
+		Edit<Rotator>::Ptr edit = std::make_shared<Edit<Rotator>>(initialValue);
+		Edit<Rotator>::WeakPtr editWeakPtr = edit;
+
+		Edit<float>::Ptr editX = FillFloatEdit(innerLayout, "value", initialValue.getValue() * RAD_TO_DEG);
+		editX->bindOnChange([editWeakPtr](float /*oldValue*/, float newValue)
+		{
+			if (Edit<Rotator>::Ptr edit = editWeakPtr.lock())
+			{
+				edit->transmitValueChange(Rotator(newValue * DEG_TO_RAD));
+			}
+		});
+		edit->addChild("value", editX);
+
+		innerLayout->addStretch();
+		QWidget* container = new QWidget();
+		container->setLayout(innerLayout);
+		layout->addWidget(container);
+		return edit;
+	}
+
+	Edit<Vector2D>::Ptr FillVector2DEdit(QLayout* layout, const QString& label, const Vector2D& initialValue)
 	{
 		FillLabel(layout, label);
 

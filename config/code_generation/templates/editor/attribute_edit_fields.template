@@ -1,0 +1,1 @@
+TypesEditConstructor::Edit<{attribute_type}>::Ptr m{attribute_name_capital}Edit;{delim_endl}{delim_tab}
