@@ -15,8 +15,8 @@ public:
 public:
 	ChangeEntityCommand(SetterFunction setterFunc, NullableEntity oldEntity, NullableEntity newEntity, QComboBox* affectedCombobox);
 
-	void doCommand(World* world) override;
-	void undoCommand(World* world) override;
+	bool doCommand(World* world) override;
+	bool undoCommand(World* world) override;
 
 private:
 	NullableEntity mOldEntity;

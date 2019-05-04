@@ -10,7 +10,7 @@ void EditorCommandsStack::undo(World* world)
 
 		if (mChangeHandler)
 		{
-			mChangeHandler();
+			mChangeHandler(true);
 		}
 	}
 }
@@ -24,7 +24,7 @@ void EditorCommandsStack::redo(World* world)
 
 		if (mChangeHandler)
 		{
-			mChangeHandler();
+			mChangeHandler(true);
 		}
 	}
 }
@@ -45,7 +45,7 @@ void EditorCommandsStack::clear()
 	mCurrentHeadIndex = -1;
 }
 
-void EditorCommandsStack::bindFunctionToCommandChange(std::function<void ()> handler)
+void EditorCommandsStack::bindFunctionToCommandChange(OnChangeFn handler)
 {
 	mChangeHandler = handler;
 }
@@ -62,6 +62,6 @@ void EditorCommandsStack::clearOldCommands()
 
 	if (mChangeHandler)
 	{
-		mChangeHandler();
+		mChangeHandler(false);
 	}
 }

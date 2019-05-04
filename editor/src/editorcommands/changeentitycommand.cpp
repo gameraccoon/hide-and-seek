@@ -15,18 +15,20 @@ ChangeEntityCommand::ChangeEntityCommand(ChangeEntityCommand::SetterFunction set
 {
 }
 
-void ChangeEntityCommand::doCommand(World* world)
+bool ChangeEntityCommand::doCommand(World* world)
 {
 	(world->*mSetterFunc)(mNewEntity);
 	mAffectedCombobox->blockSignals(true);
 	mAffectedCombobox->setCurrentText(QString::number(mNewEntity.mId));
 	mAffectedCombobox->blockSignals(false);
+	return false;
 }
 
-void ChangeEntityCommand::undoCommand(World* world)
+bool ChangeEntityCommand::undoCommand(World* world)
 {
 	(world->*mSetterFunc)(mOldEntity);
 	mAffectedCombobox->blockSignals(true);
 	mAffectedCombobox->setCurrentText(QString::number(mOldEntity.mId));
 	mAffectedCombobox->blockSignals(false);
+	return false;
 }

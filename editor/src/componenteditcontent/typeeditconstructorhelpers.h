@@ -19,7 +19,7 @@ namespace TypesEditConstructor
 	public:
 		typedef std::shared_ptr<Edit> Ptr;
 		typedef std::weak_ptr<Edit> WeakPtr;
-		typedef std::function<void(const T&, const T&)> OnChangeFn;
+		typedef std::function<void(const T&, const T&, bool)> OnChangeFn;
 
 	public:
 		Edit(T initialValue)
@@ -37,21 +37,21 @@ namespace TypesEditConstructor
 			mOnChange = onChange;
 		}
 
-		void transmitValueChange(T newValue)
+		void transmitValueChange(T newValue, bool needLayoutUpdate = false)
 		{
 			if (newValue != mPrevValue)
 			{
 				if (mOnChange)
 				{
-					mOnChange(mPrevValue, std::forward<T>(newValue));
+					mOnChange(mPrevValue, std::forward<T>(newValue), needLayoutUpdate);
 				}
 				mPrevValue = newValue;
 			}
 		}
 
-		void addChild(const QString& childName, BaseEdit::Ptr child)
+		void addChild(BaseEdit::Ptr child)
 		{
-			mChildObjects.try_emplace(childName, child);
+			mChildObjects.emplace_back(child);
 		}
 
 		QObject* getOwner() { return mOwner; }
@@ -64,7 +64,7 @@ namespace TypesEditConstructor
 		T mPrevValue;
 		OnChangeFn mOnChange;
 		QObject* mOwner = new QObject();
-		std::map<QString, BaseEdit::Ptr> mChildObjects;
+		std::vector<BaseEdit::Ptr> mChildObjects;
 	};
 }
 

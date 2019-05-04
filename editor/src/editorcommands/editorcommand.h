@@ -9,8 +9,8 @@ class EditorCommand
 {
 public:
 	virtual ~EditorCommand() = default;
-	virtual void doCommand(World* world) = 0;
-	virtual void undoCommand(World* world) = 0;
+	virtual bool doCommand(World* world) = 0;
+	virtual bool undoCommand(World* world) = 0;
 };
 
 #endif // EDITORCOMMAND_H

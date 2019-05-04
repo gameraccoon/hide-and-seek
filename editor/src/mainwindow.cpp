@@ -28,9 +28,13 @@ MainWindow::MainWindow(QWidget* parent) :
 	ComponentRegistration::RegisterComponentFactory(mComponentFactory);
 	mComponentContentFactory.registerComponents();
 
-	mCommandStack.bindFunctionToCommandChange([this]()
+	mCommandStack.bindFunctionToCommandChange([this](bool needToReloadLayout)
 	{
 		this->updateUndoRedo();
+		if (needToReloadLayout)
+		{
+			this->updateSelectedComponentData();
+		}
 	});
 	updateUndoRedo();
 }
@@ -257,7 +261,6 @@ void MainWindow::on_actionUndo_triggered()
 	{
 		mCommandStack.undo(mCurrentWorld.get());
 	}
-	updateSelectedComponentData();
 }
 
 void MainWindow::on_actionRedo_triggered()
@@ -266,7 +269,6 @@ void MainWindow::on_actionRedo_triggered()
 	{
 		mCommandStack.redo(mCurrentWorld.get());
 	}
-	updateSelectedComponentData();
 }
 
 void MainWindow::on_entitiesList_currentItemChanged(QListWidgetItem* current, QListWidgetItem* /*previous*/)

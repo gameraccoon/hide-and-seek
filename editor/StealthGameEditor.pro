@@ -29,7 +29,6 @@ QMAKE_CXXFLAGS += -std=c++17
 SOURCES += \
     src/main.cpp \
     src/mainwindow.cpp \
-    src/editorcommands/editorcommand.cpp \
     src/editorcommands/changeentitycommand.cpp \
     src/editorcommands/editorcommandsstack.cpp \
     src/componenteditcontent/abstracteditfactory.cpp \

@@ -19,6 +19,19 @@ void Hull::generateBorders()
 	}
 }
 
+bool operator==(const Hull& left, const Hull& right)
+{
+	return left.type == right.type &&
+	((left.type == Hull::Type::Angular && left.points == right.points)
+	 ||
+	 (left.type == Hull::Type::Circular && left.radius == right.radius));
+}
+
+bool operator!=(const Hull& left, const Hull& right)
+{
+	return !(left == right);
+}
+
 float Hull::getQRadius() const
 {
 	return qRadius;

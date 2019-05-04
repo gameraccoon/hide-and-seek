@@ -29,6 +29,9 @@ public:
 	/** Calc borders from points */
 	void generateBorders();
 
+	friend bool operator==(const Hull& left, const Hull& right);
+	friend bool operator!=(const Hull& left, const Hull& right);
+
 	friend void to_json(nlohmann::json& outJson, const Hull& hull);
 	friend void from_json(const nlohmann::json& json, Hull& hull);
 	
