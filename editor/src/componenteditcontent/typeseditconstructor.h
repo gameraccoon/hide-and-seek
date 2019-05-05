@@ -13,6 +13,6 @@ namespace TypesEditConstructor
 
 	template<typename T>
 	typename Edit<T>::Ptr FillEdit(QLayout* layout, const QString& label, const T& initialValue);
-};
+}
 
 #endif // TYPESEDITCONSTRUCTOR_H

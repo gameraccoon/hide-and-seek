@@ -1,0 +1,3 @@
+[submodule "editor/Qt-Advanced-Docking-System"]
+	path = editor/Qt-Advanced-Docking-System
+	url = git@github.com:gameraccoon/Qt-Advanced-Docking-System.git

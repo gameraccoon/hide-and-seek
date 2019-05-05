@@ -41,7 +41,7 @@ namespace TypesEditConstructor
 		Edit<float>::Ptr edit = std::make_shared<Edit<float>>(initialValue);
 		Edit<float>::WeakPtr editWeakPtr = edit;
 
-		floatEdit->connect(floatEdit, &QLineEdit::textChanged, edit->getOwner(), [editWeakPtr](const QString& newValueStr)
+		QObject::connect(floatEdit, &QLineEdit::textChanged, edit->getOwner(), [editWeakPtr](const QString& newValueStr)
 		{
 			if (Edit<float>::Ptr edit = editWeakPtr.lock())
 			{
@@ -69,7 +69,7 @@ namespace TypesEditConstructor
 		Edit<bool>::Ptr edit = std::make_shared<Edit<bool>>(initialValue);
 		Edit<bool>::WeakPtr editWeakPtr = edit;
 
-		checkbox->connect(checkbox, &QCheckBox::stateChanged, edit->getOwner(), [editWeakPtr](int newValue)
+		QObject::connect(checkbox, &QCheckBox::stateChanged, edit->getOwner(), [editWeakPtr](int newValue)
 		{
 			if (Edit<bool>::Ptr edit = editWeakPtr.lock())
 			{
@@ -92,7 +92,7 @@ namespace TypesEditConstructor
 		Edit<std::string>::Ptr edit = std::make_shared<Edit<std::string>>(initialValue);
 		Edit<std::string>::WeakPtr editWeakPtr = edit;
 
-		stringEdit->connect(stringEdit, &QLineEdit::textChanged, edit->getOwner(), [editWeakPtr](const QString& newValue)
+		QObject::connect(stringEdit, &QLineEdit::textChanged, edit->getOwner(), [editWeakPtr](const QString& newValue)
 		{
 			if (Edit<std::string>::Ptr edit = editWeakPtr.lock())
 			{
@@ -207,7 +207,7 @@ namespace TypesEditConstructor
 			QPushButton* removeButton = new QPushButton();
 			removeButton->setText("x");
 			Edit<bool>::Ptr removePoint = std::make_shared<Edit<bool>>(false);
-			removeButton->connect(removeButton, &QPushButton::pressed, edit->getOwner(), [editWeakPtr, index]()
+			QObject::connect(removeButton, &QPushButton::pressed, edit->getOwner(), [editWeakPtr, index]()
 			{
 				if (Edit<Hull>::Ptr edit = editWeakPtr.lock())
 				{
@@ -224,7 +224,7 @@ namespace TypesEditConstructor
 		QPushButton* addButton = new QPushButton();
 		addButton->setText("add point");
 		Edit<bool>::Ptr addPoint = std::make_shared<Edit<bool>>(false);
-		addButton->connect(addButton, &QPushButton::pressed, edit->getOwner(), [editWeakPtr]()
+		QObject::connect(addButton, &QPushButton::pressed, edit->getOwner(), [editWeakPtr]()
 		{
 			if (Edit<Hull>::Ptr edit = editWeakPtr.lock())
 			{
