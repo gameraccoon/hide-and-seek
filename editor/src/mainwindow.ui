@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>509</width>
-    <height>258</height>
+    <width>799</width>
+    <height>413</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,14 +20,13 @@
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
-   <layout class="QHBoxLayout" name="horizontalLayout_2"/>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>509</width>
+     <width>799</width>
      <height>27</height>
     </rect>
    </property>
@@ -164,12 +163,12 @@
   </action>
   <action name="actionComponent_Properties">
    <property name="text">
-    <string>Component Properties</string>
+    <string>Component Attributes</string>
    </property>
   </action>
   <action name="actionWorld_Settings">
    <property name="text">
-    <string>World Settings</string>
+    <string>World Properties</string>
    </property>
   </action>
  </widget>
