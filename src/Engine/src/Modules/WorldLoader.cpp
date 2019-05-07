@@ -17,10 +17,17 @@ namespace WorldLoader
 	{
 		std::filesystem::path levelPath = std::filesystem::path(levelName);
 
-		// if it's name, we search the map in maps folder
+		// if it's name, we save to maps folder
 		if (levelName.find_first_of("/\\.") == std::string::npos)
 		{
 			levelPath = MAPS_PATH / (levelName + ".json");
+		}
+		else
+		{
+			if (!levelPath.has_extension())
+			{
+				levelPath = levelPath.string() + ".json";
+			}
 		}
 
 		try {
