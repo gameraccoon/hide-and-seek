@@ -34,6 +34,8 @@ public:
 	explicit MainWindow(QWidget* parent = nullptr);
 	~MainWindow();
 
+	void updateWorldData();
+
 	World* getCurrentWorld() { return mCurrentWorld.get(); }
 	ComponentFactory& getComponentFactory() { return mComponentFactory; }
 	ComponentContentFactory& getComponentContentFactory() { return mComponentContentFactory; }
@@ -59,7 +61,6 @@ private:
 	void registerFactories();
 	void fillWindowContent();
 	void createWorld();
-	void updateWorldData();
 	void updateSelectedComponentData(QListWidgetItem* selectedItem);
 	void updateSelectedComponentData();
 	void updateUndoRedo();

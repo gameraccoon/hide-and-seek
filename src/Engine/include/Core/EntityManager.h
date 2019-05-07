@@ -168,5 +168,5 @@ private:
 	std::unordered_map<Entity::EntityID, EntityIndex> mEntityIndexMap;
 	std::unordered_map<EntityIndex, Entity::EntityID> mIndexEntityMap;
 
-	unsigned int mMaxEntityIndex = 0;
+	EntityIndex mNextEntityIndex = 0;
 };

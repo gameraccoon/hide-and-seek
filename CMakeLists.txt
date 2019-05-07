@@ -44,9 +44,9 @@ else()
 endif()
 
 if (NOT WIN32)
-    find_package(SDL2 REQUIRED)
-    find_package(SDL2_image REQUIRED)
-    include_directories(${SDL2_INCLUDE_DIR})
+	find_package(SDL2 REQUIRED)
+	find_package(SDL2_image REQUIRED)
+	include_directories(${SDL2_INCLUDE_DIR})
 endif()
 
 include_directories(include)
@@ -64,7 +64,6 @@ include_directories(
 )
 
 link_directories(
-    /usr/local/lib
     ${EXTERNALS_DIR}/lib
     ${CMAKE_SOURCE_DIR}/vs_project
 )
@@ -106,7 +105,7 @@ add_folder_as_library(${SOURCE_ROOT}/SystemInterface SystemInterfaceLib)
 add_folder_as_library(${SOURCE_ROOT}/SqliteInterface SqliteInterfaceLib)
 add_folder_as_library(${SOURCE_ROOT}/StealthGame StealthGameLib)
 
-add_executable(${APP_NAME} ${SOURCE_ROOT}/main/win32/main.cpp)
+add_executable(${APP_NAME} ${SOURCE_ROOT}/main/main.cpp)
 set(GENERAL_PROJECT_LIBS
 #    sqlite3
 #    liblua52
@@ -146,7 +145,7 @@ target_link_libraries(${APP_NAME}
 
 set(TESTS_NAME UnitTests)
 set(TESTS_SRC
-    ${SOURCE_ROOT}/main/win32/tests_main.cpp
+    ${SOURCE_ROOT}/main/tests_main.cpp
     ${EXTERNALS_DIR}/googletest/src/gtest-all.cc
 )
 aux_source_directory(${SOURCE_ROOT}/UnitTests TESTS_SRC)

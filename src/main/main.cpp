@@ -3,6 +3,8 @@
 
 int main(int argc, char** argv)
 {
+	std::srand(static_cast<unsigned int>(time(nullptr)));
+
 	ArgumentsParser arguments(argc, argv);
 
 	Game::StealthGame game;

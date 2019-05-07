@@ -11,6 +11,8 @@ namespace ads
 }
 
 class QListWidgetItem;
+class QMenu;
+class QPoint;
 
 class EntitiesListToolbox : public QWidget
 {
@@ -24,9 +26,13 @@ public:
 	static const QString ToolboxName;
 	static const QString ContainerName;
 	static const QString ContainerContentName;
+	static const QString ListName;
 
 private:
 	void onCurrentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
+	void showContextMenu(const QPoint &pos);
+	void removeSelectedEntity();
+	void addComponentToEntity();
 
 private:
 	MainWindow* mMainWindow;
