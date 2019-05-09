@@ -5,6 +5,8 @@
 #include <Core/Entity.h>
 #include "Modules/ComponentFactory.h"
 
+#include <nlohmann/json.hpp>
+
 #include <QString>
 
 class World;
@@ -21,4 +23,5 @@ private:
 	Entity mEntity;
 	QString mComponentTypeName;
 	ComponentFactory* mComponentFactory;
+	nlohmann::json mSerializedComponent;
 };

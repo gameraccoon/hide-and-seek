@@ -14,20 +14,40 @@ RemoveComponentCommand::RemoveComponentCommand(Entity entity, const QString& typ
 
 bool RemoveComponentCommand::doCommand(World* world)
 {
+	std::string typeName = mComponentTypeName.toStdString();
+
+	std::vector<BaseComponent*> components = world->getEntityManger().getAllEntityComponents(mEntity);
+
+	auto it = std::find_if(components.begin(), components.end(), [&typeName](BaseComponent* component)
+	{
+		return component->getComponentTypeName() == typeName;
+	});
+
+	if (it == components.end())
+	{
+		return false;
+	}
+
+	(*it)->toJson(mSerializedComponent);
+
 	world->getEntityManger().removeComponent(
 		mEntity,
-		mComponentFactory->getTypeIDFromString(mComponentTypeName.toStdString()).value()
+		mComponentFactory->getTypeIDFromString(typeName).value()
 	);
 	return false;
 }
 
 bool RemoveComponentCommand::undoCommand(World* world)
 {
+	BaseComponent* component = mComponentFactory->createComponent(mComponentTypeName.toStdString());
+
+	component->fromJson(mSerializedComponent);
+
 	world->getEntityManger().addComponent(
 		mEntity,
-		mComponentFactory->createComponent(mComponentTypeName.toStdString()),
+		component,
 		mComponentFactory->getTypeIDFromString(mComponentTypeName.toStdString()).value()
 	);
-	Assert(false, "RemoveComponentCommand::undoCommand not implemented properly");
+
 	return false;
 }
