@@ -3,13 +3,13 @@
 #include "editorcommand.h"
 
 #include <Core/Entity.h>
-#include "Modules/ComponentFactory.h"
 
 #include <nlohmann/json.hpp>
 
 #include <QString>
 
 class World;
+class ComponentFactory;
 
 class RemoveComponentCommand : public EditorCommand
 {

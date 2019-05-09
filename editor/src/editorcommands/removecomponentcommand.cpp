@@ -2,8 +2,9 @@
 
 #include <QtWidgets/qcombobox.h>
 
-#include <Core/World.h>
-#include <Debug/Assert.h>
+#include "Core/World.h"
+#include "Debug/Assert.h"
+#include "Modules/ComponentFactory.h"
 
 RemoveComponentCommand::RemoveComponentCommand(Entity entity, const QString& typeName, ComponentFactory* factory)
 	: mEntity(entity)
@@ -16,19 +17,22 @@ bool RemoveComponentCommand::doCommand(World* world)
 {
 	std::string typeName = mComponentTypeName.toStdString();
 
-	std::vector<BaseComponent*> components = world->getEntityManger().getAllEntityComponents(mEntity);
-
-	auto it = std::find_if(components.begin(), components.end(), [&typeName](BaseComponent* component)
+	if (!mSerializedComponent.empty())
 	{
-		return component->getComponentTypeName() == typeName;
-	});
+		std::vector<BaseComponent*> components = world->getEntityManger().getAllEntityComponents(mEntity);
 
-	if (it == components.end())
-	{
-		return false;
+		auto it = std::find_if(components.begin(), components.end(), [&typeName](BaseComponent* component)
+		{
+			return component->getComponentTypeName() == typeName;
+		});
+
+		if (it == components.end())
+		{
+			return false;
+		}
+
+		(*it)->toJson(mSerializedComponent);
 	}
-
-	(*it)->toJson(mSerializedComponent);
 
 	world->getEntityManger().removeComponent(
 		mEntity,

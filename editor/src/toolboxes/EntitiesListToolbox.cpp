@@ -159,7 +159,11 @@ void EntitiesListToolbox::removeSelectedEntity()
 		return;
 	}
 
-	mMainWindow->getCommandStack().executeNewCommand<RemoveEntityCommand>(currentWorld, Entity(currentItem->text().toUInt()));
+	mMainWindow->getCommandStack().executeNewCommand<RemoveEntityCommand>(
+		currentWorld,
+		Entity(currentItem->text().toUInt()),
+		&mMainWindow->getComponentFactory()
+	);
 }
 
 void EntitiesListToolbox::onAddComponentToEntityRequested()
