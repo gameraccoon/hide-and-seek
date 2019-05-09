@@ -4,8 +4,6 @@
 
 #include <Core/World.h>
 
-#include "../mainwindow.h"
-
 AddEntityCommand::AddEntityCommand(Entity entity)
 	: mEntity(entity)
 {

@@ -34,7 +34,7 @@ public:
 private:
 	void updateContent();
 	void onCurrentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
-	void showContextMenu(const QPoint &pos);
+	void showContextMenu(const QPoint& pos);
 	void removeSelectedEntity();
 	void onAddComponentToEntityRequested();
 	void addComponentToEntity(const QString& typeName);

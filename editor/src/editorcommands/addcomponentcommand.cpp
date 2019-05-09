@@ -4,9 +4,6 @@
 
 #include <Core/World.h>
 
-#include "../mainwindow.h"
-
-
 AddComponentCommand::AddComponentCommand(Entity entity, const QString& typeName, ComponentFactory* factory)
 	: mEntity(entity)
 	, mComponentTypeName(typeName)

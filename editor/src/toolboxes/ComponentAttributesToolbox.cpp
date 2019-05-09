@@ -63,7 +63,7 @@ void ComponentAttributesToolbox::updateContent()
 
 void ComponentAttributesToolbox::clearContent()
 {
-	QWidget* componentAttributesContainerWidget = mDockManager->findChild<QWidget*>("ComponentAttributesContainer");
+	QWidget* componentAttributesContainerWidget = mDockManager->findChild<QWidget*>(ContainerName);
 	if (componentAttributesContainerWidget == nullptr)
 	{
 		return;
@@ -79,7 +79,7 @@ void ComponentAttributesToolbox::onSelectedComponentChange(const QString& compon
 		return;
 	}
 
-	QWidget* componentAttributesContainerWidget = mDockManager->findChild<QWidget*>("ComponentAttributesContainer");
+	QWidget* componentAttributesContainerWidget = mDockManager->findChild<QWidget*>(ContainerName);
 	if (componentAttributesContainerWidget == nullptr)
 	{
 		return;

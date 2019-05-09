@@ -113,7 +113,7 @@ void EntitiesListToolbox::onCurrentItemChanged(QListWidgetItem* current, QListWi
 	}
 }
 
-void EntitiesListToolbox::showContextMenu(const QPoint &pos)
+void EntitiesListToolbox::showContextMenu(const QPoint& pos)
 {
 	QListWidget* entitiesList = mDockManager->findChild<QListWidget*>(ListName);
 	if (entitiesList == nullptr)
@@ -128,13 +128,13 @@ void EntitiesListToolbox::showContextMenu(const QPoint &pos)
 
 	QMenu contextMenu(tr("Context menu"), this);
 
-	QAction actionRemove("Remove Entity", this);
-	connect(&actionRemove, &QAction::triggered, this, &EntitiesListToolbox::removeSelectedEntity);
-	contextMenu.addAction(&actionRemove);
-
 	QAction actionAddComponent("Add Component", this);
 	connect(&actionAddComponent, &QAction::triggered, this, &EntitiesListToolbox::onAddComponentToEntityRequested);
 	contextMenu.addAction(&actionAddComponent);
+
+	QAction actionRemove("Remove Entity", this);
+	connect(&actionRemove, &QAction::triggered, this, &EntitiesListToolbox::removeSelectedEntity);
+	contextMenu.addAction(&actionRemove);
 
 	contextMenu.exec(entitiesList->mapToGlobal(pos));
 }
