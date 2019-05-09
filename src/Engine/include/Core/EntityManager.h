@@ -38,6 +38,7 @@ public:
 	}
 
 	void addComponent(const Entity& entity, BaseComponent* component, std::type_index typeID);
+	void removeComponent(const Entity& entity, std::type_index typeID);
 
 	template<typename... Components>
 	std::tuple<Components*...> getEntityComponents(const Entity& entity)

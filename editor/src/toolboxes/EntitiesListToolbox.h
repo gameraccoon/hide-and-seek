@@ -45,7 +45,7 @@ private:
 	MainWindow* mMainWindow;
 	ads::CDockManager* mDockManager;
 
-	MulticastDelegate<>::HandleType mOnEntityAddedHandle;
-	MulticastDelegate<>::HandleType mOnEntityRemovedHandle;
-	MulticastDelegate<>::HandleType mOnWorldChangedHandle;
+	Delegates::HandleType mOnEntityAddedHandle;
+	Delegates::HandleType mOnEntityRemovedHandle;
+	Delegates::HandleType mOnWorldChangedHandle;
 };

@@ -2,8 +2,9 @@
 #include "ui_mainwindow.h"
 
 #include "src/componenteditcontent/componentcontentfactory.h"
-
 #include "src/componenteditcontent/componentregistration.h"
+
+#include "src/editorcommands/addentitycommand.h"
 
 #include "DockManager.h"
 #include "DockWidget.h"
@@ -53,7 +54,7 @@ void MainWindow::initCommandStack()
 		this->updateUndoRedo();
 		if (needToReloadLayout)
 		{
-			this->updateSelectedComponentData();
+			OnComponentContentChange.broadcast();
 		}
 	});
 
@@ -109,17 +110,6 @@ void MainWindow::createWorld()
 	mCurrentWorld = std::make_unique<World>();
 	mCommandStack.clear();
 	ui->actionRun_Game->setEnabled(true);
-}
-
-void MainWindow::updateSelectedComponentData()
-{
-	if (QListWidget* componentsList = mDockManager->findChild<QListWidget*>(ComponentsListToolbox::ListName))
-	{
-		if (QListWidgetItem* currentItem = componentsList->currentItem())
-		{
-			mComponentsListToolbox->updateSelectedComponentData(currentItem);
-		}
-	}
 }
 
 void MainWindow::updateUndoRedo()
@@ -184,7 +174,7 @@ void MainWindow::on_actionCreate_triggered()
 {
 	if (mCurrentWorld)
 	{
-		mCurrentWorld->getEntityManger().addEntity();
+		mCommandStack.executeNewCommand<AddEntityCommand>(mCurrentWorld.get(), mCurrentWorld->getEntityManger().getNonExistentEntity());
 	}
 }
 

@@ -45,7 +45,7 @@ TEST(Delegates, MultiCast)
 
 	delegate.broadcast(2);
 
-	MulticastDelegate<int>::HandleType handle = delegate.bind([&testVal1](int test){
+	Delegates::HandleType handle = delegate.bind([&testVal1](int test){
 		testVal1 += test;
 	});
 	delegate.broadcast(3);

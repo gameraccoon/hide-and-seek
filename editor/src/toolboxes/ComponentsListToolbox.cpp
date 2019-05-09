@@ -18,6 +18,15 @@ ComponentsListToolbox::ComponentsListToolbox(MainWindow* mainWindow, ads::CDockM
 	: mMainWindow(mainWindow)
 	, mDockManager(dockManager)
 {
+	mOnWorldChangedHandle = mMainWindow->OnWorldChanged.bind([this]{bindEvents(); updateContent();});
+	mOnEntityChangedHandle = mMainWindow->OnSelectedEntityChanged.bind([this](NullableEntity val){onSelectedEntityChanged(val);});
+}
+
+ComponentsListToolbox::~ComponentsListToolbox()
+{
+	mMainWindow->OnWorldChanged.unbind(mOnWorldChangedHandle);
+	mMainWindow->OnSelectedEntityChanged.unbind(mOnEntityChangedHandle);
+	unbindEvents();
 }
 
 void ComponentsListToolbox::show()
@@ -54,63 +63,62 @@ void ComponentsListToolbox::show()
 	QObject::connect(componentList, &QListWidget::currentItemChanged, this, &ComponentsListToolbox::onCurrentItemChanged);
 }
 
-void ComponentsListToolbox::updateSelectedComponentData(QListWidgetItem* selectedItem)
+void ComponentsListToolbox::updateContent()
 {
-	bool validComponentIsSelected = false;
-	if (selectedItem == nullptr)
+	onSelectedEntityChanged(mLastSelectedEntity);
+}
+
+void ComponentsListToolbox::onSelectedEntityChanged(NullableEntity newEntity)
+{
+	QListWidget* componentsList = mDockManager->findChild<QListWidget*>(ListName);
+	if (componentsList == nullptr)
 	{
 		return;
 	}
 
-	QListWidget* entitiesList = mDockManager->findChild<QListWidget*>("EntityList");
-	if (entitiesList == nullptr)
-	{
-		return;
-	}
-
-	QWidget* componentAttributesContainerWidget = mDockManager->findChild<QWidget*>("ComponentAttributesContainer");
-	if (componentAttributesContainerWidget == nullptr)
-	{
-		return;
-	}
-
-	QListWidgetItem* currentItem = entitiesList->currentItem();
-	if (currentItem == nullptr)
-	{
-		return;
-	}
+	componentsList->clear();
 
 	World* currentWorld = mMainWindow->getCurrentWorld();
-	if (currentWorld == nullptr)
-	{
-		return;
-	}
 
-	bool ok;
-	int index = currentItem->text().toInt(&ok);
-	if (ok && index != 0)
+	if (currentWorld && newEntity.isValid())
 	{
-		Entity entity = Entity(static_cast<Entity::EntityID>(index));
-		std::vector<BaseComponent*> entityComponents = currentWorld->getEntityManger().getAllEntityComponents(entity);
-		auto it = std::find_if(entityComponents.begin(), entityComponents.end(), [name = selectedItem->text().toStdString()](BaseComponent* component)
+		unsigned int entityUid = newEntity.getEntity().getID();
+		std::vector<BaseComponent*> components = currentWorld->getEntityManger().getAllEntityComponents(Entity(entityUid));
+		for (auto& component : components)
 		{
-			return component->getComponentTypeName().compare(name) == 0;
-		});
-
-		if (it != entityComponents.end())
-		{
-			mMainWindow->getComponentContentFactory().replaceEditContent(componentAttributesContainerWidget->layout(), entity, *it, mMainWindow->getCommandStack(), currentWorld);
-			validComponentIsSelected = true;
+			componentsList->addItem(QString::fromStdString(component->getComponentTypeName()));
 		}
 	}
 
-	if (!validComponentIsSelected)
-	{
-		mMainWindow->getComponentContentFactory().removeEditContent(componentAttributesContainerWidget->layout());
-	}
+	mLastSelectedEntity = newEntity;
 }
 
 void ComponentsListToolbox::onCurrentItemChanged(QListWidgetItem* current, QListWidgetItem* /*previous*/)
 {
-	updateSelectedComponentData(current);
+	if (current)
+	{
+		mMainWindow->OnSelectedComponentChanged.broadcast(current->text());
+	}
+	else
+	{
+		mMainWindow->OnSelectedComponentChanged.broadcast("");
+	}
+}
+
+void ComponentsListToolbox::bindEvents()
+{
+	if (World* currentWorld = mMainWindow->getCurrentWorld())
+	{
+		mOnComponentAddedHandle = currentWorld->getEntityManger().OnComponentAdded.bind([this]{updateContent();});
+		mOnComponentRemovedHandle = currentWorld->getEntityManger().OnComponentRemoved.bind([this]{updateContent();});
+	}
+}
+
+void ComponentsListToolbox::unbindEvents()
+{
+	if (World* currentWorld = mMainWindow->getCurrentWorld())
+	{
+		currentWorld->getEntityManger().OnComponentAdded.unbind(mOnComponentAddedHandle);
+		currentWorld->getEntityManger().OnComponentRemoved.unbind(mOnComponentRemovedHandle);
+	}
 }

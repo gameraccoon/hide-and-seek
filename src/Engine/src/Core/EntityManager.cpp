@@ -42,7 +42,7 @@ Entity EntityManager::getNonExistentEntity()
 	{
 		// ToDo: use generators
 		Entity::EntityID id = static_cast<Entity::EntityID>(std::rand());
-		if (mEntityIndexMap.find(id) != mEntityIndexMap.end())
+		if (mEntityIndexMap.find(id) == mEntityIndexMap.end())
 		{
 			return Entity(id);
 		}
@@ -134,6 +134,25 @@ void EntityManager::addComponent(const Entity& entity, BaseComponent* component,
 	addComponentToEntity(entityIdxItr->second, component, typeID);
 }
 
+void EntityManager::removeComponent(const Entity& entity, std::type_index typeID)
+{
+	auto entityIdxItr = mEntityIndexMap.find(entity.getID());
+	if (entityIdxItr == mEntityIndexMap.end())
+	{
+		return;
+	}
+
+	auto& componentsVector = mComponents[typeID];
+
+	if (componentsVector.size() > entityIdxItr->second)
+	{
+		delete componentsVector[entityIdxItr->second];
+		componentsVector[entityIdxItr->second] = nullptr;
+
+		OnComponentRemoved.broadcast();
+	}
+}
+
 nlohmann::json EntityManager::toJson(const ComponentFactory& componentFactory) const
 {
 	nlohmann::json outJson{
@@ -217,7 +236,10 @@ void EntityManager::addComponentToEntity(EntityIndex entityIdx, BaseComponent* c
 		}
 		componentsVector.resize(entityIdx + 1);
 	}
-	componentsVector[entityIdx] = component;
 
-	OnComponentAdded.broadcast();
+	if (componentsVector[entityIdx] == nullptr)
+	{
+		componentsVector[entityIdx] = component;
+		OnComponentAdded.broadcast();
+	}
 }

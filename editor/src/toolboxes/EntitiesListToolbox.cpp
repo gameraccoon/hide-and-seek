@@ -13,6 +13,9 @@
 
 #include <Debug/Log.h>
 
+#include "src/editorcommands/removeentitycommand.h"
+#include "src/editorcommands/addcomponentcommand.h"
+
 const QString EntitiesListToolbox::WidgetName = "EntitiesList";
 const QString EntitiesListToolbox::ToolboxName = EntitiesListToolbox::WidgetName + "Toolbox";
 const QString EntitiesListToolbox::ContainerName = EntitiesListToolbox::WidgetName + "Container";
@@ -100,24 +103,13 @@ void EntitiesListToolbox::updateContent()
 
 void EntitiesListToolbox::onCurrentItemChanged(QListWidgetItem* current, QListWidgetItem* /*previous*/)
 {
-	QListWidget* componentsList = mDockManager->findChild<QListWidget*>("ComponentList");
-	if (componentsList == nullptr)
+	if (current)
 	{
-		return;
+		mMainWindow->OnSelectedEntityChanged.broadcast(Entity(current->text().toUInt()));
 	}
-
-	componentsList->clear();
-
-	World* currentWorld = mMainWindow->getCurrentWorld();
-
-	if (current && currentWorld)
+	else
 	{
-		unsigned int entityUid = current->text().toUInt();
-		std::vector<BaseComponent*> components = currentWorld->getEntityManger().getAllEntityComponents(Entity(entityUid));
-		for (auto& component : components)
-		{
-			componentsList->addItem(QString::fromStdString(component->getComponentTypeName()));
-		}
+		mMainWindow->OnSelectedEntityChanged.broadcast(NullableEntity());
 	}
 }
 
@@ -167,7 +159,7 @@ void EntitiesListToolbox::removeSelectedEntity()
 		return;
 	}
 
-	currentWorld->getEntityManger().removeEntity(Entity(currentItem->text().toUInt()));
+	mMainWindow->getCommandStack().executeNewCommand<RemoveEntityCommand>(currentWorld, Entity(currentItem->text().toUInt()));
 }
 
 void EntitiesListToolbox::onAddComponentToEntityRequested()
@@ -206,10 +198,11 @@ void EntitiesListToolbox::addComponentToEntity(const QString& typeName)
 		return;
 	}
 
-	currentWorld->getEntityManger().addComponent(
+	mMainWindow->getCommandStack().executeNewCommand<AddComponentCommand>(
+		currentWorld,
 		Entity(currentItem->text().toUInt()),
-		mMainWindow->getComponentFactory().createComponent(typeName.toStdString()),
-		mMainWindow->getComponentFactory().getTypeIDFromString(typeName.toStdString()).value()
+		typeName,
+		&mMainWindow->getComponentFactory()
 	);
 }
 

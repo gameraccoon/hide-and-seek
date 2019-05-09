@@ -42,6 +42,9 @@ public:
 
 public:
 	MulticastDelegate<> OnWorldChanged;
+	MulticastDelegate<NullableEntity> OnSelectedEntityChanged;
+	MulticastDelegate<const QString&> OnSelectedComponentChanged;
+	MulticastDelegate<> OnComponentContentChange;
 
 private slots:
 	void on_actionNew_World_triggered();
@@ -64,7 +67,6 @@ private:
 	void fillWindowContent();
 	void createWorld();
 	void updateSelectedComponentData(QListWidgetItem* selectedItem);
-	void updateSelectedComponentData();
 	void updateUndoRedo();
 
 private:

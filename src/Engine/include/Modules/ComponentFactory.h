@@ -16,7 +16,7 @@ public:
 	template<typename T>
 	void registerComponent()
 	{
-		mComponentCreators[T::GetClassName()] = []() {
+		mComponentCreators[T::GetClassName()] = []{
 			return new T();
 		};
 		std::string className = T::GetClassName();

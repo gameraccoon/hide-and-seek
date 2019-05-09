@@ -39,15 +39,19 @@ private:
 	FunctionType mFunction;
 };
 
+namespace Delegates
+{
+	typedef int HandleType;
+}
+
 template <typename... Args>
 class MulticastDelegate
 {
 public:
 	typedef std::function<void(Args...)> FunctionType;
-	typedef int HandleType;
 
 public:
-	HandleType bind(FunctionType fn)
+	Delegates::HandleType bind(FunctionType fn)
 	{
 		if (fn)
 		{
@@ -57,7 +61,7 @@ public:
 		return -1;
 	}
 
-	void unbind(HandleType handle)
+	void unbind(Delegates::HandleType handle)
 	{
 		mFunctions.erase(
 			std::remove_if(
@@ -87,12 +91,12 @@ public:
 private:
 	struct FunctionData
 	{
-		FunctionData(HandleType handle, FunctionType fn)
+		FunctionData(Delegates::HandleType handle, FunctionType fn)
 			: handle(handle)
 			, fn(fn)
 		{}
 
-		HandleType handle;
+		Delegates::HandleType handle;
 		FunctionType fn;
 	};
 

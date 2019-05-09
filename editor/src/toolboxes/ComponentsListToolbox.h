@@ -3,6 +3,9 @@
 #include <QString>
 #include <QWidget>
 
+#include "Core/Delegates.h"
+#include "Core/Entity.h"
+
 class MainWindow;
 
 namespace ads
@@ -16,8 +19,8 @@ class ComponentsListToolbox : public QWidget
 {
 public:
 	ComponentsListToolbox(MainWindow* mainWindow, ads::CDockManager* dockManager);
+	~ComponentsListToolbox();
 	void show();
-	void updateSelectedComponentData(QListWidgetItem* selectedItem);
 
 	static const QString WidgetName;
 	static const QString ToolboxName;
@@ -26,9 +29,20 @@ public:
 	static const QString ListName;
 
 private:
+	void updateContent();
 	void onCurrentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
+	void onSelectedEntityChanged(NullableEntity newEntity);
+
+	void bindEvents();
+	void unbindEvents();
 
 private:
 	MainWindow* mMainWindow;
 	ads::CDockManager* mDockManager;
+	NullableEntity mLastSelectedEntity;
+
+	Delegates::HandleType mOnComponentAddedHandle;
+	Delegates::HandleType mOnComponentRemovedHandle;
+	Delegates::HandleType mOnWorldChangedHandle;
+	Delegates::HandleType mOnEntityChangedHandle;
 };
