@@ -80,9 +80,10 @@ void MainWindow::fillWindowContent()
 void MainWindow::on_actionNew_World_triggered()
 {
 	createWorld();
-	updateWorldData();
 	mOpenedWorldPath.clear();
 	ui->actionSave_World->setEnabled(false);
+
+	OnWorldChanged.broadcast();
 }
 
 void MainWindow::on_actionOpen_World_triggered()
@@ -97,9 +98,10 @@ void MainWindow::on_actionOpen_World_triggered()
 
 	createWorld();
 	WorldLoader::LoadWorld(*mCurrentWorld.get(), fileName, mComponentFactory);
-	updateWorldData();
 	mOpenedWorldPath = fileName;
 	ui->actionSave_World->setEnabled(true);
+
+	OnWorldChanged.broadcast();
 }
 
 void MainWindow::createWorld()
@@ -107,12 +109,6 @@ void MainWindow::createWorld()
 	mCurrentWorld = std::make_unique<World>();
 	mCommandStack.clear();
 	ui->actionRun_Game->setEnabled(true);
-}
-
-void MainWindow::updateWorldData()
-{
-	mEntitiesListToolbox->updateContent();
-	mWorldPropertiesToolbox->updateContent();
 }
 
 void MainWindow::updateSelectedComponentData()
@@ -190,7 +186,6 @@ void MainWindow::on_actionCreate_triggered()
 	{
 		mCurrentWorld->getEntityManger().addEntity();
 	}
-	updateWorldData();
 }
 
 void MainWindow::on_actionEntities_List_triggered()

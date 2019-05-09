@@ -6,6 +6,7 @@
 
 #include "Component.h"
 #include "Entity.h"
+#include "Delegates.h"
 
 class EntityManager
 {
@@ -13,6 +14,10 @@ public:
 	Entity addEntity();
 	void removeEntity(Entity entity);
 	std::unordered_map<Entity::EntityID, size_t>& getEntities() { return mEntityIndexMap; }
+
+	// these two should be used carefully (added for the editor)
+	Entity getNonExistentEntity();
+	void insertEntityUnsafe(Entity entity);
 
 	std::vector<BaseComponent*> getAllEntityComponents(const Entity& entity);
 
@@ -24,21 +29,15 @@ public:
 		{
 			return nullptr;
 		}
-		EntityIndex entityIdx = entityIdxItr->second;
 
 		T* component = new T();
-		auto& componentsVector = mComponents[typeid(T)];
-		if (componentsVector.size() <= entityIdx)
-		{
-			if (componentsVector.capacity() <= entityIdx)
-			{
-				componentsVector.reserve((entityIdx + 1) * 2);
-			}
-			componentsVector.resize(entityIdx + 1);
-		}
-		componentsVector[entityIdx] = component;
+
+		addComponentToEntity(entityIdxItr->second, component, typeid(T));
+
 		return component;
 	}
+
+	void addComponent(const Entity& entity, BaseComponent* component, std::type_index typeID);
 
 	template<typename... Components>
 	std::tuple<Components*...> getEntityComponents(const Entity& entity)
@@ -162,6 +161,14 @@ private:
 		using Datas = std::tuple<std::vector<Data*>...>;
 		return getEntityComponentSetInner<0, Datas, FirstComponent, Components...>(entityIdx, componentVectors);
 	}
+
+	void addComponentToEntity(EntityIndex entityIdx, BaseComponent* component, std::type_index typeID);
+
+public:
+	MulticastDelegate<> OnEntityAdded;
+	MulticastDelegate<> OnEntityRemoved;
+	MulticastDelegate<> OnComponentAdded;
+	MulticastDelegate<> OnComponentRemoved;
 
 private:
 	std::unordered_map<std::type_index, std::vector<BaseComponent*>> mComponents;

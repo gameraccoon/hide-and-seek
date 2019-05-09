@@ -10,6 +10,7 @@
 #include "componenteditcontent/componentcontentfactory.h"
 
 #include <Modules/ComponentFactory.h>
+#include <Core/Delegates.h>
 
 namespace ads
 {
@@ -34,12 +35,13 @@ public:
 	explicit MainWindow(QWidget* parent = nullptr);
 	~MainWindow();
 
-	void updateWorldData();
-
 	World* getCurrentWorld() { return mCurrentWorld.get(); }
 	ComponentFactory& getComponentFactory() { return mComponentFactory; }
 	ComponentContentFactory& getComponentContentFactory() { return mComponentContentFactory; }
 	EditorCommandsStack& getCommandStack() { return mCommandStack; }
+
+public:
+	MulticastDelegate<> OnWorldChanged;
 
 private slots:
 	void on_actionNew_World_triggered();
@@ -74,6 +76,7 @@ private:
 	ComponentContentFactory mComponentContentFactory;
 	std::string mOpenedWorldPath;
 	EditorCommandsStack mCommandStack;
+
 	std::unique_ptr<EntitiesListToolbox> mEntitiesListToolbox;
 	std::unique_ptr<WorldPropertiesToolbox> mWorldPropertiesToolbox;
 	std::unique_ptr<ComponentAttributesToolbox> mComponentAttributesToolbox;

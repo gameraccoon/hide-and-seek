@@ -3,6 +3,8 @@
 #include <QString>
 #include <QWidget>
 
+#include "Core/Delegates.h"
+
 class MainWindow;
 
 namespace ads
@@ -18,9 +20,10 @@ class EntitiesListToolbox : public QWidget
 {
 public:
 	EntitiesListToolbox(MainWindow* mainWindow, ads::CDockManager* dockManager);
+	~EntitiesListToolbox();
 	void show();
 
-	void updateContent();
+	void onWorldUpdated();
 
 	static const QString WidgetName;
 	static const QString ToolboxName;
@@ -29,12 +32,20 @@ public:
 	static const QString ListName;
 
 private:
+	void updateContent();
 	void onCurrentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
 	void showContextMenu(const QPoint &pos);
 	void removeSelectedEntity();
-	void addComponentToEntity();
+	void onAddComponentToEntityRequested();
+	void addComponentToEntity(const QString& typeName);
+	void bindEvents();
+	void unbindEvents();
 
 private:
 	MainWindow* mMainWindow;
 	ads::CDockManager* mDockManager;
+
+	MulticastDelegate<>::HandleType mOnEntityAddedHandle;
+	MulticastDelegate<>::HandleType mOnEntityRemovedHandle;
+	MulticastDelegate<>::HandleType mOnWorldChangedHandle;
 };

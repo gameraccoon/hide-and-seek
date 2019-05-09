@@ -7,6 +7,7 @@
 
 #include <Modules/ComponentFactory.h>
 #include "Debug/Assert.h"
+#include "Debug/Log.h"
 
 static const int EntityInsertionTrialsLimit = 10;
 
@@ -23,13 +24,42 @@ Entity EntityManager::addEntity()
 		{
 			mIndexEntityMap.emplace(mNextEntityIndex, id);
 			++mNextEntityIndex;
+			OnEntityAdded.broadcast();
 			return Entity(id);
 		}
 		++insertionTrial;
 	}
 
-	//ReportFailure("Can't generate unique ID for an entity");
+	Assert(false, "Can't generate unique ID for an entity");
 	return Entity(0);
+}
+
+Entity EntityManager::getNonExistentEntity()
+{
+	int generationTrial = 0;
+
+	while (generationTrial < EntityInsertionTrialsLimit)
+	{
+		// ToDo: use generators
+		Entity::EntityID id = static_cast<Entity::EntityID>(std::rand());
+		if (mEntityIndexMap.find(id) != mEntityIndexMap.end())
+		{
+			return Entity(id);
+		}
+		++generationTrial;
+	}
+
+	Assert(false, "Can't generate unique ID for an entity");
+	return Entity(0);
+}
+
+void EntityManager::insertEntityUnsafe(Entity entity)
+{
+	mEntityIndexMap.emplace(entity.getID(), mNextEntityIndex);
+	mIndexEntityMap.emplace(mNextEntityIndex, entity.getID());
+	++mNextEntityIndex;
+
+	OnEntityAdded.broadcast();
 }
 
 void EntityManager::removeEntity(Entity entity)
@@ -71,6 +101,8 @@ void EntityManager::removeEntity(Entity entity)
 		mIndexEntityMap[oldEntityIdx] = entityID;
 	}
 	mIndexEntityMap.erase(mNextEntityIndex);
+
+	OnEntityRemoved.broadcast();
 }
 
 std::vector<BaseComponent*> EntityManager::getAllEntityComponents(const Entity& entity)
@@ -89,6 +121,17 @@ std::vector<BaseComponent*> EntityManager::getAllEntityComponents(const Entity& 
 		}
 	}
 	return components;
+}
+
+void EntityManager::addComponent(const Entity& entity, BaseComponent* component, std::type_index typeID)
+{
+	auto entityIdxItr = mEntityIndexMap.find(entity.getID());
+	if (entityIdxItr == mEntityIndexMap.end())
+	{
+		return;
+	}
+
+	addComponentToEntity(entityIdxItr->second, component, typeID);
 }
 
 nlohmann::json EntityManager::toJson(const ComponentFactory& componentFactory) const
@@ -141,16 +184,18 @@ void EntityManager::fromJson(const nlohmann::json& json, const ComponentFactory&
 	for (auto& [type, vector] : components.items())
 	{
 		std::optional<std::type_index> typeIndex = componentFactory.getTypeIDFromString(type);
-		ComponentFactory::DeserializationFn deserializator = componentFactory.getDeserializator(type);
-		if (typeIndex.has_value() && deserializator != nullptr)
+		ComponentFactory::CreationFn componentCreateFn = componentFactory.getCreationFn(type);
+		if (typeIndex.has_value() && componentCreateFn != nullptr)
 		{
 			std::vector<BaseComponent*>& componentsVector = mComponents[typeIndex.value()];
 			componentsVector.reserve(vector.size());
-			for (const auto& component : vector)
+			for (const auto& componentData : vector)
 			{
-				if (!component.is_null())
+				if (!componentData.is_null())
 				{
-					componentsVector.push_back(deserializator(component));
+					BaseComponent* component = componentCreateFn();
+					component->fromJson(componentData);
+					componentsVector.push_back(component);
 				}
 				else
 				{
@@ -159,4 +204,20 @@ void EntityManager::fromJson(const nlohmann::json& json, const ComponentFactory&
 			}
 		}
 	}
+}
+
+void EntityManager::addComponentToEntity(EntityIndex entityIdx, BaseComponent* component, std::type_index typeID)
+{
+	auto& componentsVector = mComponents[typeID];
+	if (componentsVector.size() <= entityIdx)
+	{
+		if (componentsVector.capacity() <= entityIdx)
+		{
+			componentsVector.reserve((entityIdx + 1) * 2);
+		}
+		componentsVector.resize(entityIdx + 1);
+	}
+	componentsVector[entityIdx] = component;
+
+	OnComponentAdded.broadcast();
 }

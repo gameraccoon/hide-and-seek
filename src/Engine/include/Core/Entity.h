@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-#include <Debug/Assert.h>
 
 #include <nlohmann/json_fwd.hpp>
 
@@ -42,10 +41,7 @@ public:
 	bool operator !=(const NullableEntity& b) const { return !(*this == b); }
 
 	bool isValid() const { return mIsValid; }
-	Entity getEntity() const {
-		Assert(mIsValid, "Getting uninitialized entity");
-		return Entity(mId);
-	}
+	Entity getEntity() const;
 
 	friend void to_json(nlohmann::json& outJson, const NullableEntity& entity);
 	friend void from_json(const nlohmann::json& json, NullableEntity& outEntity);

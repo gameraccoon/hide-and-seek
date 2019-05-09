@@ -7,6 +7,7 @@
 #include <filesystem>
 #include <nlohmann/json.hpp>
 
+#include <Debug/Log.h>
 #include <Core/World.h>
 
 namespace WorldLoader
