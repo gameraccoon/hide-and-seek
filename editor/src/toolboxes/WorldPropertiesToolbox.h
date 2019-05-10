@@ -3,6 +3,8 @@
 #include <QString>
 #include <QWidget>
 
+#include "Core/Delegates.h"
+
 class MainWindow;
 
 namespace ads
@@ -14,6 +16,7 @@ class WorldPropertiesToolbox : public QWidget
 {
 public:
 	WorldPropertiesToolbox(MainWindow* mainWindow, ads::CDockManager* dockManager);
+	~WorldPropertiesToolbox();
 	void show();
 
 	void updateContent();
@@ -30,4 +33,6 @@ private:
 private:
 	MainWindow* mMainWindow;
 	ads::CDockManager* mDockManager;
+
+	Delegates::HandleType mOnWorldChangedHandle;
 };

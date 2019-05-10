@@ -22,6 +22,12 @@ WorldPropertiesToolbox::WorldPropertiesToolbox(MainWindow* mainWindow, ads::CDoc
 	: mMainWindow(mainWindow)
 	, mDockManager(dockManager)
 {
+	mOnWorldChangedHandle = mMainWindow->OnWorldChanged.bind([this]{updateContent();});
+}
+
+WorldPropertiesToolbox::~WorldPropertiesToolbox()
+{
+	mMainWindow->OnWorldChanged.unbind(mOnWorldChangedHandle);
 }
 
 void WorldPropertiesToolbox::show()
