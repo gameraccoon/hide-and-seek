@@ -83,6 +83,7 @@ void MainWindow::on_actionNew_World_triggered()
 	createWorld();
 	mOpenedWorldPath.clear();
 	ui->actionSave_World->setEnabled(false);
+	ui->actionCreate->setEnabled(true);
 
 	OnWorldChanged.broadcast();
 }
@@ -101,6 +102,7 @@ void MainWindow::on_actionOpen_World_triggered()
 	WorldLoader::LoadWorld(*mCurrentWorld.get(), fileName, mComponentFactory);
 	mOpenedWorldPath = fileName;
 	ui->actionSave_World->setEnabled(true);
+	ui->actionCreate->setEnabled(true);
 
 	OnWorldChanged.broadcast();
 }

@@ -147,6 +147,9 @@
    </property>
   </action>
   <action name="actionCreate">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Create</string>
    </property>

@@ -114,6 +114,10 @@ public:
 		}
 	}
 
+	void getPrefabFromEntity(nlohmann::json& json, Entity entity);
+	Entity createPrefabInstance(const nlohmann::json& json, const class ComponentFactory& componentFactory);
+	void applyPrefabToExistentEntity(const nlohmann::json& json, Entity entity, const ComponentFactory& componentFactory);
+
 	nlohmann::json toJson(const class ComponentFactory& componentFactory) const;
 	void fromJson(const nlohmann::json& json, const class ComponentFactory& componentFactory);
 

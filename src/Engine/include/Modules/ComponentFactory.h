@@ -28,9 +28,9 @@ public:
 	std::optional<std::type_index> getTypeIDFromString(const std::string& typeName) const;
 	std::string getStringFromTypeID(const std::type_index& typeID) const;
 
-	BaseComponent* createComponent(const std::string& typeName);
+	BaseComponent* createComponent(const std::string& typeName) const;
 
-	void forEachComponentType(std::function<void(std::type_index, const std::string&)> fn);
+	void forEachComponentType(std::function<void(std::type_index, const std::string&)> fn) const;
 
 private:
 	std::map<std::string, CreationFn> mComponentCreators;

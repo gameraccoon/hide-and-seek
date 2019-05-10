@@ -153,6 +153,42 @@ void EntityManager::removeComponent(const Entity& entity, std::type_index typeID
 	}
 }
 
+void EntityManager::getPrefabFromEntity(nlohmann::json& json, Entity entity)
+{
+	std::vector<BaseComponent*> components = getAllEntityComponents(entity);
+
+	for (BaseComponent* component : components)
+	{
+		auto componenObj = nlohmann::json{};
+		std::string componentTypeName = component->getComponentTypeName();
+		component->toJson(componenObj);
+		json[componentTypeName] = componenObj;
+	}
+}
+
+Entity EntityManager::createPrefabInstance(const nlohmann::json& json, const ComponentFactory& componentFactory)
+{
+	Entity entity = addEntity();
+	applyPrefabToExistentEntity(json, entity, componentFactory);
+	return entity;
+}
+
+void EntityManager::applyPrefabToExistentEntity(const nlohmann::json& json, Entity entity, const ComponentFactory& componentFactory)
+{
+	for (const auto& [componentTypeName, componentObj] : json.items())
+	{
+		BaseComponent* component = componentFactory.createComponent(componentTypeName);
+
+		component->fromJson(componentObj);
+
+		addComponent(
+			entity,
+			component,
+			componentFactory.getTypeIDFromString(componentTypeName).value()
+		);
+	}
+}
+
 nlohmann::json EntityManager::toJson(const ComponentFactory& componentFactory) const
 {
 	nlohmann::json outJson{
@@ -200,7 +236,7 @@ void EntityManager::fromJson(const nlohmann::json& json, const ComponentFactory&
 	}
 
 	const auto& components = json.at("components");
-	for (auto& [type, vector] : components.items())
+	for (const auto& [type, vector] : components.items())
 	{
 		std::optional<std::type_index> typeIndex = componentFactory.getTypeIDFromString(type);
 		ComponentFactory::CreationFn componentCreateFn = componentFactory.getCreationFn(type);

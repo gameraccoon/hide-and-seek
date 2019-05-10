@@ -17,7 +17,7 @@ bool RemoveComponentCommand::doCommand(World* world)
 {
 	std::string typeName = mComponentTypeName.toStdString();
 
-	if (!mSerializedComponent.empty())
+	if (mSerializedComponent.empty())
 	{
 		std::vector<BaseComponent*> components = world->getEntityManger().getAllEntityComponents(mEntity);
 

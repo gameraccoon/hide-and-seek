@@ -18,5 +18,5 @@ public:
 private:
 	Entity mEntity;
 	ComponentFactory* mComponentFactory;
-	std::vector<std::pair<std::string, nlohmann::json>> mSerializedComponents;
+	nlohmann::json mSerializedComponents;
 };

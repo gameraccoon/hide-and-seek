@@ -36,7 +36,7 @@ std::string ComponentFactory::getStringFromTypeID(const std::type_index& typeID)
 	return "";
 }
 
-BaseComponent* ComponentFactory::createComponent(const std::string& typeName)
+BaseComponent* ComponentFactory::createComponent(const std::string& typeName) const
 {
 	const auto& it = mComponentCreators.find(typeName);
 	if (it != mComponentCreators.cend() && it->second)
@@ -47,7 +47,7 @@ BaseComponent* ComponentFactory::createComponent(const std::string& typeName)
 	return nullptr;
 }
 
-void ComponentFactory::forEachComponentType(std::function<void (std::type_index, const std::string&)> fn)
+void ComponentFactory::forEachComponentType(std::function<void (std::type_index, const std::string&)> fn) const
 {
 	if (fn)
 	{

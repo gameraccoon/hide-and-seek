@@ -16,14 +16,7 @@ bool RemoveEntityCommand::doCommand(World* world)
 {
 	if (mSerializedComponents.empty())
 	{
-		std::vector<BaseComponent*> components = world->getEntityManger().getAllEntityComponents(mEntity);
-
-		mSerializedComponents.resize(components.size());
-		for (size_t i = 0; i < components.size(); ++i)
-		{
-			mSerializedComponents[i].first = components[i]->getComponentTypeName();
-			components[i]->toJson(mSerializedComponents[i].second);
-		}
+		world->getEntityManger().getPrefabFromEntity(mSerializedComponents, mEntity);
 	}
 
 	world->getEntityManger().removeEntity(mEntity);
@@ -33,18 +26,6 @@ bool RemoveEntityCommand::doCommand(World* world)
 bool RemoveEntityCommand::undoCommand(World* world)
 {
 	world->getEntityManger().insertEntityUnsafe(mEntity);
-
-	for (const auto& [typeName, json] : mSerializedComponents)
-	{
-		BaseComponent* component = mComponentFactory->createComponent(typeName);
-
-		component->fromJson(json);
-
-		world->getEntityManger().addComponent(
-			mEntity,
-			component,
-			mComponentFactory->getTypeIDFromString(typeName).value()
-		);
-	}
+	world->getEntityManger().applyPrefabToExistentEntity(mSerializedComponents, mEntity, *mComponentFactory);
 	return false;
 }
