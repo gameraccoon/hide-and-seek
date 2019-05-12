@@ -3,7 +3,7 @@
 #include <fstream>
 #include <chrono>
 #include <iomanip>
-#include <filesystem>
+#include <experimental/filesystem>
 
 Log* Log::mSingleInstance = nullptr;
 bool Log::mIsDestroyed = false;
@@ -15,8 +15,9 @@ Log::Log()
 
 	if (mIsFirstLife)
 	{
-        namespace fs = std::filesystem;
-        if (!fs::is_directory("./logs") || !fs::exists("./logs")) {
+		namespace fs = std::experimental::filesystem;
+		if (!fs::is_directory("./logs") || !fs::exists("./logs"))
+		{
             fs::create_directory("logs");
         }
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <string>
 
 struct SDL_Surface;
 
@@ -11,7 +12,7 @@ namespace SystemInterface
 		class SdlSurface
 		{
 		public:
-			SdlSurface(const char* filename);
+			SdlSurface(const std::string& filename);
 			operator SDL_Surface*();
 			void bind();
 			int width() const;

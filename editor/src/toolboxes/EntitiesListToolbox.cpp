@@ -16,6 +16,8 @@
 #include "src/editorcommands/removeentitycommand.h"
 #include "src/editorcommands/addcomponentcommand.h"
 
+#include "src/toolboxes/PrefabListToolbox.h"
+
 const QString EntitiesListToolbox::WidgetName = "EntitiesList";
 const QString EntitiesListToolbox::ToolboxName = EntitiesListToolbox::WidgetName + "Toolbox";
 const QString EntitiesListToolbox::ContainerName = EntitiesListToolbox::WidgetName + "Container";
@@ -136,6 +138,10 @@ void EntitiesListToolbox::showContextMenu(const QPoint& pos)
 	connect(&actionRemove, &QAction::triggered, this, &EntitiesListToolbox::removeSelectedEntity);
 	contextMenu.addAction(&actionRemove);
 
+	QAction actionCreatePrefab("Create Prefab", this);
+	connect(&actionCreatePrefab, &QAction::triggered, this, &EntitiesListToolbox::createPrefabRequested);
+	contextMenu.addAction(&actionCreatePrefab);
+
 	contextMenu.exec(entitiesList->mapToGlobal(pos));
 }
 
@@ -164,6 +170,39 @@ void EntitiesListToolbox::removeSelectedEntity()
 		Entity(currentItem->text().toUInt()),
 		&mMainWindow->getComponentFactory()
 	);
+}
+
+void EntitiesListToolbox::createPrefabRequested()
+{
+	QInputDialog* dialog = new QInputDialog();
+	dialog->setLabelText("Choose a name for the prefab:");
+	dialog->setCancelButtonText("Cancel");
+	connect(dialog, &QInputDialog::textValueSelected, this, &EntitiesListToolbox::createPrefab);
+	dialog->show();
+}
+
+void EntitiesListToolbox::createPrefab(const QString& prefabName)
+{
+	QListWidget* entitiesList = mDockManager->findChild<QListWidget*>(ListName);
+	if (entitiesList == nullptr)
+	{
+		return;
+	}
+
+	QListWidgetItem* currentItem = entitiesList->currentItem();
+	if (currentItem == nullptr)
+	{
+		return;
+	}
+
+	PrefabListToolbox* prefabToolbox = mMainWindow->getPrefabToolbox();
+	if (prefabToolbox == nullptr)
+	{
+		return;
+	}
+
+	prefabToolbox->show();
+	prefabToolbox->createPrefabFromEntity(prefabName, Entity(currentItem->text().toUInt()));
 }
 
 void EntitiesListToolbox::onAddComponentToEntityRequested()

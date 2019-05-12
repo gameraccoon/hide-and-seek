@@ -51,7 +51,7 @@ namespace SystemInterface
 		else
 		{
 			createResourceLock(path);
-			mResources[mHandleIdx] = std::make_unique<Graphics::Texture>(new Internal::SdlSurface(path.c_str()));
+			mResources[mHandleIdx] = std::make_unique<Graphics::Texture>(new Internal::SdlSurface(path));
 			return mHandleIdx++;
 		}
 	}
@@ -67,7 +67,7 @@ namespace SystemInterface
 		else
 		{
 			createResourceLock(path);
-			mResources[mHandleIdx] = std::make_unique<Graphics::Font>(new Internal::SdlSurface(path.c_str()));
+			mResources[mHandleIdx] = std::make_unique<Graphics::Font>(new Internal::SdlSurface(path));
 			return mHandleIdx++;
 		}
 	}

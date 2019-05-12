@@ -60,6 +60,10 @@
     </property>
     <addaction name="actionCreate"/>
     <addaction name="separator"/>
+    <addaction name="actionNew_Prefab_Library"/>
+    <addaction name="actionLoad_Prefab_Library"/>
+    <addaction name="actionSave_Prefab_Library"/>
+    <addaction name="actionSave_Prefab_Library_As"/>
    </widget>
    <widget class="QMenu" name="menuWindow">
     <property name="title">
@@ -69,6 +73,7 @@
     <addaction name="actionEntities_List"/>
     <addaction name="actionComponents_List"/>
     <addaction name="actionComponent_Properties"/>
+    <addaction name="actionPrefabs"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -172,6 +177,31 @@
   <action name="actionWorld_Settings">
    <property name="text">
     <string>World Properties</string>
+   </property>
+  </action>
+  <action name="actionLoad_Prefab_Library">
+   <property name="text">
+    <string>Open Prefab Library...</string>
+   </property>
+  </action>
+  <action name="actionSave_Prefab_Library">
+   <property name="text">
+    <string>Save Prefab Library</string>
+   </property>
+  </action>
+  <action name="actionSave_Prefab_Library_As">
+   <property name="text">
+    <string>Save Prefab Library As...</string>
+   </property>
+  </action>
+  <action name="actionNew_Prefab_Library">
+   <property name="text">
+    <string>New Prefab Library</string>
+   </property>
+  </action>
+  <action name="actionPrefabs">
+   <property name="text">
+    <string>Prefabs</string>
    </property>
   </action>
  </widget>

@@ -4,7 +4,7 @@
 #include <map>
 #include <iomanip>
 
-#include <filesystem>
+#include <experimental/filesystem>
 #include <nlohmann/json.hpp>
 
 #include <Debug/Log.h>
@@ -12,11 +12,12 @@
 
 namespace WorldLoader
 {
-	static const std::filesystem::path MAPS_PATH = "./resources/maps";
+	static const std::experimental::filesystem::path MAPS_PATH = "./resources/maps";
 
 	void SaveWorld(const World& world, const std::string& levelName, const ComponentFactory& componentFactory)
 	{
-		std::filesystem::path levelPath = std::filesystem::path(levelName);
+		namespace fs = std::experimental::filesystem;
+		fs::path levelPath(levelName);
 
 		// if it's name, we save to maps folder
 		if (levelName.find_first_of("/\\.") == std::string::npos)
@@ -43,7 +44,8 @@ namespace WorldLoader
 
 	void LoadWorld(World& world, const std::string& levelName, const ComponentFactory& componentFactory)
 	{
-		std::filesystem::path levelPath = std::filesystem::path(levelName);
+		namespace fs = std::experimental::filesystem;
+		fs::path levelPath(levelName);
 
 		// if it's name, we search the map in maps folder
 		if (levelName.find_first_of("/\\.") == std::string::npos)

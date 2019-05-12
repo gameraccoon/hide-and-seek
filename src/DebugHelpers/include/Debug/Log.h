@@ -57,23 +57,23 @@ private:
 template<typename... Args>
 void LogInit(const std::string& message, Args... args)
 {
-	Log::Instance().writeInit(FormatString(message, args...));
+	Log::Instance().writeInit(FormatString(message, std::forward<Args>(args)...));
 }
 
 template<typename... Args>
 void LogInfo(const std::string& message, Args... args)
 {
-	Log::Instance().writeLog(FormatString(message, args...));
+	Log::Instance().writeLog(FormatString(message, std::forward<Args>(args)...));
 }
 
 template<typename... Args>
 void LogWarning(const std::string& message, Args... args)
 {
-	Log::Instance().writeWarning(FormatString(message, args...));
+	Log::Instance().writeWarning(FormatString(message, std::forward<Args>(args)...));
 }
 
 template<typename... Args>
 void LogError(const std::string& message, Args... args)
 {
-	Log::Instance().writeError(FormatString(message, args...));
+	Log::Instance().writeError(FormatString(message, std::forward<Args>(args)...));
 }

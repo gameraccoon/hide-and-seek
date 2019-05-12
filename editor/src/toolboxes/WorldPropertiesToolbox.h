@@ -19,14 +19,13 @@ public:
 	~WorldPropertiesToolbox();
 	void show();
 
-	void updateContent();
-
 	static const QString WidgetName;
 	static const QString ToolboxName;
 	static const QString ContainerName;
 	static const QString ContainerContentName;
 
 private:
+	void updateContent();
 	void onControledEntityChanged(const QString &arg1);
 	void onCameraEntityChanged(const QString &arg1);
 

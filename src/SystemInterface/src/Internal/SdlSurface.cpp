@@ -10,8 +10,8 @@ namespace SystemInterface
 {
 	namespace Internal
 	{
-		SdlSurface::SdlSurface(const char* filename)
-			: mSurface(IMG_Load(filename), SDL_FreeSurface)
+		SdlSurface::SdlSurface(const std::string& filename)
+			: mSurface(IMG_Load(filename.c_str()), SDL_FreeSurface)
 			, mTextureId(new unsigned int, &deleteTexture)
 		{
 			if (mSurface == nullptr)

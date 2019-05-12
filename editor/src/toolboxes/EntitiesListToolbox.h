@@ -23,8 +23,6 @@ public:
 	~EntitiesListToolbox();
 	void show();
 
-	void onWorldUpdated();
-
 	static const QString WidgetName;
 	static const QString ToolboxName;
 	static const QString ContainerName;
@@ -32,10 +30,13 @@ public:
 	static const QString ListName;
 
 private:
+	void onWorldUpdated();
 	void updateContent();
 	void onCurrentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
 	void showContextMenu(const QPoint& pos);
 	void removeSelectedEntity();
+	void createPrefabRequested();
+	void createPrefab(const QString& prefabName);
 	void onAddComponentToEntityRequested();
 	void addComponentToEntity(const QString& typeName);
 	void bindEvents();

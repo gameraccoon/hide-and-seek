@@ -1,0 +1,53 @@
+{
+    "prefabs": [
+        {
+            "data": {
+                "CollisionComponent": {
+                    "geometry": {
+                        "points": [
+                            {
+                                "x": 60.0,
+                                "y": -60.0
+                            },
+                            {
+                                "x": 60.0,
+                                "y": 60.0
+                            },
+                            {
+                                "x": -60.0,
+                                "y": 60.0
+                            },
+                            {
+                                "x": -60.0,
+                                "y": -60.0
+                            }
+                        ],
+                        "radius": 8.96831017167883e-44,
+                        "type": 0
+                    }
+                },
+                "RenderComponent": {
+                    "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "size": {
+                        "x": 120.0,
+                        "y": 120.0
+                    },
+                    "texturePath": "resources/textures/testTexture.png"
+                },
+                "TransformComponent": {
+                    "location": {
+                        "x": -60.0,
+                        "y": -60.0
+                    },
+                    "rotation": {
+                        "v": 0.0
+                    }
+                }
+            },
+            "name": "wall"
+        }
+    ]
+}

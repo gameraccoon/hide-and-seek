@@ -17,6 +17,7 @@
 #include "toolboxes/ComponentsListToolbox.h"
 #include "toolboxes/EntitiesListToolbox.h"
 #include "toolboxes/WorldPropertiesToolbox.h"
+#include "toolboxes/PrefabListToolbox.h"
 
 #include <QFileDialog>
 #include <QProcess>
@@ -34,6 +35,8 @@ MainWindow::MainWindow(QWidget* parent)
 	initToolboxes();
 
 	fillWindowContent();
+
+	initActions();
 }
 
 MainWindow::~MainWindow()
@@ -68,6 +71,7 @@ void MainWindow::initToolboxes()
 	mComponentAttributesToolbox = std::make_unique<ComponentAttributesToolbox>(this, mDockManager.get());
 	mComponentsListToolbox = std::make_unique<ComponentsListToolbox>(this, mDockManager.get());
 	mWorldPropertiesToolbox = std::make_unique<WorldPropertiesToolbox>(this, mDockManager.get());
+	mPrefabListToolbox = std::make_unique<PrefabListToolbox>(this, mDockManager.get());
 }
 
 void MainWindow::fillWindowContent()
@@ -76,6 +80,69 @@ void MainWindow::fillWindowContent()
 	mComponentsListToolbox->show();
 	mComponentAttributesToolbox->show();
 	mWorldPropertiesToolbox->show();
+}
+
+void MainWindow::createWorld()
+{
+	mCurrentWorld = std::make_unique<World>();
+	mCommandStack.clear();
+	ui->actionRun_Game->setEnabled(true);
+}
+
+void MainWindow::updateUndoRedo()
+{
+	ui->actionUndo->setEnabled(mCommandStack.haveSomethingToUndo());
+	ui->actionRedo->setEnabled(mCommandStack.haveSomethingToRedo());
+}
+
+void MainWindow::initActions()
+{
+	connect(ui->actionPrefabs, &QAction::triggered, this, &MainWindow::actionPrefabsTriggered);
+	connect(ui->actionNew_Prefab_Library, &QAction::triggered, this, &MainWindow::actionNewPrefabLibraryTriggered);
+	connect(ui->actionLoad_Prefab_Library, &QAction::triggered, this, &MainWindow::actionLoadPrefabLibraryTriggered);
+	connect(ui->actionSave_Prefab_Library, &QAction::triggered, this, &MainWindow::actionSavePrefabLibraryTriggered);
+	connect(ui->actionSave_Prefab_Library_As, &QAction::triggered, this, &MainWindow::actionSavePrefabLibraryAsTriggered);
+}
+
+void MainWindow::actionPrefabsTriggered()
+{
+	mPrefabListToolbox->show();
+}
+
+void MainWindow::actionNewPrefabLibraryTriggered()
+{
+	mPrefabListToolbox->clear();
+}
+
+void MainWindow::actionLoadPrefabLibraryTriggered()
+{
+	QString fileName = QFileDialog::getOpenFileName(this,
+		tr("Load Prefab"), "../resources/prefabs", tr("Prefab Files (*.json)"));
+
+	if (fileName.isEmpty())
+	{
+		return;
+	}
+
+	mPrefabListToolbox->loadFromFile(fileName);
+}
+
+void MainWindow::actionSavePrefabLibraryTriggered()
+{
+	mPrefabListToolbox->saveToFile();
+}
+
+void MainWindow::actionSavePrefabLibraryAsTriggered()
+{
+	QString fileName = QFileDialog::getSaveFileName(this,
+		tr("Save Prefab"), "../resources/prefabs", tr("Prefab Files (*.json)"));
+
+	if (fileName.isEmpty())
+	{
+		return;
+	}
+
+	mPrefabListToolbox->saveToFile(fileName);
 }
 
 void MainWindow::on_actionNew_World_triggered()
@@ -105,19 +172,6 @@ void MainWindow::on_actionOpen_World_triggered()
 	ui->actionCreate->setEnabled(true);
 
 	OnWorldChanged.broadcast();
-}
-
-void MainWindow::createWorld()
-{
-	mCurrentWorld = std::make_unique<World>();
-	mCommandStack.clear();
-	ui->actionRun_Game->setEnabled(true);
-}
-
-void MainWindow::updateUndoRedo()
-{
-	ui->actionUndo->setEnabled(mCommandStack.haveSomethingToUndo());
-	ui->actionRedo->setEnabled(mCommandStack.haveSomethingToRedo());
 }
 
 void MainWindow::on_actionSave_World_As_triggered()

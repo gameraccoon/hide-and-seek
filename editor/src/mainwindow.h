@@ -26,6 +26,7 @@ class ComponentAttributesToolbox;
 class ComponentsListToolbox;
 class EntitiesListToolbox;
 class WorldPropertiesToolbox;
+class PrefabListToolbox;
 
 class MainWindow : public QMainWindow
 {
@@ -39,12 +40,29 @@ public:
 	ComponentFactory& getComponentFactory() { return mComponentFactory; }
 	ComponentContentFactory& getComponentContentFactory() { return mComponentContentFactory; }
 	EditorCommandsStack& getCommandStack() { return mCommandStack; }
+	PrefabListToolbox* getPrefabToolbox() { return mPrefabListToolbox.get(); }
 
 public:
 	MulticastDelegate<> OnWorldChanged;
 	MulticastDelegate<NullableEntity> OnSelectedEntityChanged;
 	MulticastDelegate<const QString&> OnSelectedComponentChanged;
 	MulticastDelegate<> OnComponentContentChange;
+
+private:
+	void initToolboxes();
+	void initCommandStack();
+	void registerFactories();
+	void fillWindowContent();
+	void createWorld();
+	void updateSelectedComponentData(QListWidgetItem* selectedItem);
+	void updateUndoRedo();
+	void initActions();
+
+	void actionPrefabsTriggered();
+	void actionNewPrefabLibraryTriggered();
+	void actionLoadPrefabLibraryTriggered();
+	void actionSavePrefabLibraryTriggered();
+	void actionSavePrefabLibraryAsTriggered();
 
 private slots:
 	void on_actionNew_World_triggered();
@@ -61,15 +79,6 @@ private slots:
 	void on_actionWorld_Settings_triggered();
 
 private:
-	void initToolboxes();
-	void initCommandStack();
-	void registerFactories();
-	void fillWindowContent();
-	void createWorld();
-	void updateSelectedComponentData(QListWidgetItem* selectedItem);
-	void updateUndoRedo();
-
-private:
 	// need to be a raw pointer in order to Qt Designer to work normally with this class
 	Ui::mainwindow* ui;
 	std::unique_ptr<ads::CDockManager> mDockManager;
@@ -83,6 +92,7 @@ private:
 	std::unique_ptr<WorldPropertiesToolbox> mWorldPropertiesToolbox;
 	std::unique_ptr<ComponentAttributesToolbox> mComponentAttributesToolbox;
 	std::unique_ptr<ComponentsListToolbox> mComponentsListToolbox;
+	std::unique_ptr<PrefabListToolbox> mPrefabListToolbox;
 };
 
 #endif // MAINWINDOW_H
