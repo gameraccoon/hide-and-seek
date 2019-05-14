@@ -209,7 +209,7 @@ void MainWindow::on_actionRun_Game_triggered()
 	}
 	static std::string tempWorldName = "./tmp/temp-editor-world.json";
 	WorldLoader::SaveWorld(*mCurrentWorld.get(), tempWorldName, mComponentFactory);
-	QProcess::startDetached("StealthGamePrototype", {"--world", QString::fromStdString(tempWorldName)});
+	QProcess::startDetached("./StealthGamePrototype", {"--world", QString::fromStdString(tempWorldName)});
 }
 
 void MainWindow::on_actionUndo_triggered()
