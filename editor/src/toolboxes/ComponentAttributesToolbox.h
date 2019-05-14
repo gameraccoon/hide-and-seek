@@ -34,6 +34,6 @@ private:
 	ads::CDockManager* mDockManager;
 	QString mLastSelectedComlonent;
 
-	Delegates::HandleType mOnComponentChangedHandle;
-	Delegates::HandleType mOnComponentContentChangedHandle;
+	Delegates::Handle mOnComponentChangedHandle;
+	Delegates::Handle mOnComponentContentChangedHandle;
 };

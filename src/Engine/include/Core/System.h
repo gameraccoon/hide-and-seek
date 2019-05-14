@@ -1,7 +1,8 @@
 #pragma once
 
 #include <memory>
-#include <Core/World.h>
+
+class World;
 
 /**
  * The base class for game Systems (ECS ideology)

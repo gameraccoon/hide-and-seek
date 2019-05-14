@@ -1,8 +1,9 @@
 #pragma once
 
 #include "Role.h"
-#include "../Core/World.h"
-#include "../AI/IAiState.h"
+#include "AI/IAiState.h"
+
+class World;
 
 class AiState : public IAiState
 {

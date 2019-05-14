@@ -3,7 +3,8 @@
 #include <vector>
 #include <memory>
 #include <Core/System.h>
-#include <Core/World.h>
+
+class World;
 
 /**
  * Manager for game systems

@@ -1,7 +1,11 @@
 #pragma once
 
+#include <unordered_map>
+
 #include <Core/System.h>
 #include <Base/Engine.h>
+
+class World;
 
 /**
  * System that handles movement controls
@@ -13,9 +17,9 @@ public:
 
 public:
 	ControlSystem(SystemInterface::Engine* engine, KeyStatesMap* keyStatesMap);
-	virtual ~ControlSystem() override = default;
+	~ControlSystem() override = default;
 
-	virtual void update(World* world, float dt) override;
+	void update(World* world, float dt) override;
 
 private:
 	SystemInterface::Engine* mEngine;

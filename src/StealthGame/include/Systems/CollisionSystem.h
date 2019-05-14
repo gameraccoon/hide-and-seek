@@ -1,7 +1,11 @@
 #pragma once
 
+#include <unordered_map>
+
 #include <Core/System.h>
 #include <Base/Engine.h>
+
+class World;
 
 /**
  * System that resolve object collisions
@@ -12,7 +16,7 @@ public:
 	typedef std::unordered_map<int, bool> KeyStatesMap;
 
 public:
-	virtual ~CollisionSystem() override = default;
+	~CollisionSystem() override = default;
 
-	virtual void update(World* world, float dt) override;
+	void update(World* world, float dt) override;
 };

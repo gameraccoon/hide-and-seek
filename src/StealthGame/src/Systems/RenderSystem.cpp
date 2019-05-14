@@ -7,6 +7,7 @@
 #include <Components/CollisionComponent.generated.h>
 #include <Base/Engine.h>
 #include <Modules/RayTrace.h>
+#include <Core/World.h>
 
 // for tests only
 #include "../src/Internal/SdlSurface.h"

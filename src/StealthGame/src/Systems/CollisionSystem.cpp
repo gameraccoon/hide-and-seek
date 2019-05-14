@@ -4,6 +4,7 @@
 #include <Components/TransformComponent.generated.h>
 #include <Components/MovementComponent.generated.h>
 #include <Modules/Collide.h>
+#include <Core/World.h>
 
 void CollisionSystem::update(World* world, float /*dt*/)
 {

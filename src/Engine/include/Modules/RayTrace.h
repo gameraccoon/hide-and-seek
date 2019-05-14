@@ -2,10 +2,11 @@
 
 #include <stdio.h>
 
-#include "../Core/Vector2D.h"
-#include "../Core/Rotator.h"
-#include "../Core/World.h"
-#include "../Structures/BoundingBox.h"
+#include "Core/Vector2D.h"
+#include "Core/Rotator.h"
+#include "Structures/BoundingBox.h"
+
+class World;
 
 namespace RayTrace
 {

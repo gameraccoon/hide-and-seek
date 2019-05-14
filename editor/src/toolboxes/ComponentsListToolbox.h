@@ -43,8 +43,8 @@ private:
 	ads::CDockManager* mDockManager;
 	NullableEntity mLastSelectedEntity;
 
-	Delegates::HandleType mOnComponentAddedHandle;
-	Delegates::HandleType mOnComponentRemovedHandle;
-	Delegates::HandleType mOnWorldChangedHandle;
-	Delegates::HandleType mOnEntityChangedHandle;
+	Delegates::Handle mOnComponentAddedHandle;
+	Delegates::Handle mOnComponentRemovedHandle;
+	Delegates::Handle mOnWorldChangedHandle;
+	Delegates::Handle mOnEntityChangedHandle;
 };

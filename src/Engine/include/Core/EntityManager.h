@@ -114,6 +114,39 @@ public:
 		}
 	}
 
+	template<typename FirstComponent, typename... Components, typename FunctionType>
+	void forEachEntity2(FunctionType processor)
+	{
+		auto& firstComponentVector = mComponents[typeid(FirstComponent)];
+
+		auto componentVectors = std::make_tuple(firstComponentVector, mComponents[typeid(Components)]...);
+
+		constexpr unsigned componentsSize = sizeof...(Components);
+
+		for (auto& [entityID, entityIndex] : mEntityIndexMap)
+		{
+			if (entityIndex >= firstComponentVector.size())
+			{
+				continue;
+			}
+
+			auto& firstComponent = firstComponentVector[entityIndex];
+			if (firstComponent == nullptr)
+			{
+				continue;
+			}
+
+			auto components = getEntityComponentSet<FirstComponent, Components...>(entityIndex, componentVectors);
+
+			if (std::get<componentsSize>(components) == nullptr)
+			{
+				continue;
+			}
+
+			std::apply(processor, std::tuple_cat(std::make_tuple(Entity(entityID)), components));
+		}
+	}
+
 	void getPrefabFromEntity(nlohmann::json& json, Entity entity);
 	Entity createPrefabInstance(const nlohmann::json& json, const class ComponentFactory& componentFactory);
 	void applyPrefabToExistentEntity(const nlohmann::json& json, Entity entity, const ComponentFactory& componentFactory);

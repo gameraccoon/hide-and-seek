@@ -2,6 +2,8 @@
 
 #include <Components/RenderComponent.generated.h>
 
+#include <Core/World.h>
+
 ResourceStreamingSystem::ResourceStreamingSystem(std::shared_ptr<SystemInterface::ResourceManager> resourceManager)
 	: mResourceManager(resourceManager)
 {

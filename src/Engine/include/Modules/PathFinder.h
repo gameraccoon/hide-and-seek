@@ -3,9 +3,10 @@
 #include <list>
 #include <set>
 
-#include "../Core/World.h"
-#include "../Core/Vector2D.h"
-#include "../Structures/PathPoint.h"
+#include "Core/Vector2D.h"
+#include "Structures/PathPoint.h"
+
+class World;
 
 struct CalculationPoint
 {

@@ -33,5 +33,5 @@ private:
 	MainWindow* mMainWindow;
 	ads::CDockManager* mDockManager;
 
-	Delegates::HandleType mOnWorldChangedHandle;
+	Delegates::Handle mOnWorldChangedHandle;
 };

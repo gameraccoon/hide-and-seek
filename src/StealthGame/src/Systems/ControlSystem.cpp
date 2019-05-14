@@ -6,6 +6,8 @@
 #include <Components/TransformComponent.generated.h>
 #include <Components/MovementComponent.generated.h>
 
+#include <Core/World.h>
+
 ControlSystem::ControlSystem(SystemInterface::Engine* engine, KeyStatesMap* keyStatesMap)
 	: mEngine(engine)
 	, mKeyStatesMap(keyStatesMap)

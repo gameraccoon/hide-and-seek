@@ -52,7 +52,7 @@ void PrefabListToolbox::show()
 	}
 
 	QWidget* containerWidget = new QWidget();
-	ads::CDockWidget* dockWidget = new ads::CDockWidget(QString("Prefabs"));
+	ads::CDockWidget* dockWidget = new ads::CDockWidget(QString("Prefabs Library"));
 	dockWidget->setObjectName(ToolboxName);
 	dockWidget->setWidget(containerWidget);
 	dockWidget->setToggleViewActionMode(ads::CDockWidget::ActionModeShow);

@@ -1,7 +1,8 @@
 #pragma once
 
 #include <Core/Vector2D.h>
-#include <Core/World.h>
+
+class World;
 
 #include "InventoryItem.h"
 

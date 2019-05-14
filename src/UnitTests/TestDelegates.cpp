@@ -45,7 +45,7 @@ TEST(Delegates, MultiCast)
 
 	delegate.broadcast(2);
 
-	Delegates::HandleType handle = delegate.bind([&testVal1](int test){
+	Delegates::Handle handle = delegate.bind([&testVal1](int test){
 		testVal1 += test;
 	});
 	delegate.broadcast(3);
@@ -68,9 +68,15 @@ TEST(Delegates, MultiCast)
 	ASSERT_EQ(8, testVal1);
 	ASSERT_EQ(10, testVal2);
 
+	delegate.unbind(handle);
+	delegate.broadcast(5);
+
+	ASSERT_EQ(8, testVal1);
+	ASSERT_EQ(15, testVal2);
+
 	delegate.clear();
 	delegate.broadcast(4);
 
 	ASSERT_EQ(8, testVal1);
-	ASSERT_EQ(10, testVal2);
+	ASSERT_EQ(15, testVal2);
 }

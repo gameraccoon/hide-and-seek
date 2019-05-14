@@ -3,8 +3,9 @@
 #include <stack>
 
 #include <AI/IBody.h>
-#include <Core/World.h>
 #include "IAiState.h"
+
+class World;
 
 class Role
 {

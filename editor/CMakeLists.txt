@@ -52,6 +52,7 @@ aux_source_directory(src/editorcommands/generated editor_SRCS)
 aux_source_directory(src/componenteditcontent editor_SRCS)
 aux_source_directory(src/componenteditcontent/generated editor_SRCS)
 aux_source_directory(src/toolboxes editor_SRCS)
+aux_source_directory(src/editorsystems editor_SRCS)
 
 add_subdirectory(Qt-Advanced-Docking-System)
 
@@ -150,3 +151,4 @@ add_custom_target(
     COMMENT "C++ code generation"
 )
 add_dependencies(EngineLib CodeGeneration)
+add_dependencies(editor CodeGeneration)

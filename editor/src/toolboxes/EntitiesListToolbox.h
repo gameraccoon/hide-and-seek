@@ -4,6 +4,7 @@
 #include <QWidget>
 
 #include "Core/Delegates.h"
+#include "Core/Entity.h"
 
 class MainWindow;
 
@@ -31,6 +32,7 @@ public:
 
 private:
 	void onWorldUpdated();
+	void onEntityChangedEvent(NullableEntity entity);
 	void updateContent();
 	void onCurrentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
 	void showContextMenu(const QPoint& pos);
@@ -46,7 +48,8 @@ private:
 	MainWindow* mMainWindow;
 	ads::CDockManager* mDockManager;
 
-	Delegates::HandleType mOnEntityAddedHandle;
-	Delegates::HandleType mOnEntityRemovedHandle;
-	Delegates::HandleType mOnWorldChangedHandle;
+	Delegates::Handle mOnEntityAddedHandle;
+	Delegates::Handle mOnEntityRemovedHandle;
+	Delegates::Handle mOnWorldChangedHandle;
+	Delegates::Handle mOnSelectedEntityChangedHandle;
 };

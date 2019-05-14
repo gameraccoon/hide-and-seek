@@ -17,9 +17,9 @@ class ResourceStreamingSystem : public System
 {
 public:
 	ResourceStreamingSystem(std::shared_ptr<SystemInterface::ResourceManager> resourceManager);
-	virtual ~ResourceStreamingSystem() override = default;
+	~ResourceStreamingSystem() override = default;
 
-	virtual void update(World* world, float dt) override;
+	void update(World* world, float dt) override;
 
 private:
 	std::shared_ptr<SystemInterface::ResourceManager> mResourceManager;

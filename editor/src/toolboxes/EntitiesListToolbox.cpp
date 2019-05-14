@@ -29,11 +29,13 @@ EntitiesListToolbox::EntitiesListToolbox(MainWindow* mainWindow, ads::CDockManag
 	, mDockManager(dockManager)
 {
 	mOnWorldChangedHandle = mMainWindow->OnWorldChanged.bind([this]{bindEvents(); updateContent();});
+	mOnSelectedEntityChangedHandle = mMainWindow->OnSelectedEntityChanged.bind([this](NullableEntity entity){onEntityChangedEvent(entity);});
 }
 
 EntitiesListToolbox::~EntitiesListToolbox()
 {
 	mMainWindow->OnWorldChanged.unbind(mOnWorldChangedHandle);
+	mMainWindow->OnSelectedEntityChanged.unbind(mOnSelectedEntityChangedHandle);
 	unbindEvents();
 }
 
@@ -79,6 +81,34 @@ void EntitiesListToolbox::show()
 void EntitiesListToolbox::onWorldUpdated()
 {
 	bindEvents();
+}
+
+void EntitiesListToolbox::onEntityChangedEvent(NullableEntity entity)
+{
+	if (!entity.isValid())
+	{
+		return;
+	}
+
+	QListWidget* entitiesList = mDockManager->findChild<QListWidget*>(ListName);
+	if (entitiesList == nullptr)
+	{
+		return;
+	}
+
+	QString text = QString::number(entity.mId);
+	int i = 0;
+	while (QListWidgetItem* item = entitiesList->item(i))
+	{
+		if (item->text() == text)
+		{
+			entitiesList->blockSignals(true);
+			entitiesList->setCurrentItem(item);
+			entitiesList->blockSignals(false);
+			break;
+		}
+		++i;
+	}
 }
 
 void EntitiesListToolbox::updateContent()

@@ -20,9 +20,9 @@ public:
 
 public:
 	RenderSystem(SystemInterface::Engine* engine, std::shared_ptr<SystemInterface::ResourceManager> resourceManager);
-	virtual ~RenderSystem() override = default;
+	~RenderSystem() override = default;
 
-	virtual void update(World* world, float dt) override;
+	void update(World* world, float dt) override;
 
 private:
 	void drawVisibilityPolygon(World* world, const Vector2D& fowSize, const Vector2D& drawShift);

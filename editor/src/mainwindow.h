@@ -27,6 +27,7 @@ class ComponentsListToolbox;
 class EntitiesListToolbox;
 class WorldPropertiesToolbox;
 class PrefabListToolbox;
+class TransformEditorToolbox;
 
 class MainWindow : public QMainWindow
 {
@@ -47,6 +48,9 @@ public:
 	MulticastDelegate<NullableEntity> OnSelectedEntityChanged;
 	MulticastDelegate<const QString&> OnSelectedComponentChanged;
 	MulticastDelegate<> OnComponentContentChange;
+
+private slots:
+	void on_actionTransform_Editor_triggered();
 
 private:
 	void initToolboxes();
@@ -93,6 +97,7 @@ private:
 	std::unique_ptr<ComponentAttributesToolbox> mComponentAttributesToolbox;
 	std::unique_ptr<ComponentsListToolbox> mComponentsListToolbox;
 	std::unique_ptr<PrefabListToolbox> mPrefabListToolbox;
+	std::unique_ptr<TransformEditorToolbox> mTransformEditorToolbox;
 };
 
 #endif // MAINWINDOW_H

@@ -2,8 +2,6 @@
 
 #include <stdio.h>
 
-#include <Core/World.h>
-
 #include <Components/CollisionComponent.generated.h>
 
 namespace Collide

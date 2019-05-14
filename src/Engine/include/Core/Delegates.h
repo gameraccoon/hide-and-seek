@@ -41,7 +41,25 @@ private:
 
 namespace Delegates
 {
-	typedef int HandleType;
+	class Handle
+	{
+	public:
+		Handle() = default;
+		explicit Handle(int index)
+			: mIndex(index)
+		{
+		}
+
+		bool operator ==(const Handle& b) const
+		{
+			return mIndex == b.mIndex;
+		}
+
+		bool operator !=(const Handle& b) const { return !(*this == b); }
+
+	private:
+		int mIndex = -1;
+	};
 }
 
 template <typename... Args>
@@ -51,17 +69,18 @@ public:
 	typedef std::function<void(Args...)> FunctionType;
 
 public:
-	Delegates::HandleType bind(FunctionType fn)
+	Delegates::Handle bind(FunctionType fn)
 	{
 		if (fn)
 		{
-			mFunctions.emplace_back(mNextFunctionId++, fn);
-			return mNextFunctionId - 1;
+			Delegates::Handle newHandle(mNextFunctionId++);
+			mFunctions.emplace_back(newHandle, fn);
+			return newHandle;
 		}
-		return -1;
+		return Delegates::Handle();
 	}
 
-	void unbind(Delegates::HandleType handle)
+	void unbind(Delegates::Handle handle)
 	{
 		mFunctions.erase(
 			std::remove_if(
@@ -91,12 +110,12 @@ public:
 private:
 	struct FunctionData
 	{
-		FunctionData(Delegates::HandleType handle, FunctionType fn)
+		FunctionData(Delegates::Handle handle, FunctionType fn)
 			: handle(handle)
 			, fn(fn)
 		{}
 
-		Delegates::HandleType handle;
+		Delegates::Handle handle;
 		FunctionType fn;
 	};
 

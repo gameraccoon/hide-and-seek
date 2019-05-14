@@ -18,6 +18,7 @@
 #include "toolboxes/EntitiesListToolbox.h"
 #include "toolboxes/WorldPropertiesToolbox.h"
 #include "toolboxes/PrefabListToolbox.h"
+#include "toolboxes/TransformEditorToolbox.h"
 
 #include <QFileDialog>
 #include <QProcess>
@@ -72,6 +73,7 @@ void MainWindow::initToolboxes()
 	mComponentsListToolbox = std::make_unique<ComponentsListToolbox>(this, mDockManager.get());
 	mWorldPropertiesToolbox = std::make_unique<WorldPropertiesToolbox>(this, mDockManager.get());
 	mPrefabListToolbox = std::make_unique<PrefabListToolbox>(this, mDockManager.get());
+	mTransformEditorToolbox = std::make_unique<TransformEditorToolbox>(this, mDockManager.get());
 }
 
 void MainWindow::fillWindowContent()
@@ -79,7 +81,7 @@ void MainWindow::fillWindowContent()
 	mEntitiesListToolbox->show();
 	mComponentsListToolbox->show();
 	mComponentAttributesToolbox->show();
-	mWorldPropertiesToolbox->show();
+	mTransformEditorToolbox->show();
 }
 
 void MainWindow::createWorld()
@@ -252,4 +254,9 @@ void MainWindow::on_actionComponent_Properties_triggered()
 void MainWindow::on_actionWorld_Settings_triggered()
 {
 	mWorldPropertiesToolbox->show();
+}
+
+void MainWindow::on_actionTransform_Editor_triggered()
+{
+	mTransformEditorToolbox->show();
 }
