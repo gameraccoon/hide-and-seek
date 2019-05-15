@@ -25,7 +25,9 @@ public:
 	void mouseReleaseEvent(QMouseEvent *event) override;
 	void paintEvent(QPaintEvent* event) override;
 	void resizeEvent(QResizeEvent *event) override;
+
 	void onClick(const class QPoint& pos);
+	NullableEntity getEntityUnderPoint(const QPoint& pos);
 
 	QVector2D project(const Vector2D& worldPos);
 	Vector2D deproject(const QVector2D& screenPos);
@@ -40,6 +42,8 @@ public:
 	float mScale = 1.0f;
 	bool mIsMoved = false;
 	bool mIsCatchedSelectedEntity = false;
+	Vector2D mCursorObjectOffset;
+	bool mFreeMove = true;
 
 	NullableEntity mSelectedEntity;
 };
@@ -56,6 +60,7 @@ public:
 private:
 	void updateWorld();
 	void onEntitySelected(NullableEntity entity);
+	void onFreeMoveChanged(int newValue);
 
 private:
 	MainWindow* mMainWindow;

@@ -10,6 +10,8 @@
 
 #include <QPainter>
 #include <QMouseEvent>
+#include <QVBoxLayout>
+#include <QCheckBox>
 
 #include "Components/TransformComponent.generated.h"
 
@@ -52,6 +54,15 @@ void TransformEditorToolbox::show()
 	dockWidget->setIcon(mMainWindow->style()->standardIcon(QStyle::SP_DialogOpenButton));
 	dockWidget->setFeature(ads::CDockWidget::DockWidgetClosable, true);
 	mDockManager->addDockWidget(ads::RightDockWidgetArea, dockWidget);
+
+	QVBoxLayout* layout = new QVBoxLayout();
+	layout->addStretch();
+	mContent->setLayout(layout);
+	QCheckBox* freeMoveCheckbox = new QCheckBox();
+	freeMoveCheckbox->setText("Free Move");
+	freeMoveCheckbox->setChecked(mContent->mFreeMove);
+	QObject::connect(freeMoveCheckbox, &QCheckBox::stateChanged, this, &TransformEditorToolbox::onFreeMoveChanged);
+	layout->addWidget(freeMoveCheckbox);
 }
 
 void TransformEditorToolbox::updateWorld()
@@ -74,6 +85,14 @@ void TransformEditorToolbox::onEntitySelected(NullableEntity entity)
 	}
 }
 
+void TransformEditorToolbox::onFreeMoveChanged(int newValue)
+{
+	if (mContent)
+	{
+		mContent->mFreeMove = (newValue != 0);
+	}
+}
+
 TransformEditorWidget::TransformEditorWidget(MainWindow *mainWindow)
 	: mMainWindow(mainWindow)
 {
@@ -87,8 +106,17 @@ void TransformEditorWidget::mousePressEvent(QMouseEvent* event)
 	mIsMoved = false;
 	mIsCatchedSelectedEntity = false;
 
-	if (mSelectedEntity.isValid())
+	if (NullableEntity entityUnderCursor = getEntityUnderPoint(event->pos()); entityUnderCursor.isValid())
 	{
+		if (mFreeMove)
+		{
+			mSelectedEntity = entityUnderCursor;
+		}
+		else if (!mSelectedEntity.isValid() || mSelectedEntity.mId != entityUnderCursor.mId)
+		{
+			return;
+		}
+
 		Vector2D worldPos = deproject(mLastMousePos);
 		auto [transform] = mWorld->getEntityManger().getEntityComponents<TransformComponent>(mSelectedEntity.getEntity());
 		Vector2D location = transform->getLocation();
@@ -97,6 +125,7 @@ void TransformEditorWidget::mousePressEvent(QMouseEvent* event)
 			location.y - 10 < worldPos.y && location.y + 10 > worldPos.y)
 		{
 			mIsCatchedSelectedEntity = true;
+			mCursorObjectOffset = location - worldPos;
 		}
 	}
 }
@@ -112,7 +141,7 @@ void TransformEditorWidget::mouseMoveEvent(QMouseEvent* event)
 	if (mIsMoved && mIsCatchedSelectedEntity)
 	{
 		auto [transform] = mWorld->getEntityManger().getEntityComponents<TransformComponent>(mSelectedEntity.getEntity());
-		transform->setLocation(deproject(pos));
+		transform->setLocation(deproject(pos) + mCursorObjectOffset);
 	}
 
 	if (!mIsCatchedSelectedEntity)
@@ -168,24 +197,7 @@ void TransformEditorWidget::resizeEvent(QResizeEvent*)
 
 void TransformEditorWidget::onClick(const QPoint& pos)
 {
-	if (mWorld == nullptr)
-	{
-		return;
-	}
-
-	Vector2D worldPos = deproject(QVector2D(pos));
-
-	NullableEntity findResult;
-
-	mWorld->getEntityManger().forEachEntity2<TransformComponent>([worldPos, &findResult](Entity entity, TransformComponent* transform){
-		Vector2D location = transform->getLocation();
-		if (location.x - 10 < worldPos.x && location.x + 10 > worldPos.x
-			&&
-			location.y - 10 < worldPos.y && location.y + 10 > worldPos.y)
-		{
-			findResult = entity;
-		}
-	});
+	NullableEntity findResult = getEntityUnderPoint(pos);
 
 	mSelectedEntity = findResult;
 
@@ -195,6 +207,28 @@ void TransformEditorWidget::onClick(const QPoint& pos)
 	}
 
 	repaint();
+}
+
+NullableEntity TransformEditorWidget::getEntityUnderPoint(const QPoint& pos)
+{
+	Vector2D worldPos = deproject(QVector2D(pos));
+
+	NullableEntity findResult;
+
+	if (mWorld)
+	{
+		mWorld->getEntityManger().forEachEntity2<TransformComponent>([worldPos, &findResult](Entity entity, TransformComponent* transform){
+			Vector2D location = transform->getLocation();
+			if (location.x - 10 < worldPos.x && location.x + 10 > worldPos.x
+				&&
+				location.y - 10 < worldPos.y && location.y + 10 > worldPos.y)
+			{
+				findResult = entity;
+			}
+		});
+	}
+
+	return findResult;
 }
 
 QVector2D TransformEditorWidget::project(const Vector2D& worldPos)

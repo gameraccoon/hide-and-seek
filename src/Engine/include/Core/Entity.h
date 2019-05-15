@@ -33,13 +33,6 @@ public:
 	NullableEntity(const Entity& entity) : mId(entity.getID()), mIsValid(true) {}
 	explicit NullableEntity(Entity::EntityID id) : mId(id), mIsValid(true) {}
 
-	bool operator ==(const NullableEntity& b) const
-	{
-		return mIsValid && b.mIsValid && mId == b.mId;
-	}
-
-	bool operator !=(const NullableEntity& b) const { return !(*this == b); }
-
 	bool isValid() const { return mIsValid; }
 	Entity getEntity() const;
 
