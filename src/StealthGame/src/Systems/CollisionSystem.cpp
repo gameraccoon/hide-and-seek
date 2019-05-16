@@ -14,7 +14,7 @@ void CollisionSystem::update(World* world, float /*dt*/)
 	{
 		if (collision->getIsBoundingBoxDirty())
 		{
-			Collide::updateOriginalBoundingBox(collision);
+			Collide::UpdateOriginalBoundingBox(collision);
 		}
 
 		collision->setBoundingBox(collision->getOriginalBoundingBox() + transform->getLocation());
@@ -27,7 +27,7 @@ void CollisionSystem::update(World* world, float /*dt*/)
 		{
 			if (collision != collisionComponent)
 			{
-				bool doCollide = Collide::doCollide(collisionComponent, transformComponent->getLocation(), collision, transform->getLocation(), resist);
+				bool doCollide = Collide::DoCollide(collisionComponent, transformComponent->getLocation(), collision, transform->getLocation(), resist);
 
 				if (doCollide)
 				{

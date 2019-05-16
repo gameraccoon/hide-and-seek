@@ -78,11 +78,26 @@ void TransformEditorToolbox::updateWorld()
 
 void TransformEditorToolbox::onEntitySelected(NullableEntity entity)
 {
-	if (mContent)
+	if (mContent == nullptr)
+	{
+		return;
+	}
+
+	World* world = mMainWindow->getCurrentWorld();
+	if (world == nullptr)
+	{
+		return;
+	}
+
+	if (entity.isValid() && !world->getEntityManger().doesEntityHaveComponent<TransformComponent>(entity.getEntity()))
+	{
+		mContent->mSelectedEntity = NullableEntity();
+	}
+	else
 	{
 		mContent->mSelectedEntity = entity;
-		mContent->repaint();
 	}
+	mContent->repaint();
 }
 
 void TransformEditorToolbox::onFreeMoveChanged(int newValue)

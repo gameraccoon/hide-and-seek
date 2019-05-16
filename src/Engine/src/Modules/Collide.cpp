@@ -4,13 +4,12 @@
 #include <cmath>
 #include <limits>
 
-
-#include <Components/CollisionComponent.generated.h>
-#include <Components/TransformComponent.generated.h>
+#include "Components/CollisionComponent.generated.h"
+#include "Components/TransformComponent.generated.h"
 
 namespace Collide
 {
-	static float SignedArea(const Vector2D &a, const Vector2D &b, const Vector2D &c)
+	float SignedArea(const Vector2D &a, const Vector2D &b, const Vector2D &c)
 	{
 		return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
 	}
@@ -155,7 +154,7 @@ namespace Collide
 		return false;
 	}
 
-	bool doCollide(const CollisionComponent* collisionA, const Vector2D& locationA,
+	bool DoCollide(const CollisionComponent* collisionA, const Vector2D& locationA,
 				   const CollisionComponent* collisionB, const Vector2D& locationB, Vector2D& outResist)
 	{
 		// get AABB of the actors
@@ -173,7 +172,7 @@ namespace Collide
 		return false;
 	}
 
-	void updateOriginalBoundingBox(CollisionComponent* collision)
+	void UpdateOriginalBoundingBox(CollisionComponent* collision)
 	{
 		const Hull& geometry = collision->getGeometry();
 

@@ -2,13 +2,16 @@
 
 #include <Core/World.h>
 #include <Modules/Collide.h>
+#include <Structures/Hull.h>
+
+#include <Components/CollisionComponent.generated.h>
 
 static CollisionComponent* prepareCollision(World& world, const Vector2D& location, const Hull& hull)
 {
 	auto entity = world.getEntityManger().addEntity();
 	auto collision = world.getEntityManger().addComponent<CollisionComponent>(entity);
 	collision->setGeometry(hull);
-	Collide::updateOriginalBoundingBox(collision);
+	Collide::UpdateOriginalBoundingBox(collision);
 	collision->setBoundingBox(collision->getOriginalBoundingBox() + location);
 	return collision;
 }
@@ -18,7 +21,7 @@ static bool getCollisionResult(World& world, const Vector2D& location1, const Hu
 	auto collision1 = prepareCollision(world, location1, hull1);
 	auto collision2 = prepareCollision(world, location2, hull2);
 
-	return Collide::doCollide(collision1, location1, collision2, location2, outResist);
+	return Collide::DoCollide(collision1, location1, collision2, location2, outResist);
 }
 
 TEST(Collision, Circular)

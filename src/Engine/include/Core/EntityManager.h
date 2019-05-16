@@ -21,6 +21,20 @@ public:
 
 	std::vector<BaseComponent*> getAllEntityComponents(const Entity& entity);
 
+	template<typename ComponentType>
+	bool doesEntityHaveComponent(const Entity& entity)
+	{
+		auto entityIdxItr = mEntityIndexMap.find(entity.getID());
+		if (entityIdxItr == mEntityIndexMap.end())
+		{
+			return false;
+		}
+
+		auto& componentVector = mComponents[typeid(ComponentType)];
+
+		return entityIdxItr->second < componentVector.size() && componentVector[entityIdxItr->second] != nullptr;
+	}
+
 	template<typename T>
 	T* addComponent(const Entity& entity)
 	{

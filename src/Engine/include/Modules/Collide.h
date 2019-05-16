@@ -1,13 +1,14 @@
 #pragma once
 
-#include <stdio.h>
-
-#include <Components/CollisionComponent.generated.h>
+class CollisionComponent;
+class Vector2D;
 
 namespace Collide
 {
-	bool doCollide(const CollisionComponent* collisionA, const Vector2D& locationA,
+	float SignedArea(const Vector2D &a, const Vector2D &b, const Vector2D &c);
+
+	bool DoCollide(const CollisionComponent* collisionA, const Vector2D& locationA,
 				   const CollisionComponent* collisionB, const Vector2D& locationB, Vector2D& outResist);
 
-	void updateOriginalBoundingBox(CollisionComponent* collision);
+	void UpdateOriginalBoundingBox(CollisionComponent* collision);
 }
