@@ -112,10 +112,11 @@ void RenderSystem::drawLights(World* world, const Vector2D& drawShift, const Vec
 	VisibilityPolygon::Caches caches;
 
 	// draw player visibility polygon
-	Vector2D playerSightPosition = GetPlayerSightPosition(world);
-	VisibilityPolygon::CalculateVisibilityPolygon(caches, collidableComponents, playerSightPosition, maxFov);
-	drawVisibilityPolygon(caches.resultPolygon, maxFov, drawShift + playerSightPosition);
+//	Vector2D playerSightPosition = GetPlayerSightPosition(world);
+//	VisibilityPolygon::CalculateVisibilityPolygon(caches, collidableComponents, playerSightPosition, maxFov);
+//	drawVisibilityPolygon(caches.resultPolygon, maxFov, drawShift + playerSightPosition);
 
+	// draw light
 	world->getEntityManger().forEachEntity<LightComponent, TransformComponent>([&collidableComponents, &caches, maxFov, &drawShift, this](LightComponent* /*light*/, TransformComponent* transform)
 	{
 		VisibilityPolygon::CalculateVisibilityPolygon(caches, collidableComponents, transform->getLocation(), maxFov);

@@ -48,6 +48,23 @@
                 }
             },
             "name": "wall"
+        },
+        {
+            "data": {
+                "LightComponent": {
+                    "brightness": 1.0
+                },
+                "TransformComponent": {
+                    "location": {
+                        "x": 50.0,
+                        "y": -28.0
+                    },
+                    "rotation": {
+                        "v": 0.0
+                    }
+                }
+            },
+            "name": "light"
         }
     ]
 }
