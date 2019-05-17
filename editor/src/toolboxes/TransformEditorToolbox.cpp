@@ -118,6 +118,7 @@ TransformEditorWidget::TransformEditorWidget(MainWindow *mainWindow)
 void TransformEditorWidget::mousePressEvent(QMouseEvent* event)
 {
 	mLastMousePos = QVector2D(event->pos());
+	mMoveShift = ZERO_VECTOR;
 	mPressMousePos = mLastMousePos;
 	mIsMoved = false;
 	mIsCatchedSelectedEntity = false;
@@ -156,8 +157,7 @@ void TransformEditorWidget::mouseMoveEvent(QMouseEvent* event)
 
 	if (mIsMoved && mIsCatchedSelectedEntity)
 	{
-		auto [transform] = mWorld->getEntityManger().getEntityComponents<TransformComponent>(mSelectedEntity.getEntity());
-		transform->setLocation(deproject(pos) + mCursorObjectOffset);
+		mMoveShift = deproject(pos) + mCursorObjectOffset;
 	}
 
 	if (!mIsCatchedSelectedEntity)
@@ -165,16 +165,26 @@ void TransformEditorWidget::mouseMoveEvent(QMouseEvent* event)
 		mPosShift -= QVector2D(mLastMousePos - pos);
 	}
 	mLastMousePos = pos;
-
 	repaint();
 }
 
 void TransformEditorWidget::mouseReleaseEvent(QMouseEvent* event)
 {
-	if (!mIsMoved)
+	if (mIsMoved)
+	{
+		if (mIsCatchedSelectedEntity && mSelectedEntity.isValid())
+		{
+			// use command
+			auto [transform] = mWorld->getEntityManger().getEntityComponents<TransformComponent>(mSelectedEntity.getEntity());
+			transform->setLocation(mMoveShift);
+			mMoveShift = ZERO_VECTOR;
+		}
+	}
+	else
 	{
 		onClick(event->pos());
 	}
+	repaint();
 }
 
 void TransformEditorWidget::paintEvent(QPaintEvent*)
@@ -191,6 +201,64 @@ void TransformEditorWidget::paintEvent(QPaintEvent*)
 		Vector2D location = transform->getLocation();
 
 		auto [collision] = mWorld->getEntityManger().getEntityComponents<CollisionComponent>(entity);
+
+		if (mSelectedEntity.isValid() && entity == mSelectedEntity.getEntity())
+		{
+			// preview movement
+			if (mMoveShift != ZERO_VECTOR)
+			{
+				location = mMoveShift;
+			}
+
+			// calc selected entity border
+			QVector2D selectionLtShift;
+			QVector2D selectionSize;
+			if (collision)
+			{
+				Hull geometry = collision->getGeometry();
+				if (geometry.type == Hull::Type::Angular)
+				{
+					for (Vector2D& point : geometry.points)
+					{
+						if (point.x < selectionLtShift.x())
+						{
+							selectionLtShift.setX(point.x);
+						}
+						if (point.y < selectionLtShift.y())
+						{
+							selectionLtShift.setY(point.y);
+						}
+						if (point.x > selectionSize.x())
+						{
+							selectionSize.setX(point.x);
+						}
+						if (point.y > selectionSize.y())
+						{
+							selectionSize.setY(point.y);
+						}
+					}
+
+					selectionSize -= selectionLtShift;
+				}
+				else
+				{
+					float radius = geometry.getRadius();
+					selectionLtShift = QVector2D(-radius, -radius);
+					selectionSize = QVector2D(radius * 2.0f, radius * 2.0f);
+				}
+			}
+
+			// draw selected entity border
+			selectionLtShift -= QVector2D(5.0f, 5.0f);
+			selectionSize += QVector2D(10.0f, 10.0f);
+			QRectF rectangle((project(location) + selectionLtShift).toPoint(), QSize(static_cast<int>(selectionSize.x()), static_cast<int>(selectionSize.y())));
+			QBrush brush = painter.brush();
+			brush.setColor(Qt::GlobalColor::blue);
+			painter.setBrush(brush);
+			painter.drawRect(rectangle);
+		}
+
+		// draw collision
 		if (collision)
 		{
 			Hull geometry = collision->getGeometry();
@@ -219,16 +287,6 @@ void TransformEditorWidget::paintEvent(QPaintEvent*)
 		painter.drawLine(QPoint(screenPoint.x() - 5, screenPoint.y()), QPoint(screenPoint.x() + 5, screenPoint.y()));
 		painter.drawLine(QPoint(screenPoint.x(), screenPoint.y() - 5), QPoint(screenPoint.x(), screenPoint.y() + 5));
 	});
-
-	if (mSelectedEntity.isValid())
-	{
-		auto [transform] = mWorld->getEntityManger().getEntityComponents<TransformComponent>(mSelectedEntity.getEntity());
-		QRectF rectangle((project(transform->getLocation()) - QVector2D(7.0f, 7.0f)).toPoint(), QSize(14, 14));
-		QBrush brush = painter.brush();
-		brush.setColor(Qt::GlobalColor::blue);
-		painter.setBrush(brush);
-		painter.drawRect(rectangle);
-	}
 }
 
 void TransformEditorWidget::onClick(const QPoint& pos)
@@ -241,8 +299,6 @@ void TransformEditorWidget::onClick(const QPoint& pos)
 	{
 		mMainWindow->OnSelectedEntityChanged.broadcast(findResult);
 	}
-
-	repaint();
 }
 
 NullableEntity TransformEditorWidget::getEntityUnderPoint(const QPoint& pos)

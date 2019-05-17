@@ -38,6 +38,7 @@ public:
 	QVector2D mPressMousePos = QVector2D(0.0f, 0.0f);
 
 	QVector2D mPosShift = QVector2D(0.0f, 0.0f);
+	Vector2D mMoveShift = Vector2D(0.0f, 0.0f);
 	float mScale = 1.0f;
 	bool mIsMoved = false;
 	bool mIsCatchedSelectedEntity = false;
