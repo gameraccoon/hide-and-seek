@@ -14,6 +14,7 @@
 #include <QCheckBox>
 
 #include "Components/TransformComponent.generated.h"
+#include "Components/CollisionComponent.generated.h"
 
 const QString TransformEditorToolbox::WidgetName = "TransformEditor";
 const QString TransformEditorToolbox::ToolboxName = TransformEditorToolbox::WidgetName + "Toolbox";
@@ -185,29 +186,49 @@ void TransformEditorWidget::paintEvent(QPaintEvent*)
 
 	QPainter painter(this);
 
-	std::vector<std::tuple<TransformComponent*>> components = mWorld->getEntityManger().getComponents<TransformComponent>();
-
-	for (auto [component] : components)
+	mWorld->getEntityManger().forEachEntity2<TransformComponent>([&painter, this](Entity entity, TransformComponent* transform)
 	{
-		Vector2D location = component->getLocation();
-		QRectF rectangle((project(location) - QVector2D(10.0f, 10.0f)).toPoint(), QSize(10, 10));
-		painter.drawEllipse(rectangle);
-	}
+		Vector2D location = transform->getLocation();
+
+		auto [collision] = mWorld->getEntityManger().getEntityComponents<CollisionComponent>(entity);
+		if (collision)
+		{
+			Hull geometry = collision->getGeometry();
+			if (geometry.type == Hull::Type::Angular)
+			{
+				QPolygonF polygon;
+				for (Vector2D& point : geometry.points)
+				{
+					polygon.append(project(location + point).toPointF());
+				}
+				painter.drawPolygon(polygon);
+			}
+			else
+			{
+				float radius = geometry.getRadius();
+				float halfWorldSize = radius * mScale;
+				int worldSizeInt = static_cast<int>(halfWorldSize * 2.0f);
+				QRectF rectangle((project(location) - QVector2D(halfWorldSize, halfWorldSize)).toPoint(), QSize(worldSizeInt, worldSizeInt));
+				painter.drawEllipse(rectangle);
+			}
+		}
+
+		// draw entity location cross
+		QVector2D screenLocation = project(location);
+		QPoint screenPoint(static_cast<int>(screenLocation.x()), static_cast<int>(screenLocation.y()));
+		painter.drawLine(QPoint(screenPoint.x() - 5, screenPoint.y()), QPoint(screenPoint.x() + 5, screenPoint.y()));
+		painter.drawLine(QPoint(screenPoint.x(), screenPoint.y() - 5), QPoint(screenPoint.x(), screenPoint.y() + 5));
+	});
 
 	if (mSelectedEntity.isValid())
 	{
 		auto [transform] = mWorld->getEntityManger().getEntityComponents<TransformComponent>(mSelectedEntity.getEntity());
-		QRectF rectangle((project(transform->getLocation()) - QVector2D(10.0f, 10.0f)).toPoint(), QSize(10, 10));
+		QRectF rectangle((project(transform->getLocation()) - QVector2D(7.0f, 7.0f)).toPoint(), QSize(14, 14));
 		QBrush brush = painter.brush();
 		brush.setColor(Qt::GlobalColor::blue);
 		painter.setBrush(brush);
 		painter.drawRect(rectangle);
 	}
-}
-
-void TransformEditorWidget::resizeEvent(QResizeEvent*)
-{
-
 }
 
 void TransformEditorWidget::onClick(const QPoint& pos)

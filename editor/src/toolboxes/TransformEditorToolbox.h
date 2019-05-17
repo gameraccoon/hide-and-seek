@@ -24,7 +24,6 @@ public:
 	void mouseMoveEvent(QMouseEvent *event) override;
 	void mouseReleaseEvent(QMouseEvent *event) override;
 	void paintEvent(QPaintEvent* event) override;
-	void resizeEvent(QResizeEvent *event) override;
 
 	void onClick(const class QPoint& pos);
 	NullableEntity getEntityUnderPoint(const QPoint& pos);
