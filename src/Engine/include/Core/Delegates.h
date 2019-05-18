@@ -9,7 +9,7 @@ template <typename... Args>
 class SinglecastDelegate
 {
 public:
-	typedef std::function<void(Args...)> FunctionType;
+	using FunctionType = std::function<void(Args...)>;
 
 public:
 	void assign(FunctionType fn)
@@ -66,7 +66,7 @@ template <typename... Args>
 class MulticastDelegate
 {
 public:
-	typedef std::function<void(Args...)> FunctionType;
+	using FunctionType = std::function<void(Args...)>;
 
 public:
 	Delegates::Handle bind(FunctionType fn)

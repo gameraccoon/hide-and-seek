@@ -40,12 +40,15 @@ public:
 	QVector2D mPosShift = QVector2D(0.0f, 0.0f);
 	Vector2D mMoveShift = Vector2D(0.0f, 0.0f);
 	float mScale = 1.0f;
-	bool mIsMoved = false;
-	bool mIsCatchedSelectedEntity = false;
 	Vector2D mCursorObjectOffset;
-	bool mFreeMove = true;
+
+	SinglecastDelegate<Entity, const Vector2D&, const Vector2D&> OnEntityMoved;
 
 	NullableEntity mSelectedEntity;
+
+	bool mFreeMove = true;
+	bool mIsMoved = false;
+	bool mIsCatchedSelectedEntity = false;
 };
 
 class TransformEditorToolbox : public QWidget
@@ -60,6 +63,7 @@ public:
 private:
 	void updateWorld();
 	void onEntitySelected(NullableEntity entity);
+	void onEntityMoved(Entity entity, const Vector2D& oldPos, const Vector2D& newPos);
 	void onFreeMoveChanged(int newValue);
 
 private:

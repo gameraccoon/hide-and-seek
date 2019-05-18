@@ -4,6 +4,8 @@
 
 #include "src/editorcommands/changeentitycommand.h"
 
+#include "src/editorcommands/generated/ChangeTransformComponentLocationCommand.generated.h"
+
 #include "DockManager.h"
 #include "DockWidget.h"
 #include "DockAreaWidget.h"
@@ -64,6 +66,7 @@ void TransformEditorToolbox::show()
 	freeMoveCheckbox->setChecked(mContent->mFreeMove);
 	QObject::connect(freeMoveCheckbox, &QCheckBox::stateChanged, this, &TransformEditorToolbox::onFreeMoveChanged);
 	layout->addWidget(freeMoveCheckbox);
+	mContent->OnEntityMoved.assign([this](Entity entity, const Vector2D& oldPos, const Vector2D& newPos){onEntityMoved(entity, oldPos, newPos);});
 }
 
 void TransformEditorToolbox::updateWorld()
@@ -99,6 +102,17 @@ void TransformEditorToolbox::onEntitySelected(NullableEntity entity)
 		mContent->mSelectedEntity = entity;
 	}
 	mContent->repaint();
+}
+
+void TransformEditorToolbox::onEntityMoved(Entity entity, const Vector2D &oldPos, const Vector2D &newPos)
+{
+	World* world = mMainWindow->getCurrentWorld();
+	if (world == nullptr)
+	{
+		return;
+	}
+
+	mMainWindow->getCommandStack().executeNewCommand<ChangeTransformComponentLocationCommand>(world, entity, oldPos, newPos, false);
 }
 
 void TransformEditorToolbox::onFreeMoveChanged(int newValue)
@@ -174,9 +188,8 @@ void TransformEditorWidget::mouseReleaseEvent(QMouseEvent* event)
 	{
 		if (mIsCatchedSelectedEntity && mSelectedEntity.isValid())
 		{
-			// use command
 			auto [transform] = mWorld->getEntityManger().getEntityComponents<TransformComponent>(mSelectedEntity.getEntity());
-			transform->setLocation(mMoveShift);
+			OnEntityMoved.callSafe(mSelectedEntity.getEntity(), transform->getLocation(), mMoveShift);
 			mMoveShift = ZERO_VECTOR;
 		}
 	}
