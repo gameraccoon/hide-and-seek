@@ -1,11 +1,10 @@
 Simple 2D game
 Created on C++ with SDL2
-Uses Lua as script language and SQLite as database engine.
+Uses Lua as a script language.
 
 Libraries
 DebugHelpers - base for debugging and logging.
 Engine - game engine (components, world, collision, ...)
-SqliteInterface - classes that works with SQLite (databases)
 StealthGame - classes that instanciate game configs + Systems
 SystemInterface - classes that works with HGE (camera, input, ...)
 UnitTests - unit tests for engine code

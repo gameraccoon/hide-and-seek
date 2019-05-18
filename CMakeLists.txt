@@ -56,8 +56,7 @@ include_directories(
 
     ${SOURCE_ROOT}/DebugHelpers/include
     ${SOURCE_ROOT}/Engine/include
-    ${SOURCE_ROOT}/SystemInterface/include
-    ${SOURCE_ROOT}/SqliteInterface/include
+	${SOURCE_ROOT}/SystemInterface/include
     ${SOURCE_ROOT}/StealthGame/include
 
     ${CMAKE_SOURCE_DIR}/MainApp
@@ -102,16 +101,13 @@ endfunction()
 add_folder_as_library(${SOURCE_ROOT}/DebugHelpers DebugHelpersLib)
 add_folder_as_library(${SOURCE_ROOT}/Engine EngineLib)
 add_folder_as_library(${SOURCE_ROOT}/SystemInterface SystemInterfaceLib)
-add_folder_as_library(${SOURCE_ROOT}/SqliteInterface SqliteInterfaceLib)
 add_folder_as_library(${SOURCE_ROOT}/StealthGame StealthGameLib)
 
 add_executable(${APP_NAME} ${SOURCE_ROOT}/main/main.cpp)
 set(GENERAL_PROJECT_LIBS
-#    sqlite3
 #    liblua52
 
     StealthGameLib
-    SqliteInterfaceLib
     SystemInterfaceLib
     EngineLib
     DebugHelpersLib

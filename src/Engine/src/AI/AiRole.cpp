@@ -2,8 +2,6 @@
 
 #include <Debug/Log.h>
 
-#include <SqliteConnection.h>
-
 AiRole::AiRole(World* world, IBody *body) : Role(world, body)
 {
 //	SqliteConnection connection("testdb.db");
