@@ -5,6 +5,7 @@
 #include "Components/TransformComponent.generated.h"
 #include "Components/CollisionComponent.generated.h"
 
+#include "Modules/Math.h"
 #include "Modules/RayTrace.h"
 #include "Modules/Collide.h"
 
@@ -56,7 +57,7 @@ namespace VisibilityPolygon
 			}
 			else
 			{
-				pointsToTrace.push_back({a, a.rotation().getValue(), PointSide::Rignt});
+				pointsToTrace.push_back({a, a.rotation().getValue(), PointSide::Right});
 			}
 		}
 		else
@@ -168,11 +169,33 @@ namespace VisibilityPolygon
 			{
 				if (item.coords.qSize() > previousItem.coords.qSize())
 				{
-					outCaches.pointsToTrace.erase(outCaches.pointsToTrace.begin() + static_cast<int>(i));
+					if (previousItem.side == PointSide::InBetween)
+					{
+						outCaches.pointsToTrace.erase(outCaches.pointsToTrace.begin() + static_cast<int>(i));
+					}
+					else
+					{
+						if (previousItem.side == PointSide::Left)
+						{
+							std::iter_swap(outCaches.pointsToTrace.begin() + static_cast<int>(i), outCaches.pointsToTrace.begin() + static_cast<int>(i - 1));
+						}
+						++i;
+					}
 				}
 				else
 				{
-					outCaches.pointsToTrace.erase(outCaches.pointsToTrace.begin() + static_cast<int>(i - 1));
+					if (item.side == PointSide::InBetween)
+					{
+						outCaches.pointsToTrace.erase(outCaches.pointsToTrace.begin() + static_cast<int>(i - 1));
+					}
+					else
+					{
+						if (previousItem.side == PointSide::Right)
+						{
+							std::iter_swap(outCaches.pointsToTrace.begin() + static_cast<int>(i), outCaches.pointsToTrace.begin() + static_cast<int>(i - 1));
+						}
+						++i;
+					}
 				}
 			}
 		}
@@ -226,7 +249,7 @@ namespace VisibilityPolygon
 					outCaches.resultPolygon.push_back(nearestPoint);
 					outCaches.resultPolygon.push_back(point.coords);
 				}
-				else if (point.side == PointSide::Rignt)
+				else if (point.side == PointSide::Right)
 				{
 					outCaches.resultPolygon.push_back(point.coords);
 					outCaches.resultPolygon.push_back(nearestPoint);

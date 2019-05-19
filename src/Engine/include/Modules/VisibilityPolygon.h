@@ -19,7 +19,7 @@ namespace VisibilityPolygon
 	enum class PointSide
 	{
 		Left, // the point is free from the left (counter-clockwise) side
-		Rignt, // the point is free from the right (clockwise) side
+		Right, // the point is free from the right (clockwise) side
 		InBetween // the point is connecting two borders that are facing the light source
 	};
 
