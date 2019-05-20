@@ -42,9 +42,9 @@ public:
 	float mScale = 1.0f;
 	Vector2D mCursorObjectOffset;
 
-	SinglecastDelegate<Entity, const Vector2D&, const Vector2D&> OnEntityMoved;
+	SinglecastDelegate<std::vector<Entity>, const Vector2D&> OnEntitiesMoved;
 
-	NullableEntity mSelectedEntity;
+	std::vector<Entity> mSelectedEntities;
 
 	bool mFreeMove = true;
 	bool mIsMoved = false;
@@ -60,10 +60,11 @@ public:
 
 	static const QString WidgetName;
 	static const QString ToolboxName;
+
 private:
 	void updateWorld();
 	void onEntitySelected(NullableEntity entity);
-	void onEntityMoved(Entity entity, const Vector2D& oldPos, const Vector2D& newPos);
+	void onEntitiesMoved(std::vector<Entity> entities, const Vector2D& shift);
 	void onFreeMoveChanged(int newValue);
 
 private:
