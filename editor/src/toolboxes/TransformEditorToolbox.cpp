@@ -20,6 +20,11 @@
 const QString TransformEditorToolbox::WidgetName = "TransformEditor";
 const QString TransformEditorToolbox::ToolboxName = TransformEditorToolbox::WidgetName + "Toolbox";
 
+static bool IsCtrlPressed()
+{
+	return (QApplication::keyboardModifiers() & Qt::ControlModifier) != 0;
+}
+
 TransformEditorToolbox::TransformEditorToolbox(MainWindow* mainWindow, ads::CDockManager* dockManager)
 	: mMainWindow(mainWindow)
 	, mDockManager(dockManager)
@@ -136,28 +141,14 @@ void TransformEditorWidget::mousePressEvent(QMouseEvent* event)
 	if (NullableEntity entityUnderCursor = getEntityUnderPoint(event->pos()); entityUnderCursor.isValid())
 	{
 		Entity entity = entityUnderCursor.getEntity();
-		if (mFreeMove)
+		if (std::find(mSelectedEntities.begin(), mSelectedEntities.end(), entity) != mSelectedEntities.end())
 		{
-			if (std::find(mSelectedEntities.begin(), mSelectedEntities.end(), entity) == mSelectedEntities.end())
-			{
-				if ((QApplication::keyboardModifiers() & Qt::ControlModifier) == 0)
-				{
-					mSelectedEntities.clear();
-					mSelectedEntities.push_back(entity);
-					mIsCatchedSelectedEntity = true;
-				}
-			}
-			else
-			{
-				mIsCatchedSelectedEntity = true;
-			}
+			mIsCatchedSelectedEntity = true;
 		}
-		else if (std::find(mSelectedEntities.begin(), mSelectedEntities.end(), entity) == mSelectedEntities.end())
+		else if (mFreeMove && !IsCtrlPressed())
 		{
-			return;
-		}
-		else
-		{
+			mSelectedEntities.clear();
+			mSelectedEntities.push_back(entity);
 			mIsCatchedSelectedEntity = true;
 		}
 	}
@@ -304,7 +295,7 @@ void TransformEditorWidget::onClick(const QPoint& pos)
 {
 	NullableEntity findResult = getEntityUnderPoint(pos);
 
-	if ((QApplication::keyboardModifiers() & Qt::ControlModifier) != 0)
+	if (IsCtrlPressed())
 	{
 		if (findResult.isValid())
 		{
