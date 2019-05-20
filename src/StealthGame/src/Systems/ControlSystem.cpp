@@ -70,9 +70,6 @@ void ControlSystem::update(World* world, float dt)
 
 			Vector2D direction = mouseScreenPos - oldLocation - drawShift;
 			transform->setRotation(direction.rotation());
-
-			// main camera follows the player
-			cameraTransform->setLocation(controlledEntityPosition);
 		}
 	}
 }
