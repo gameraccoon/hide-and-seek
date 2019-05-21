@@ -28,6 +28,8 @@ public:
 	void onClick(const class QPoint& pos);
 	NullableEntity getEntityUnderPoint(const QPoint& pos);
 
+	void addEntitiesInRectToSelection(const Vector2D& start, const Vector2D& end);
+
 	QVector2D project(const Vector2D& worldPos);
 	Vector2D deproject(const QVector2D& screenPos);
 
@@ -48,6 +50,7 @@ public:
 
 	bool mFreeMove = true;
 	bool mIsMoved = false;
+	bool mIsRectangleSelection = false;
 	bool mIsCatchedSelectedEntity = false;
 };
 

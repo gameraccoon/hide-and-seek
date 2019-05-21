@@ -137,6 +137,7 @@ void TransformEditorWidget::mousePressEvent(QMouseEvent* event)
 	mPressMousePos = mLastMousePos;
 	mIsMoved = false;
 	mIsCatchedSelectedEntity = false;
+	mIsRectangleSelection = false;
 
 	if (NullableEntity entityUnderCursor = getEntityUnderPoint(event->pos()); entityUnderCursor.isValid())
 	{
@@ -150,6 +151,13 @@ void TransformEditorWidget::mousePressEvent(QMouseEvent* event)
 			mSelectedEntities.clear();
 			mSelectedEntities.push_back(entity);
 			mIsCatchedSelectedEntity = true;
+		}
+	}
+	else
+	{
+		if (IsCtrlPressed())
+		{
+			mIsRectangleSelection = true;
 		}
 	}
 }
@@ -167,7 +175,7 @@ void TransformEditorWidget::mouseMoveEvent(QMouseEvent* event)
 		mMoveShift = deproject(pos) - deproject(mPressMousePos);
 	}
 
-	if (!mIsCatchedSelectedEntity)
+	if (!mIsCatchedSelectedEntity && !mIsRectangleSelection)
 	{
 		mPosShift -= QVector2D(mLastMousePos - pos);
 	}
@@ -184,11 +192,17 @@ void TransformEditorWidget::mouseReleaseEvent(QMouseEvent* event)
 			OnEntitiesMoved.callSafe(mSelectedEntities, mMoveShift);
 			mMoveShift = ZERO_VECTOR;
 		}
+		else if (mIsRectangleSelection)
+		{
+			addEntitiesInRectToSelection(deproject(mPressMousePos), deproject(QVector2D(event->pos())));
+		}
 	}
 	else
 	{
 		onClick(event->pos());
 	}
+
+	mIsRectangleSelection = false;
 	repaint();
 }
 
@@ -289,6 +303,13 @@ void TransformEditorWidget::paintEvent(QPaintEvent*)
 		painter.drawLine(QPoint(screenPoint.x() - 5, screenPoint.y()), QPoint(screenPoint.x() + 5, screenPoint.y()));
 		painter.drawLine(QPoint(screenPoint.x(), screenPoint.y() - 5), QPoint(screenPoint.x(), screenPoint.y() + 5));
 	});
+
+	if (mIsRectangleSelection)
+	{
+		QVector2D size = QVector2D(mLastMousePos) - mPressMousePos;
+		QRect rect(mPressMousePos.toPoint(), QSize(static_cast<int>(size.x()), static_cast<int>(size.y())));
+		painter.drawRect(rect);
+	}
 }
 
 void TransformEditorWidget::onClick(const QPoint& pos)
@@ -343,6 +364,51 @@ NullableEntity TransformEditorWidget::getEntityUnderPoint(const QPoint& pos)
 	}
 
 	return findResult;
+}
+
+void TransformEditorWidget::addEntitiesInRectToSelection(const Vector2D &start, const Vector2D &end)
+{
+	Vector2D lt;
+	Vector2D rd;
+
+	if (start.x > end.x)
+	{
+		lt.x = end.x;
+		rd.x = start.x;
+	}
+	else
+	{
+		lt.x = start.x;
+		rd.x = end.x;
+	}
+
+	if (start.y > end.y)
+	{
+		lt.y = end.y;
+		rd.y = start.y;
+	}
+	else
+	{
+		lt.y = start.y;
+		rd.y = end.y;
+	}
+
+
+	if (mWorld)
+	{
+		mWorld->getEntityManger().forEachEntity2<TransformComponent>([this, lt, rd](Entity entity, TransformComponent* transform)
+		{
+			Vector2D location = transform->getLocation();
+			if (lt.x < location.x && location.x < rd.x && lt.y < location.y && location.y < rd.y)
+			{
+				auto it = std::find(mSelectedEntities.begin(), mSelectedEntities.end(), entity);
+				if (it == mSelectedEntities.end())
+				{
+					mSelectedEntities.push_back(entity);
+				}
+			}
+		});
+	}
 }
 
 QVector2D TransformEditorWidget::project(const Vector2D& worldPos)
