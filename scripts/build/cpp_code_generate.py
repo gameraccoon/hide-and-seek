@@ -22,7 +22,7 @@ def capitalize(input_str):
 
 def read_template(template_name):
     with open(path.join(templates_dir, template_name + ".template"), 'r') as template_file:
-        return template_file.read()
+        return template_file.read().rstrip('\n')
 
 
 def replace_content(template_string, data_dictionary):
