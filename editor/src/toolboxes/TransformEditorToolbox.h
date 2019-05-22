@@ -1,5 +1,9 @@
 #pragma once
 
+#include <vector>
+
+#include <nlohmann/json.hpp>
+
 #include <QString>
 #include <QWidget>
 #include <QVector2D>
@@ -72,11 +76,18 @@ private:
 	void onEntitySelected(NullableEntity entity);
 	void onEntitiesMoved(std::vector<Entity> entities, const Vector2D& shift);
 	void onFreeMoveChanged(int newValue);
+	void showContextMenu(const QPoint& pos);
+	void onCopyCommand();
+	void onPasteCommand();
+	QVector2D getWidgetCenter();
 
 private:
 	MainWindow* mMainWindow;
 	ads::CDockManager* mDockManager;
 	TransformEditorWidget* mContent = nullptr;
+
+	std::vector<nlohmann::json> mCopiedObjects;
+	Vector2D mCopiedGroupCenter;
 
 	Delegates::Handle mOnWorldChangedHandle;
 	Delegates::Handle mOnSelectedEntityChangedHandle;

@@ -3,6 +3,7 @@
 #include "src/mainwindow.h"
 
 #include "src/editorcommands/changeentitygrouplocationcommand.h"
+#include "src/editorcommands/addentitygroupcommand.h"
 
 #include "DockManager.h"
 #include "DockWidget.h"
@@ -13,6 +14,8 @@
 #include <QVBoxLayout>
 #include <QCheckBox>
 #include <QApplication>
+#include <QAction>
+#include <QMenu>
 
 #include "Components/TransformComponent.generated.h"
 #include "Components/CollisionComponent.generated.h"
@@ -63,6 +66,8 @@ void TransformEditorToolbox::show()
 	dockWidget->setIcon(mMainWindow->style()->standardIcon(QStyle::SP_DialogOpenButton));
 	dockWidget->setFeature(ads::CDockWidget::DockWidgetClosable, true);
 	mDockManager->addDockWidget(ads::RightDockWidgetArea, dockWidget);
+	dockWidget->setContextMenuPolicy(Qt::CustomContextMenu);
+	QObject::connect(dockWidget, &QListWidget::customContextMenuRequested, this, &TransformEditorToolbox::showContextMenu);
 
 	QVBoxLayout* layout = new QVBoxLayout();
 	layout->addStretch();
@@ -88,7 +93,7 @@ void TransformEditorToolbox::updateWorld()
 
 void TransformEditorToolbox::updateContent(EditorCommand::EffectType effect, bool /*originalCall*/, bool /*forceUpdateLayout*/)
 {
-	if (effect == EditorCommand::EffectType::ComponentAttributes)
+	if (effect == EditorCommand::EffectType::ComponentAttributes || effect == EditorCommand::EffectType::Entities)
 	{
 		mContent->repaint();
 	}
@@ -132,6 +137,88 @@ void TransformEditorToolbox::onFreeMoveChanged(int newValue)
 	{
 		mContent->mFreeMove = (newValue != 0);
 	}
+}
+
+void TransformEditorToolbox::showContextMenu(const QPoint &pos)
+{
+	QMenu contextMenu(tr("Context menu"), this);
+
+	QAction actionCopyComponent("Copy", this);
+	connect(&actionCopyComponent, &QAction::triggered, this, &TransformEditorToolbox::onCopyCommand);
+	contextMenu.addAction(&actionCopyComponent);
+
+	QAction actionPasteComponent("Paste", this);
+	connect(&actionPasteComponent, &QAction::triggered, this, &TransformEditorToolbox::onPasteCommand);
+	contextMenu.addAction(&actionPasteComponent);
+
+	contextMenu.exec(mContent->mapToGlobal(pos));
+}
+
+void TransformEditorToolbox::onCopyCommand()
+{
+	World* world = mMainWindow->getCurrentWorld();
+	if (world == nullptr)
+	{
+		return;
+	}
+
+	if (mContent == nullptr)
+	{
+		return;
+	}
+
+	Vector2D center;
+	mCopiedObjects.clear();
+	for (Entity entity : mContent->mSelectedEntities)
+	{
+		nlohmann::json serializedEntity;
+		world->getEntityManger().getPrefabFromEntity(serializedEntity, entity);
+		mCopiedObjects.push_back(serializedEntity);
+		auto [transform] = world->getEntityManger().getEntityComponents<TransformComponent>(entity);
+		if (transform)
+		{
+			center += transform->getLocation();
+		}
+	}
+
+	if (mCopiedObjects.size() > 0)
+	{
+		mCopiedGroupCenter = center / mCopiedObjects.size();
+	}
+}
+
+void TransformEditorToolbox::onPasteCommand()
+{
+	World* world = mMainWindow->getCurrentWorld();
+	if (world == nullptr)
+	{
+		return;
+	}
+
+	if (mContent == nullptr)
+	{
+		return;
+	}
+
+	if (mCopiedObjects.empty())
+	{
+		return;
+	}
+
+	ComponentFactory& factory = mMainWindow->getComponentFactory();
+
+	mMainWindow->getCommandStack().executeNewCommand<AddEntityGroupCommand>(world,
+		mCopiedObjects,
+		&factory,
+		mContent->deproject(getWidgetCenter()) - mCopiedGroupCenter);
+
+	mContent->repaint();
+}
+
+QVector2D TransformEditorToolbox::getWidgetCenter()
+{
+	QSize size = mContent->size() / 2;
+	return QVector2D(size.width(), size.height());
 }
 
 TransformEditorWidget::TransformEditorWidget(MainWindow *mainWindow)
