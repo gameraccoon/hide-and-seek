@@ -32,3 +32,8 @@ bool ChangeEntityCommand::undoCommand(World* world)
 	mAffectedCombobox->blockSignals(false);
 	return false;
 }
+
+EditorCommand::EffectType ChangeEntityCommand::getEffectType()
+{
+	return EffectType::WorldProperties;
+}

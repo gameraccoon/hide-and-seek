@@ -29,3 +29,8 @@ bool RemoveEntityCommand::undoCommand(World* world)
 	world->getEntityManger().applyPrefabToExistentEntity(mSerializedComponents, mEntity, *mComponentFactory);
 	return false;
 }
+
+EditorCommand::EffectType RemoveEntityCommand::getEffectType()
+{
+	return EffectType::Entities;
+}

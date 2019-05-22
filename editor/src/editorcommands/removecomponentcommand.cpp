@@ -52,6 +52,10 @@ bool RemoveComponentCommand::undoCommand(World* world)
 		component,
 		mComponentFactory->getTypeIDFromString(mComponentTypeName.toStdString()).value()
 	);
-
 	return false;
+}
+
+EditorCommand::EffectType RemoveComponentCommand::getEffectType()
+{
+	return EffectType::Components;
 }

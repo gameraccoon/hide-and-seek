@@ -29,3 +29,8 @@ bool Change{class_name}{attribute_name_capital}Command::undoCommand(World* world
 	}}
 	return mNeedToUpdateLayout;
 }}
+
+EditorCommand::EffectType Change{class_name}{attribute_name_capital}Command::getEffectType()
+{{
+	return EffectType::ComponentAttributes;
+}}

@@ -4,6 +4,7 @@
 #include <QWidget>
 
 #include "Core/Delegates.h"
+#include "src/editorcommands/editorcommand.h"
 
 class MainWindow;
 
@@ -25,7 +26,7 @@ public:
 	static const QString ContainerContentName;
 
 private:
-	void updateContent();
+	void updateContent(EditorCommand::EffectType effect, bool originalCall, bool forceUpdateLayout);
 	void clearContent();
 	void onSelectedComponentChange(const QString& componentTypeName);
 
@@ -35,5 +36,5 @@ private:
 	QString mLastSelectedComlonent;
 
 	Delegates::Handle mOnComponentChangedHandle;
-	Delegates::Handle mOnComponentContentChangedHandle;
+	Delegates::Handle mOnCommandEffectHandle;
 };

@@ -31,12 +31,14 @@ TransformEditorToolbox::TransformEditorToolbox(MainWindow* mainWindow, ads::CDoc
 {
 	mOnWorldChangedHandle = mMainWindow->OnWorldChanged.bind([this]{updateWorld();});
 	mOnSelectedEntityChangedHandle = mMainWindow->OnSelectedEntityChanged.bind([this](NullableEntity entity){onEntitySelected(entity);});
+	mOnCommandEffectHandle = mMainWindow->OnCommandEffectApplied.bind([this](EditorCommand::EffectType effect, bool originalCall, bool forceUpdateLayout){updateContent(effect, originalCall, forceUpdateLayout);});
 }
 
 TransformEditorToolbox::~TransformEditorToolbox()
 {
 	mMainWindow->OnWorldChanged.unbind(mOnWorldChangedHandle);
 	mMainWindow->OnSelectedEntityChanged.unbind(mOnSelectedEntityChangedHandle);
+	mMainWindow->OnCommandEffectApplied.unbind(mOnCommandEffectHandle);
 }
 
 void TransformEditorToolbox::show()
@@ -82,6 +84,14 @@ void TransformEditorToolbox::updateWorld()
 
 	mContent->mWorld = mMainWindow->getCurrentWorld();
 	mContent->repaint();
+}
+
+void TransformEditorToolbox::updateContent(EditorCommand::EffectType effect, bool /*originalCall*/, bool /*forceUpdateLayout*/)
+{
+	if (effect == EditorCommand::EffectType::ComponentAttributes)
+	{
+		mContent->repaint();
+	}
 }
 
 void TransformEditorToolbox::onEntitySelected(NullableEntity entity)

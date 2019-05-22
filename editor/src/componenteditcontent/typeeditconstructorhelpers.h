@@ -37,13 +37,13 @@ namespace TypesEditConstructor
 			mOnChange = onChange;
 		}
 
-		void transmitValueChange(T newValue, bool needLayoutUpdate = false)
+		void transmitValueChange(T newValue, bool forceUpdateLayout = false)
 		{
 			if (newValue != mPrevValue)
 			{
 				if (mOnChange)
 				{
-					mOnChange(mPrevValue, std::forward<T>(newValue), needLayoutUpdate);
+					mOnChange(mPrevValue, std::forward<T>(newValue), forceUpdateLayout);
 				}
 				mPrevValue = newValue;
 			}

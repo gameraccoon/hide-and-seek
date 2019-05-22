@@ -12,6 +12,7 @@ public:
 
 	bool doCommand(World* world) override;
 	bool undoCommand(World* world) override;
+	EffectType getEffectType() override;
 
 private:
 	Entity mEntity;

@@ -7,7 +7,7 @@
 class EditorCommandsStack
 {
 public:
-	typedef std::function<void(bool)> OnChangeFn;
+	typedef std::function<void(EditorCommand::EffectType, bool, bool)> OnChangeFn;
 
 public:
 	template<typename T, typename... Args>
@@ -21,7 +21,8 @@ public:
 
 		// add and activate
 		mCommands.emplace_back(new T(std::forward<Args>(args)...));
-		bool requireLayoutReload = mCommands.back()->doCommand(world);
+		bool forceUpdateLayout = mCommands.back()->doCommand(world);
+		EditorCommand::EffectType effect = mCommands.back()->getEffectType();
 		++mCurrentHeadIndex;
 
 		// clear old commands if exceed limits
@@ -32,12 +33,12 @@ public:
 
 		if (mChangeHandler)
 		{
-			mChangeHandler(requireLayoutReload);
+			mChangeHandler(effect, true, forceUpdateLayout);
 		}
 	}
 
-	void undo(World* world);
-	void redo(World* world);
+	bool undo(World* world);
+	bool redo(World* world);
 	bool haveSomethingToUndo() const;
 	bool haveSomethingToRedo() const;
 	void clear();
@@ -53,6 +54,8 @@ private:
 	// how ofter commands will be cleaned after reaching the limit
 	static const int mClearLag = 100;
 	OnChangeFn mChangeHandler;
+
+	Delegates::Handle mOnCommandEffectHandle;
 };
 
 #endif // EDITORCOMMANDSSTACK_H

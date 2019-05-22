@@ -47,7 +47,7 @@ public:
 	MulticastDelegate<> OnWorldChanged;
 	MulticastDelegate<NullableEntity> OnSelectedEntityChanged;
 	MulticastDelegate<const QString&> OnSelectedComponentChanged;
-	MulticastDelegate<> OnComponentContentChange;
+	MulticastDelegate<EditorCommand::EffectType, bool, bool> OnCommandEffectApplied;
 
 private slots:
 	void on_actionTransform_Editor_triggered();

@@ -19,7 +19,7 @@ bool ChangeEntityGroupLocationCommand::doCommand(World* world)
 			component->setLocation(component->getLocation() + mShift);
 		}
 	}
-	return false;
+	return true;
 }
 
 bool ChangeEntityGroupLocationCommand::undoCommand(World* world)
@@ -32,5 +32,10 @@ bool ChangeEntityGroupLocationCommand::undoCommand(World* world)
 			component->setLocation(component->getLocation() - mShift);
 		}
 	}
-	return false;
+	return true;
+}
+
+EditorCommand::EffectType ChangeEntityGroupLocationCommand::getEffectType()
+{
+	return EffectType::ComponentAttributes;
 }

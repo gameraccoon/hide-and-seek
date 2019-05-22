@@ -53,13 +53,10 @@ void MainWindow::registerFactories()
 
 void MainWindow::initCommandStack()
 {
-	mCommandStack.bindFunctionToCommandChange([this](bool needToReloadLayout)
+	mCommandStack.bindFunctionToCommandChange([this](EditorCommand::EffectType effect, bool originalCall, bool forceUpdateLayout)
 	{
 		this->updateUndoRedo();
-		if (needToReloadLayout)
-		{
-			OnComponentContentChange.broadcast();
-		}
+		OnCommandEffectApplied.broadcast(effect, originalCall, forceUpdateLayout);
 	});
 
 	updateUndoRedo();

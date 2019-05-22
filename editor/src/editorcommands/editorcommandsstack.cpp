@@ -1,32 +1,36 @@
 #include "editorcommandsstack.h"
 
 
-void EditorCommandsStack::undo(World* world)
+bool EditorCommandsStack::undo(World* world)
 {
 	if (haveSomethingToUndo())
 	{
-		mCommands[static_cast<size_t>(mCurrentHeadIndex)]->undoCommand(world);
+		bool forceUpdateLayout = mCommands[static_cast<size_t>(mCurrentHeadIndex)]->undoCommand(world);
+		EditorCommand::EffectType effect = mCommands[static_cast<size_t>(mCurrentHeadIndex)]->getEffectType();
 		--mCurrentHeadIndex;
 
 		if (mChangeHandler)
 		{
-			mChangeHandler(true);
+			mChangeHandler(effect, false, forceUpdateLayout);
 		}
 	}
+	return false;
 }
 
-void EditorCommandsStack::redo(World* world)
+bool EditorCommandsStack::redo(World* world)
 {
 	if (haveSomethingToRedo())
 	{
 		++mCurrentHeadIndex;
-		mCommands[static_cast<size_t>(mCurrentHeadIndex)]->doCommand(world);
+		bool forceUpdateLayout = mCommands[static_cast<size_t>(mCurrentHeadIndex)]->doCommand(world);
+		EditorCommand::EffectType effect = mCommands[static_cast<size_t>(mCurrentHeadIndex)]->getEffectType();
 
 		if (mChangeHandler)
 		{
-			mChangeHandler(true);
+			mChangeHandler(effect, false, forceUpdateLayout);
 		}
 	}
+	return false;
 }
 
 bool EditorCommandsStack::haveSomethingToUndo() const
@@ -62,6 +66,6 @@ void EditorCommandsStack::clearOldCommands()
 
 	if (mChangeHandler)
 	{
-		mChangeHandler(false);
+		mChangeHandler(EditorCommand::EffectType::CommandsStack, false, false);
 	}
 }

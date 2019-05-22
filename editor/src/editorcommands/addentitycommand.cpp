@@ -20,3 +20,8 @@ bool AddEntityCommand::undoCommand(World* world)
 	world->getEntityManger().removeEntity(mEntity);
 	return false;
 }
+
+EditorCommand::EffectType AddEntityCommand::getEffectType()
+{
+	return EffectType::Entities;
+}

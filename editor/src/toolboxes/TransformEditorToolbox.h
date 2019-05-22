@@ -8,6 +8,8 @@
 #include "Core/Entity.h"
 #include "Core/Delegates.h"
 
+#include "src/editorcommands/editorcommand.h"
+
 class MainWindow;
 
 namespace ads
@@ -66,6 +68,7 @@ public:
 
 private:
 	void updateWorld();
+	void updateContent(EditorCommand::EffectType effect, bool originalCall, bool forceUpdateLayout);
 	void onEntitySelected(NullableEntity entity);
 	void onEntitiesMoved(std::vector<Entity> entities, const Vector2D& shift);
 	void onFreeMoveChanged(int newValue);
@@ -77,4 +80,5 @@ private:
 
 	Delegates::Handle mOnWorldChangedHandle;
 	Delegates::Handle mOnSelectedEntityChangedHandle;
+	Delegates::Handle mOnCommandEffectHandle;
 };

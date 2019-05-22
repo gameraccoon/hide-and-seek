@@ -18,13 +18,13 @@ ComponentAttributesToolbox::ComponentAttributesToolbox(MainWindow* mainWindow, a
 	, mDockManager(dockManager)
 {
 	mOnComponentChangedHandle = mMainWindow->OnSelectedComponentChanged.bind([this](const QString& val){onSelectedComponentChange(val);});
-	mOnComponentContentChangedHandle = mMainWindow->OnComponentContentChange.bind([this]{updateContent();});
+	mOnCommandEffectHandle = mMainWindow->OnCommandEffectApplied.bind([this](EditorCommand::EffectType effect, bool originalCall, bool forceUpdateLayout){updateContent(effect, originalCall, forceUpdateLayout);});
 }
 
 ComponentAttributesToolbox::~ComponentAttributesToolbox()
 {
 	mMainWindow->OnSelectedComponentChanged.unbind(mOnComponentChangedHandle);
-	mMainWindow->OnComponentContentChange.unbind(mOnComponentContentChangedHandle);
+	mMainWindow->OnCommandEffectApplied.unbind(mOnCommandEffectHandle);
 }
 
 void ComponentAttributesToolbox::show()
@@ -56,9 +56,12 @@ void ComponentAttributesToolbox::show()
 	containerWidget->setLayout(layout);
 }
 
-void ComponentAttributesToolbox::updateContent()
+void ComponentAttributesToolbox::updateContent(EditorCommand::EffectType effect, bool originalCall, bool forceUpdateLayout)
 {
-	onSelectedComponentChange(mLastSelectedComlonent);
+	if (forceUpdateLayout || (!originalCall && effect == EditorCommand::EffectType::ComponentAttributes))
+	{
+		onSelectedComponentChange(mLastSelectedComlonent);
+	}
 }
 
 void ComponentAttributesToolbox::clearContent()

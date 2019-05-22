@@ -29,3 +29,8 @@ bool AddComponentCommand::undoCommand(World* world)
 	);
 	return false;
 }
+
+EditorCommand::EffectType AddComponentCommand::getEffectType()
+{
+	return EffectType::Components;
+}
