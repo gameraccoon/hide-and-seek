@@ -1,4 +1,4 @@
-{attribute_type} {class_name}::get{attribute_name_capital}() const
+const {attribute_type}& {class_name}::get{attribute_name_capital}() const
 {{
 	return m{attribute_name_capital};
 }}

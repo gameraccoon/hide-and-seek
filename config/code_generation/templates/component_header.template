@@ -12,6 +12,8 @@ class {class_name} : public BaseComponent
 public:
 	{attribute_accessors_decl}
 
+	{attribute_accessors_ref_decl}
+
 public:
 	static std::string GetClassName() {{ return "{class_name}"; }}
 

@@ -103,7 +103,9 @@ namespace VisibilityPolygon
 			bool isNotFirst = false;
 			bool isFirstVisible = false;
 			// copy to be able to modify
-			outCaches.hullPoints = hull.points;
+			outCaches.hullPoints.resize(hull.points.size());
+			std::copy(hull.points.begin(), hull.points.end(), outCaches.hullPoints.begin());
+			//outCaches.hullPoints = hull.points;
 			size_t hullSize = hull.points.size();
 			for (size_t i = 0; i < hullSize; ++i)
 			{

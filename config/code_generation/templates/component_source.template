@@ -4,6 +4,8 @@
 
 {attribute_accessors_impl}
 
+{attribute_accessors_ref_impl}
+
 void {class_name}::toJson(nlohmann::json& outJson) const
 {{
 	to_json(outJson, *this);

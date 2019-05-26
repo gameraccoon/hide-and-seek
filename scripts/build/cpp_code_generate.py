@@ -92,6 +92,11 @@ def append_attributes_data_dictionary(data_dictionary, data_description):
                 if any(x in attribute["data_dict"]["attribute_flags"] for x in attribute_template_data["blacklist"]):
                     continue
 
+            # if we have whitelist, skip attributes without whitelisted flags
+            if "whitelist" in attribute_template_data:
+                if not any(x in attribute["data_dict"]["attribute_flags"] for x in attribute_template_data["whitelist"]):
+                    continue
+
             replacement_content_elements.append(attribute["data_dict"])
 
         # generate content
