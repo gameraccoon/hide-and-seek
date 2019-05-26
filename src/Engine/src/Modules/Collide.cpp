@@ -114,6 +114,11 @@ namespace Collide
 				}
 			}
 
+			if (nearestBorder == nullptr)
+			{
+				return false;
+			}
+
 			// we're touching the border or fully inside the figure
 			Vector2D resist = ZERO_VECTOR;
 			switch (nearestBorderResistDir)
