@@ -1,6 +1,5 @@
 #pragma once
 
-#include <Inventory/Weapon.h>
 #include <Core/Vector2D.h>
 
 
@@ -19,7 +18,7 @@ public:
 
 	virtual float getHealthValue() = 0;
 
-	virtual void giveWeapon(Weapon *weap) = 0;
+//	virtual void giveWeapon(Weapon *weap) = 0;
 
 	/** Start shoting if the man have a weapon */
 	virtual void startShoting(Vector2D targetLocation) = 0;

@@ -4,7 +4,7 @@ set(APP_NAME StealthGamePrototype)
 project(${APP_NAME})
 
 # parameters
-option(DEBUG_MODE "Debug?" ON)
+option(DEBUG_MODE "Debug?" OFF)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 

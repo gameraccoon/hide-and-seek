@@ -1,5 +1,6 @@
 #include <StealthGame.h>
-#include <Modules/ArgumentsParser.h>
+
+#include <Utils/ArgumentsParser.h>
 
 int main(int argc, char** argv)
 {

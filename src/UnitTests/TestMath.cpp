@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "Modules/Math.h"
+#include "Utils/Math.h"
 
 TEST(Math, AreFloatsEqual)
 {

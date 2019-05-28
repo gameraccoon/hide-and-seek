@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <Core/World.h>
-#include <Modules/Collide.h>
+#include <Utils/Collide.h>
 #include <Structures/Hull.h>
 
 #include <Components/CollisionComponent.generated.h>
