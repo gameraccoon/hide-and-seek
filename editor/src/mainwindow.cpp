@@ -11,7 +11,7 @@
 #include "DockAreaWidget.h"
 
 #include <Core/World.h>
-#include <Modules/WorldLoader.h>
+#include <Utils/Core/WorldLoader.h>
 
 #include "toolboxes/ComponentAttributesToolbox.h"
 #include "toolboxes/ComponentsListToolbox.h"

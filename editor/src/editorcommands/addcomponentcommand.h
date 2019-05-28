@@ -3,7 +3,7 @@
 #include "editorcommand.h"
 
 #include "Core/Entity.h"
-#include "Modules/ComponentFactory.h"
+#include "Utils/Core/ComponentFactory.h"
 
 #include <QString>
 

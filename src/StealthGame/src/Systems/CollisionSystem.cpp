@@ -3,7 +3,7 @@
 #include <Components/CollisionComponent.generated.h>
 #include <Components/TransformComponent.generated.h>
 #include <Components/MovementComponent.generated.h>
-#include <Utils/Collide.h>
+#include <Utils/Geometry/Collide.h>
 #include <Core/World.h>
 
 void CollisionSystem::update(World* world, float /*dt*/)

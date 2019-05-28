@@ -4,7 +4,7 @@
 
 #include "Core/World.h"
 #include "Debug/Assert.h"
-#include "Modules/ComponentFactory.h"
+#include "Utils/Core/ComponentFactory.h"
 
 RemoveEntityCommand::RemoveEntityCommand(Entity entity, ComponentFactory* factory)
 	: mEntity(entity)

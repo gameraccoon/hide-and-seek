@@ -2,7 +2,7 @@
 
 #include <algorithm>
 
-#include <Utils/VisibilityPolygon.h>
+#include <Utils/Geometry/VisibilityPolygon.h>
 #include <Structures/Hull.h>
 
 #include <Components/CollisionComponent.generated.h>

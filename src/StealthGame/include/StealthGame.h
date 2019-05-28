@@ -3,9 +3,9 @@
 #include "Game.h"
 
 #include <Core/World.h>
-#include <Utils/ArgumentsParser.h>
-#include <Utils/SystemsManager.h>
-#include <Utils/ComponentFactory.h>
+#include <Utils/Application/ArgumentsParser.h>
+#include <Utils/Core/SystemsManager.h>
+#include <Utils/Core/ComponentFactory.h>
 
 namespace Game
 {

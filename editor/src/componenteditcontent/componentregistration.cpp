@@ -14,7 +14,7 @@
 #include <Components/RenderComponent.generated.h>
 #include <Components/TransformComponent.generated.h>
 
-#include <Modules/ComponentFactory.h>
+#include <Utils/Core/ComponentFactory.h>
 
 void ComponentRegistration::RegisterToEditFactory(std::map<std::string, std::unique_ptr<AbstractEditFactory>>& factories)
 {

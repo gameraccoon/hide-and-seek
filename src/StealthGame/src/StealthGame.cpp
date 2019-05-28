@@ -4,7 +4,7 @@
 
 #include "Base/Engine.h"
 
-#include <Utils/WorldLoader.h>
+#include <Utils/Core/WorldLoader.h>
 
 #include <Systems/RenderSystem.h>
 #include <Systems/ControlSystem.h>

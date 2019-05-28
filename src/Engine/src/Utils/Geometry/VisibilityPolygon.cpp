@@ -1,4 +1,4 @@
-#include "Utils/VisibilityPolygon.h"
+#include "Utils/Geometry/VisibilityPolygon.h"
 
 #include <algorithm>
 
@@ -6,8 +6,8 @@
 #include "Components/CollisionComponent.generated.h"
 
 #include "Utils/Math.h"
-#include "Utils/RayTrace.h"
-#include "Utils/Collide.h"
+#include "Utils/Geometry/RayTrace.h"
+#include "Utils/Geometry/Collide.h"
 
 namespace VisibilityPolygon
 {

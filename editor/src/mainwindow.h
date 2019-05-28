@@ -9,7 +9,7 @@
 #include "editorcommands/editorcommandsstack.h"
 #include "componenteditcontent/componentcontentfactory.h"
 
-#include <Modules/ComponentFactory.h>
+#include <Utils/Core/ComponentFactory.h>
 #include <Core/Delegates.h>
 
 namespace ads

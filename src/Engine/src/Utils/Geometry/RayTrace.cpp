@@ -1,9 +1,9 @@
-#include "Utils/RayTrace.h"
+#include "Utils/Geometry/RayTrace.h"
 
 #include "Components/CollisionComponent.generated.h"
 #include "Components/TransformComponent.generated.h"
 
-#include "Utils/Collide.h"
+#include "Utils/Geometry/Collide.h"
 #include "Core/Vector2D.h"
 #include "Core/Rotator.h"
 #include "Structures/BoundingBox.h"

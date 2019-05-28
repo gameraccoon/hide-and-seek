@@ -7,7 +7,7 @@
 #include "Components/CollisionComponent.generated.h"
 #include "Components/LightComponent.generated.h"
 #include "Base/Engine.h"
-#include "Utils/VisibilityPolygon.h"
+#include "Utils/Geometry/VisibilityPolygon.h"
 #include "Core/World.h"
 
 // for tests only
