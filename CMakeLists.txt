@@ -98,10 +98,19 @@ function(add_folder_as_library folder_path name)
     add_library(${name} ${TEMP_SRC})
 endfunction()
 
+function(add_folder_src_as_library folder_path name)
+	set(TEMP_SRC "")
+
+	recursive_add_src_folders(${folder_path} .)
+
+	add_library(${name} ${TEMP_SRC})
+endfunction()
+
 add_folder_as_library(${SOURCE_ROOT}/DebugHelpers DebugHelpersLib)
 add_folder_as_library(${SOURCE_ROOT}/Engine EngineLib)
 add_folder_as_library(${SOURCE_ROOT}/SystemInterface SystemInterfaceLib)
 add_folder_as_library(${SOURCE_ROOT}/StealthGame StealthGameLib)
+add_folder_src_as_library(${EXTERNALS_DIR}/sources/polypartition PolyPartitionLib)
 
 add_executable(${APP_NAME} ${SOURCE_ROOT}/main/main.cpp)
 set(GENERAL_PROJECT_LIBS
@@ -111,6 +120,7 @@ set(GENERAL_PROJECT_LIBS
     SystemInterfaceLib
     EngineLib
     DebugHelpersLib
+	PolyPartitionLib
 
     SDL2
     SDL2_image
@@ -142,10 +152,10 @@ target_link_libraries(${APP_NAME}
 set(TESTS_NAME UnitTests)
 set(TESTS_SRC
     ${SOURCE_ROOT}/main/tests_main.cpp
-    ${EXTERNALS_DIR}/googletest/src/gtest-all.cc
+	${EXTERNALS_DIR}/sources/googletest/src/gtest-all.cc
 )
 aux_source_directory(${SOURCE_ROOT}/UnitTests TESTS_SRC)
-include_directories(${EXTERNALS_DIR}/googletest)
+include_directories(${EXTERNALS_DIR}/sources/googletest)
 add_executable(${TESTS_NAME} ${TESTS_SRC})
 target_link_libraries(${TESTS_NAME}
     ${GENERAL_PROJECT_LIBS}

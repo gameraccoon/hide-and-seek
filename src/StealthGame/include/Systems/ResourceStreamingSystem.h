@@ -3,12 +3,6 @@
 #include <memory>
 #include <Core/System.h>
 #include <Base/ResourceManager.h>
-#include <Components/CameraComponent.generated.h>
-#include <EngineFwd.h>
-
-#ifdef DEBUG
-#include <Graphics/DebugDrawer.h>
-#endif // DEBUG
 
 /**
  * System that loads and distributes resources

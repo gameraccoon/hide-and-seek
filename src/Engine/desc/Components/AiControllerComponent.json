@@ -1,0 +1,11 @@
+{
+	"component": "aiController",
+	"description": "Component that stores inormation about AI",
+	"attributes": [
+		{
+			"name": "isEnemy",
+			"type": "bool",
+			"default": " = false"
+		}
+	]
+}

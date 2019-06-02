@@ -109,17 +109,21 @@ Vector2D RenderSystem::GetPlayerSightPosition(World* world)
 void RenderSystem::drawLights(World* world, const Vector2D& drawShift, const Vector2D& maxFov)
 {
 	const auto collidableComponents = world->getEntityManger().getComponents<CollisionComponent, TransformComponent>();
-	VisibilityPolygon::Caches caches;
+	VisibilityPolygonCalculator visibilityPolygonCalculator;
 
 	// draw player visibility polygon
 //	Vector2D playerSightPosition = GetPlayerSightPosition(world);
 //	VisibilityPolygon::CalculateVisibilityPolygon(caches, collidableComponents, playerSightPosition, maxFov);
 //	drawVisibilityPolygon(caches.resultPolygon, maxFov, drawShift + playerSightPosition);
 
+	// ToDo: we calculate visibility polygon for every light source in the each frame to
+	// be able to work with worst-case scenario as long as possible
+	// optimizations such as dirty flag and spatial hash are on the way to be impelemnted
 	// draw light
-	world->getEntityManger().forEachEntity<LightComponent, TransformComponent>([&collidableComponents, &caches, maxFov, &drawShift, this](LightComponent* /*light*/, TransformComponent* transform)
+	std::vector<Vector2D> polygon;
+	world->getEntityManger().forEachEntity<LightComponent, TransformComponent>([&collidableComponents, &visibilityPolygonCalculator, maxFov, &drawShift, &polygon, this](LightComponent* /*light*/, TransformComponent* transform)
 	{
-		VisibilityPolygon::CalculateVisibilityPolygon(caches, collidableComponents, transform->getLocation(), maxFov);
-		drawVisibilityPolygon(caches.resultPolygon, maxFov, drawShift + transform->getLocation());
+		visibilityPolygonCalculator.calculateVisibilityPolygon(polygon, collidableComponents, transform->getLocation(), maxFov);
+		drawVisibilityPolygon(polygon, maxFov, drawShift + transform->getLocation());
 	});
 }

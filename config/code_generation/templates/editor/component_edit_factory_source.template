@@ -10,9 +10,9 @@
 
 #include <Components/{class_name}.generated.h>
 
-void {class_name}EditData::fillContent(QLayout* layout, const Entity& entity, const BaseComponent* component, EditorCommandsStack& commandStack, World* world)
+void {class_name}EditData::fillContent(__attribute__((unused)) QLayout* layout, __attribute__((unused)) const Entity& entity, const BaseComponent* component, __attribute__((unused)) EditorCommandsStack& commandStack, __attribute__((unused)) World* world)
 {{
-	const {class_name}* {component_name} = dynamic_cast<const {class_name}*>(component);
+	__attribute__((unused)) const {class_name}* {component_name} = dynamic_cast<const {class_name}*>(component);
 
 	{editor/attribute_edit_initialization}
 }}
