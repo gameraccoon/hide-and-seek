@@ -44,9 +44,9 @@ else()
 endif()
 
 if (NOT WIN32)
-	find_package(SDL2 REQUIRED)
-	find_package(SDL2_image REQUIRED)
-	include_directories(${SDL2_INCLUDE_DIR})
+    find_package(SDL2 REQUIRED)
+    find_package(SDL2_image REQUIRED)
+    include_directories(${SDL2_INCLUDE_DIR})
 endif()
 
 include_directories(include)
@@ -142,10 +142,10 @@ target_link_libraries(${APP_NAME}
 set(TESTS_NAME UnitTests)
 set(TESTS_SRC
     ${SOURCE_ROOT}/main/tests_main.cpp
-    ${EXTERNALS_DIR}/googletest/src/gtest-all.cc
+    ${EXTERNALS_DIR}/sources/googletest/src/gtest-all.cc
 )
 aux_source_directory(${SOURCE_ROOT}/UnitTests TESTS_SRC)
-include_directories(${EXTERNALS_DIR}/googletest)
+include_directories(${EXTERNALS_DIR}/sources/googletest)
 add_executable(${TESTS_NAME} ${TESTS_SRC})
 target_link_libraries(${TESTS_NAME}
     ${GENERAL_PROJECT_LIBS}
@@ -154,8 +154,8 @@ target_link_libraries(${TESTS_NAME}
 file(COPY ${MY_PUBLIC_HEADERS} DESTINATION myDestination)
 
 if (NOT ${PROJECT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR})
-	file(REMOVE_RECURSE ${BIN_DIR}/resources)
-	file(COPY "${PROJECT_SOURCE_DIR}/resources" DESTINATION ${BIN_DIR})
+    file(REMOVE_RECURSE ${BIN_DIR}/resources)
+    file(COPY "${PROJECT_SOURCE_DIR}/resources" DESTINATION ${BIN_DIR})
 endif()
 
 # code generation

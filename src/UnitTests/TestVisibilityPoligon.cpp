@@ -8,6 +8,7 @@
 #include <Components/CollisionComponent.generated.h>
 #include <Components/TransformComponent.generated.h>
 
+
 static bool AreVisibilityPolygonsEqual(const std::vector<Vector2D>& a, const std::vector<Vector2D>& b)
 {
 	if (a.empty() && b.empty())
@@ -44,17 +45,18 @@ TEST(VisibilityPolygon, TestPlygonsEqualityTest)
 
 TEST(VisibilityPolygon, Empty)
 {
-	VisibilityPolygon::Caches caches;
+	VisibilityPolygonCalculator calc;
 	std::vector<std::tuple<CollisionComponent*, TransformComponent*>> components;
 	Vector2D pos(-10.0f, 20.0f);
 
-	VisibilityPolygon::CalculateVisibilityPolygon(caches, components, pos, Vector2D(600.0f, 600.0f));
-	EXPECT_TRUE(AreVisibilityPolygonsEqual(caches.resultPolygon, {{-300.0f, -300.0f}, {300.0f, -300.0f}, {300.0f, 300.0f}, {-300.0f, 300.0f}}));
+	std::vector<Vector2D> result;
+	calc.calculateVisibilityPolygon(result, components, pos, Vector2D(600.0f, 600.0f));
+	EXPECT_TRUE(AreVisibilityPolygonsEqual(result, {{-300.0f, -300.0f}, {300.0f, -300.0f}, {300.0f, 300.0f}, {-300.0f, 300.0f}}));
 }
 
 TEST(VisibilityPolygon, OneBorder)
 {
-	VisibilityPolygon::Caches caches;
+	VisibilityPolygonCalculator calc;
 	Vector2D pos(-10.0f, -40.0f);
 
 	std::vector<std::tuple<CollisionComponent*, TransformComponent*>> components;
@@ -68,13 +70,14 @@ TEST(VisibilityPolygon, OneBorder)
 	transform.setRotation(Rotator(0.0f));
 	components.push_back(std::tuple<CollisionComponent*, TransformComponent*>(&collision, &transform));
 
-	VisibilityPolygon::CalculateVisibilityPolygon(caches, components, pos, Vector2D(600.0f, 600.0f));
-	EXPECT_TRUE(AreVisibilityPolygonsEqual(caches.resultPolygon, {{-300, -300}, {-150,-300}, {-60, -120}, {60, -120}, {150,-300}, {300, -300}, {300, 300}, {-300, 300}}));
+	std::vector<Vector2D> result;
+	calc.calculateVisibilityPolygon(result, components, pos, Vector2D(600.0f, 600.0f));
+	EXPECT_TRUE(AreVisibilityPolygonsEqual(result, {{-300, -300}, {-150,-300}, {-60, -120}, {60, -120}, {150,-300}, {300, -300}, {300, 300}, {-300, 300}}));
 }
 
 TEST(VisibilityPolygon, OneBorderEqualAngles)
 {
-	VisibilityPolygon::Caches caches;
+	VisibilityPolygonCalculator calc;
 	Vector2D pos(308.0f, -33.0f);
 
 	std::vector<std::tuple<CollisionComponent*, TransformComponent*>> components;
@@ -88,6 +91,7 @@ TEST(VisibilityPolygon, OneBorderEqualAngles)
 	transform.setRotation(Rotator(0.0f));
 	components.push_back(std::tuple<CollisionComponent*, TransformComponent*>(&collision, &transform));
 
-	VisibilityPolygon::CalculateVisibilityPolygon(caches, components, pos, Vector2D(600.0f, 600.0f));
-	EXPECT_TRUE(AreVisibilityPolygonsEqual(caches.resultPolygon, {{-300.0f, -300.0f}, {300.0f, -300.0f}, {300.0f, 300.0f}, {12.0f, 12.0f}, {-108.0f, 12.0f}, {-300.0f, 33.3333f}}));
+	std::vector<Vector2D> result;
+	calc.calculateVisibilityPolygon(result, components, pos, Vector2D(600.0f, 600.0f));
+	EXPECT_TRUE(AreVisibilityPolygonsEqual(result, {{-300.0f, -300.0f}, {300.0f, -300.0f}, {300.0f, 300.0f}, {12.0f, 12.0f}, {-108.0f, 12.0f}, {-300.0f, 33.3333f}}));
 }

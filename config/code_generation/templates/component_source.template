@@ -16,14 +16,14 @@ void {class_name}::fromJson(const nlohmann::json& json)
 	from_json(json, *this);
 }}
 
-void to_json(nlohmann::json& outJson, const {class_name}& {component_name})
+void to_json(nlohmann::json& outJson, __attribute__((unused)) const {class_name}& {component_name})
 {{
 	outJson = nlohmann::json{{
 		{attributes_json_serialization}
 	}};
 }}
 
-void from_json(const nlohmann::json& json, {class_name}& out{component_name_capital})
+void from_json(__attribute__((unused)) const nlohmann::json& json, __attribute__((unused)) {class_name}& out{component_name_capital})
 {{
 	{attributes_json_deserialization}
 }}
