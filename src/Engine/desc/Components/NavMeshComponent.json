@@ -1,0 +1,12 @@
+{
+	"component": "navMesh",
+	"description": "Component that stores part of NavMesh",
+	"attributes": [
+		{
+			"name": "navMesh",
+			"type": "NavMesh",
+			"include": "<Structures/NavMesh.h>",
+			"flags": ["transient", "get_by_ref"]
+		}
+	]
+}
