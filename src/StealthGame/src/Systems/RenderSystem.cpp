@@ -15,7 +15,7 @@
 #include <glm/matrix.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-RenderSystem::RenderSystem(SystemInterface::Engine* engine, std::shared_ptr<SystemInterface::ResourceManager> resourceManager)
+RenderSystem::RenderSystem(SystemInterface::Engine* engine, __attribute__((unused)) const std::shared_ptr<SystemInterface::ResourceManager>& resourceManager)
 	: mEngine(engine)
 #ifdef DEBUG
 	, mResourceManager(resourceManager)
@@ -111,16 +111,16 @@ void RenderSystem::drawLights(World* world, const Vector2D& drawShift, const Vec
 	const auto collidableComponents = world->getEntityManger().getComponents<CollisionComponent, TransformComponent>();
 	VisibilityPolygonCalculator visibilityPolygonCalculator;
 
+	std::vector<Vector2D> polygon;
 	// draw player visibility polygon
-//	Vector2D playerSightPosition = GetPlayerSightPosition(world);
-//	VisibilityPolygon::CalculateVisibilityPolygon(caches, collidableComponents, playerSightPosition, maxFov);
-//	drawVisibilityPolygon(caches.resultPolygon, maxFov, drawShift + playerSightPosition);
+	Vector2D playerSightPosition = GetPlayerSightPosition(world);
+	visibilityPolygonCalculator.calculateVisibilityPolygon(polygon, collidableComponents, playerSightPosition, maxFov);
+	drawVisibilityPolygon(polygon, maxFov, drawShift + playerSightPosition);
 
 	// ToDo: we calculate visibility polygon for every light source in the each frame to
 	// be able to work with worst-case scenario as long as possible
 	// optimizations such as dirty flag and spatial hash are on the way to be impelemnted
 	// draw light
-	std::vector<Vector2D> polygon;
 	world->getEntityManger().forEachEntity<LightComponent, TransformComponent>([&collidableComponents, &visibilityPolygonCalculator, maxFov, &drawShift, &polygon, this](LightComponent* /*light*/, TransformComponent* transform)
 	{
 		visibilityPolygonCalculator.calculateVisibilityPolygon(polygon, collidableComponents, transform->getLocation(), maxFov);

@@ -4,7 +4,7 @@ set(APP_NAME StealthGamePrototype)
 project(${APP_NAME})
 
 # parameters
-option(DEBUG_MODE "Debug?" OFF)
+option(DEBUG_MODE "Debug?" ON)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
@@ -14,6 +14,7 @@ set(BIN_DIR ${CMAKE_SOURCE_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
 set(SOURCE_ROOT ${CMAKE_SOURCE_DIR}/src)
 set(EXTERNALS_DIR ${CMAKE_SOURCE_DIR}/external)
+set(INTERMEDIATES_DIR ${CMAKE_SOURCE_DIR}/build/game)
 
 file(MAKE_DIRECTORY ${BIN_DIR})
 
@@ -56,7 +57,7 @@ include_directories(
 
     ${SOURCE_ROOT}/DebugHelpers/include
     ${SOURCE_ROOT}/Engine/include
-	${SOURCE_ROOT}/SystemInterface/include
+    ${SOURCE_ROOT}/SystemInterface/include
     ${SOURCE_ROOT}/StealthGame/include
 
     ${CMAKE_SOURCE_DIR}/MainApp
@@ -103,6 +104,15 @@ add_folder_as_library(${SOURCE_ROOT}/Engine EngineLib)
 add_folder_as_library(${SOURCE_ROOT}/SystemInterface SystemInterfaceLib)
 add_folder_as_library(${SOURCE_ROOT}/StealthGame StealthGameLib)
 
+# Recast
+option(RECASTNAVIGATION_STATIC "Build static libraries" ON)
+add_subdirectory(${EXTERNALS_DIR}/sources/recastnavigation/Recast
+    ${INTERMEDIATES_DIR}/external/Recast
+    EXCLUDE_FROM_ALL)
+link_directories(${INTERMEDIATES_DIR}/external/Recast)
+add_dependencies(StealthGameLib Recast)
+include_directories(${EXTERNALS_DIR}/sources/recastnavigation/Recast/Include)
+
 add_executable(${APP_NAME} ${SOURCE_ROOT}/main/main.cpp)
 set(GENERAL_PROJECT_LIBS
 #    liblua52
@@ -111,6 +121,7 @@ set(GENERAL_PROJECT_LIBS
     SystemInterfaceLib
     EngineLib
     DebugHelpersLib
+    Recast
 
     SDL2
     SDL2_image
@@ -139,6 +150,7 @@ target_link_libraries(${APP_NAME}
     ${GENERAL_PROJECT_LIBS}
 )
 
+# Unit tests
 set(TESTS_NAME UnitTests)
 set(TESTS_SRC
     ${SOURCE_ROOT}/main/tests_main.cpp
@@ -151,8 +163,7 @@ target_link_libraries(${TESTS_NAME}
     ${GENERAL_PROJECT_LIBS}
 )
 
-file(COPY ${MY_PUBLIC_HEADERS} DESTINATION myDestination)
-
+# copy resources
 if (NOT ${PROJECT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR})
     file(REMOVE_RECURSE ${BIN_DIR}/resources)
     file(COPY "${PROJECT_SOURCE_DIR}/resources" DESTINATION ${BIN_DIR})

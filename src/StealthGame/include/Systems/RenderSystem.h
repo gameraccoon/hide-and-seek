@@ -23,7 +23,7 @@ public:
 	typedef std::unordered_map<int, bool> KeyStatesMap;
 
 public:
-	RenderSystem(SystemInterface::Engine* engine, std::shared_ptr<SystemInterface::ResourceManager> resourceManager);
+	RenderSystem(SystemInterface::Engine* engine, const std::shared_ptr<SystemInterface::ResourceManager>& resourceManager);
 	~RenderSystem() override = default;
 
 	void update(World* world, float dt) override;

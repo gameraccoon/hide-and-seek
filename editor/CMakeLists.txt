@@ -24,6 +24,9 @@ set(editor_INCLUDE ${editor_INCLUDE} ${Qt5Widgets_INCLUDE_DIRS})
 set(editor_COMPILE_DEFINE ${editor_COMPILE_DEFINE} ${Qt5Widgets_COMPILE_DEFINITIONS})
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
+set(EXTERNALS_DIR ${CMAKE_SOURCE_DIR}/../external)
+set(INTERMEDIATES_DIR ${CMAKE_SOURCE_DIR}/../build/editor)
+
 # compiler parameters
 if (MSVC)
     if (CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
@@ -54,7 +57,7 @@ aux_source_directory(src/componenteditcontent/generated editor_SRCS)
 aux_source_directory(src/toolboxes editor_SRCS)
 aux_source_directory(src/editorsystems editor_SRCS)
 
-add_subdirectory(Qt-Advanced-Docking-System)
+add_subdirectory(Qt-Advanced-Docking-System EXCLUDE_FROM_ALL)
 
 add_executable(editor WIN32 ${editor_SRCS})
 if(BUILD_STATIC)
@@ -110,6 +113,15 @@ link_directories(
     ${CMAKE_SOURCE_DIR}/vs_project
 )
 
+# Recast
+option(RECASTNAVIGATION_STATIC "Build static libraries" ON)
+add_subdirectory(${EXTERNALS_DIR}/sources/recastnavigation/Recast
+	${INTERMEDIATES_DIR}/external/Recast
+	EXCLUDE_FROM_ALL)
+link_directories(${INTERMEDIATES_DIR}/external/Recast)
+add_dependencies(editor Recast)
+include_directories(${EXTERNALS_DIR}/sources/recastnavigation/Recast/Include)
+
 set(editor_LIBS
     ${editor_LIBS}
 #    StealthGameLib
@@ -117,6 +129,7 @@ set(editor_LIBS
 #    SystemInterfaceLib
     EngineLib
     DebugHelpersLib
+	Recast
 )
 
 if (NOT WIN32)
