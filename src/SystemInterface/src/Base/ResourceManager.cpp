@@ -46,13 +46,13 @@ namespace SystemInterface
 		if (it != mPathsMap.end())
 		{
 			++mResourceLocksCount[it->second];
-			return it->second;
+			return ResourceHandle(it->second);
 		}
 		else
 		{
 			createResourceLock(path);
 			mResources[mHandleIdx] = std::make_unique<Graphics::Texture>(new Internal::SdlSurface(path));
-			return mHandleIdx++;
+			return ResourceHandle(mHandleIdx++);
 		}
 	}
 
@@ -62,13 +62,13 @@ namespace SystemInterface
 		if (it != mPathsMap.end())
 		{
 			++mResourceLocksCount[it->second];
-			return it->second;
+			return ResourceHandle(it->second);
 		}
 		else
 		{
 			createResourceLock(path);
 			mResources[mHandleIdx] = std::make_unique<Graphics::Font>(new Internal::SdlSurface(path));
-			return mHandleIdx++;
+			return ResourceHandle(mHandleIdx++);
 		}
 	}
 

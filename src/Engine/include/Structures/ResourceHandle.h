@@ -5,11 +5,12 @@ class ResourceHandle
 public:
 	typedef int IndexType;
 
+public:
 	ResourceHandle() = default;
-	// implicit conversation
-	ResourceHandle(IndexType index) : ResourceIndex(index) {}
+	explicit ResourceHandle(IndexType index) : ResourceIndex(index) {}
 
-	bool isValid() const { return ResourceIndex != 0; }
+	bool isValid() const { return ResourceIndex != InvalidResourceIndex; }
 
-	IndexType ResourceIndex = 0;
+	static const IndexType InvalidResourceIndex = -1;
+	IndexType ResourceIndex = InvalidResourceIndex;
 };
