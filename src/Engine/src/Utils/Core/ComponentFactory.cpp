@@ -10,7 +10,7 @@ ComponentFactory::CreationFn ComponentFactory::getCreationFn(const std::string& 
 		return it->second;
 	}
 
-	Assert(false, "Unknown component type: '%s'", typeName);
+	AssertFatal(false, "Unknown component type: '%s'", typeName.c_str());
 	return nullptr;
 }
 
@@ -22,7 +22,7 @@ std::optional<std::type_index> ComponentFactory::getTypeIDFromString(const std::
 		return it->second;
 	}
 
-	Assert(false, "Unknown component type: '%s'", typeName);
+	AssertFatal(false, "Unknown component type: '%s'", typeName.c_str());
 	return std::nullopt;
 }
 

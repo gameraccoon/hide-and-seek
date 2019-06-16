@@ -3,6 +3,8 @@
 #include <QPushButton>
 #include <QSpacerItem>
 
+#include <Debug/Assert.h>
+
 #include "componentregistration.h"
 
 void ComponentContentFactory::registerComponents()
@@ -27,6 +29,7 @@ void ComponentContentFactory::replaceEditContent(QLayout* layout, const Entity& 
 	else
 	{
 		mCurrentEdit = nullptr;
+		Assert(false, "ComponentEditFactory not registered for component type '%s'", component->getComponentTypeName().c_str());
 	}
 
 	if (newContent != nullptr && mContentWidget == nullptr)

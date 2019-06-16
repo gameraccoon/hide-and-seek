@@ -11,7 +11,6 @@
 #include "Core/World.h"
 
 #include "../src/Internal/SdlSurface.h"
-//#include <glm/matrix.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 DebugDrawSystem::DebugDrawSystem(SystemInterface::Engine* engine, const std::shared_ptr<SystemInterface::ResourceManager>& resourceManager)
@@ -62,23 +61,23 @@ void DebugDrawSystem::update(World* world, float /*dt*/)
 
 	if (renderMode && renderMode->getIsDrawDebugNavmeshEnabled())
 	{
-		const Graphics::Texture& navmeshTexture = mResourceManager->getTexture(mNavmeshTextureHandle);
-		world->getEntityManger().forEachComponentSet<NavMeshComponent>([navmeshTexture, drawShift, engine = mEngine](NavMeshComponent* navmeshComponent)
+		const Graphics::Texture& navMeshTexture = mResourceManager->getTexture(mNavmeshTextureHandle);
+		auto [navMeshComponent] = world->getWorldComponents().getComponents<NavMeshComponent>();
+
+		if (navMeshComponent)
 		{
-			for (const std::array<Vector2D, 3>& tri : navmeshComponent->getNavMeshRef().mTriangles)
+			for (const std::array<Vector2D, 3>& tri : navMeshComponent->getNavMeshRef().mTriangles)
 			{
 				std::vector<SystemInterface::DrawPoint> drawablePolygon;
+				drawablePolygon.reserve(3);
 				drawablePolygon.push_back(SystemInterface::DrawPoint{tri[0], Vector2D(0.0f, 0.0f)});
 				drawablePolygon.push_back(SystemInterface::DrawPoint{tri[1], Vector2D(1.0f, 0.0f)});
 				drawablePolygon.push_back(SystemInterface::DrawPoint{tri[2], Vector2D(1.0f, 1.0f)});
 
-				static SystemInterface::Internal::SdlSurface surface("resources/textures/light.png");
 				glm::mat4 transform(1.0f);
 				transform = glm::translate(transform, glm::vec3(drawShift.x, drawShift.y, 0.0f));
-				engine->render(&surface, drawablePolygon, transform, 0.5f);
+				mEngine->render(navMeshTexture.getSurface(), drawablePolygon, transform, 0.5f);
 			}
-
-			return true;
-		});
+		}
 	}
 }

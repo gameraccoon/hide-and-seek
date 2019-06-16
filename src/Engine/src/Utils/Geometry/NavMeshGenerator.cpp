@@ -54,18 +54,15 @@ void NavMeshGenerator::generateNavMesh(NavMesh& outNavMesh, const std::vector<st
 			size_t size = geometry.points.size();
 			for (size_t i = 0; i < size; ++i)
 			{
-				const Vector2D& point = geometry.points[size - i];
+				const Vector2D& point = geometry.points[size - 1 - i];
 				polygon[i].x = point.x + location.x;
 				polygon[i].y = point.y + location.y;
 			}
-			polygon.Invert();
 			polygon.SetHole(true);
 			mCaches->polygons.push_back(polygon);
 		}
 	}
 
-	mCaches->resultPolygons.clear();
-	mCaches->resultPolygons.reserve(mCaches->polygons.size() * 5);
 	pp.Triangulate_MONO(&mCaches->polygons, &mCaches->resultPolygons);
 
 	outNavMesh.mTriangles.resize(mCaches->resultPolygons.size());
@@ -77,8 +74,8 @@ void NavMeshGenerator::generateNavMesh(NavMesh& outNavMesh, const std::vector<st
 		resultPoly[0].x = poly[0].x;
 		resultPoly[0].y = poly[0].y;
 		resultPoly[1].x = poly[1].x;
-		resultPoly[1].x = poly[1].x;
+		resultPoly[1].y = poly[1].y;
 		resultPoly[2].x = poly[2].x;
-		resultPoly[2].x = poly[2].x;
+		resultPoly[2].y = poly[2].y;
 	};
 }

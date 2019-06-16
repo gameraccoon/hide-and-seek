@@ -30,7 +30,11 @@ void UpdateRenderStateOnPressed(SystemInterface::KeyStatesMap* keys, World* worl
 
 void ControlSystem::update(World* world, float dt)
 {
-	const float speed = 50.0f;
+	float speed = 50.0f;
+	if (mKeyStates->isPressed(SDLK_LSHIFT) || mKeyStates->isPressed(SDLK_RSHIFT))
+	{
+		speed *= 3.0f;
+	}
 
 	Vector2D movementDirection(0.0f, 0.0f);
 	if (mKeyStates->isPressed(SDLK_LEFT) || mKeyStates->isPressed(SDLK_a))

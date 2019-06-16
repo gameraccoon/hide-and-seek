@@ -20,6 +20,8 @@
 #include <Components/CameraComponent.generated.h>
 #include <Components/LightComponent.generated.h>
 #include <Components/RenderModeComponent.generated.h>
+#include <Components/AiControllerComponent.generated.h>
+#include <Components/NavMeshComponent.generated.h>
 
 namespace Game
 {
@@ -39,6 +41,8 @@ namespace Game
 		mComponentFactory.registerComponent<CameraComponent>();
 		mComponentFactory.registerComponent<LightComponent>();
 		mComponentFactory.registerComponent<RenderModeComponent>();
+		mComponentFactory.registerComponent<NavMeshComponent>();
+		mComponentFactory.registerComponent<AiControllerComponent>();
 
 		if (arguments.hasArgument("world"))
 		{

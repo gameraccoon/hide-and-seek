@@ -15,17 +15,17 @@ void AiSystem::update(World* world, float /*dt*/)
 	// ToDo: we recalculate navmesh every frame to be able to work with worst-case scenario as long as possible
 	// optimizations such as dirty flag and spatial hash are on the way to be impelemnted
 	NavMeshGenerator generator;
-	std::vector<std::tuple<NavMeshComponent*>> navMeshComponents = world->getEntityManger().getComponents<NavMeshComponent>();
-	for (auto [navMeshComponent] : navMeshComponents)
-	{
-		generator.generateNavMesh(navMeshComponent->getNavMeshRef(), collisions);
-	};
+	auto [navMeshComponent] = world->getWorldComponents().getComponents<NavMeshComponent>();
 
-	if (navMeshComponents.size() > 0)
+	if (navMeshComponent == nullptr)
 	{
-		world->getEntityManger().forEachComponentSet<AiControllerComponent>([](AiControllerComponent* /*aiController*/)
-		{
-
-		});
+		return;
 	}
+
+	generator.generateNavMesh(navMeshComponent->getNavMeshRef(), collisions);
+
+	world->getEntityManger().forEachComponentSet<AiControllerComponent>([](AiControllerComponent* /*aiController*/)
+	{
+
+	});
 }

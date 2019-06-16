@@ -21,7 +21,7 @@ do { \
 	if (static_cast<bool>(cond) == false) \
 	{ \
 		AssertInner(false, message, ##__VA_ARGS__); \
-		assert(false); \
+		std::terminate(); \
 	} \
 } while(0)
 #define AssertFatal(cond, ...) AssertFatalInner(cond, ##__VA_ARGS__, 0)
