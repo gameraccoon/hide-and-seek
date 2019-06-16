@@ -7,6 +7,8 @@
 #include <Utils/Core/SystemsManager.h>
 #include <Utils/Core/ComponentFactory.h>
 
+#include <KeyStatesMap.h>
+
 namespace Game
 {
 	class StealthGame : public SystemInterface::Game
@@ -20,7 +22,7 @@ namespace Game
 
 	private:
 		World mWorld;
-		std::unordered_map<int, bool> mKeyStates;
+		SystemInterface::KeyStatesMap mKeyStates;
 		SystemsManager mSystemsManager;
 		ComponentFactory mComponentFactory;
 	};

@@ -16,12 +16,15 @@
 #endif
 #define Assert(cond, ...) AssertInner(cond, ##__VA_ARGS__, 0)
 
-#define ReportFailureInner(message, ...) \
-do \
-{ \
-	AssertInner(false, message, ##__VA_ARGS__); \
+#define AssertFatalInner(cond, message, ...) \
+do { \
+	if (static_cast<bool>(cond) == false) \
+	{ \
+		AssertInner(false, message, ##__VA_ARGS__); \
+		assert(false); \
+	} \
 } while(0)
-#define ReportFailure(...) ReportFailureInner(##__VA_ARGS__, 0)
+#define AssertFatal(cond, ...) AssertFatalInner(cond, ##__VA_ARGS__, 0)
 
 // macros for lazy programmers below (check condition and return/break/etc. even in release)
 

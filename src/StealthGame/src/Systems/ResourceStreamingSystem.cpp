@@ -23,7 +23,7 @@ static void updateTextureScaleFromSize(RenderComponent* renderComponent, const G
 
 void ResourceStreamingSystem::update(World* world, float /*dt*/)
 {
-	world->getEntityManger().forEachEntity<RenderComponent>([&resourceManager = mResourceManager](RenderComponent* renderComponent)
+	world->getEntityManger().forEachComponentSet<RenderComponent>([&resourceManager = mResourceManager](RenderComponent* renderComponent)
 	{
 		if (ResourceHandle textureHandle = renderComponent->getTextureHandle(); !textureHandle.isValid())
 		{

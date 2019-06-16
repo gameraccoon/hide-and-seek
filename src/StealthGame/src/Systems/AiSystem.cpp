@@ -23,7 +23,7 @@ void AiSystem::update(World* world, float /*dt*/)
 
 	if (navMeshComponents.size() > 0)
 	{
-		world->getEntityManger().forEachEntity<AiControllerComponent>([](AiControllerComponent* /*aiController*/)
+		world->getEntityManger().forEachComponentSet<AiControllerComponent>([](AiControllerComponent* /*aiController*/)
 		{
 
 		});

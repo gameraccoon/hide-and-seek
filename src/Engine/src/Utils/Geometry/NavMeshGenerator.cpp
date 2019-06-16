@@ -1,6 +1,6 @@
 #include "Utils/Geometry/NavMeshGenerator.h"
 
-#include <polypartition/polypartition.h>
+#include <polypartition.h>
 
 #include <Components/CollisionComponent.generated.h>
 #include <Components/TransformComponent.generated.h>
@@ -64,6 +64,7 @@ void NavMeshGenerator::generateNavMesh(NavMesh& outNavMesh, const std::vector<st
 		}
 	}
 
+	mCaches->resultPolygons.clear();
 	mCaches->resultPolygons.reserve(mCaches->polygons.size() * 5);
 	pp.Triangulate_MONO(&mCaches->polygons, &mCaches->resultPolygons);
 

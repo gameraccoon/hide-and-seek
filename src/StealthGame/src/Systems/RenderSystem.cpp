@@ -6,6 +6,8 @@
 #include "Components/TransformComponent.generated.h"
 #include "Components/CollisionComponent.generated.h"
 #include "Components/LightComponent.generated.h"
+#include "Components/RenderModeComponent.generated.h"
+
 #include "Base/Engine.h"
 #include "Utils/Geometry/VisibilityPolygon.h"
 #include "Core/World.h"
@@ -15,12 +17,9 @@
 #include <glm/matrix.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-RenderSystem::RenderSystem(SystemInterface::Engine* engine, __attribute__((unused)) const std::shared_ptr<SystemInterface::ResourceManager>& resourceManager)
+RenderSystem::RenderSystem(SystemInterface::Engine* engine, const std::shared_ptr<SystemInterface::ResourceManager>& resourceManager)
 	: mEngine(engine)
-#ifdef DEBUG
 	, mResourceManager(resourceManager)
-	, mDebugDrawer(resourceManager, engine)
-#endif // DEBUG
 {
 }
 
@@ -40,15 +39,20 @@ void RenderSystem::update(World* world, float /*dt*/)
 		return;
 	}
 
+	auto [renderMode] = world->getWorldComponents().getComponents<RenderModeComponent>();
+
 	Vector2D cameraLocation = cameraTransformComponent->getLocation();
 	Vector2D mouseScreenPos(mEngine->getMouseX(), mEngine->getMouseY());
 	Vector2D screenHalfSize = Vector2D(static_cast<float>(mEngine->getWidth()), static_cast<float>(mEngine->getHeight())) * 0.5f;
 
 	Vector2D drawShift = screenHalfSize - cameraLocation + (screenHalfSize - mouseScreenPos) * 0.5;
 
-	drawLights(world, drawShift, maxFov);
+	if (!renderMode || renderMode->getIsDrawLightsEnabled())
+	{
+		drawLights(world, drawShift, maxFov);
+	}
 
-	world->getEntityManger().forEachEntity<RenderComponent, TransformComponent>([&drawShift, &resourceManager = mResourceManager, engine = mEngine](RenderComponent* renderComponent, TransformComponent* transformComponent)
+	world->getEntityManger().forEachComponentSet<RenderComponent, TransformComponent>([&drawShift, &resourceManager = mResourceManager, engine = mEngine](RenderComponent* renderComponent, TransformComponent* transformComponent)
 	{
 		ResourceHandle textureHandle = renderComponent->getTextureHandle();
 		if (textureHandle.isValid())
@@ -63,10 +67,6 @@ void RenderSystem::update(World* world, float /*dt*/)
 			}
 		}
 	});
-
-#ifdef DEBUG
-	mDebugDrawer.render(world, drawShift);
-#endif // DEBUG
 }
 
 void RenderSystem::drawVisibilityPolygon(const std::vector<Vector2D>& polygon, const Vector2D& fowSize, const Vector2D& drawShift)
@@ -121,7 +121,7 @@ void RenderSystem::drawLights(World* world, const Vector2D& drawShift, const Vec
 	// be able to work with worst-case scenario as long as possible
 	// optimizations such as dirty flag and spatial hash are on the way to be impelemnted
 	// draw light
-	world->getEntityManger().forEachEntity<LightComponent, TransformComponent>([&collidableComponents, &visibilityPolygonCalculator, maxFov, &drawShift, &polygon, this](LightComponent* /*light*/, TransformComponent* transform)
+	world->getEntityManger().forEachComponentSet<LightComponent, TransformComponent>([&collidableComponents, &visibilityPolygonCalculator, maxFov, &drawShift, &polygon, this](LightComponent* /*light*/, TransformComponent* transform)
 	{
 		visibilityPolygonCalculator.calculateVisibilityPolygon(polygon, collidableComponents, transform->getLocation(), maxFov);
 		drawVisibilityPolygon(polygon, maxFov, drawShift + transform->getLocation());

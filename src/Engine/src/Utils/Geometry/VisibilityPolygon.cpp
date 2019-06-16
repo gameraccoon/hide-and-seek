@@ -51,18 +51,18 @@ void VisibilityPolygonCalculator::AddPotentiallyVisiblePoint(bool isVisible, boo
 	{
 		if (isPreviousVisible)
 		{
-			pointsToTrace.push_back({a, a.rotation().getValue(), PointSide::InBetween});
+			pointsToTrace.emplace_back(a, a.rotation().getValue(), PointSide::InBetween);
 		}
 		else
 		{
-			pointsToTrace.push_back({a, a.rotation().getValue(), PointSide::Right});
+			pointsToTrace.emplace_back(a, a.rotation().getValue(), PointSide::Right);
 		}
 	}
 	else
 	{
 		if (isPreviousVisible)
 		{
-			pointsToTrace.push_back({a, a.rotation().getValue(), PointSide::Left});
+			pointsToTrace.emplace_back(a, a.rotation().getValue(), PointSide::Left);
 		}
 	}
 }
@@ -85,14 +85,14 @@ void VisibilityPolygonCalculator::calculateVisibilityPolygon(std::vector<Vector2
 	Vector2D rightTop(right, top);
 	Vector2D rightBottom(right, bottom);
 	Vector2D leftBottom(left, bottom);
-	mCaches.pointsToTrace.push_back({leftTop, leftTop.rotation().getValue(), PointSide::InBetween});
-	mCaches.pointsToTrace.push_back({rightTop, rightTop.rotation().getValue(), PointSide::InBetween});
-	mCaches.pointsToTrace.push_back({rightBottom, rightBottom.rotation().getValue(), PointSide::InBetween});
-	mCaches.pointsToTrace.push_back({leftBottom, leftBottom.rotation().getValue(), PointSide::InBetween});
-	mCaches.borders.push_back({leftTop, rightTop});
-	mCaches.borders.push_back({rightTop, rightBottom});
-	mCaches.borders.push_back({rightBottom, leftBottom});
-	mCaches.borders.push_back({leftBottom, leftTop});
+	mCaches.pointsToTrace.emplace_back(leftTop, leftTop.rotation().getValue(), PointSide::InBetween);
+	mCaches.pointsToTrace.emplace_back(rightTop, rightTop.rotation().getValue(), PointSide::InBetween);
+	mCaches.pointsToTrace.emplace_back(rightBottom, rightBottom.rotation().getValue(), PointSide::InBetween);
+	mCaches.pointsToTrace.emplace_back(leftBottom, leftBottom.rotation().getValue(), PointSide::InBetween);
+	mCaches.borders.emplace_back(leftTop, rightTop);
+	mCaches.borders.emplace_back(rightTop, rightBottom);
+	mCaches.borders.emplace_back(rightBottom, leftBottom);
+	mCaches.borders.emplace_back(leftBottom, leftTop);
 
 	// find borders that facing the light source and their points
 	for (const auto& [collision, transform] : components)
@@ -127,7 +127,7 @@ void VisibilityPolygonCalculator::calculateVisibilityPolygon(std::vector<Vector2
 				{
 					mCaches.hullPoints[j] = b - shift;
 				}
-				mCaches.borders.push_back({b, a});
+				mCaches.borders.emplace_back(b, a);
 			}
 
 			if (isNotFirst)
@@ -160,8 +160,8 @@ void VisibilityPolygonCalculator::calculateVisibilityPolygon(std::vector<Vector2
 	// fix a corner case with two or more points have exact same angles
 	for (size_t i = 1; i < mCaches.pointsToTrace.size();)
 	{
-		AngledPoint& item = mCaches.pointsToTrace[i];
-		AngledPoint& previousItem = mCaches.pointsToTrace[i - 1];
+		const AngledPoint& item = mCaches.pointsToTrace[i];
+		const AngledPoint& previousItem = mCaches.pointsToTrace[i - 1];
 		// the problem is present only if the angles are exactly equal
 		if (item.angle != previousItem.angle)
 		{

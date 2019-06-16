@@ -101,7 +101,7 @@ public:
 	}
 
 	template<typename FirstComponent, typename... Components, typename FunctionType>
-	void forEachEntity(FunctionType processor)
+	void forEachComponentSet(FunctionType processor)
 	{
 		auto& firstComponentVector = mComponents[typeid(FirstComponent)];
 
@@ -129,7 +129,7 @@ public:
 	}
 
 	template<typename FirstComponent, typename... Components, typename FunctionType>
-	void forEachEntity2(FunctionType processor)
+	void forEachComponentSetWithEntity(FunctionType processor)
 	{
 		auto& firstComponentVector = mComponents[typeid(FirstComponent)];
 

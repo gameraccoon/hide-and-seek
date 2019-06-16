@@ -17423,6 +17423,12 @@
                 ]
             ]
         },
+        "world_components": {
+            "components" : {
+                "RenderModeComponent": {
+                }
+            }
+        },
         "main_camera": {
             "id": 509098326,
             "valid": true

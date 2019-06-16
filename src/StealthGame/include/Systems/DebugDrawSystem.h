@@ -6,19 +6,21 @@
 #include <Components/CameraComponent.generated.h>
 #include <EngineFwd.h>
 
+class TransformComponent;
+class CollisionComponent;
 class Vector2D;
 
 /**
  * System that handles rendering of world objects
  */
-class RenderSystem : public System
+class DebugDrawSystem : public System
 {
 public:
 	typedef std::unordered_map<int, bool> KeyStatesMap;
 
 public:
-	RenderSystem(SystemInterface::Engine* engine, const std::shared_ptr<SystemInterface::ResourceManager>& resourceManager);
-	~RenderSystem() override = default;
+	DebugDrawSystem(SystemInterface::Engine* engine, const std::shared_ptr<SystemInterface::ResourceManager>& resourceManager);
+	~DebugDrawSystem() override = default;
 
 	void update(World* world, float dt) override;
 
@@ -30,4 +32,7 @@ private:
 private:
 	SystemInterface::Engine* mEngine;
 	std::shared_ptr<SystemInterface::ResourceManager> mResourceManager;
+
+	ResourceHandle mCollisionTextureHandle;
+	ResourceHandle mNavmeshTextureHandle;
 };

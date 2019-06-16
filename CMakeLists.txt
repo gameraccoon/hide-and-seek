@@ -105,13 +105,18 @@ add_folder_as_library(${SOURCE_ROOT}/SystemInterface SystemInterfaceLib)
 add_folder_as_library(${SOURCE_ROOT}/StealthGame StealthGameLib)
 
 # Recast
-option(RECASTNAVIGATION_STATIC "Build static libraries" ON)
-add_subdirectory(${EXTERNALS_DIR}/sources/recastnavigation/Recast
-    ${INTERMEDIATES_DIR}/external/Recast
-    EXCLUDE_FROM_ALL)
-link_directories(${INTERMEDIATES_DIR}/external/Recast)
-add_dependencies(StealthGameLib Recast)
-include_directories(${EXTERNALS_DIR}/sources/recastnavigation/Recast/Include)
+#option(RECASTNAVIGATION_STATIC "Build static libraries" ON)
+#add_subdirectory(${EXTERNALS_DIR}/sources/recastnavigation/Recast
+#    ${INTERMEDIATES_DIR}/external/Recast
+#    EXCLUDE_FROM_ALL)
+#link_directories(${INTERMEDIATES_DIR}/external/Recast)
+#add_dependencies(StealthGameLib Recast)
+#include_directories(${EXTERNALS_DIR}/sources/recastnavigation/Recast/Include)
+
+# Polypartition
+add_library(Polypartition ${EXTERNALS_DIR}/sources/polypartition/src/polypartition.cpp)
+add_dependencies(StealthGameLib Polypartition)
+include_directories(${EXTERNALS_DIR}/sources/polypartition/include)
 
 add_executable(${APP_NAME} ${SOURCE_ROOT}/main/main.cpp)
 set(GENERAL_PROJECT_LIBS
@@ -121,7 +126,8 @@ set(GENERAL_PROJECT_LIBS
     SystemInterfaceLib
     EngineLib
     DebugHelpersLib
-    Recast
+#    Recast
+	Polypartition
 
     SDL2
     SDL2_image

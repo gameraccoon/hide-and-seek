@@ -5,13 +5,27 @@
 #include <Components/RenderComponent.generated.h>
 #include <Components/TransformComponent.generated.h>
 #include <Components/MovementComponent.generated.h>
+#include <Components/RenderModeComponent.generated.h>
 
 #include <Core/World.h>
 
-ControlSystem::ControlSystem(SystemInterface::Engine* engine, KeyStatesMap* keyStatesMap)
+ControlSystem::ControlSystem(SystemInterface::Engine* engine, SystemInterface::KeyStatesMap* keyStates)
 	: mEngine(engine)
-	, mKeyStatesMap(keyStatesMap)
+	, mKeyStates(keyStates)
 {
+}
+
+template<typename F1, typename F2>
+void UpdateRenderStateOnPressed(SystemInterface::KeyStatesMap* keys, World* world, int key, F1 getFPtr, F2 setFPtr)
+{
+	if (keys->isJustPressed(key))
+	{
+		auto [renderMode] = world->getWorldComponents().getComponents<RenderModeComponent>();
+		if (renderMode)
+		{
+			(renderMode->*setFPtr)(!(renderMode->*getFPtr)());
+		}
+	}
 }
 
 void ControlSystem::update(World* world, float dt)
@@ -19,22 +33,22 @@ void ControlSystem::update(World* world, float dt)
 	const float speed = 50.0f;
 
 	Vector2D movementDirection(0.0f, 0.0f);
-	if (auto it = mKeyStatesMap->find(SDLK_LEFT); it != mKeyStatesMap->end() && it->second)
+	if (mKeyStates->isPressed(SDLK_LEFT) || mKeyStates->isPressed(SDLK_a))
 	{
 		movementDirection += LEFT_DIRECTION;
 	}
 
-	if (auto it = mKeyStatesMap->find(SDLK_RIGHT); it != mKeyStatesMap->end() && it->second)
+	if (mKeyStates->isPressed(SDLK_RIGHT) || mKeyStates->isPressed(SDLK_d))
 	{
 		movementDirection += RIGHT_DIRECTION;
 	}
 
-	if (auto it = mKeyStatesMap->find(SDLK_UP); it != mKeyStatesMap->end() && it->second)
+	if (mKeyStates->isPressed(SDLK_UP) || mKeyStates->isPressed(SDLK_w))
 	{
 		movementDirection += UP_DIRECTION;
 	}
 
-	if (auto it = mKeyStatesMap->find(SDLK_DOWN); it != mKeyStatesMap->end() && it->second)
+	if (mKeyStates->isPressed(SDLK_DOWN) || mKeyStates->isPressed(SDLK_s))
 	{
 		movementDirection += DOWN_DIRECTION;
 	}
@@ -72,4 +86,9 @@ void ControlSystem::update(World* world, float dt)
 			transform->setRotation(direction.rotation());
 		}
 	}
+
+	UpdateRenderStateOnPressed(mKeyStates, world, SDLK_F1, &RenderModeComponent::getIsDrawDebugFpsEnabled, &RenderModeComponent::setIsDrawDebugFpsEnabled);
+	UpdateRenderStateOnPressed(mKeyStates, world, SDLK_F2, &RenderModeComponent::getIsDrawDebugCollisionsEnabled, &RenderModeComponent::setIsDrawDebugCollisionsEnabled);
+	UpdateRenderStateOnPressed(mKeyStates, world, SDLK_F3, &RenderModeComponent::getIsDrawDebugNavmeshEnabled, &RenderModeComponent::setIsDrawDebugNavmeshEnabled);
+	UpdateRenderStateOnPressed(mKeyStates, world, SDLK_F4, &RenderModeComponent::getIsDrawLightsEnabled, &RenderModeComponent::setIsDrawLightsEnabled);
 }

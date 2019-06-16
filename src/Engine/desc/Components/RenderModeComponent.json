@@ -1,0 +1,31 @@
+{
+	"component": "renderMode",
+	"description": "Component that stores information about the current render mode",
+	"attributes": [
+		{
+			"name": "isDrawLightsEnabled",
+			"type": "bool",
+			"default": " = true",
+			"flags": ["transient"]
+		},
+		{
+			"name": "isDrawDebugCollisionsEnabled",
+			"type": "bool",
+			"default": " = false",
+			"flags": ["transient"]
+		},
+		{
+			"name": "isDrawDebugNavmeshEnabled",
+			"type": "bool",
+			"default": " = false",
+			"flags": ["transient"]
+		},
+		{
+			"name": "isDrawDebugFpsEnabled",
+			"type": "bool",
+			"default": " = false",
+			"flags": ["transient"]
+		}
+	]
+}
+

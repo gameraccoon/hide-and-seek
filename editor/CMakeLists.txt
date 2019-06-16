@@ -114,13 +114,18 @@ link_directories(
 )
 
 # Recast
-option(RECASTNAVIGATION_STATIC "Build static libraries" ON)
-add_subdirectory(${EXTERNALS_DIR}/sources/recastnavigation/Recast
-	${INTERMEDIATES_DIR}/external/Recast
-	EXCLUDE_FROM_ALL)
-link_directories(${INTERMEDIATES_DIR}/external/Recast)
-add_dependencies(editor Recast)
-include_directories(${EXTERNALS_DIR}/sources/recastnavigation/Recast/Include)
+#option(RECASTNAVIGATION_STATIC "Build static libraries" ON)
+#add_subdirectory(${EXTERNALS_DIR}/sources/recastnavigation/Recast
+#	${INTERMEDIATES_DIR}/external/Recast
+#	EXCLUDE_FROM_ALL)
+#link_directories(${INTERMEDIATES_DIR}/external/Recast)
+#add_dependencies(editor Recast)
+#include_directories(${EXTERNALS_DIR}/sources/recastnavigation/Recast/Include)
+
+# Polypartition
+add_library(Polypartition ${EXTERNALS_DIR}/sources/polypartition/src/polypartition.cpp)
+add_dependencies(editor Polypartition)
+include_directories(${EXTERNALS_DIR}/sources/polypartition/include)
 
 set(editor_LIBS
     ${editor_LIBS}
@@ -129,7 +134,8 @@ set(editor_LIBS
 #    SystemInterfaceLib
     EngineLib
     DebugHelpersLib
-	Recast
+#    Recast
+    Polypartition
 )
 
 if (NOT WIN32)
