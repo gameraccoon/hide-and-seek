@@ -36,7 +36,6 @@ namespace SystemInterface
 				break;
 			default:
 				throw std::runtime_error("Image with unknown channel profile");
-				break;
 			}
 
             glTexImage2D(GL_TEXTURE_2D, 0, mode, mSurface->w, mSurface->h, 0, static_cast<GLenum>(mode), GL_UNSIGNED_BYTE, mSurface->pixels);
@@ -47,6 +46,7 @@ namespace SystemInterface
 		void SdlSurface::deleteTexture(unsigned int* textureId)
 		{
 			glDeleteTextures(1, textureId);
+			delete textureId;
 		}
 
 		void SdlSurface::bind()

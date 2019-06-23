@@ -7,6 +7,14 @@
 #include "Debug/Log.h"
 
 
+ComponentSetHolder::~ComponentSetHolder()
+{
+	for (auto& component : mComponents)
+	{
+		delete component.second;
+	}
+}
+
 std::vector<BaseComponent*> ComponentSetHolder::getAllComponents()
 {
 	std::vector<BaseComponent*> components;

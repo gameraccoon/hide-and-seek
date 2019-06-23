@@ -49,6 +49,10 @@ namespace SystemInterface
 		{
 		}
 
+		~Impl()
+		{
+		}
+
 		void start();
 		void parseEvents();
 	};

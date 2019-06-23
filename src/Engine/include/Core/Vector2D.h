@@ -68,3 +68,15 @@ extern const Vector2D RIGHT_DIRECTION;
 extern const Vector2D UP_DIRECTION;
 extern const Vector2D DOWN_DIRECTION;
 extern const Vector2D ZERO_VECTOR;
+
+namespace std
+{
+	template <>
+	struct hash<Vector2D>
+	{
+		std::size_t operator()(const Vector2D& k) const
+		{
+			return hash<float>()(k.x) ^ (hash<float>()(k.y) << 1);
+		}
+	};
+}

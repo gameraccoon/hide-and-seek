@@ -66,7 +66,7 @@ void DebugDrawSystem::update(World* world, float /*dt*/)
 
 		if (navMeshComponent)
 		{
-			for (const std::array<Vector2D, 3>& tri : navMeshComponent->getNavMeshRef().mTriangles)
+			for (const std::array<Vector2D, 3>& tri : navMeshComponent->getNavMeshRef().triangles)
 			{
 				std::vector<SystemInterface::DrawPoint> drawablePolygon;
 				drawablePolygon.reserve(3);

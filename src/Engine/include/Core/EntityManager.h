@@ -11,6 +11,8 @@
 class EntityManager
 {
 public:
+	~EntityManager();
+
 	Entity addEntity();
 	void removeEntity(Entity entity);
 	std::unordered_map<Entity::EntityID, size_t>& getEntities() { return mEntityIndexMap; }

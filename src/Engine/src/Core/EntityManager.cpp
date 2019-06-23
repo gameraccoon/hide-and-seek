@@ -11,6 +11,17 @@
 
 static const int EntityInsertionTrialsLimit = 10;
 
+EntityManager::~EntityManager()
+{
+	for (auto& componentVector : mComponents)
+	{
+		for (auto component : componentVector.second)
+		{
+			delete component;
+		}
+	}
+}
+
 Entity EntityManager::addEntity()
 {
 	int insertionTrial = 0;

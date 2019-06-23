@@ -1,15 +1,19 @@
 #include "Utils/Geometry/NavMeshGenerator.h"
 
+#include <unordered_map>
+
 #include <polypartition.h>
+
+#include <DetourNavMesh.h>
+#include <DetourNavMeshBuilder.h>
+
+#include <Debug/Log.h>
 
 #include <Components/CollisionComponent.generated.h>
 #include <Components/TransformComponent.generated.h>
 
-
 struct NavMeshGenerator::Caches
 {
-	std::vector<TPPLPoly> polygons;
-	std::vector<TPPLPoly> resultPolygons;
 	TPPLPoly borderPolygon;
 };
 
@@ -24,12 +28,19 @@ NavMeshGenerator::~NavMeshGenerator()
 
 void NavMeshGenerator::generateNavMesh(NavMesh& outNavMesh, const std::vector<std::tuple<CollisionComponent*, TransformComponent*>>& collidableComponents)
 {
+	using DtCoordType = unsigned short;
+	using DtIndexType = unsigned short;
+	using DtFlagsType = unsigned short;
+	using DtAreaType = unsigned char;
+
+	constexpr int polygonMaxVertsCount = 3;
+
 	Vector2D size(10000, 10000);
 
 	TPPLPartition pp;
 
-	mCaches->polygons.clear();
-	mCaches->resultPolygons.clear();
+	std::vector<TPPLPoly> polygons;
+	std::vector<TPPLPoly> resultPolygons;
 
 	mCaches->borderPolygon.Init(4);
 	mCaches->borderPolygon[0].x = -size.x*0.5f;
@@ -40,7 +51,7 @@ void NavMeshGenerator::generateNavMesh(NavMesh& outNavMesh, const std::vector<st
 	mCaches->borderPolygon[2].y = size.y*0.5f;
 	mCaches->borderPolygon[3].x = -size.x*0.5f;
 	mCaches->borderPolygon[3].y = size.y*0.5f;
-	mCaches->polygons.push_back(mCaches->borderPolygon);
+	polygons.push_back(mCaches->borderPolygon);
 
 	for (auto [collision, transform] : collidableComponents)
 	{
@@ -59,23 +70,104 @@ void NavMeshGenerator::generateNavMesh(NavMesh& outNavMesh, const std::vector<st
 				polygon[i].y = point.y + location.y;
 			}
 			polygon.SetHole(true);
-			mCaches->polygons.push_back(polygon);
+			polygons.push_back(polygon);
 		}
 	}
 
-	pp.Triangulate_MONO(&mCaches->polygons, &mCaches->resultPolygons);
+	pp.Triangulate_MONO(&polygons, &resultPolygons);
 
-	outNavMesh.mTriangles.resize(mCaches->resultPolygons.size());
-
-	for (size_t i = 0; i < mCaches->resultPolygons.size(); ++i)
+	std::unordered_map<Vector2D, DtIndexType> verticesMap;
+	for (const TPPLPoly& polygon : resultPolygons)
 	{
-		const TPPLPoly& poly = mCaches->resultPolygons[i];
-		std::array<Vector2D, 3>& resultPoly = outNavMesh.mTriangles[i];
-		resultPoly[0].x = poly[0].x;
-		resultPoly[0].y = poly[0].y;
-		resultPoly[1].x = poly[1].x;
-		resultPoly[1].y = poly[1].y;
-		resultPoly[2].x = poly[2].x;
-		resultPoly[2].y = poly[2].y;
-	};
+		verticesMap.emplace(Vector2D(polygon[0].x, polygon[0].y), 0);
+		verticesMap.emplace(Vector2D(polygon[1].x, polygon[1].y), 0);
+		verticesMap.emplace(Vector2D(polygon[2].x, polygon[2].y), 0);
+	}
+
+	std::vector<DtCoordType> verts;
+	verts.resize(verticesMap.size() * polygonMaxVertsCount);
+	DtIndexType idx = 0;
+	for (auto& it : verticesMap)
+	{
+		verts[idx * 3] = static_cast<DtCoordType>(it.first.x);
+		verts[idx * 3 + 1] = 0;
+		verts[idx * 3 + 2] = static_cast<DtCoordType>(it.first.y);
+		it.second = idx++;
+	}
+
+	std::vector<DtIndexType> triangles;
+	triangles.reserve(resultPolygons.size() * 2 * polygonMaxVertsCount);
+	for (const TPPLPoly& polygon : resultPolygons)
+	{
+		triangles.push_back(verticesMap.find(Vector2D(polygon[0].x, polygon[0].y))->second);
+		triangles.push_back(verticesMap.find(Vector2D(polygon[1].x, polygon[1].y))->second);
+		triangles.push_back(verticesMap.find(Vector2D(polygon[2].x, polygon[2].y))->second);
+
+		// borders-portals information
+		triangles.push_back(0);
+		triangles.push_back(0);
+		triangles.push_back(0);
+	}
+	std::vector<DtFlagsType> flags(resultPolygons.size(), 0);
+	std::vector<DtAreaType> areas(resultPolygons.size(), 0);
+
+	outNavMesh.setMesh(new dtNavMesh());
+	dtNavMeshCreateParams params;
+	params.bmax[0] = size.x*0.5f;
+	params.bmax[1] = 0.0f;
+	params.bmax[2] = size.y*0.5f;
+	params.bmin[0] = -size.x*0.5f;
+	params.bmin[1] = 0.0f;
+	params.bmin[2] = -size.y*0.5f;
+	params.buildBvTree = false;
+	params.ch = 10.0f;
+	params.cs = 10.0f;
+	params.detailMeshes = nullptr;
+	params.detailTriCount = 0;
+	params.detailTris = nullptr;
+	params.detailVerts = nullptr;
+	params.detailVertsCount = 0;
+	params.nvp = polygonMaxVertsCount;
+	params.offMeshConAreas = nullptr;
+	params.offMeshConCount = 0;
+	params.offMeshConDir = nullptr;
+	params.offMeshConFlags = nullptr;
+	params.offMeshConRad = nullptr;
+	params.offMeshConUserID = nullptr;
+	params.offMeshConVerts = nullptr;
+	params.polyAreas = areas.data();
+	params.polyCount = static_cast<int>(resultPolygons.size());
+	params.polyFlags = flags.data();
+	params.polys = triangles.data();
+	params.tileLayer = 0;
+	params.tileX = 0;
+	params.tileY = 0;
+	params.userId = 0;
+	params.verts = verts.data();
+	params.vertCount = static_cast<int>(verticesMap.size());
+	params.walkableClimb = 0.0f;
+	params.walkableHeight = 10.0f;
+	params.walkableRadius = 1.0f;
+
+	unsigned char* navData = nullptr;
+	int navDataSize = 0;
+	bool isSuccessful = dtCreateNavMeshData(&params, &navData, &navDataSize);
+	if (!isSuccessful)
+	{
+		LogInfo("Unsuccessfull detour navmesh generation");
+		return;
+	}
+
+	delete navData;
+
+	dtNavMeshParams navmeshParams;
+	navmeshParams.maxPolys = static_cast<int>(resultPolygons.size());
+	navmeshParams.maxTiles = 1;
+	navmeshParams.orig[0] = 0.0f;
+	navmeshParams.orig[1] = 0.0f;
+	navmeshParams.orig[2] = 0.0f;
+	navmeshParams.tileHeight = 1000;
+	navmeshParams.tileWidth = 1000;
+	outNavMesh.getMesh()->init(&navmeshParams);
+	outNavMesh.getMesh()->addTile(navData, navDataSize, 0, 0, nullptr);
 }

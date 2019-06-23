@@ -14,6 +14,8 @@
 class ComponentSetHolder
 {
 public:
+	~ComponentSetHolder();
+
 	std::vector<BaseComponent*> getAllComponents();
 
 	template<typename ComponentType>

@@ -11,7 +11,7 @@ namespace SystemInterface
 		class SdlWindow
 		{
 		public:
-			SdlWindow(unsigned int width, unsigned int height);
+			SdlWindow(int width, int height);
 			operator SDL_Window*();
 			void show();
 

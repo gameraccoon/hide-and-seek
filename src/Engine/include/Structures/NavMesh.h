@@ -8,9 +8,19 @@
 #include <Core/Vector2D.h>
 #include "Border.h"
 
+class dtNavMesh;
+
 class NavMesh
 {
-private:
 public:
-	std::vector<std::array<Vector2D, 3>> mTriangles;
+	~NavMesh();
+
+	void setMesh(dtNavMesh* newMesh);
+	dtNavMesh* getMesh();
+
+public:
+	std::vector<std::array<Vector2D, 3>> triangles;
+
+private:
+	dtNavMesh* mMesh = nullptr;
 };

@@ -8,7 +8,7 @@ namespace SystemInterface
 {
 	namespace Internal
 	{
-		SdlWindow::SdlWindow(unsigned int width, unsigned int height)
+		SdlWindow::SdlWindow(int width, int height)
 			: mSDLWindow(SDL_CreateWindow("Game"
 				, SDL_WINDOWPOS_UNDEFINED
 				, SDL_WINDOWPOS_UNDEFINED

@@ -113,14 +113,14 @@ link_directories(
     ${CMAKE_SOURCE_DIR}/vs_project
 )
 
-# Recast
-#option(RECASTNAVIGATION_STATIC "Build static libraries" ON)
-#add_subdirectory(${EXTERNALS_DIR}/sources/recastnavigation/Recast
-#	${INTERMEDIATES_DIR}/external/Recast
-#	EXCLUDE_FROM_ALL)
-#link_directories(${INTERMEDIATES_DIR}/external/Recast)
-#add_dependencies(editor Recast)
-#include_directories(${EXTERNALS_DIR}/sources/recastnavigation/Recast/Include)
+# Detour
+option(RECASTNAVIGATION_STATIC "Build static libraries for detour" ON)
+add_subdirectory(${EXTERNALS_DIR}/sources/recastnavigation/Detour
+	${INTERMEDIATES_DIR}/external/Detour
+	EXCLUDE_FROM_ALL)
+link_directories(${INTERMEDIATES_DIR}/external/Detour)
+add_dependencies(editor Detour)
+include_directories(${EXTERNALS_DIR}/sources/recastnavigation/Detour/Include)
 
 # Polypartition
 add_library(Polypartition ${EXTERNALS_DIR}/sources/polypartition/src/polypartition.cpp)
@@ -134,7 +134,7 @@ set(editor_LIBS
 #    SystemInterfaceLib
     EngineLib
     DebugHelpersLib
-#    Recast
+	Detour
     Polypartition
 )
 
