@@ -95,4 +95,5 @@ void ControlSystem::update(World* world, float dt)
 	UpdateRenderStateOnPressed(mKeyStates, world, SDLK_F2, &RenderModeComponent::getIsDrawDebugCollisionsEnabled, &RenderModeComponent::setIsDrawDebugCollisionsEnabled);
 	UpdateRenderStateOnPressed(mKeyStates, world, SDLK_F3, &RenderModeComponent::getIsDrawDebugNavmeshEnabled, &RenderModeComponent::setIsDrawDebugNavmeshEnabled);
 	UpdateRenderStateOnPressed(mKeyStates, world, SDLK_F4, &RenderModeComponent::getIsDrawLightsEnabled, &RenderModeComponent::setIsDrawLightsEnabled);
+	UpdateRenderStateOnPressed(mKeyStates, world, SDLK_F5, &RenderModeComponent::getIsDrawVisibleEntitiesEnabled, &RenderModeComponent::setIsDrawVisibleEntitiesEnabled);
 }

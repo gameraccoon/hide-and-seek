@@ -9,6 +9,12 @@
 			"flags": ["transient"]
 		},
 		{
+			"name": "isDrawVisibleEntitiesEnabled",
+			"type": "bool",
+			"default": " = true",
+			"flags": ["transient"]
+		},
+		{
 			"name": "isDrawDebugCollisionsEnabled",
 			"type": "bool",
 			"default": " = false",

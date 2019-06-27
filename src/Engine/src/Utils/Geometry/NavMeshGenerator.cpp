@@ -89,9 +89,9 @@ void NavMeshGenerator::generateNavMesh(NavMesh& outNavMesh, const std::vector<st
 	DtIndexType idx = 0;
 	for (auto& it : verticesMap)
 	{
-		verts[idx * 3] = static_cast<DtCoordType>(it.first.x);
+		verts[idx * 3] = static_cast<DtCoordType>(it.first.x + 5000.0f);
 		verts[idx * 3 + 1] = 0;
-		verts[idx * 3 + 2] = static_cast<DtCoordType>(it.first.y);
+		verts[idx * 3 + 2] = static_cast<DtCoordType>(it.first.y + 5000.0f);
 		it.second = idx++;
 	}
 
@@ -120,8 +120,8 @@ void NavMeshGenerator::generateNavMesh(NavMesh& outNavMesh, const std::vector<st
 	params.bmin[1] = 0.0f;
 	params.bmin[2] = -size.y*0.5f;
 	params.buildBvTree = false;
-	params.ch = 10.0f;
-	params.cs = 10.0f;
+	params.ch = 1.0f;
+	params.cs = 1.0f;
 	params.detailMeshes = nullptr;
 	params.detailTriCount = 0;
 	params.detailTris = nullptr;
@@ -158,16 +158,14 @@ void NavMeshGenerator::generateNavMesh(NavMesh& outNavMesh, const std::vector<st
 		return;
 	}
 
-	delete navData;
-
 	dtNavMeshParams navmeshParams;
 	navmeshParams.maxPolys = static_cast<int>(resultPolygons.size());
 	navmeshParams.maxTiles = 1;
-	navmeshParams.orig[0] = 0.0f;
+	navmeshParams.orig[0] = -5000.0f;
 	navmeshParams.orig[1] = 0.0f;
-	navmeshParams.orig[2] = 0.0f;
-	navmeshParams.tileHeight = 1000;
-	navmeshParams.tileWidth = 1000;
+	navmeshParams.orig[2] = -5000.0f;
+	navmeshParams.tileHeight = 10000;
+	navmeshParams.tileWidth = 10000;
 	outNavMesh.getMesh()->init(&navmeshParams);
 	outNavMesh.getMesh()->addTile(navData, navDataSize, 0, 0, nullptr);
 }

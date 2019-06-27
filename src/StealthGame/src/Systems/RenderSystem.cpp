@@ -52,21 +52,24 @@ void RenderSystem::update(World* world, float /*dt*/)
 		drawLights(world, drawShift, maxFov);
 	}
 
-	world->getEntityManger().forEachComponentSet<RenderComponent, TransformComponent>([&drawShift, &resourceManager = mResourceManager, engine = mEngine](RenderComponent* renderComponent, TransformComponent* transformComponent)
+	if (!renderMode || renderMode->getIsDrawVisibleEntitiesEnabled())
 	{
-		ResourceHandle textureHandle = renderComponent->getTextureHandle();
-		if (textureHandle.isValid())
+		world->getEntityManger().forEachComponentSet<RenderComponent, TransformComponent>([&drawShift, &resourceManager = mResourceManager, engine = mEngine](RenderComponent* renderComponent, TransformComponent* transformComponent)
 		{
-			const Graphics::Texture& texture = resourceManager->getTexture(textureHandle);
-			if (texture.isValid())
+			ResourceHandle textureHandle = renderComponent->getTextureHandle();
+			if (textureHandle.isValid())
 			{
-				auto location = transformComponent->getLocation() + drawShift;
-				auto anchor = renderComponent->getAnchor();
-				auto scale = renderComponent->getScale();
-				engine->render(texture.getSurface(), location.x, location.y, anchor.x, anchor.y, scale.x, scale.y, transformComponent->getRotation().getValue(), 1.0f);
+				const Graphics::Texture& texture = resourceManager->getTexture(textureHandle);
+				if (texture.isValid())
+				{
+					auto location = transformComponent->getLocation() + drawShift;
+					auto anchor = renderComponent->getAnchor();
+					auto scale = renderComponent->getScale();
+					engine->render(texture.getSurface(), location.x, location.y, anchor.x, anchor.y, scale.x, scale.y, transformComponent->getRotation().getValue(), 1.0f);
+				}
 			}
-		}
-	});
+		});
+	}
 }
 
 void RenderSystem::drawVisibilityPolygon(const std::vector<Vector2D>& polygon, const Vector2D& fowSize, const Vector2D& drawShift)

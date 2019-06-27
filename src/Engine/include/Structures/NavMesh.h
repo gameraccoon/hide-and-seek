@@ -18,9 +18,6 @@ public:
 	void setMesh(dtNavMesh* newMesh);
 	dtNavMesh* getMesh();
 
-public:
-	std::vector<std::array<Vector2D, 3>> triangles;
-
 private:
 	dtNavMesh* mMesh = nullptr;
 };

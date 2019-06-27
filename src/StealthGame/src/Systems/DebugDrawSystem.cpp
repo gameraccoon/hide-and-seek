@@ -13,12 +13,14 @@
 #include "../src/Internal/SdlSurface.h"
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <DetourNavMesh.h>
+
 DebugDrawSystem::DebugDrawSystem(SystemInterface::Engine* engine, const std::shared_ptr<SystemInterface::ResourceManager>& resourceManager)
 	: mEngine(engine)
 	, mResourceManager(resourceManager)
 {
 	mCollisionTextureHandle = resourceManager->lockTexture("resources/textures/collision.png");
-	mNavmeshTextureHandle = resourceManager->lockTexture("resources/textures/collision.png");
+	mNavmeshTextureHandle = resourceManager->lockTexture("resources/textures/testTexture.png");
 }
 
 void DebugDrawSystem::update(World* world, float /*dt*/)
@@ -61,22 +63,40 @@ void DebugDrawSystem::update(World* world, float /*dt*/)
 
 	if (renderMode && renderMode->getIsDrawDebugNavmeshEnabled())
 	{
+		srand(300);
 		const Graphics::Texture& navMeshTexture = mResourceManager->getTexture(mNavmeshTextureHandle);
 		auto [navMeshComponent] = world->getWorldComponents().getComponents<NavMeshComponent>();
 
 		if (navMeshComponent)
 		{
-			for (const std::array<Vector2D, 3>& tri : navMeshComponent->getNavMeshRef().triangles)
+			if (const dtNavMesh* navmesh = navMeshComponent->getNavMeshRef().getMesh())
 			{
-				std::vector<SystemInterface::DrawPoint> drawablePolygon;
-				drawablePolygon.reserve(3);
-				drawablePolygon.push_back(SystemInterface::DrawPoint{tri[0], Vector2D(0.0f, 0.0f)});
-				drawablePolygon.push_back(SystemInterface::DrawPoint{tri[1], Vector2D(1.0f, 0.0f)});
-				drawablePolygon.push_back(SystemInterface::DrawPoint{tri[2], Vector2D(1.0f, 1.0f)});
+				int maxTiles = navmesh->getMaxTiles();
+				for (int i = 0; i < maxTiles; ++i)
+				{
+					if (const dtMeshTile* tile = navmesh->getTile(i); tile && tile->header)
+					{
+						std::vector<std::array<Vector2D, 3>> points;
+						for (int i = 0; i < tile->header->polyCount; ++i)
+						{
+							const auto& poly = tile->polys[i];
+							std::vector<SystemInterface::DrawPoint> drawablePolygon;
+							drawablePolygon.reserve(3);
+							for (int j = 0; j < poly.vertCount; ++j)
+							{
+								float u = static_cast<float>(std::rand() * 1.0f / RAND_MAX);
+								float v = static_cast<float>(std::rand() * 1.0f / RAND_MAX);
 
-				glm::mat4 transform(1.0f);
-				transform = glm::translate(transform, glm::vec3(drawShift.x, drawShift.y, 0.0f));
-				mEngine->render(navMeshTexture.getSurface(), drawablePolygon, transform, 0.5f);
+								float x = tile->verts[poly.verts[j] * 3];
+								float y = tile->verts[poly.verts[j] * 3 + 2];
+								drawablePolygon.push_back(SystemInterface::DrawPoint{Vector2D(x, y), Vector2D(u, v)});
+							}
+							glm::mat4 transform(1.0f);
+							transform = glm::translate(transform, glm::vec3(drawShift.x, drawShift.y, 0.0f));
+							mEngine->render(navMeshTexture.getSurface(), drawablePolygon, transform, 0.5f);
+						}
+					}
+				}
 			}
 		}
 	}
