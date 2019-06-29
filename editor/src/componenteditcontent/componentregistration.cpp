@@ -1,5 +1,7 @@
 #include "componentregistration.h"
 
+#include "ECS/ComponentFactory.h"
+
 #include "generated/AiControllerComponentEditFactory.generated.h"
 #include "generated/CameraComponentEditFactory.generated.h"
 #include "generated/CollisionComponentEditFactory.generated.h"
@@ -10,17 +12,15 @@
 #include "generated/RenderModeComponentEditFactory.generated.h"
 #include "generated/TransformComponentEditFactory.generated.h"
 
-#include <Components/AiControllerComponent.generated.h>
-#include <Components/CameraComponent.generated.h>
-#include <Components/CollisionComponent.generated.h>
-#include <Components/LightComponent.generated.h>
-#include <Components/MovementComponent.generated.h>
-#include <Components/NavMeshComponent.generated.h>
-#include <Components/RenderComponent.generated.h>
-#include <Components/RenderModeComponent.generated.h>
-#include <Components/TransformComponent.generated.h>
-
-#include <Utils/Core/ComponentFactory.h>
+#include "GameData/Components/AiControllerComponent.generated.h"
+#include "GameData/Components/CameraComponent.generated.h"
+#include "GameData/Components/CollisionComponent.generated.h"
+#include "GameData/Components/LightComponent.generated.h"
+#include "GameData/Components/MovementComponent.generated.h"
+#include "GameData/Components/NavMeshComponent.generated.h"
+#include "GameData/Components/RenderComponent.generated.h"
+#include "GameData/Components/RenderModeComponent.generated.h"
+#include "GameData/Components/TransformComponent.generated.h"
 
 void ComponentRegistration::RegisterToEditFactory(std::map<std::string, std::unique_ptr<AbstractEditFactory>>& factories)
 {

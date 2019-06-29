@@ -17,8 +17,8 @@
 #include <QAction>
 #include <QMenu>
 
-#include "Components/TransformComponent.generated.h"
-#include "Components/CollisionComponent.generated.h"
+#include "GameData/Components/TransformComponent.generated.h"
+#include "GameData/Components/CollisionComponent.generated.h"
 
 const QString TransformEditorToolbox::WidgetName = "TransformEditor";
 const QString TransformEditorToolbox::ToolboxName = TransformEditorToolbox::WidgetName + "Toolbox";

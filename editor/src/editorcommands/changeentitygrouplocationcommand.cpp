@@ -1,7 +1,7 @@
 #include "changeentitygrouplocationcommand.h"
 
-#include <Core/World.h>
-#include <Components/TransformComponent.generated.h>
+#include <GameData/World.h>
+#include <GameData/Components/TransformComponent.generated.h>
 
 ChangeEntityGroupLocationCommand::ChangeEntityGroupLocationCommand(const std::vector<Entity>& entities, const Vector2D& shift)
 	: mEntities(entities)

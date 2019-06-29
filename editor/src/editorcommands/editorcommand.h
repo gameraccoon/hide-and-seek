@@ -1,7 +1,7 @@
 #ifndef EDITORCOMMAND_H
 #define EDITORCOMMAND_H
 
-#include <Core/World.h>
+#include "GameData/World.h"
 
 class MainWindow;
 

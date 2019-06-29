@@ -10,8 +10,8 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 
-#include <Core/Vector2D.h>
-#include <Structures/Hull.h>
+#include "GameData/Core/Vector2D.h"
+#include "GameData/Core/Hull.h"
 
 static const float RAD_TO_DEG = 180.0f / PI;
 static const float DEG_TO_RAD = 1.0f / RAD_TO_DEG;

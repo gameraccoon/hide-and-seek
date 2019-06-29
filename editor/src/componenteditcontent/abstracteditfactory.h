@@ -5,8 +5,8 @@
 
 #include <QObject>
 
-#include <Core/Entity.h>
-#include <Core/Component.h>
+#include "ECS/Entity.h"
+#include "ECS/Component.h"
 
 #include "src/editorcommands/editorcommandsstack.h"
 

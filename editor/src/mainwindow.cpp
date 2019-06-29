@@ -10,8 +10,8 @@
 #include "DockWidget.h"
 #include "DockAreaWidget.h"
 
-#include <Core/World.h>
-#include <Utils/Core/WorldLoader.h>
+#include "GameData/World.h"
+#include "Utils/World/WorldLoader.h"
 
 #include "toolboxes/ComponentAttributesToolbox.h"
 #include "toolboxes/ComponentsListToolbox.h"

@@ -1,4 +1,4 @@
-#include "Components/{class_name}.generated.h"
+#include "GameData/Components/{class_name}.generated.h"
 
 #include <nlohmann/json.hpp>
 

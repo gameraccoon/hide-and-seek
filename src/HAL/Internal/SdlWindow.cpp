@@ -1,0 +1,35 @@
+#include "SdlWindow.h"
+
+#include <stdexcept>
+#include <string>
+#include <sdl/SDL.h>
+
+namespace HAL
+{
+	namespace Internal
+	{
+		SdlWindow::SdlWindow(int width, int height)
+			: mSDLWindow(SDL_CreateWindow("Game"
+				, SDL_WINDOWPOS_UNDEFINED
+				, SDL_WINDOWPOS_UNDEFINED
+				, width
+				, height
+				, SDL_WINDOW_HIDDEN | SDL_WINDOW_OPENGL), SDL_DestroyWindow)
+		{
+            if (mSDLWindow == nullptr)
+			{
+				throw std::runtime_error(std::string("Error creating window: ") + SDL_GetError());
+			}
+		}
+
+		void SdlWindow::show()
+		{
+			SDL_ShowWindow(mSDLWindow.get());
+		}
+
+		SdlWindow::operator SDL_Window*()
+		{
+			return mSDLWindow.get();
+		}
+	}
+}

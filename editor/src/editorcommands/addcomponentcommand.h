@@ -2,8 +2,8 @@
 
 #include "editorcommand.h"
 
-#include "Core/Entity.h"
-#include "Utils/Core/ComponentFactory.h"
+#include "ECS/Entity.h"
+#include "ECS/ComponentFactory.h"
 
 #include <QString>
 

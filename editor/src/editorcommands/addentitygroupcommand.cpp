@@ -2,8 +2,8 @@
 
 #include <QtWidgets/qcombobox.h>
 
-#include <Core/World.h>
-#include <Components/TransformComponent.generated.h>
+#include "GameData/World.h"
+#include "GameData/Components/TransformComponent.generated.h"
 
 AddEntityGroupCommand::AddEntityGroupCommand(const std::vector<nlohmann::json>& entities, ComponentFactory* factory, const Vector2D& shift)
 	: mEntities(entities)

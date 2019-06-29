@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/Component.h"
+#include "ECS/Component.h"
 
 {attribute_includes}
 

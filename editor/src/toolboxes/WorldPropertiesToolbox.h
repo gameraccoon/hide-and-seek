@@ -3,7 +3,7 @@
 #include <QString>
 #include <QWidget>
 
-#include "Core/Delegates.h"
+#include "ECS/Delegates.h"
 
 class MainWindow;
 

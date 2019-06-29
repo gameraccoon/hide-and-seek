@@ -1,0 +1,34 @@
+#include "Game/Systems/ResourceStreamingSystem.h"
+
+#include "GameData/Components/RenderComponent.generated.h"
+
+#include "GameData/World.h"
+
+ResourceStreamingSystem::ResourceStreamingSystem(std::shared_ptr<HAL::ResourceManager> resourceManager)
+	: mResourceManager(resourceManager)
+{
+}
+
+static void updateTextureScaleFromSize(RenderComponent* renderComponent, const Graphics::Texture& texture)
+{
+	if (texture.isValid())
+	{
+		Vector2D size = renderComponent->getSize();
+		if (size != ZERO_VECTOR)
+		{
+			renderComponent->setScale(Vector2D(size.x / texture.getWidth(), size.y / texture.getHeight()));
+		}
+	}
+}
+
+void ResourceStreamingSystem::update(World* world, float /*dt*/)
+{
+	world->getEntityManger().forEachComponentSet<RenderComponent>([&resourceManager = mResourceManager](RenderComponent* renderComponent)
+	{
+		if (ResourceHandle textureHandle = renderComponent->getTextureHandle(); !textureHandle.isValid())
+		{
+			renderComponent->setTextureHandle(resourceManager->lockTexture(renderComponent->getTexturePath()));
+			updateTextureScaleFromSize(renderComponent, resourceManager->getTexture(renderComponent->getTextureHandle()));
+		}
+	});
+}

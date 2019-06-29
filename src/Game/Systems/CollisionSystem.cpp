@@ -1,0 +1,39 @@
+#include "Game/Systems/CollisionSystem.h"
+
+#include "GameData/Components/CollisionComponent.generated.h"
+#include "GameData/Components/TransformComponent.generated.h"
+#include "GameData/Components/MovementComponent.generated.h"
+#include "GameData/World.h"
+#include "Utils/Geometry/Collide.h"
+
+void CollisionSystem::update(World* world, float /*dt*/)
+{
+	auto components = world->getEntityManger().getComponents<CollisionComponent, TransformComponent>();
+
+	for (auto& [collision, transform] : components)
+	{
+		if (collision->getIsBoundingBoxDirty())
+		{
+			Collide::UpdateOriginalBoundingBox(collision);
+		}
+
+		collision->setBoundingBox(collision->getOriginalBoundingBox() + transform->getLocation());
+	}
+
+	world->getEntityManger().forEachComponentSet<CollisionComponent, TransformComponent, MovementComponent>([&components](CollisionComponent* collisionComponent, TransformComponent* transformComponent, MovementComponent* /*movementComponent*/)
+	{
+		Vector2D resist = ZERO_VECTOR;
+		for (auto& [collision, transform] : components)
+		{
+			if (collision != collisionComponent)
+			{
+				bool doCollide = Collide::DoCollide(collisionComponent, transformComponent->getLocation(), collision, transform->getLocation(), resist);
+
+				if (doCollide)
+				{
+					transformComponent->setLocation(transformComponent->getLocation() + resist);
+				}
+			}
+		}
+	});
+}

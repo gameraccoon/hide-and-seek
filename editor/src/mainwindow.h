@@ -9,8 +9,8 @@
 #include "editorcommands/editorcommandsstack.h"
 #include "componenteditcontent/componentcontentfactory.h"
 
-#include <Utils/Core/ComponentFactory.h>
-#include <Core/Delegates.h>
+#include "ECS/Delegates.h"
+#include "ECS/ComponentFactory.h"
 
 namespace ads
 {

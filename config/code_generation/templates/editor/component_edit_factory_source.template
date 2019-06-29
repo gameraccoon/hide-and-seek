@@ -8,7 +8,7 @@
 
 {editor/attribute_edit_command_includes}
 
-#include <Components/{class_name}.generated.h>
+#include "GameData/Components/{class_name}.generated.h"
 
 void {class_name}EditData::fillContent(__attribute__((unused)) QLayout* layout, __attribute__((unused)) const Entity& entity, const BaseComponent* component, __attribute__((unused)) EditorCommandsStack& commandStack, __attribute__((unused)) World* world)
 {{

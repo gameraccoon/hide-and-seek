@@ -2,7 +2,7 @@
 #define CHANGEENTITYCOMMAND_H
 
 #include "editorcommand.h"
-#include <Core/Entity.h>
+#include "ECS/Entity.h"
 
 class World;
 class QComboBox;

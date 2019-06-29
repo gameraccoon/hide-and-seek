@@ -2,7 +2,7 @@
 
 #include <QtWidgets/qcombobox.h>
 
-#include <Core/World.h>
+#include <GameData/World.h>
 
 #include "../mainwindow.h"
 

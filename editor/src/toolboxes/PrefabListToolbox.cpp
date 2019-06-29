@@ -15,8 +15,8 @@
 #include <QInputDialog>
 #include <QMessageBox>
 
-#include <Debug/Log.h>
-#include <Utils/Core/ComponentFactory.h>
+#include "ECS/ComponentFactory.h"
+#include "Debug/Log.h"
 
 #include "src/editorcommands/removeentitycommand.h"
 #include "src/editorcommands/addcomponentcommand.h"

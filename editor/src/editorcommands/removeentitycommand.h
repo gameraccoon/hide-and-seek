@@ -1,7 +1,7 @@
 #pragma once
 
 #include "editorcommand.h"
-#include <Core/Entity.h>
+#include "ECS/Entity.h"
 
 #include <nlohmann/json.hpp>
 

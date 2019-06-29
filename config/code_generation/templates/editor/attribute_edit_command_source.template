@@ -1,6 +1,6 @@
 #include "Change{class_name}{attribute_name_capital}Command.generated.h"
 
-#include <Components/{class_name}.generated.h>
+#include "GameData/Components/{class_name}.generated.h"
 
 Change{class_name}{attribute_name_capital}Command::Change{class_name}{attribute_name_capital}Command(const Entity& entity, const {attribute_type}& old{attribute_name_capital}, const {attribute_type}& new{attribute_name_capital}, bool needToUpdateLayout)
 	: mEntity(entity)

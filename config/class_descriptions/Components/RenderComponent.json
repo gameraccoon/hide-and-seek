@@ -1,0 +1,36 @@
+{
+	"component": "render",
+	"description": "Component that stores information about position and movement",
+	"attributes": [
+		{
+			"name": "scale",
+			"type": "Vector2D",
+			"default": " = ZERO_VECTOR",
+			"include": "\"GameData/Core/Vector2D.h\"",
+			"flags": ["transient"]
+		},
+		{
+			"name": "size",
+			"type": "Vector2D",
+			"default": " = ZERO_VECTOR",
+			"include": "\"GameData/Core/Vector2D.h\""
+		},
+		{
+			"name": "anchor",
+			"type": "Vector2D",
+			"default": " = Vector2D(0.5f, 0.5f)",
+			"include": "\"GameData/Core/Vector2D.h\""
+		},
+		{
+			"name": "texturePath",
+			"type": "std::string",
+			"include": "<string>"
+		},
+		{
+			"name": "textureHandle",
+			"type": "ResourceHandle",
+			"include": "\"GameData/Core/ResourceHandle.h\"",
+			"flags": ["transient"]
+		}
+	]
+}

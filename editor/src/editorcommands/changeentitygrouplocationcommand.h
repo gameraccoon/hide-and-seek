@@ -2,8 +2,8 @@
 
 #include "editorcommand.h"
 
-#include <Core/Entity.h>
-#include <Core/Vector2D.h>
+#include "ECS/Entity.h"
+#include "GameData/Core/Vector2D.h"
 
 class World;
 

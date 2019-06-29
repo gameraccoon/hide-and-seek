@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-set(APP_NAME StealthGamePrototype)
+set(APP_NAME Game)
 project(${APP_NAME})
 
 # parameters
@@ -54,13 +54,7 @@ include_directories(include)
 
 include_directories(
     ${EXTERNALS_DIR}/include
-
-    ${SOURCE_ROOT}/DebugHelpers/include
-    ${SOURCE_ROOT}/Engine/include
-    ${SOURCE_ROOT}/SystemInterface/include
-    ${SOURCE_ROOT}/StealthGame/include
-
-    ${CMAKE_SOURCE_DIR}/MainApp
+	${SOURCE_ROOT}
 )
 
 link_directories(
@@ -68,41 +62,19 @@ link_directories(
     ${CMAKE_SOURCE_DIR}/vs_project
 )
 
-function(add_src_folder local_path global_path)
-    file(GLOB src "${global_path}/*.h")
-    aux_source_directory(${global_path} src)
-    if(WIN32)
-        string(REPLACE "/" "\\" _group_path "${local_path}")
-        source_group(${_group_path} FILES ${src})
-    else()
-        source_group(${local_path} FILES ${src})
-    endif()
-    set(TEMP_SRC1 ${TEMP_SRC1} ${src} PARENT_SCOPE)
-endfunction()
-
-function(recursive_add_src_folders root_path folder_path)
-    set(TEMP_SRC1 "")
-    add_src_folder(${folder_path} "${root_path}/${folder_path}")
-    file(GLOB folders RELATIVE "${root_path}" "${root_path}/${folder_path}/*")
-    foreach(folder ${folders})
-        recursive_add_src_folders(${root_path} ${folder})
-    endforeach()
-    set(TEMP_SRC ${TEMP_SRC} ${TEMP_SRC1} PARENT_SCOPE)
-endfunction()
-
 function(add_folder_as_library folder_path name)
-    set(TEMP_SRC "")
-
-    recursive_add_src_folders(${folder_path} src)
-    recursive_add_src_folders(${folder_path} include)
-
+	file(GLOB_RECURSE TEMP_SRC RELATIVE "" FOLLOW_SYMLINKS "${folder_path}/*")
     add_library(${name} ${TEMP_SRC})
 endfunction()
 
-add_folder_as_library(${SOURCE_ROOT}/DebugHelpers DebugHelpersLib)
-add_folder_as_library(${SOURCE_ROOT}/Engine EngineLib)
-add_folder_as_library(${SOURCE_ROOT}/SystemInterface SystemInterfaceLib)
-add_folder_as_library(${SOURCE_ROOT}/StealthGame StealthGameLib)
+add_folder_as_library(${SOURCE_ROOT}/Debug Debug)
+add_folder_as_library(${SOURCE_ROOT}/ECS Ecs)
+add_folder_as_library(${SOURCE_ROOT}/GameData GameData)
+add_folder_as_library(${SOURCE_ROOT}/Utils Utils)
+add_folder_as_library(${SOURCE_ROOT}/HAL Hal)
+
+file(GLOB_RECURSE APP_SRC RELATIVE "" FOLLOW_SYMLINKS "${SOURCE_ROOT}/Game/*")
+add_executable(${APP_NAME} "${APP_SRC}")
 
 # Detour
 option(RECASTNAVIGATION_STATIC "Build static libraries for detour" ON)
@@ -110,22 +82,22 @@ add_subdirectory(${EXTERNALS_DIR}/sources/recastnavigation/Detour
 	${INTERMEDIATES_DIR}/external/Detour
 	EXCLUDE_FROM_ALL)
 link_directories(${INTERMEDIATES_DIR}/external/Detour)
-add_dependencies(StealthGameLib Detour)
+add_dependencies(${APP_NAME} Detour)
 include_directories(${EXTERNALS_DIR}/sources/recastnavigation/Detour/Include)
 
 # Polypartition
-add_library(Polypartition ${EXTERNALS_DIR}/sources/polypartition/src/polypartition.cpp)
-add_dependencies(StealthGameLib Polypartition)
+add_library(Polypartition EXCLUDE_FROM_ALL ${EXTERNALS_DIR}/sources/polypartition/src/polypartition.cpp)
+add_dependencies(${APP_NAME} Polypartition)
 include_directories(${EXTERNALS_DIR}/sources/polypartition/include)
 
-add_executable(${APP_NAME} ${SOURCE_ROOT}/main/main.cpp)
 set(GENERAL_PROJECT_LIBS
 #    liblua52
 
-    StealthGameLib
-    SystemInterfaceLib
-    EngineLib
-    DebugHelpersLib
+    Hal
+	Utils
+	GameData
+	Ecs
+	Debug
 	Detour
 	Polypartition
 
@@ -141,7 +113,7 @@ if (WIN32)
         glew32s
         SDL2test
         opengl32
-    )
+		)
 else()
     set(GENERAL_PROJECT_LIBS
         ${GENERAL_PROJECT_LIBS}
@@ -159,10 +131,10 @@ target_link_libraries(${APP_NAME}
 # Unit tests
 set(TESTS_NAME UnitTests)
 set(TESTS_SRC
-    ${SOURCE_ROOT}/main/tests_main.cpp
+	${SOURCE_ROOT}/UnitTests/tests_main.cpp
     ${EXTERNALS_DIR}/sources/googletest/src/gtest-all.cc
 )
-aux_source_directory(${SOURCE_ROOT}/UnitTests TESTS_SRC)
+aux_source_directory(${SOURCE_ROOT}/UnitTests/Tests TESTS_SRC)
 include_directories(${EXTERNALS_DIR}/sources/googletest)
 add_executable(${TESTS_NAME} ${TESTS_SRC})
 target_link_libraries(${TESTS_NAME}
@@ -182,6 +154,6 @@ add_custom_target(
     COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/build/cpp_code_generate.py ${CMAKE_SOURCE_DIR}
     COMMENT "C++ code generation"
 )
-add_dependencies(EngineLib CodeGeneration)
-add_dependencies(SystemInterfaceLib CodeGeneration)
-add_dependencies(StealthGameLib CodeGeneration)
+add_dependencies(GameData CodeGeneration)
+add_dependencies(Utils CodeGeneration)
+add_dependencies(${APP_NAME} CodeGeneration)

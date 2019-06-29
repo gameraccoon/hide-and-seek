@@ -2,9 +2,9 @@
 
 #include <QtWidgets/qcombobox.h>
 
-#include "Core/World.h"
 #include "Debug/Assert.h"
-#include "Utils/Core/ComponentFactory.h"
+#include "ECS/ComponentFactory.h"
+#include "GameData/World.h"
 
 RemoveEntityCommand::RemoveEntityCommand(Entity entity, ComponentFactory* factory)
 	: mEntity(entity)

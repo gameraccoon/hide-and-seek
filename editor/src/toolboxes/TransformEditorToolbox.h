@@ -8,9 +8,9 @@
 #include <QWidget>
 #include <QVector2D>
 
-#include "Core/Vector2D.h"
-#include "Core/Entity.h"
-#include "Core/Delegates.h"
+#include "GameData/Core/Vector2D.h"
+#include "ECS/Entity.h"
+#include "ECS/Delegates.h"
 
 #include "src/editorcommands/editorcommand.h"
 

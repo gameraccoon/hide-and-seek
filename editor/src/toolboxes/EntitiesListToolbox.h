@@ -3,8 +3,8 @@
 #include <QString>
 #include <QWidget>
 
-#include "Core/Delegates.h"
-#include "Core/Entity.h"
+#include "ECS/Delegates.h"
+#include "ECS/Entity.h"
 
 class MainWindow;
 

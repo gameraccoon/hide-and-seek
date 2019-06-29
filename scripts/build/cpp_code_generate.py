@@ -12,7 +12,7 @@ else:
     working_dir = os.getcwd()
 
 templates_dir = path.join(working_dir, "config/code_generation/templates")
-descriptions_dir = path.join(working_dir, "src/Engine/desc/Components")
+descriptions_dir = path.join(working_dir, "config/class_descriptions/Components")
 configs_dir = path.join(working_dir, "config/code_generation")
 
 
