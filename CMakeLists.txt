@@ -1,7 +1,12 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.3)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(APP_NAME Game)
 project(${APP_NAME})
+
+set(EXECUTABLE_NAME ${APP_NAME})
 
 # parameters
 option(DEBUG_MODE "Debug?" ON)
@@ -9,14 +14,19 @@ option(DEBUG_MODE "Debug?" ON)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # constants
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
-set(BIN_DIR ${CMAKE_SOURCE_DIR}/bin)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
-set(SOURCE_ROOT ${CMAKE_SOURCE_DIR}/src)
-set(EXTERNALS_DIR ${CMAKE_SOURCE_DIR}/external)
-set(INTERMEDIATES_DIR ${CMAKE_SOURCE_DIR}/build/game)
+set(GAME_BASE_DIR ${CMAKE_SOURCE_DIR})
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${GAME_BASE_DIR}/cmake")
+set(GAME_BIN_DIR ${GAME_BASE_DIR}/bin)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${GAME_BIN_DIR})
+set(GAME_SRC_DIR ${GAME_BASE_DIR}/src)
+set(EXTERNALS_DIR ${GAME_BASE_DIR}/external)
+set(INTERMEDIATES_DIR ${GAME_BASE_DIR}/build/game)
 
-file(MAKE_DIRECTORY ${BIN_DIR})
+file (STRINGS "${GAME_BASE_DIR}/VersionInfo" EXECUTABLE_VERSION)
+file(STRINGS "${GAME_BASE_DIR}/BuildNum" BUILD_NUMBER)
+project(${APP_NAME} VERSION ${EXECUTABLE_VERSION})
+
+file(MAKE_DIRECTORY ${GAME_BIN_DIR})
 
 # definitions
 if(DEBUG_MODE)
@@ -54,12 +64,12 @@ include_directories(include)
 
 include_directories(
     ${EXTERNALS_DIR}/include
-	${SOURCE_ROOT}
+	${GAME_SRC_DIR}
 )
 
 link_directories(
     ${EXTERNALS_DIR}/lib
-    ${CMAKE_SOURCE_DIR}/vs_project
+	${GAME_BASE_DIR}/vs_project
 )
 
 function(add_folder_as_library folder_path name)
@@ -67,13 +77,13 @@ function(add_folder_as_library folder_path name)
     add_library(${name} ${TEMP_SRC})
 endfunction()
 
-add_folder_as_library(${SOURCE_ROOT}/Debug Debug)
-add_folder_as_library(${SOURCE_ROOT}/ECS Ecs)
-add_folder_as_library(${SOURCE_ROOT}/GameData GameData)
-add_folder_as_library(${SOURCE_ROOT}/Utils Utils)
-add_folder_as_library(${SOURCE_ROOT}/HAL Hal)
+add_folder_as_library(${GAME_SRC_DIR}/Debug Debug)
+add_folder_as_library(${GAME_SRC_DIR}/ECS Ecs)
+add_folder_as_library(${GAME_SRC_DIR}/GameData GameData)
+add_folder_as_library(${GAME_SRC_DIR}/Utils Utils)
+add_folder_as_library(${GAME_SRC_DIR}/HAL Hal)
 
-file(GLOB_RECURSE APP_SRC RELATIVE "" FOLLOW_SYMLINKS "${SOURCE_ROOT}/Game/*")
+file(GLOB_RECURSE APP_SRC RELATIVE "" FOLLOW_SYMLINKS "${GAME_SRC_DIR}/Game/*")
 add_executable(${APP_NAME} "${APP_SRC}")
 
 # Detour
@@ -128,13 +138,22 @@ target_link_libraries(${APP_NAME}
     ${GENERAL_PROJECT_LIBS}
 )
 
+set_target_properties(${APP_NAME} PROPERTIES
+	VERSION "${EXECUTABLE_VERSION}.${BUILD_NUMBER}"
+	SOVERSION ${BUILD_NUMBER}
+	EXPORT_NAME ${EXECUTABLE_NAME}
+	ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${ads_PlatformDir}/lib"
+	LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${ads_PlatformDir}/lib"
+	RUNTIME_OUTPUT_DIRECTORY "${GAME_BIN_DIR}"
+)
+
 # Unit tests
 set(TESTS_NAME UnitTests)
 set(TESTS_SRC
-	${SOURCE_ROOT}/UnitTests/tests_main.cpp
+	${GAME_SRC_DIR}/UnitTests/tests_main.cpp
     ${EXTERNALS_DIR}/sources/googletest/src/gtest-all.cc
 )
-aux_source_directory(${SOURCE_ROOT}/UnitTests/Tests TESTS_SRC)
+aux_source_directory(${GAME_SRC_DIR}/UnitTests/Tests TESTS_SRC)
 include_directories(${EXTERNALS_DIR}/sources/googletest)
 add_executable(${TESTS_NAME} ${TESTS_SRC})
 target_link_libraries(${TESTS_NAME}
@@ -143,15 +162,15 @@ target_link_libraries(${TESTS_NAME}
 
 # copy resources
 if (NOT ${PROJECT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR})
-    file(REMOVE_RECURSE ${BIN_DIR}/resources)
-    file(COPY "${PROJECT_SOURCE_DIR}/resources" DESTINATION ${BIN_DIR})
+	file(REMOVE_RECURSE ${GAME_BIN_DIR}/resources)
+	file(COPY "${PROJECT_SOURCE_DIR}/resources" DESTINATION ${GAME_BIN_DIR})
 endif()
 
 # code generation
 find_package(PythonInterp 3.5 REQUIRED)
 add_custom_target(
     CodeGeneration
-    COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/build/cpp_code_generate.py ${CMAKE_SOURCE_DIR}
+	COMMAND ${PYTHON_EXECUTABLE} ${GAME_BASE_DIR}/scripts/build/cpp_code_generate.py ${GAME_BASE_DIR}
     COMMENT "C++ code generation"
 )
 add_dependencies(GameData CodeGeneration)
