@@ -31,7 +31,15 @@ void CollisionSystem::update(World* world, float /*dt*/)
 
 				if (doCollide)
 				{
-					transformComponent->setLocation(transformComponent->getLocation() + resist);
+					if (collision->getGeometry().type == Hull::Type::Angular)
+					{
+						transformComponent->setLocation(transformComponent->getLocation() + resist);
+					}
+					else
+					{
+						transformComponent->setLocation(transformComponent->getLocation() + resist*0.5f);
+						transform->setLocation(transform->getLocation() - resist*0.5f);
+					}
 				}
 			}
 		}

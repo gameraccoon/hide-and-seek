@@ -2,6 +2,447 @@
     "world": {
         "entity_manager": {
             "components": {
+                "AiControllerComponent": [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    {
+                        "isEnemy": true
+                    }
+                ],
                 "CollisionComponent": [
                     {
                         "geometry": {
@@ -7528,6 +7969,13 @@
                             "radius": 8.96831017167883e-44,
                             "type": 0
                         }
+                    },
+                    {
+                        "geometry": {
+                            "points": [],
+                            "radius": 10.0,
+                            "type": 1
+                        }
                     }
                 ],
                 "LightComponent": [
@@ -8218,6 +8666,451 @@
                     }
                 ],
                 "MovementComponent": [
+                    {
+                        "lastStep": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "speed": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
+                    },
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
                     {
                         "lastStep": {
                             "x": 0.0,
@@ -11755,6 +12648,17 @@
                             "y": 120.0
                         },
                         "texturePath": "resources/textures/testTexture.png"
+                    },
+                    {
+                        "anchor": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "size": {
+                            "x": 20.0,
+                            "y": 20.0
+                        },
+                        "texturePath": "resources/textures/hero.png"
                     }
                 ],
                 "TransformComponent": [
@@ -15673,261 +16577,238 @@
                         "rotation": {
                             "v": 0.0
                         }
+                    },
+                    {
+                        "location": {
+                            "x": 187.0,
+                            "y": 12.0
+                        },
+                        "rotation": {
+                            "v": 0.0
+                        }
                     }
                 ]
             },
             "entityIndexMap": [
                 [
-                    816900198,
-                    435
+                    912304946,
+                    57
                 ],
                 [
-                    1731763682,
-                    434
+                    433902551,
+                    75
                 ],
                 [
-                    2013022306,
-                    433
+                    1991772653,
+                    368
                 ],
                 [
-                    1312696892,
-                    432
+                    346268977,
+                    81
                 ],
                 [
-                    1073440745,
-                    431
+                    1061944212,
+                    208
                 ],
                 [
-                    1182685989,
-                    429
+                    1115810010,
+                    230
                 ],
                 [
-                    1136313109,
-                    424
+                    1291857462,
+                    3
                 ],
                 [
-                    1439580543,
-                    423
+                    613033920,
+                    299
                 ],
                 [
-                    1035044249,
-                    422
+                    2073597895,
+                    168
                 ],
                 [
-                    405745988,
-                    421
+                    136290845,
+                    46
                 ],
                 [
-                    745846335,
-                    419
+                    913501681,
+                    51
                 ],
                 [
-                    468205855,
-                    418
+                    1319802002,
+                    362
                 ],
                 [
-                    524318869,
-                    415
+                    1686636475,
+                    26
                 ],
                 [
-                    1779836792,
-                    414
+                    1615747028,
+                    2
                 ],
                 [
-                    839352571,
-                    413
+                    895790851,
+                    399
                 ],
                 [
-                    1517853618,
-                    411
+                    1689742724,
+                    45
                 ],
                 [
-                    1158076304,
-                    409
+                    1180877444,
+                    34
                 ],
                 [
-                    377260392,
-                    408
+                    1847817228,
+                    150
                 ],
                 [
-                    1994358795,
-                    407
+                    473514041,
+                    4
                 ],
                 [
-                    392490668,
-                    405
+                    56105889,
+                    33
                 ],
                 [
-                    384967221,
-                    401
+                    1496287449,
+                    15
                 ],
                 [
-                    1894465567,
-                    398
+                    1993265041,
+                    9
                 ],
                 [
-                    922264417,
-                    396
+                    1048515814,
+                    155
                 ],
                 [
-                    967078589,
-                    395
+                    1840415736,
+                    10
                 ],
                 [
-                    405777470,
-                    394
+                    1264520047,
+                    12
                 ],
                 [
-                    1025197871,
-                    391
+                    1094513191,
+                    412
                 ],
                 [
-                    768989971,
-                    388
+                    1065206676,
+                    118
                 ],
                 [
-                    514081308,
-                    387
+                    1097665671,
+                    31
                 ],
                 [
-                    1135006279,
-                    386
+                    889115009,
+                    133
                 ],
                 [
-                    621542238,
-                    385
+                    2147435447,
+                    350
                 ],
                 [
-                    1640852438,
-                    384
+                    2097121684,
+                    53
                 ],
                 [
-                    641660999,
-                    427
+                    392279867,
+                    95
                 ],
                 [
-                    1268873595,
-                    383
+                    141488953,
+                    109
                 ],
                 [
-                    1196909187,
-                    382
+                    667370560,
+                    68
                 ],
                 [
-                    1437642306,
-                    426
+                    509098326,
+                    0
                 ],
                 [
-                    628854101,
-                    379
+                    883413340,
+                    163
                 ],
                 [
-                    1279084549,
-                    378
+                    1422914734,
+                    101
                 ],
                 [
-                    968479439,
-                    376
+                    602780413,
+                    52
                 ],
                 [
-                    498723527,
-                    373
+                    464039981,
+                    21
                 ],
                 [
-                    703832971,
-                    372
+                    1142173035,
+                    296
                 ],
                 [
-                    1847250186,
-                    371
+                    388871880,
+                    59
                 ],
                 [
-                    1858081971,
-                    370
+                    115328218,
+                    162
                 ],
                 [
-                    526994416,
-                    369
+                    1099161433,
+                    28
                 ],
                 [
-                    1907004087,
-                    367
+                    1983833950,
+                    272
                 ],
                 [
-                    1477347236,
-                    365
+                    1088006069,
+                    131
                 ],
                 [
-                    1350919808,
-                    364
+                    240404202,
+                    49
                 ],
                 [
-                    1271855347,
-                    363
+                    1133789031,
+                    146
                 ],
                 [
-                    969687691,
-                    361
+                    1488535763,
+                    309
                 ],
                 [
-                    108760166,
-                    360
+                    1266424480,
+                    91
                 ],
                 [
-                    606342968,
-                    359
-                ],
-                [
-                    394198735,
-                    403
-                ],
-                [
-                    1128610004,
-                    358
-                ],
-                [
-                    1667211860,
-                    352
-                ],
-                [
-                    1031488186,
-                    349
-                ],
-                [
-                    381942389,
-                    346
-                ],
-                [
-                    722814683,
-                    357
-                ],
-                [
-                    376673084,
-                    344
-                ],
-                [
-                    2002961180,
-                    340
-                ],
-                [
-                    2098561531,
-                    339
-                ],
-                [
-                    1929029960,
-                    338
-                ],
-                [
-                    745448104,
-                    366
+                    1394867652,
+                    144
                 ],
                 [
                     514425417,
                     337
                 ],
                 [
-                    1977154552,
-                    165
+                    745448104,
+                    366
+                ],
+                [
+                    1929029960,
+                    338
+                ],
+                [
+                    392490668,
+                    405
+                ],
+                [
+                    381942389,
+                    346
                 ],
                 [
                     1174805797,
@@ -15938,12 +16819,120 @@
                     312
                 ],
                 [
+                    477899653,
+                    239
+                ],
+                [
+                    1937018663,
+                    152
+                ],
+                [
+                    663360863,
+                    127
+                ],
+                [
+                    960907019,
+                    238
+                ],
+                [
+                    485078521,
+                    143
+                ],
+                [
+                    108760166,
+                    360
+                ],
+                [
+                    2025651630,
+                    110
+                ],
+                [
+                    2075552156,
+                    148
+                ],
+                [
+                    1271855347,
+                    363
+                ],
+                [
+                    444936978,
+                    126
+                ],
+                [
+                    176838554,
+                    341
+                ],
+                [
+                    1477347236,
+                    365
+                ],
+                [
+                    722814683,
+                    357
+                ],
+                [
+                    376673084,
+                    344
+                ],
+                [
+                    1847250186,
+                    371
+                ],
+                [
+                    394198735,
+                    403
+                ],
+                [
+                    1128610004,
+                    358
+                ],
+                [
+                    968479439,
+                    376
+                ],
+                [
+                    410161467,
+                    69
+                ],
+                [
+                    363401499,
+                    201
+                ],
+                [
+                    524318869,
+                    415
+                ],
+                [
                     1686242148,
                     156
                 ],
                 [
                     2002841853,
                     283
+                ],
+                [
+                    907680425,
+                    351
+                ],
+                [
+                    295907013,
+                    84
+                ],
+                [
+                    1858081971,
+                    370
+                ],
+                [
+                    1439580543,
+                    423
+                ],
+                [
+                    526994416,
+                    369
+                ],
+                [
+                    468205855,
+                    418
                 ],
                 [
                     1591174627,
@@ -15958,156 +16947,28 @@
                     298
                 ],
                 [
-                    1937018663,
-                    152
+                    237932296,
+                    140
                 ],
                 [
-                    663360863,
-                    127
+                    2098561531,
+                    339
                 ],
                 [
-                    477899653,
-                    239
+                    1994358795,
+                    407
                 ],
                 [
-                    2075552156,
-                    148
+                    1517853618,
+                    411
                 ],
                 [
-                    1394867652,
-                    144
+                    1035044249,
+                    422
                 ],
                 [
-                    485078521,
-                    143
-                ],
-                [
-                    960907019,
-                    238
-                ],
-                [
-                    543367396,
-                    147
-                ],
-                [
-                    1711876677,
-                    158
-                ],
-                [
-                    560788136,
-                    252
-                ],
-                [
-                    596503717,
-                    139
-                ],
-                [
-                    2141412817,
-                    24
-                ],
-                [
-                    1636047296,
-                    128
-                ],
-                [
-                    1814148805,
-                    135
-                ],
-                [
-                    1481846291,
-                    416
-                ],
-                [
-                    1861826333,
-                    134
-                ],
-                [
-                    1219525393,
-                    164
-                ],
-                [
-                    766017354,
-                    130
-                ],
-                [
-                    120759752,
-                    381
-                ],
-                [
-                    1554051464,
-                    125
-                ],
-                [
-                    1385419505,
-                    136
-                ],
-                [
-                    586187609,
-                    294
-                ],
-                [
-                    1258980799,
-                    124
-                ],
-                [
-                    1758936475,
-                    262
-                ],
-                [
-                    52657111,
-                    123
-                ],
-                [
-                    993575265,
-                    253
-                ],
-                [
-                    431857104,
-                    122
-                ],
-                [
-                    818401089,
-                    410
-                ],
-                [
-                    1395434919,
-                    73
-                ],
-                [
-                    473639014,
-                    32
-                ],
-                [
-                    1244433905,
-                    117
-                ],
-                [
-                    1124657757,
-                    113
-                ],
-                [
-                    728362607,
-                    63
-                ],
-                [
-                    1873845188,
-                    19
-                ],
-                [
-                    2025651630,
-                    110
-                ],
-                [
-                    1358567860,
-                    108
-                ],
-                [
-                    605298747,
-                    104
-                ],
-                [
-                    788125204,
-                    342
+                    967078589,
+                    395
                 ],
                 [
                     1208850058,
@@ -16118,164 +16979,76 @@
                     8
                 ],
                 [
-                    411611704,
-                    220
+                    788125204,
+                    342
                 ],
                 [
-                    835605971,
-                    184
+                    543367396,
+                    147
                 ],
                 [
-                    780367964,
-                    258
+                    1711876677,
+                    158
                 ],
                 [
-                    1599442421,
-                    100
+                    1135006279,
+                    386
                 ],
                 [
-                    837047321,
-                    311
+                    1745114352,
+                    293
                 ],
                 [
-                    102656491,
-                    99
+                    1180196866,
+                    79
                 ],
                 [
-                    1488481993,
-                    98
+                    1249067708,
+                    229
                 ],
                 [
-                    81995832,
-                    97
+                    531619075,
+                    35
                 ],
                 [
-                    1994787087,
-                    94
+                    2077797746,
+                    225
                 ],
                 [
-                    223676651,
-                    92
+                    1279084549,
+                    378
                 ],
                 [
-                    1850216587,
-                    7
+                    1864687250,
+                    251
                 ],
                 [
-                    596991372,
-                    14
+                    1158076304,
+                    409
                 ],
                 [
-                    403803761,
-                    90
+                    157470732,
+                    22
                 ],
                 [
-                    1984624454,
-                    88
+                    1667211860,
+                    352
                 ],
                 [
-                    14931881,
-                    87
+                    761074128,
+                    222
                 ],
                 [
-                    1036146093,
-                    86
+                    457981223,
+                    304
                 ],
                 [
-                    1053964968,
-                    170
+                    1851388603,
+                    55
                 ],
                 [
-                    176838554,
-                    341
-                ],
-                [
-                    444936978,
-                    126
-                ],
-                [
-                    907680425,
-                    351
-                ],
-                [
-                    295907013,
-                    84
-                ],
-                [
-                    96443343,
-                    137
-                ],
-                [
-                    1297663433,
-                    38
-                ],
-                [
-                    330410384,
-                    161
-                ],
-                [
-                    729460725,
-                    80
-                ],
-                [
-                    1900566238,
-                    355
-                ],
-                [
-                    2093698547,
-                    82
-                ],
-                [
-                    1538517515,
-                    151
-                ],
-                [
-                    151107901,
-                    78
-                ],
-                [
-                    1342399170,
-                    406
-                ],
-                [
-                    1399312018,
-                    142
-                ],
-                [
-                    765068245,
-                    29
-                ],
-                [
-                    1029342597,
-                    417
-                ],
-                [
-                    605067071,
-                    264
-                ],
-                [
-                    51512059,
-                    149
-                ],
-                [
-                    1864688998,
-                    47
-                ],
-                [
-                    1839583898,
-                    39
-                ],
-                [
-                    1441934970,
-                    6
-                ],
-                [
-                    457461251,
-                    167
-                ],
-                [
-                    648710510,
-                    115
+                    1952025936,
+                    282
                 ],
                 [
                     1951898550,
@@ -16286,40 +17059,40 @@
                     217
                 ],
                 [
-                    1952025936,
-                    282
+                    648710510,
+                    115
                 ],
                 [
-                    1852208702,
-                    16
+                    1312696892,
+                    432
                 ],
                 [
-                    1851388603,
-                    55
+                    1743997843,
+                    436
                 ],
                 [
-                    457981223,
-                    304
+                    1441934970,
+                    6
                 ],
                 [
-                    1864687250,
-                    251
+                    457461251,
+                    167
                 ],
                 [
-                    1304449832,
-                    119
+                    765068245,
+                    29
                 ],
                 [
-                    96381187,
-                    323
+                    1025197871,
+                    391
                 ],
                 [
-                    157470732,
-                    22
+                    51512059,
+                    149
                 ],
                 [
-                    761074128,
-                    222
+                    1864688998,
+                    47
                 ],
                 [
                     2056184644,
@@ -16330,8 +17103,152 @@
                     107
                 ],
                 [
+                    1399312018,
+                    142
+                ],
+                [
+                    1342399170,
+                    406
+                ],
+                [
                     700657916,
                     93
+                ],
+                [
+                    745846335,
+                    419
+                ],
+                [
+                    1297663433,
+                    38
+                ],
+                [
+                    1640852438,
+                    384
+                ],
+                [
+                    1538517515,
+                    151
+                ],
+                [
+                    2093698547,
+                    82
+                ],
+                [
+                    1900566238,
+                    355
+                ],
+                [
+                    14931881,
+                    87
+                ],
+                [
+                    102656491,
+                    99
+                ],
+                [
+                    1599442421,
+                    100
+                ],
+                [
+                    837047321,
+                    311
+                ],
+                [
+                    1758936475,
+                    262
+                ],
+                [
+                    1258980799,
+                    124
+                ],
+                [
+                    411611704,
+                    220
+                ],
+                [
+                    605298747,
+                    104
+                ],
+                [
+                    1731763682,
+                    434
+                ],
+                [
+                    1358567860,
+                    108
+                ],
+                [
+                    728362607,
+                    63
+                ],
+                [
+                    1124657757,
+                    113
+                ],
+                [
+                    1873845188,
+                    19
+                ],
+                [
+                    1670289222,
+                    61
+                ],
+                [
+                    831118251,
+                    145
+                ],
+                [
+                    238449701,
+                    259
+                ],
+                [
+                    1623961171,
+                    183
+                ],
+                [
+                    1997455981,
+                    276
+                ],
+                [
+                    802808301,
+                    111
+                ],
+                [
+                    1885506603,
+                    121
+                ],
+                [
+                    703415286,
+                    181
+                ],
+                [
+                    1866508516,
+                    56
+                ],
+                [
+                    44820528,
+                    267
+                ],
+                [
+                    2047188593,
+                    185
+                ],
+                [
+                    793026988,
+                    393
+                ],
+                [
+                    470288770,
+                    211
+                ],
+                [
+                    199834530,
+                    313
+                ],
+                [
+                    2141136795,
+                    390
                 ],
                 [
                     247146225,
@@ -16346,272 +17263,36 @@
                     241
                 ],
                 [
-                    1266424480,
-                    91
+                    1507517909,
+                    188
                 ],
                 [
-                    1488535763,
-                    309
+                    2013022306,
+                    433
                 ],
                 [
-                    1133789031,
-                    146
+                    1895211824,
+                    287
                 ],
                 [
-                    240404202,
-                    49
+                    1900078512,
+                    231
                 ],
                 [
-                    1088006069,
-                    131
+                    611118430,
+                    218
                 ],
                 [
-                    1983833950,
-                    272
+                    1031488186,
+                    349
                 ],
                 [
-                    1099161433,
-                    28
+                    780367964,
+                    258
                 ],
                 [
-                    115328218,
-                    162
-                ],
-                [
-                    388871880,
-                    59
-                ],
-                [
-                    1142173035,
-                    296
-                ],
-                [
-                    531619075,
-                    35
-                ],
-                [
-                    464039981,
-                    21
-                ],
-                [
-                    602780413,
-                    52
-                ],
-                [
-                    1422914734,
-                    101
-                ],
-                [
-                    883413340,
-                    163
-                ],
-                [
-                    509098326,
-                    0
-                ],
-                [
-                    392279867,
-                    95
-                ],
-                [
-                    2147435447,
-                    350
-                ],
-                [
-                    889115009,
-                    133
-                ],
-                [
-                    164046544,
-                    171
-                ],
-                [
-                    141488953,
-                    109
-                ],
-                [
-                    667370560,
-                    68
-                ],
-                [
-                    1097665671,
-                    31
-                ],
-                [
-                    1094513191,
-                    412
-                ],
-                [
-                    1065206676,
-                    118
-                ],
-                [
-                    1264520047,
-                    12
-                ],
-                [
-                    1840415736,
-                    10
-                ],
-                [
-                    1048515814,
-                    155
-                ],
-                [
-                    1993265041,
-                    9
-                ],
-                [
-                    1496287449,
-                    15
-                ],
-                [
-                    56105889,
-                    33
-                ],
-                [
-                    473514041,
-                    4
-                ],
-                [
-                    1847817228,
-                    150
-                ],
-                [
-                    1180877444,
-                    34
-                ],
-                [
-                    237932296,
-                    140
-                ],
-                [
-                    2112875698,
-                    13
-                ],
-                [
-                    1679511559,
-                    316
-                ],
-                [
-                    1689742724,
-                    45
-                ],
-                [
-                    895790851,
-                    399
-                ],
-                [
-                    1615747028,
-                    2
-                ],
-                [
-                    1946695698,
-                    392
-                ],
-                [
-                    985714262,
-                    70
-                ],
-                [
-                    2136037139,
-                    297
-                ],
-                [
-                    540154430,
-                    302
-                ],
-                [
-                    1319802002,
-                    362
-                ],
-                [
-                    1686636475,
-                    26
-                ],
-                [
-                    2097121684,
-                    53
-                ],
-                [
-                    913501681,
-                    51
-                ],
-                [
-                    136290845,
-                    46
-                ],
-                [
-                    2073597895,
-                    168
-                ],
-                [
-                    613033920,
-                    299
-                ],
-                [
-                    1291857462,
-                    3
-                ],
-                [
-                    1115810010,
-                    230
-                ],
-                [
-                    1061944212,
-                    208
-                ],
-                [
-                    346268977,
-                    81
-                ],
-                [
-                    1991772653,
-                    368
-                ],
-                [
-                    433902551,
-                    75
-                ],
-                [
-                    912304946,
-                    57
-                ],
-                [
-                    397440390,
-                    196
-                ],
-                [
-                    1670289222,
-                    61
-                ],
-                [
-                    261113721,
-                    420
-                ],
-                [
-                    1627608416,
-                    343
-                ],
-                [
-                    802277823,
-                    40
-                ],
-                [
-                    635723674,
-                    321
-                ],
-                [
-                    496304496,
-                    105
-                ],
-                [
-                    793026988,
-                    393
-                ],
-                [
-                    470288770,
-                    211
+                    835605971,
+                    184
                 ],
                 [
                     1976087699,
@@ -16626,20 +17307,64 @@
                     65
                 ],
                 [
-                    430625773,
-                    216
+                    397440390,
+                    196
                 ],
                 [
-                    530933835,
-                    353
+                    1817724029,
+                    199
                 ],
                 [
-                    1299423189,
-                    250
+                    1507620431,
+                    198
                 ],
                 [
-                    1245757561,
-                    11
+                    2109957286,
+                    270
+                ],
+                [
+                    1714702548,
+                    36
+                ],
+                [
+                    222896925,
+                    233
+                ],
+                [
+                    660007865,
+                    203
+                ],
+                [
+                    1050754647,
+                    193
+                ],
+                [
+                    496304496,
+                    105
+                ],
+                [
+                    635723674,
+                    321
+                ],
+                [
+                    151107901,
+                    78
+                ],
+                [
+                    377260392,
+                    408
+                ],
+                [
+                    1938143683,
+                    219
+                ],
+                [
+                    1316723617,
+                    194
+                ],
+                [
+                    1182685989,
+                    429
                 ],
                 [
                     531805173,
@@ -16650,36 +17375,72 @@
                     44
                 ],
                 [
-                    802808301,
-                    111
+                    123097655,
+                    102
                 ],
                 [
-                    1885506603,
-                    121
+                    1337122609,
+                    37
                 ],
                 [
-                    1997455981,
-                    276
+                    1558320683,
+                    195
                 ],
                 [
-                    703415286,
-                    181
+                    1648103480,
+                    356
                 ],
                 [
-                    1866508516,
-                    56
+                    270209895,
+                    141
                 ],
                 [
-                    1332241138,
-                    83
+                    430625773,
+                    216
                 ],
                 [
-                    831118251,
-                    145
+                    374364471,
+                    187
                 ],
                 [
-                    195161076,
-                    50
+                    303299274,
+                    245
+                ],
+                [
+                    1782914097,
+                    177
+                ],
+                [
+                    858924414,
+                    213
+                ],
+                [
+                    81995832,
+                    97
+                ],
+                [
+                    1227029510,
+                    257
+                ],
+                [
+                    1933418972,
+                    129
+                ],
+                [
+                    1730019634,
+                    425
+                ],
+                [
+                    1866236719,
+                    326
+                ],
+                [
+                    675424724,
+                    5
+                ],
+                [
+                    459714310,
+                    175
                 ],
                 [
                     593164355,
@@ -16694,60 +17455,36 @@
                     54
                 ],
                 [
-                    1507620431,
-                    198
+                    1984624454,
+                    88
                 ],
                 [
-                    942120410,
-                    169
+                    164046544,
+                    171
                 ],
                 [
-                    1563439089,
-                    236
+                    1332241138,
+                    83
                 ],
                 [
-                    296854155,
-                    62
+                    713459034,
+                    331
                 ],
                 [
-                    1429283674,
-                    60
-                ],
-                [
-                    773820264,
-                    103
-                ],
-                [
-                    1726395111,
-                    64
-                ],
-                [
-                    1259981682,
-                    66
-                ],
-                [
-                    1782181380,
-                    274
-                ],
-                [
-                    1812208631,
-                    58
+                    809316543,
+                    428
                 ],
                 [
                     1293614012,
                     67
                 ],
                 [
-                    363401499,
-                    201
+                    1646685434,
+                    189
                 ],
                 [
-                    410161467,
-                    69
-                ],
-                [
-                    270209895,
-                    141
+                    1852208702,
+                    16
                 ],
                 [
                     352765677,
@@ -16762,72 +17499,68 @@
                     278
                 ],
                 [
-                    409720657,
-                    42
+                    1429283674,
+                    60
                 ],
                 [
-                    146456377,
-                    263
+                    773820264,
+                    103
                 ],
                 [
-                    937693996,
-                    76
+                    530933835,
+                    353
                 ],
                 [
-                    550078497,
-                    166
+                    1245757561,
+                    11
                 ],
                 [
-                    1212330306,
-                    172
+                    1299423189,
+                    250
                 ],
                 [
-                    305793339,
-                    173
+                    1445569629,
+                    227
                 ],
                 [
-                    675424724,
-                    5
+                    1295983391,
+                    116
                 ],
                 [
-                    459714310,
-                    175
+                    1502594499,
+                    214
                 ],
                 [
-                    1866236719,
-                    326
+                    1672459555,
+                    204
+                ],
+                [
+                    562501621,
+                    377
                 ],
                 [
                     1136911590,
                     176
                 ],
                 [
-                    1184827292,
-                    400
+                    456013966,
+                    182
                 ],
                 [
-                    489056523,
-                    77
+                    242502870,
+                    48
                 ],
                 [
-                    91250803,
-                    319
+                    431857104,
+                    122
                 ],
                 [
-                    1782914097,
-                    177
+                    1117169645,
+                    325
                 ],
                 [
-                    1003081706,
-                    178
-                ],
-                [
-                    1343345105,
-                    1
-                ],
-                [
-                    1834426156,
-                    180
+                    94261076,
+                    209
                 ],
                 [
                     1030600942,
@@ -16838,104 +17571,124 @@
                     235
                 ],
                 [
-                    242502870,
-                    48
+                    1343345105,
+                    1
                 ],
                 [
-                    456013966,
-                    182
+                    1834426156,
+                    180
                 ],
                 [
-                    1900078512,
-                    231
+                    473639014,
+                    32
                 ],
                 [
-                    1623961171,
-                    183
+                    96381187,
+                    323
                 ],
                 [
-                    238449701,
-                    259
+                    1304449832,
+                    119
                 ],
                 [
-                    2047188593,
-                    185
+                    1004061612,
+                    354
                 ],
                 [
-                    44820528,
-                    267
+                    626548890,
+                    215
                 ],
                 [
-                    303299274,
-                    245
+                    409720657,
+                    42
                 ],
                 [
-                    374364471,
-                    187
+                    1003081706,
+                    178
                 ],
                 [
-                    2141136795,
-                    390
+                    91250803,
+                    319
                 ],
                 [
-                    199834530,
-                    313
+                    489056523,
+                    77
                 ],
                 [
-                    1507517909,
-                    188
+                    1184827292,
+                    400
                 ],
                 [
-                    1646685434,
-                    189
+                    1136313109,
+                    424
                 ],
                 [
-                    1050754647,
-                    193
+                    1016343822,
+                    212
                 ],
                 [
-                    660007865,
-                    203
+                    970414093,
+                    191
                 ],
                 [
-                    1938143683,
-                    219
+                    802277823,
+                    40
                 ],
                 [
-                    1316723617,
-                    194
+                    1627608416,
+                    343
                 ],
                 [
-                    1648103480,
-                    356
+                    261113721,
+                    420
                 ],
                 [
-                    1337122609,
-                    37
+                    550078497,
+                    166
                 ],
                 [
-                    123097655,
-                    102
+                    305793339,
+                    173
                 ],
                 [
-                    1558320683,
-                    195
+                    1212330306,
+                    172
                 ],
                 [
-                    1817724029,
-                    199
+                    729460725,
+                    80
                 ],
                 [
-                    1714702548,
-                    36
+                    330410384,
+                    161
                 ],
                 [
-                    2109957286,
-                    270
+                    937693996,
+                    76
                 ],
                 [
-                    1904136423,
-                    200
+                    146456377,
+                    263
+                ],
+                [
+                    1812208631,
+                    58
+                ],
+                [
+                    296854155,
+                    62
+                ],
+                [
+                    1782181380,
+                    274
+                ],
+                [
+                    1259981682,
+                    66
+                ],
+                [
+                    1726395111,
+                    64
                 ],
                 [
                     1254570563,
@@ -16950,124 +17703,68 @@
                     205
                 ],
                 [
-                    1730019634,
-                    425
+                    1563439089,
+                    236
                 ],
                 [
-                    1933418972,
-                    129
+                    942120410,
+                    169
                 ],
                 [
-                    1227029510,
-                    257
+                    703832971,
+                    372
                 ],
                 [
-                    809316543,
-                    428
+                    2136037139,
+                    297
                 ],
                 [
-                    713459034,
-                    331
+                    540154430,
+                    302
                 ],
                 [
-                    94261076,
-                    209
+                    1542477252,
+                    308
                 ],
                 [
-                    1117169645,
-                    325
+                    514081308,
+                    387
                 ],
                 [
-                    1186928000,
-                    210
+                    395292242,
+                    310
                 ],
                 [
-                    970414093,
-                    191
+                    1163095181,
+                    332
                 ],
                 [
-                    1016343822,
-                    212
+                    289877498,
+                    375
                 ],
                 [
-                    858924414,
-                    213
+                    1164788461,
+                    292
                 ],
                 [
-                    562501621,
-                    377
+                    1994787087,
+                    94
                 ],
                 [
-                    1295983391,
-                    116
+                    1755219545,
+                    300
                 ],
                 [
-                    1672459555,
-                    204
+                    901817621,
+                    315
                 ],
                 [
-                    1445569629,
-                    227
+                    524993338,
+                    186
                 ],
                 [
-                    1502594499,
-                    214
-                ],
-                [
-                    1004061612,
-                    354
-                ],
-                [
-                    626548890,
-                    215
-                ],
-                [
-                    611118430,
-                    218
-                ],
-                [
-                    2144858239,
-                    221
-                ],
-                [
-                    382100658,
-                    106
-                ],
-                [
-                    1970945552,
-                    207
-                ],
-                [
-                    330610242,
-                    223
-                ],
-                [
-                    1155823502,
-                    380
-                ],
-                [
-                    2023077265,
-                    206
-                ],
-                [
-                    1048129238,
-                    224
-                ],
-                [
-                    751280906,
-                    25
-                ],
-                [
-                    859275786,
-                    244
-                ],
-                [
-                    2077797746,
-                    225
-                ],
-                [
-                    392041913,
-                    138
+                    1350919808,
+                    364
                 ],
                 [
                     1215709192,
@@ -17078,64 +17775,160 @@
                     226
                 ],
                 [
-                    2143425737,
-                    228
+                    392041913,
+                    138
                 ],
                 [
-                    1180196866,
-                    79
+                    96443343,
+                    137
                 ],
                 [
-                    1249067708,
-                    229
+                    1000667926,
+                    374
                 ],
                 [
-                    1612469208,
-                    232
+                    439731232,
+                    291
                 ],
                 [
-                    222896925,
-                    233
+                    606342968,
+                    359
                 ],
                 [
-                    1579289880,
-                    114
+                    1970945552,
+                    207
                 ],
                 [
-                    412602729,
-                    234
+                    382100658,
+                    106
+                ],
+                [
+                    330610242,
+                    223
+                ],
+                [
+                    1779836792,
+                    414
+                ],
+                [
+                    556084279,
+                    336
+                ],
+                [
+                    381232117,
+                    333
+                ],
+                [
+                    1777149698,
+                    301
+                ],
+                [
+                    1533739808,
+                    190
+                ],
+                [
+                    87338686,
+                    279
+                ],
+                [
+                    1977154552,
+                    165
+                ],
+                [
+                    1591569847,
+                    303
+                ],
+                [
+                    1583618532,
+                    20
+                ],
+                [
+                    1533429131,
+                    329
+                ],
+                [
+                    273579380,
+                    17
+                ],
+                [
+                    1907004087,
+                    367
+                ],
+                [
+                    1769855532,
+                    295
+                ],
+                [
+                    1621076404,
+                    335
+                ],
+                [
+                    1549849530,
+                    266
+                ],
+                [
+                    405745988,
+                    421
+                ],
+                [
+                    2023077265,
+                    206
+                ],
+                [
+                    1155823502,
+                    380
+                ],
+                [
+                    1048129238,
+                    224
+                ],
+                [
+                    649125065,
+                    174
+                ],
+                [
+                    65627991,
+                    197
+                ],
+                [
+                    307953556,
+                    307
+                ],
+                [
+                    498723527,
+                    373
+                ],
+                [
+                    1036146093,
+                    86
+                ],
+                [
+                    1053964968,
+                    170
                 ],
                 [
                     288196346,
                     237
                 ],
                 [
-                    1289901560,
-                    247
+                    1375527414,
+                    327
                 ],
                 [
-                    382457423,
-                    240
+                    1105723136,
+                    328
                 ],
                 [
-                    1398801245,
-                    243
+                    993575265,
+                    253
                 ],
                 [
-                    2129748967,
-                    389
+                    52657111,
+                    123
                 ],
                 [
-                    1610449007,
-                    120
-                ],
-                [
-                    2025350135,
-                    246
-                ],
-                [
-                    2095276884,
-                    255
+                    233354378,
+                    324
                 ],
                 [
                     692405526,
@@ -17146,64 +17939,116 @@
                     249
                 ],
                 [
-                    618041438,
-                    256
+                    2095276884,
+                    255
                 ],
                 [
-                    1675134741,
-                    254
+                    2112875698,
+                    13
                 ],
                 [
-                    2027991988,
-                    260
+                    1679511559,
+                    316
                 ],
                 [
-                    581269055,
-                    261
+                    1289901560,
+                    247
                 ],
                 [
-                    569083824,
-                    402
+                    382457423,
+                    240
                 ],
                 [
-                    1544542331,
-                    265
+                    2143425737,
+                    228
                 ],
                 [
-                    1549849530,
-                    266
+                    356880184,
+                    306
                 ],
                 [
-                    1541737083,
-                    41
+                    2144858239,
+                    221
                 ],
                 [
-                    1618344533,
-                    268
+                    1079076374,
+                    320
                 ],
                 [
-                    1064980098,
-                    179
+                    583519406,
+                    289
                 ],
                 [
-                    1766666054,
-                    269
+                    283595120,
+                    281
                 ],
                 [
-                    1521676050,
-                    404
+                    1894465567,
+                    398
                 ],
                 [
-                    828315172,
-                    273
+                    969687691,
+                    361
                 ],
                 [
-                    2036111605,
-                    157
+                    641660999,
+                    427
                 ],
                 [
-                    912793984,
-                    275
+                    1268873595,
+                    383
+                ],
+                [
+                    1442053717,
+                    280
+                ],
+                [
+                    948188423,
+                    242
+                ],
+                [
+                    223676651,
+                    92
+                ],
+                [
+                    1850216587,
+                    7
+                ],
+                [
+                    1594075778,
+                    30
+                ],
+                [
+                    1822046929,
+                    160
+                ],
+                [
+                    530982035,
+                    322
+                ],
+                [
+                    700871076,
+                    89
+                ],
+                [
+                    2133661525,
+                    290
+                ],
+                [
+                    157545233,
+                    334
+                ],
+                [
+                    132190684,
+                    153
+                ],
+                [
+                    649545797,
+                    318
+                ],
+                [
+                    1479677029,
+                    285
                 ],
                 [
                     1367625089,
@@ -17222,92 +18067,108 @@
                     286
                 ],
                 [
-                    1533739808,
-                    190
-                ],
-                [
-                    87338686,
-                    279
-                ],
-                [
-                    1777149698,
-                    301
-                ],
-                [
-                    948188423,
-                    242
-                ],
-                [
-                    1442053717,
-                    280
-                ],
-                [
-                    283595120,
-                    281
-                ],
-                [
-                    456161147,
-                    18
-                ],
-                [
-                    1277170385,
-                    284
-                ],
-                [
-                    649545797,
-                    318
-                ],
-                [
-                    1479677029,
-                    285
-                ],
-                [
-                    1895211824,
-                    287
+                    1988561334,
+                    330
                 ],
                 [
                     559222892,
                     288
                 ],
                 [
-                    1079076374,
-                    320
+                    1073440745,
+                    431
                 ],
                 [
-                    583519406,
-                    289
+                    1064980098,
+                    179
                 ],
                 [
-                    1000667926,
-                    374
+                    1766666054,
+                    269
                 ],
                 [
-                    439731232,
-                    291
+                    1612469208,
+                    232
                 ],
                 [
-                    289877498,
-                    375
+                    985714262,
+                    70
                 ],
                 [
-                    1164788461,
-                    292
+                    1946695698,
+                    392
                 ],
                 [
-                    1745114352,
-                    293
+                    1675134741,
+                    254
                 ],
                 [
-                    1769855532,
-                    295
+                    2027991988,
+                    260
                 ],
                 [
-                    1755219545,
-                    300
+                    859275786,
+                    244
                 ],
                 [
-                    1591569847,
-                    303
+                    751280906,
+                    25
+                ],
+                [
+                    816900198,
+                    435
+                ],
+                [
+                    2036111605,
+                    157
+                ],
+                [
+                    912793984,
+                    275
+                ],
+                [
+                    1521676050,
+                    404
+                ],
+                [
+                    828315172,
+                    273
+                ],
+                [
+                    1488481993,
+                    98
+                ],
+                [
+                    1541737083,
+                    41
+                ],
+                [
+                    1618344533,
+                    268
+                ],
+                [
+                    569083824,
+                    402
+                ],
+                [
+                    1544542331,
+                    265
+                ],
+                [
+                    922264417,
+                    396
+                ],
+                [
+                    1579289880,
+                    114
+                ],
+                [
+                    412602729,
+                    234
+                ],
+                [
+                    581269055,
+                    261
                 ],
                 [
                     495556968,
@@ -17318,108 +18179,164 @@
                     305
                 ],
                 [
-                    356880184,
-                    306
+                    618041438,
+                    256
                 ],
                 [
-                    649125065,
-                    174
+                    1277170385,
+                    284
                 ],
                 [
-                    65627991,
-                    197
+                    456161147,
+                    18
                 ],
                 [
-                    307953556,
-                    307
+                    1437642306,
+                    426
                 ],
                 [
-                    1542477252,
-                    308
+                    628854101,
+                    379
                 ],
                 [
-                    395292242,
-                    310
+                    2129748967,
+                    389
                 ],
                 [
-                    1163095181,
-                    332
+                    2025350135,
+                    246
                 ],
                 [
-                    524993338,
-                    186
+                    1610449007,
+                    120
                 ],
                 [
-                    901817621,
-                    315
+                    818401089,
+                    410
                 ],
                 [
-                    1822046929,
-                    160
+                    1395434919,
+                    73
                 ],
                 [
-                    1594075778,
-                    30
+                    1398801245,
+                    243
                 ],
                 [
-                    530982035,
-                    322
+                    1839583898,
+                    39
                 ],
                 [
-                    233354378,
-                    324
+                    586187609,
+                    294
                 ],
                 [
-                    1105723136,
-                    328
+                    1385419505,
+                    136
                 ],
                 [
-                    1375527414,
-                    327
+                    1554051464,
+                    125
                 ],
                 [
-                    273579380,
-                    17
+                    120759752,
+                    381
                 ],
                 [
-                    1583618532,
-                    20
+                    1186928000,
+                    210
                 ],
                 [
-                    1533429131,
-                    329
+                    1481846291,
+                    416
                 ],
                 [
-                    1988561334,
-                    330
+                    1861826333,
+                    134
                 ],
                 [
-                    556084279,
-                    336
+                    1814148805,
+                    135
                 ],
                 [
-                    381232117,
-                    333
+                    1636047296,
+                    128
                 ],
                 [
-                    132190684,
-                    153
+                    560788136,
+                    252
                 ],
                 [
-                    700871076,
-                    89
+                    596991372,
+                    14
                 ],
                 [
-                    2133661525,
-                    290
+                    403803761,
+                    90
                 ],
                 [
-                    157545233,
-                    334
+                    2141412817,
+                    24
                 ],
                 [
-                    1621076404,
-                    335
+                    596503717,
+                    139
+                ],
+                [
+                    1196909187,
+                    382
+                ],
+                [
+                    621542238,
+                    385
+                ],
+                [
+                    2002961180,
+                    340
+                ],
+                [
+                    195161076,
+                    50
+                ],
+                [
+                    768989971,
+                    388
+                ],
+                [
+                    405777470,
+                    394
+                ],
+                [
+                    839352571,
+                    413
+                ],
+                [
+                    1904136423,
+                    200
+                ],
+                [
+                    384967221,
+                    401
+                ],
+                [
+                    766017354,
+                    130
+                ],
+                [
+                    1219525393,
+                    164
+                ],
+                [
+                    605067071,
+                    264
+                ],
+                [
+                    1029342597,
+                    417
+                ],
+                [
+                    1244433905,
+                    117
                 ]
             ]
         },
@@ -17433,8 +18350,8 @@
         },
         "world_components": {
             "components": {
-                "RenderModeComponent": {},
-                "NavMeshComponent": {}
+                "NavMeshComponent": {},
+                "RenderModeComponent": {}
             }
         }
     }
