@@ -26,10 +26,10 @@ namespace Collide
 		// circle vs circle
 		if (hull1.type == Hull::Type::Circular && hull2.type == Hull::Type::Circular)
 		{
-			float dist = (center1 - center2).qSize() - (hull1.getQRadius() + hull2.getQRadius());
+			float dist = (center2 - center1).qSize() - (hull1.getQRadius() + hull2.getQRadius() + 2.0f * hull1.getRadius() * hull2.getRadius());
 			if (dist <= 0.0f)
 			{
-				outResist = (center1 - center2) - (center1 - center2).ort() * (hull1.getRadius() + hull2.getRadius());
+				outResist = (center2 - center1) - (center2 - center1).ort() * (hull1.getRadius() + hull2.getRadius());
 				return true;
 			}
 			return false;
