@@ -14,12 +14,12 @@ void from_json(const nlohmann::json& json, Entity& outEntity)
 	json.at("id").get_to(outEntity.mId);
 }
 
-Entity NullableEntity::getEntity() const {
+Entity OptionalEntity::getEntity() const {
 	Assert(mIsValid, "Getting uninitialized entity");
 	return Entity(mId);
 }
 
-void to_json(nlohmann::json& outJson, const NullableEntity& entity)
+void to_json(nlohmann::json& outJson, const OptionalEntity& entity)
 {
 	outJson = nlohmann::json{
 		{"valid", entity.mIsValid},
@@ -27,7 +27,7 @@ void to_json(nlohmann::json& outJson, const NullableEntity& entity)
 	};
 }
 
-void from_json(const nlohmann::json& json, NullableEntity& outEntity)
+void from_json(const nlohmann::json& json, OptionalEntity& outEntity)
 {
 	json.at("valid").get_to(outEntity.mIsValid);
 	json.at("id").get_to(outEntity.mId);

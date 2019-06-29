@@ -29,7 +29,7 @@ EntitiesListToolbox::EntitiesListToolbox(MainWindow* mainWindow, ads::CDockManag
 	, mDockManager(dockManager)
 {
 	mOnWorldChangedHandle = mMainWindow->OnWorldChanged.bind([this]{bindEvents(); updateContent();});
-	mOnSelectedEntityChangedHandle = mMainWindow->OnSelectedEntityChanged.bind([this](NullableEntity entity){onEntityChangedEvent(entity);});
+	mOnSelectedEntityChangedHandle = mMainWindow->OnSelectedEntityChanged.bind([this](OptionalEntity entity){onEntityChangedEvent(entity);});
 }
 
 EntitiesListToolbox::~EntitiesListToolbox()
@@ -83,7 +83,7 @@ void EntitiesListToolbox::onWorldUpdated()
 	bindEvents();
 }
 
-void EntitiesListToolbox::onEntityChangedEvent(NullableEntity entity)
+void EntitiesListToolbox::onEntityChangedEvent(OptionalEntity entity)
 {
 	if (!entity.isValid())
 	{
@@ -141,7 +141,7 @@ void EntitiesListToolbox::onCurrentItemChanged(QListWidgetItem* current, QListWi
 	}
 	else
 	{
-		mMainWindow->OnSelectedEntityChanged.broadcast(NullableEntity());
+		mMainWindow->OnSelectedEntityChanged.broadcast(OptionalEntity());
 	}
 }
 

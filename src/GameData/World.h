@@ -6,11 +6,11 @@
 class World
 {
 public:
-	NullableEntity getMainCamera() { return mMainCamera; }
-	void setMainCamera(const NullableEntity& newCamera) { mMainCamera = newCamera; }
+	OptionalEntity getMainCamera() { return mMainCamera; }
+	void setMainCamera(const OptionalEntity& newCamera) { mMainCamera = newCamera; }
 
-	NullableEntity getPlayerControlledEntity() { return mPlayerControlledEntity; }
-	void setPlayerControlledEntity(const NullableEntity& newEntity) { mPlayerControlledEntity = newEntity; }
+	OptionalEntity getPlayerControlledEntity() { return mPlayerControlledEntity; }
+	void setPlayerControlledEntity(const OptionalEntity& newEntity) { mPlayerControlledEntity = newEntity; }
 
 	EntityManager& getEntityManger() { return mEntityManager; }
 	ComponentSetHolder& getWorldComponents() { return mWorldComponents; }
@@ -19,8 +19,8 @@ public:
 	void fromJson(const nlohmann::json& json, const ComponentFactory& componentFactory);
 
 private:
-	NullableEntity mMainCamera;
-	NullableEntity mPlayerControlledEntity;
+	OptionalEntity mMainCamera;
+	OptionalEntity mPlayerControlledEntity;
 
 	EntityManager mEntityManager;
 	ComponentSetHolder mWorldComponents;

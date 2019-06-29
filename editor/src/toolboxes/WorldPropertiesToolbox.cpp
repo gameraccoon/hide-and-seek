@@ -93,7 +93,7 @@ void WorldPropertiesToolbox::updateContent()
 		controlledEntityCombobox->setObjectName("ControlledEntityCombobox");
 		worldSettingsLayout->addWidget(controlledEntityCombobox);
 		controlledEntityCombobox->addItems(entitiesStringList);
-		if (NullableEntity controlledEntity = currentWorld->getPlayerControlledEntity(); controlledEntity.isValid())
+		if (OptionalEntity controlledEntity = currentWorld->getPlayerControlledEntity(); controlledEntity.isValid())
 		{
 			controlledEntityCombobox->setCurrentText(QString::number(controlledEntity.mId));
 		}
@@ -106,7 +106,7 @@ void WorldPropertiesToolbox::updateContent()
 		cameraEntityCombobox->setObjectName("CameraEntityCombobox");
 		worldSettingsLayout->addWidget(cameraEntityCombobox);
 		cameraEntityCombobox->addItems(entitiesStringList);
-		if (NullableEntity camera = currentWorld->getMainCamera(); camera.isValid())
+		if (OptionalEntity camera = currentWorld->getMainCamera(); camera.isValid())
 		{
 			cameraEntityCombobox->setCurrentText(QString::number(camera.mId));
 		}
@@ -129,7 +129,7 @@ void WorldPropertiesToolbox::onControledEntityChanged(const QString &arg1)
 		return;
 	}
 
-	NullableEntity entity;
+	OptionalEntity entity;
 	int index = arg1.toInt();
 	if (index != 0)
 	{
@@ -152,7 +152,7 @@ void WorldPropertiesToolbox::onCameraEntityChanged(const QString &arg1)
 		return;
 	}
 
-	NullableEntity entity;
+	OptionalEntity entity;
 	int index = arg1.toInt();
 	if (index != 0)
 	{

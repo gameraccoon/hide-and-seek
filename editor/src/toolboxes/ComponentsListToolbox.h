@@ -31,7 +31,7 @@ public:
 private:
 	void updateContent();
 	void onCurrentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
-	void onSelectedEntityChanged(NullableEntity newEntity);
+	void onSelectedEntityChanged(OptionalEntity newEntity);
 	void showContextMenu(const QPoint& pos);
 	void removeSelectedComponent();
 
@@ -41,7 +41,7 @@ private:
 private:
 	MainWindow* mMainWindow;
 	ads::CDockManager* mDockManager;
-	NullableEntity mLastSelectedEntity;
+	OptionalEntity mLastSelectedEntity;
 
 	Delegates::Handle mOnComponentAddedHandle;
 	Delegates::Handle mOnComponentRemovedHandle;

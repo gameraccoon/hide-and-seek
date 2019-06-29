@@ -57,7 +57,7 @@ void ControlSystem::update(World* world, float dt)
 		movementDirection += DOWN_DIRECTION;
 	}
 
-	NullableEntity mainCamera = world->getMainCamera();
+	OptionalEntity mainCamera = world->getMainCamera();
 	if (!mainCamera.isValid())
 	{
 		return;
@@ -74,7 +74,7 @@ void ControlSystem::update(World* world, float dt)
 
 	Vector2D drawShift = screenHalfSize - cameraTransform->getLocation();
 
-	if (NullableEntity controlledEntity = world->getPlayerControlledEntity(); controlledEntity.isValid())
+	if (OptionalEntity controlledEntity = world->getPlayerControlledEntity(); controlledEntity.isValid())
 	{
 		auto [transform, movement] = world->getEntityManger().getEntityComponents<TransformComponent, MovementComponent>(controlledEntity.getEntity());
 

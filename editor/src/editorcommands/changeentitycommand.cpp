@@ -7,7 +7,7 @@
 #include "../mainwindow.h"
 
 
-ChangeEntityCommand::ChangeEntityCommand(ChangeEntityCommand::SetterFunction setterFunc, NullableEntity oldEntity, NullableEntity newEntity, QComboBox* affectedCombobox)
+ChangeEntityCommand::ChangeEntityCommand(ChangeEntityCommand::SetterFunction setterFunc, OptionalEntity oldEntity, OptionalEntity newEntity, QComboBox* affectedCombobox)
 	: mOldEntity(oldEntity)
 	, mNewEntity(newEntity)
 	, mAffectedCombobox(affectedCombobox)

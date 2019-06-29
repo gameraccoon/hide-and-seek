@@ -10,18 +10,18 @@ class QComboBox;
 class ChangeEntityCommand : public EditorCommand
 {
 public:
-	typedef void (World::*SetterFunction)(const NullableEntity&);
+	typedef void (World::*SetterFunction)(const OptionalEntity&);
 
 public:
-	ChangeEntityCommand(SetterFunction setterFunc, NullableEntity oldEntity, NullableEntity newEntity, QComboBox* affectedCombobox);
+	ChangeEntityCommand(SetterFunction setterFunc, OptionalEntity oldEntity, OptionalEntity newEntity, QComboBox* affectedCombobox);
 
 	bool doCommand(World* world) override;
 	bool undoCommand(World* world) override;
 	EffectType getEffectType() override;
 
 private:
-	NullableEntity mOldEntity;
-	NullableEntity mNewEntity;
+	OptionalEntity mOldEntity;
+	OptionalEntity mNewEntity;
 	QComboBox* mAffectedCombobox;
 	SetterFunction mSetterFunc;
 };

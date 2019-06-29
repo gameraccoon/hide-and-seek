@@ -26,7 +26,7 @@ void RenderSystem::update(World* world, float /*dt*/)
 {
 	static const Vector2D maxFov(500.0f, 500.0f);
 
-	NullableEntity mainCamera = world->getMainCamera();
+	OptionalEntity mainCamera = world->getMainCamera();
 	if (!mainCamera.isValid())
 	{
 		return;
@@ -95,7 +95,7 @@ Vector2D RenderSystem::GetPlayerSightPosition(World* world)
 {
 	Vector2D result;
 
-	if (NullableEntity playerEntity = world->getPlayerControlledEntity(); playerEntity.isValid())
+	if (OptionalEntity playerEntity = world->getPlayerControlledEntity(); playerEntity.isValid())
 	{
 		auto [playerTransform] = world->getEntityManger().getEntityComponents<TransformComponent>(playerEntity.getEntity());
 

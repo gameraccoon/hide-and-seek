@@ -25,19 +25,19 @@ private:
 	EntityID mId;
 };
 
-class NullableEntity
+class OptionalEntity
 {
 public:
-	NullableEntity() = default;
+	OptionalEntity() = default;
 	// implicit conversion
-	NullableEntity(const Entity& entity) : mId(entity.getID()), mIsValid(true) {}
-	explicit NullableEntity(Entity::EntityID id) : mId(id), mIsValid(true) {}
+	OptionalEntity(const Entity& entity) : mId(entity.getID()), mIsValid(true) {}
+	explicit OptionalEntity(Entity::EntityID id) : mId(id), mIsValid(true) {}
 
 	bool isValid() const { return mIsValid; }
 	Entity getEntity() const;
 
-	friend void to_json(nlohmann::json& outJson, const NullableEntity& entity);
-	friend void from_json(const nlohmann::json& json, NullableEntity& outEntity);
+	friend void to_json(nlohmann::json& outJson, const OptionalEntity& entity);
+	friend void from_json(const nlohmann::json& json, OptionalEntity& outEntity);
 
 public:
 	Entity::EntityID mId = 0;

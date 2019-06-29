@@ -23,7 +23,7 @@ ComponentsListToolbox::ComponentsListToolbox(MainWindow* mainWindow, ads::CDockM
 	, mDockManager(dockManager)
 {
 	mOnWorldChangedHandle = mMainWindow->OnWorldChanged.bind([this]{bindEvents(); updateContent();});
-	mOnEntityChangedHandle = mMainWindow->OnSelectedEntityChanged.bind([this](NullableEntity val){onSelectedEntityChanged(val);});
+	mOnEntityChangedHandle = mMainWindow->OnSelectedEntityChanged.bind([this](OptionalEntity val){onSelectedEntityChanged(val);});
 }
 
 ComponentsListToolbox::~ComponentsListToolbox()
@@ -74,7 +74,7 @@ void ComponentsListToolbox::updateContent()
 	onSelectedEntityChanged(mLastSelectedEntity);
 }
 
-void ComponentsListToolbox::onSelectedEntityChanged(NullableEntity newEntity)
+void ComponentsListToolbox::onSelectedEntityChanged(OptionalEntity newEntity)
 {
 	QListWidget* componentsList = mDockManager->findChild<QListWidget*>(ListName);
 	if (componentsList == nullptr)

@@ -32,7 +32,7 @@ public:
 
 private:
 	void onWorldUpdated();
-	void onEntityChangedEvent(NullableEntity entity);
+	void onEntityChangedEvent(OptionalEntity entity);
 	void updateContent();
 	void onCurrentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
 	void showContextMenu(const QPoint& pos);

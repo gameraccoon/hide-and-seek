@@ -32,7 +32,7 @@ public:
 	void paintEvent(QPaintEvent* event) override;
 
 	void onClick(const class QPoint& pos);
-	NullableEntity getEntityUnderPoint(const QPoint& pos);
+	OptionalEntity getEntityUnderPoint(const QPoint& pos);
 
 	void addEntitiesInRectToSelection(const Vector2D& start, const Vector2D& end);
 
@@ -73,7 +73,7 @@ public:
 private:
 	void updateWorld();
 	void updateContent(EditorCommand::EffectType effect, bool originalCall, bool forceUpdateLayout);
-	void onEntitySelected(NullableEntity entity);
+	void onEntitySelected(OptionalEntity entity);
 	void onEntitiesMoved(std::vector<Entity> entities, const Vector2D& shift);
 	void onFreeMoveChanged(int newValue);
 	void showContextMenu(const QPoint& pos);

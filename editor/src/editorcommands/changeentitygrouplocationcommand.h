@@ -10,7 +10,7 @@ class World;
 class ChangeEntityGroupLocationCommand : public EditorCommand
 {
 public:
-	typedef void (World::*SetterFunction)(const NullableEntity&);
+	typedef void (World::*SetterFunction)(const OptionalEntity&);
 
 public:
 	ChangeEntityGroupLocationCommand(const std::vector<Entity>& entities, const Vector2D& shift);

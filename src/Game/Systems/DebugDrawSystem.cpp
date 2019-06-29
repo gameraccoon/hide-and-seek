@@ -27,7 +27,7 @@ void DebugDrawSystem::update(World* world, float /*dt*/)
 {
 	static const Vector2D maxFov(500.0f, 500.0f);
 
-	NullableEntity mainCamera = world->getMainCamera();
+	OptionalEntity mainCamera = world->getMainCamera();
 	if (!mainCamera.isValid())
 	{
 		return;

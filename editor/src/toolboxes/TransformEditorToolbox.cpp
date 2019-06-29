@@ -33,7 +33,7 @@ TransformEditorToolbox::TransformEditorToolbox(MainWindow* mainWindow, ads::CDoc
 	, mDockManager(dockManager)
 {
 	mOnWorldChangedHandle = mMainWindow->OnWorldChanged.bind([this]{updateWorld();});
-	mOnSelectedEntityChangedHandle = mMainWindow->OnSelectedEntityChanged.bind([this](NullableEntity entity){onEntitySelected(entity);});
+	mOnSelectedEntityChangedHandle = mMainWindow->OnSelectedEntityChanged.bind([this](OptionalEntity entity){onEntitySelected(entity);});
 	mOnCommandEffectHandle = mMainWindow->OnCommandEffectApplied.bind([this](EditorCommand::EffectType effect, bool originalCall, bool forceUpdateLayout){updateContent(effect, originalCall, forceUpdateLayout);});
 }
 
@@ -99,7 +99,7 @@ void TransformEditorToolbox::updateContent(EditorCommand::EffectType effect, boo
 	}
 }
 
-void TransformEditorToolbox::onEntitySelected(NullableEntity entity)
+void TransformEditorToolbox::onEntitySelected(OptionalEntity entity)
 {
 	if (mContent == nullptr)
 	{
@@ -236,7 +236,7 @@ void TransformEditorWidget::mousePressEvent(QMouseEvent* event)
 	mIsCatchedSelectedEntity = false;
 	mIsRectangleSelection = false;
 
-	if (NullableEntity entityUnderCursor = getEntityUnderPoint(event->pos()); entityUnderCursor.isValid())
+	if (OptionalEntity entityUnderCursor = getEntityUnderPoint(event->pos()); entityUnderCursor.isValid())
 	{
 		Entity entity = entityUnderCursor.getEntity();
 		if (std::find(mSelectedEntities.begin(), mSelectedEntities.end(), entity) != mSelectedEntities.end())
@@ -411,7 +411,7 @@ void TransformEditorWidget::paintEvent(QPaintEvent*)
 
 void TransformEditorWidget::onClick(const QPoint& pos)
 {
-	NullableEntity findResult = getEntityUnderPoint(pos);
+	OptionalEntity findResult = getEntityUnderPoint(pos);
 
 	if (IsCtrlPressed())
 	{
@@ -441,11 +441,11 @@ void TransformEditorWidget::onClick(const QPoint& pos)
 	}
 }
 
-NullableEntity TransformEditorWidget::getEntityUnderPoint(const QPoint& pos)
+OptionalEntity TransformEditorWidget::getEntityUnderPoint(const QPoint& pos)
 {
 	Vector2D worldPos = deproject(QVector2D(pos));
 
-	NullableEntity findResult;
+	OptionalEntity findResult;
 
 	if (mWorld)
 	{
