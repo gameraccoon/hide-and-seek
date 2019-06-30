@@ -2,6 +2,17 @@
     "world": {
         "entity_manager": {
             "components": {
+                "AiControllerComponent": [
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    {
+                        "isEnemy": true
+                    }
+                ],
                 "CameraComponent": [
                     null,
                     null
@@ -65,7 +76,13 @@
                     },
                     null,
                     null,
-                    null,
+                    {
+                        "geometry": {
+                            "points": [],
+                            "radius": 10.0,
+                            "type": 1
+                        }
+                    },
                     null,
                     null,
                     null,
@@ -95,6 +112,21 @@
                     null
                 ],
                 "MovementComponent": [
+                    {
+                        "lastStep": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "speed": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
+                    },
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
                     {
                         "lastStep": {
                             "x": 0.0,
@@ -143,7 +175,17 @@
                     },
                     null,
                     null,
-                    null,
+                    {
+                        "anchor": {
+                            "x": 0.5,
+                            "y": 0.5
+                        },
+                        "size": {
+                            "x": 20.0,
+                            "y": 20.0
+                        },
+                        "texturePath": "resources/textures/hero.png"
+                    },
                     null,
                     null,
                     null,
@@ -205,7 +247,15 @@
                             "v": 0.0
                         }
                     },
-                    null,
+                    {
+                        "location": {
+                            "x": 120.0,
+                            "y": 73.0
+                        },
+                        "rotation": {
+                            "v": 0.0
+                        }
+                    },
                     null,
                     null,
                     null,
@@ -219,16 +269,20 @@
             },
             "entityIndexMap": [
                 [
+                    1974157748,
+                    5
+                ],
+                [
                     749464569,
                     4
                 ],
                 [
-                    1928598682,
-                    3
+                    709790108,
+                    6
                 ],
                 [
-                    1974157748,
-                    5
+                    1928598682,
+                    3
                 ],
                 [
                     397598776,
@@ -244,12 +298,6 @@
                 ]
             ]
         },
-        "world_components": {
-            "components" : {
-                "RenderModeComponent": {
-                }
-            }
-        },
         "main_camera": {
             "id": 1804289383,
             "valid": true
@@ -257,6 +305,12 @@
         "player_controlled_entity": {
             "id": 1804289383,
             "valid": true
+        },
+        "world_components": {
+            "components": {
+                "NavMeshComponent": {},
+                "RenderModeComponent": {}
+            }
         }
     }
 }

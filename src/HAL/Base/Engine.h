@@ -39,7 +39,8 @@ namespace HAL
 
 		void render(Internal::SdlSurface* surface, const glm::mat4& transform, float alpha = 1.0f);
 		void render(Internal::SdlSurface* surface, float x, float y, float ancX = 0.0f, float ancY = 0.0f, float scaleX = 0.0f, float scaleY = 0.0f, float rotation = 0.0f, float alpha = 1.0f);
-		void render(Internal::SdlSurface* surface, const std::vector<DrawPoint>& points, const glm::mat4& transform, float alpha);
+		void renderFan(Internal::SdlSurface* surface, const std::vector<DrawPoint>& points, const glm::mat4& transform, float alpha);
+		void renderStrip(Internal::SdlSurface* surface, const std::vector<DrawPoint>& points, const glm::mat4& transform, float alpha);
 
 		float calculateStringWidth(const char* text) const;
 		void write(Internal::SdlSurface* fontSurface, const char* text, const glm::mat4& transform);

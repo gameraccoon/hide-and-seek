@@ -131,12 +131,28 @@ namespace HAL
 		render(surface, transformation, alpha);
 	}
 
-	void Engine::render(Internal::SdlSurface* surface, const std::vector<DrawPoint>& points, const glm::mat4& transform, float alpha)
+	void Engine::renderFan(Internal::SdlSurface* surface, const std::vector<DrawPoint>& points, const glm::mat4& transform, float alpha)
 	{
 		glLoadMatrixf(reinterpret_cast<const float*>(&transform));
 		surface->bind();
 
 		glBegin(GL_TRIANGLE_FAN);
+		glColor4f(1.0f, 1.0f, 1.0f, alpha);
+		for (const DrawPoint& point : points)
+		{
+			glTexCoord2f(point.texturePoint.x, point.texturePoint.y);
+			glVertex2f(point.spacePoint.x, point.spacePoint.y);
+		}
+		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		glEnd();
+	}
+
+	void Engine::renderStrip(Internal::SdlSurface* surface, const std::vector<DrawPoint>& points, const glm::mat4& transform, float alpha)
+	{
+		glLoadMatrixf(reinterpret_cast<const float*>(&transform));
+		surface->bind();
+
+		glBegin(GL_TRIANGLE_STRIP);
 		glColor4f(1.0f, 1.0f, 1.0f, alpha);
 		for (const DrawPoint& point : points)
 		{

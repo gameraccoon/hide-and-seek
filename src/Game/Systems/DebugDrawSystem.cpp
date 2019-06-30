@@ -5,6 +5,7 @@
 #include "GameData/Components/CollisionComponent.generated.h"
 #include "GameData/Components/NavMeshComponent.generated.h"
 #include "GameData/Components/RenderModeComponent.generated.h"
+#include "GameData/Components/AiControllerComponent.generated.h"
 #include "GameData/World.h"
 
 #include "HAL/Base/Engine.h"
@@ -93,11 +94,54 @@ void DebugDrawSystem::update(World* world, float /*dt*/)
 							}
 							glm::mat4 transform(1.0f);
 							transform = glm::translate(transform, glm::vec3(drawShift.x, drawShift.y, 0.0f));
-							mEngine->render(navMeshTexture.getSurface(), drawablePolygon, transform, 0.5f);
+							mEngine->renderFan(navMeshTexture.getSurface(), drawablePolygon, transform, 0.3f);
 						}
 					}
 				}
 			}
 		}
+	}
+
+	if (renderMode && renderMode->getIsDrawDebugAiPathsEnabled())
+	{
+		const Graphics::Texture& navMeshTexture = mResourceManager->getTexture(mNavmeshTextureHandle);
+		world->getEntityManger().forEachComponentSet<AiControllerComponent>([drawShift, navMeshTexture, engine = mEngine](AiControllerComponent* aiController)
+		{
+			std::vector<Vector2D>& path = aiController->getPathRef().getSmoothPathRef();
+			if (path.size() > 1)
+			{
+				std::vector<HAL::DrawPoint> drawablePolygon;
+				drawablePolygon.reserve(path.size() * 2);
+
+				{
+					float u1 = static_cast<float>(std::rand() * 1.0f / RAND_MAX);
+					float v1 = static_cast<float>(std::rand() * 1.0f / RAND_MAX);
+					float u2 = static_cast<float>(std::rand() * 1.0f / RAND_MAX);
+					float v2 = static_cast<float>(std::rand() * 1.0f / RAND_MAX);
+
+					Vector2D normal = (path[1] - path[0]).normal() * 3;
+
+					drawablePolygon.push_back(HAL::DrawPoint{path[0] + normal, Vector2D(u1, v1)});
+					drawablePolygon.push_back(HAL::DrawPoint{path[0] - normal, Vector2D(u2, v2)});
+				}
+
+				for (size_t i = 1; i < path.size(); ++i)
+				{
+					float u1 = static_cast<float>(std::rand() * 1.0f / RAND_MAX);
+					float v1 = static_cast<float>(std::rand() * 1.0f / RAND_MAX);
+					float u2 = static_cast<float>(std::rand() * 1.0f / RAND_MAX);
+					float v2 = static_cast<float>(std::rand() * 1.0f / RAND_MAX);
+
+					Vector2D normal = (path[i] - path[i-1]).normal() * 3;
+
+					drawablePolygon.push_back(HAL::DrawPoint{path[i] + normal, Vector2D(u1, v1)});
+					drawablePolygon.push_back(HAL::DrawPoint{path[i] - normal, Vector2D(u2, v2)});
+				}
+
+				glm::mat4 transform(1.0f);
+				transform = glm::translate(transform, glm::vec3(drawShift.x, drawShift.y, 0.0f));
+				engine->renderStrip(navMeshTexture.getSurface(), drawablePolygon, transform, 0.5f);
+			}
+		});
 	}
 }

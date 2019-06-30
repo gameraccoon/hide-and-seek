@@ -5,7 +5,7 @@
 		{
 			"name": "navMesh",
 			"type": "NavMesh",
-			"include": "\"GameData/Core/NavMesh.h\"",
+			"include": "\"GameData/AI/NavMesh.h\"",
 			"flags": ["transient", "get_by_ref"]
 		}
 	]

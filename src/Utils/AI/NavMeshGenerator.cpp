@@ -1,4 +1,4 @@
-#include "Utils/Geometry/NavMeshGenerator.h"
+#include "Utils/AI/NavMeshGenerator.h"
 
 #include <unordered_map>
 
@@ -108,7 +108,7 @@ void NavMeshGenerator::generateNavMesh(NavMesh& outNavMesh, const std::vector<st
 		triangles.push_back(0);
 		triangles.push_back(0);
 	}
-	std::vector<DtFlagsType> flags(resultPolygons.size(), 0);
+	std::vector<DtFlagsType> flags(resultPolygons.size(), 1);
 	std::vector<DtAreaType> areas(resultPolygons.size(), 0);
 
 	outNavMesh.setMesh(new dtNavMesh());
@@ -147,7 +147,7 @@ void NavMeshGenerator::generateNavMesh(NavMesh& outNavMesh, const std::vector<st
 	params.vertCount = static_cast<int>(verticesMap.size());
 	params.walkableClimb = 0.0f;
 	params.walkableHeight = 10.0f;
-	params.walkableRadius = 1.0f;
+	params.walkableRadius = 10.0f;
 
 	unsigned char* navData = nullptr;
 	int navDataSize = 0;
@@ -167,5 +167,5 @@ void NavMeshGenerator::generateNavMesh(NavMesh& outNavMesh, const std::vector<st
 	navmeshParams.tileHeight = 10000;
 	navmeshParams.tileWidth = 10000;
 	outNavMesh.getMesh()->init(&navmeshParams);
-	outNavMesh.getMesh()->addTile(navData, navDataSize, 0, 0, nullptr);
+	outNavMesh.getMesh()->addTile(navData, navDataSize, DT_TILE_FREE_DATA, 0, nullptr);
 }

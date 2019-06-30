@@ -6,6 +6,12 @@
 			"name": "isEnemy",
 			"type": "bool",
 			"default": " = false"
+		},
+		{
+			"name": "path",
+			"type": "TravelPath",
+			"include": "\"GameData/AI/TravelPath.h\"",
+			"flags": ["transient", "get_by_ref"]
 		}
 	]
 }

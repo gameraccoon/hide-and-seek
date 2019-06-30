@@ -1,8 +1,9 @@
 #pragma once
 
 #include <memory>
-#include "GameData/Core/NavMesh.h"
+#include "GameData/AI/NavMesh.h"
 
+#include <vector>
 
 class CollisionComponent;
 class TransformComponent;

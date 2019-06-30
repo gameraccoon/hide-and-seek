@@ -1,4 +1,4 @@
-#include "GameData/Core/NavMesh.h"
+#include "GameData/AI/NavMesh.h"
 
 #include <DetourNavMesh.h>
 

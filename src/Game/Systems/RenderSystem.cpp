@@ -87,7 +87,7 @@ void RenderSystem::drawVisibilityPolygon(const std::vector<Vector2D>& polygon, c
 		static HAL::Internal::SdlSurface surface("resources/textures/light.png");
 		glm::mat4 transform(1.0f);
 		transform = glm::translate(transform, glm::vec3(drawShift.x, drawShift.y, 0.0f));
-		mEngine->render(&surface, drawablePolygon, transform, 0.5f);
+		mEngine->renderFan(&surface, drawablePolygon, transform, 0.5f);
 	}
 }
 
