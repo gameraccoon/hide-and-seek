@@ -185,4 +185,4 @@ add_custom_target(
 )
 add_dependencies(GameData CodeGeneration)
 add_dependencies(Utils CodeGeneration)
-add_dependencies(${APP_NAME} CodeGeneration)
+add_dependencies(GameLogic CodeGeneration)

@@ -9,7 +9,6 @@ class BoundingBox
 public:
 	BoundingBox(float minX, float minY, float maxX, float maxY);
 	BoundingBox(Vector2D minPoint, Vector2D maxPoint);
-	~BoundingBox();
 	/** Left-top point */
 	Vector2D getFirst();
 	/** Right-top point */

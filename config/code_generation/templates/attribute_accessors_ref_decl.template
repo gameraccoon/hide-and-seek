@@ -1,3 +1,3 @@
-const {attribute_type}& get{attribute_name_capital}() const;
-	{attribute_type}& get{attribute_name_capital}Ref();
-	void set{attribute_name_capital}(const {attribute_type}& new{attribute_name_capital});{delim_endl}{delim_endl}{delim_tab}
+inline const {attribute_type}& get{attribute_name_capital}() const {{ return m{attribute_name_capital}; }}
+	inline {attribute_type}& get{attribute_name_capital}Ref() {{ return m{attribute_name_capital}; }}
+	inline void set{attribute_name_capital}(const {attribute_type}& new{attribute_name_capital}) {{ m{attribute_name_capital} = new{attribute_name_capital}; }}{delim_endl}{delim_endl}{delim_tab}

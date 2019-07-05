@@ -23,16 +23,6 @@
 		"params": []
 	},
 	{
-		"name": "attribute_accessors_impl",
-		"params": [],
-		"blacklist": ["get_by_ref"]
-	},
-	{
-		"name": "attribute_accessors_ref_impl",
-		"params": [],
-		"whitelist": ["get_by_ref"]
-	},
-	{
 		"name": "attributes_json_serialization",
 		"params": [],
 		"blacklist": ["transient"]

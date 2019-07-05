@@ -163,8 +163,8 @@ namespace Collide
 				   const CollisionComponent* collisionB, const Vector2D& locationB, Vector2D& outResist)
 	{
 		// get AABB of the actors
-		BoundingBox box = collisionA->getBoundingBox();
-		BoundingBox ourBox = collisionB->getBoundingBox();
+		const BoundingBox& box = collisionA->getBoundingBox();
+		const BoundingBox& ourBox = collisionB->getBoundingBox();
 		// if the actor's AABB intersects with the Man's AABB (in new Man location)
 		if ((box.minX < ourBox.maxX
 			&& ourBox.minX < box.maxX)
