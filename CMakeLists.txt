@@ -3,10 +3,10 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-set(APP_NAME Game)
+set(APP_NAME GameMain)
 project(${APP_NAME})
 
-set(EXECUTABLE_NAME ${APP_NAME})
+set(EXECUTABLE_NAME Game)
 
 # parameters
 option(DEBUG_MODE "Debug?" ON)
@@ -30,11 +30,11 @@ file(MAKE_DIRECTORY ${GAME_BIN_DIR})
 
 # definitions
 if(DEBUG_MODE)
-    set(CMAKE_BUILD_TYPE DEBUG)
-    add_definitions(-D_DEBUG)
-    add_definitions(-DDEBUG)
+	set(CMAKE_BUILD_TYPE DEBUG)
+	add_definitions(-D_DEBUG)
+	add_definitions(-DDEBUG)
 else(DEBUG_MODE)
-    set(CMAKE_BUILD_TYPE RELEASE)
+	set(CMAKE_BUILD_TYPE RELEASE)
 endif(DEBUG_MODE)
 
 add_definitions(-DGLEW_NO_GLU)
@@ -42,16 +42,16 @@ add_definitions(-DGLM_FORCE_RADIANS)
 
 # compiler parameters
 if (MSVC)
-    if (CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
-        string(REGEX REPLACE "/W[0-4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17")
-    else()
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /std:c++17")
-    endif()
+	if (CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
+		string(REGEX REPLACE "/W[0-4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17")
+	else()
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /std:c++17")
+	endif()
 else()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -Werror -std=c++17")
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_DEBUG} -g")
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_RELEASE} -O2")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -Werror -std=c++17")
+	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_DEBUG} -g")
+	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_RELEASE} -O2")
 endif()
 
 if (NOT WIN32)
@@ -63,27 +63,28 @@ endif()
 include_directories(include)
 
 include_directories(
-    ${EXTERNALS_DIR}/include
+	${EXTERNALS_DIR}/include
 	${GAME_SRC_DIR}
 )
 
 link_directories(
-    ${EXTERNALS_DIR}/lib
+	${EXTERNALS_DIR}/lib
 	${GAME_BASE_DIR}/vs_project
 )
 
 function(add_folder_as_library folder_path name)
 	file(GLOB_RECURSE TEMP_SRC RELATIVE "" FOLLOW_SYMLINKS "${folder_path}/*")
-    add_library(${name} ${TEMP_SRC})
+	add_library(${name} ${TEMP_SRC})
 endfunction()
 
 add_folder_as_library(${GAME_SRC_DIR}/Debug Debug)
 add_folder_as_library(${GAME_SRC_DIR}/ECS Ecs)
 add_folder_as_library(${GAME_SRC_DIR}/GameData GameData)
+add_folder_as_library(${GAME_SRC_DIR}/GameLogic GameLogic)
 add_folder_as_library(${GAME_SRC_DIR}/Utils Utils)
 add_folder_as_library(${GAME_SRC_DIR}/HAL Hal)
 
-file(GLOB_RECURSE APP_SRC RELATIVE "" FOLLOW_SYMLINKS "${GAME_SRC_DIR}/Game/*")
+file(GLOB_RECURSE APP_SRC RELATIVE "" FOLLOW_SYMLINKS "${GAME_SRC_DIR}/GameMain/*")
 add_executable(${APP_NAME} "${APP_SRC}")
 
 # Detour
@@ -101,9 +102,10 @@ add_dependencies(${APP_NAME} Polypartition)
 include_directories(${EXTERNALS_DIR}/sources/polypartition/include)
 
 set(GENERAL_PROJECT_LIBS
-#    liblua52
+#	liblua52
 
-    Hal
+    GameLogic
+	Hal
 	Utils
 	GameData
 	Ecs
@@ -111,31 +113,31 @@ set(GENERAL_PROJECT_LIBS
 	Detour
 	Polypartition
 
-    SDL2
-    SDL2_image
-    SDL2main
+	SDL2
+	SDL2_image
+	SDL2main
 )
 
 if (WIN32)
-    set(GENERAL_PROJECT_LIBS
-        ${GENERAL_PROJECT_LIBS}
-        glew32
-        glew32s
-        SDL2test
-        opengl32
-		)
+	set(GENERAL_PROJECT_LIBS
+		${GENERAL_PROJECT_LIBS}
+		glew32
+		glew32s
+		SDL2test
+		opengl32
+	)
 else()
-    set(GENERAL_PROJECT_LIBS
-        ${GENERAL_PROJECT_LIBS}
-        ${SDL2_LIBRARY}
-        ${SDL2_IMAGE_LIBRARY}
-        GL
-        stdc++fs
-    )
+	set(GENERAL_PROJECT_LIBS
+		${GENERAL_PROJECT_LIBS}
+		${SDL2_LIBRARY}
+		${SDL2_IMAGE_LIBRARY}
+		GL
+		stdc++fs
+	)
 endif()
 
 target_link_libraries(${APP_NAME}
-    ${GENERAL_PROJECT_LIBS}
+	${GENERAL_PROJECT_LIBS}
 )
 
 set_target_properties(${APP_NAME} PROPERTIES
@@ -148,16 +150,24 @@ set_target_properties(${APP_NAME} PROPERTIES
 )
 
 # Unit tests
-set(TESTS_NAME UnitTests)
-set(TESTS_SRC
-	${GAME_SRC_DIR}/UnitTests/tests_main.cpp
-    ${EXTERNALS_DIR}/sources/googletest/src/gtest-all.cc
+set(UNITTESTS_NAME UnitTests)
+file(GLOB_RECURSE UNITTESTS_SRC RELATIVE "" FOLLOW_SYMLINKS "${GAME_SRC_DIR}/UnitTests/*")
+set(UNITTESTS_SRC
+	${UNITTESTS_SRC}
+	${EXTERNALS_DIR}/sources/googletest/src/gtest-all.cc
 )
-aux_source_directory(${GAME_SRC_DIR}/UnitTests/Tests TESTS_SRC)
 include_directories(${EXTERNALS_DIR}/sources/googletest)
-add_executable(${TESTS_NAME} ${TESTS_SRC})
-target_link_libraries(${TESTS_NAME}
-    ${GENERAL_PROJECT_LIBS}
+add_executable(${UNITTESTS_NAME} ${UNITTESTS_SRC})
+target_link_libraries(${UNITTESTS_NAME}
+	${GENERAL_PROJECT_LIBS}
+)
+
+# Autotests
+set(AUTOTESTS_NAME AutoTests)
+file(GLOB_RECURSE AUTOTESTS_SRC RELATIVE "" FOLLOW_SYMLINKS "${GAME_SRC_DIR}/AutoTests/*")
+add_executable(${AUTOTESTS_NAME} ${AUTOTESTS_SRC})
+target_link_libraries(${AUTOTESTS_NAME}
+	${GENERAL_PROJECT_LIBS}
 )
 
 # copy resources
@@ -169,9 +179,9 @@ endif()
 # code generation
 find_package(PythonInterp 3.5 REQUIRED)
 add_custom_target(
-    CodeGeneration
+	CodeGeneration
 	COMMAND ${PYTHON_EXECUTABLE} ${GAME_BASE_DIR}/scripts/build/cpp_code_generate.py ${GAME_BASE_DIR}
-    COMMENT "C++ code generation"
+	COMMENT "C++ code generation"
 )
 add_dependencies(GameData CodeGeneration)
 add_dependencies(Utils CodeGeneration)

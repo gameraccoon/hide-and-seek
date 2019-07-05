@@ -1,24 +1,27 @@
 #pragma once
 
 #include <memory>
+#include <vector>
+
 #include "ECS/System.h"
-#include "GameData/Components/CameraComponent.generated.h"
 #include "HAL/Base/ResourceManager.h"
 #include "HAL/EngineFwd.h"
 
+class TransformComponent;
+class CollisionComponent;
 class Vector2D;
 
 /**
  * System that handles rendering of world objects
  */
-class RenderSystem : public System
+class DebugDrawSystem : public System
 {
 public:
 	typedef std::unordered_map<int, bool> KeyStatesMap;
 
 public:
-	RenderSystem(HAL::Engine* engine, const std::shared_ptr<HAL::ResourceManager>& resourceManager);
-	~RenderSystem() override = default;
+	DebugDrawSystem(HAL::Engine* engine, const std::shared_ptr<HAL::ResourceManager>& resourceManager);
+	~DebugDrawSystem() override = default;
 
 	void update(World* world, float dt) override;
 
@@ -30,4 +33,7 @@ private:
 private:
 	HAL::Engine* mEngine;
 	std::shared_ptr<HAL::ResourceManager> mResourceManager;
+
+	ResourceHandle mCollisionTextureHandle;
+	ResourceHandle mNavmeshTextureHandle;
 };

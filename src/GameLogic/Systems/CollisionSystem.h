@@ -5,8 +5,6 @@
 #include "ECS/System.h"
 #include "HAL/Base/Engine.h"
 
-class World;
-
 /**
  * System that resolve object collisions
  */

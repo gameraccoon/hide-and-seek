@@ -7,8 +7,6 @@
 
 #include "HAL/KeyStatesMap.h"
 
-class World;
-
 /**
  * System that handles movement controls
  */

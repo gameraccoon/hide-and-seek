@@ -1,4 +1,4 @@
-#include "Game/Game.h"
+#include "GameLogic/Game.h"
 
 #include "Utils/Application/ArgumentsParser.h"
 

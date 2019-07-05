@@ -39,25 +39,25 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # compiler parameters
 if (MSVC)
-    if (CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
-        string(REGEX REPLACE "/W[0-4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17")
-    else()
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /std:c++17")
-    endif()
+	if (CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
+		string(REGEX REPLACE "/W[0-4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17")
+	else()
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /std:c++17")
+	endif()
 else()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -Werror -std=c++17 -lstdc++fs")
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_DEBUG} -g")
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_RELEASE} -O2")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -Werror -std=c++17 -lstdc++fs")
+	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_DEBUG} -g")
+	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_RELEASE} -O2")
 endif()
 
 set(APP_SRCS
-    src/main.cpp
-    src/mainwindow.cpp
+	src/main.cpp
+	src/mainwindow.cpp
 
-    src/mainwindow.ui
+	src/mainwindow.ui
 
-    main.qrc
+	main.qrc
 )
 
 aux_source_directory(src/editorcommands APP_SRCS)
@@ -90,10 +90,10 @@ include_directories(
 )
 
 link_directories(
-    /usr/local/lib
+	/usr/local/lib
 	${GAME_BASE_DIR}/bin/static-libs
 	${EXTERNALS_DIR}/lib
-    ${CMAKE_SOURCE_DIR}/vs_project
+	${CMAKE_SOURCE_DIR}/vs_project
 )
 
 # Detour
@@ -117,21 +117,21 @@ set(APP_LIBS
 	Ecs
 	Debug
 	Detour
-    Polypartition
+	Polypartition
 )
 
 if (NOT WIN32)
 	set(APP_LIBS
 		${APP_LIBS}
-        stdc++fs
-    )
+		stdc++fs
+	)
 endif()
 
 add_dependencies(${APP_NAME} qtadvanceddocking)
 target_include_directories(${APP_NAME} PUBLIC
 	$<BUILD_INTERFACE:${APP_INCLUDE}>
-    $<INSTALL_INTERFACE:include>
-    )
+	$<INSTALL_INTERFACE:include>
+)
 target_include_directories(${APP_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/Qt-Advanced-Docking-System/src" ${APP_INCLUDE})
 target_link_libraries(${APP_NAME} PRIVATE qtadvanceddocking ${APP_LIBS})
 target_compile_definitions(${APP_NAME} PRIVATE ${APP_DEFINE})
@@ -147,9 +147,9 @@ set_target_properties(${APP_NAME} PROPERTIES
 # code generation
 find_package(PythonInterp 3.5 REQUIRED)
 add_custom_target(
-    CodeGeneration
+	CodeGeneration
 	COMMAND ${PYTHON_EXECUTABLE} ${GAME_BASE_DIR}/scripts/build/cpp_code_generate.py ${GAME_BASE_DIR}/
-    COMMENT "C++ code generation"
+	COMMENT "C++ code generation"
 )
 
 add_dependencies(GameData CodeGeneration)

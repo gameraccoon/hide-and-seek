@@ -1,4 +1,4 @@
-#include "Game/Systems/CollisionSystem.h"
+#include "GameLogic/Systems/CollisionSystem.h"
 
 #include "GameData/Components/CollisionComponent.generated.h"
 #include "GameData/Components/TransformComponent.generated.h"

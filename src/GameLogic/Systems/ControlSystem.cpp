@@ -1,4 +1,4 @@
-#include "Game/Systems/ControlSystem.h"
+#include "GameLogic/Systems/ControlSystem.h"
 
 #include <sdl/SDL_keycode.h>
 

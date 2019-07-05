@@ -1,4 +1,4 @@
-#include "Game/Systems/DebugDrawSystem.h"
+#include "GameLogic/Systems/DebugDrawSystem.h"
 
 #include "GameData/Components/RenderComponent.generated.h"
 #include "GameData/Components/TransformComponent.generated.h"

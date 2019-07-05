@@ -1,4 +1,4 @@
-#include "Game/Systems/ResourceStreamingSystem.h"
+#include "GameLogic/Systems/ResourceStreamingSystem.h"
 
 #include "GameData/Components/RenderComponent.generated.h"
 

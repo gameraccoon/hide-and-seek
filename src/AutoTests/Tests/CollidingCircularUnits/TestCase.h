@@ -6,20 +6,17 @@
 #include "Utils/Application/ArgumentsParser.h"
 
 #include "HAL/GameBase.h"
-#include "HAL/KeyStatesMap.h"
 
-class Game : public HAL::GameBase
+class CollidingCircularUnitsTestCase : public HAL::GameBase
 {
 public:
-	Game() = default;
-
 	void start(ArgumentsParser& arguments);
-	virtual void update(float dt) override;
-	virtual void setKeyState(int key, bool isPressed) override;
+	void update(float dt) override;
+	void setKeyState(int, bool) override {}
 
 private:
 	World mWorld;
-	HAL::KeyStatesMap mKeyStates;
 	SystemsManager mSystemsManager;
 	ComponentFactory mComponentFactory;
+	int ticksCount = 0;
 };

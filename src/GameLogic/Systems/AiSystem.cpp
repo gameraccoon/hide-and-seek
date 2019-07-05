@@ -1,4 +1,4 @@
-#include "Game/Systems/AiSystem.h"
+#include "GameLogic/Systems/AiSystem.h"
 
 #include "GameData/Components/NavMeshComponent.generated.h"
 #include "GameData/Components/AiControllerComponent.generated.h"
