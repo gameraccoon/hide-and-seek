@@ -63,8 +63,8 @@ void RenderSystem::update(World* world, float /*dt*/)
 				{
 					auto location = transformComponent->getLocation() + drawShift;
 					auto anchor = renderComponent->getAnchor();
-					auto scale = renderComponent->getScale();
-					engine->render(texture.getSurface(), location.x, location.y, anchor.x, anchor.y, scale.x, scale.y, transformComponent->getRotation().getValue(), 1.0f);
+					auto size = renderComponent->getSize();
+					engine->render(texture.getSurface(), location.x, location.y, size.x, size.y, anchor.x, anchor.y, transformComponent->getRotation().getValue(), 1.0f);
 				}
 			}
 		});

@@ -3,13 +3,6 @@
 	"description": "Component that stores information about position and movement",
 	"attributes": [
 		{
-			"name": "scale",
-			"type": "Vector2D",
-			"default": " = ZERO_VECTOR",
-			"include": "\"GameData/Core/Vector2D.h\"",
-			"flags": ["transient"]
-		},
-		{
 			"name": "size",
 			"type": "Vector2D",
 			"default": " = ZERO_VECTOR",

@@ -23,6 +23,8 @@ public:
 	/** Get quarter of vector length (faster than Size()) */
 	float qSize() const;
 
+	bool isZeroLength() const;
+
 	/** Normalize vector */
 	Vector2D ort() const;
 	/** Mirror horisontally */

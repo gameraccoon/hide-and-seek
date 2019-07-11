@@ -16,6 +16,10 @@ public:
 	void setKeyState(int key, bool isPressed) override;
 
 private:
+	void initSystems();
+	void initResources();
+
+private:
 	World mWorld;
 	HAL::KeyStatesMap mKeyStates;
 	SystemsManager mSystemsManager;

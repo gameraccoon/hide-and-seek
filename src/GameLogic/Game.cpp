@@ -17,12 +17,8 @@
 
 void Game::start(ArgumentsParser& arguments)
 {
-	mSystemsManager.registerSystem<ControlSystem>(getEngine(), &mKeyStates);
-	mSystemsManager.registerSystem<CollisionSystem>();
-	mSystemsManager.registerSystem<RenderSystem>(getEngine(), getResourceManager());
-	mSystemsManager.registerSystem<ResourceStreamingSystem>(getResourceManager());
-	mSystemsManager.registerSystem<AiSystem>();
-	mSystemsManager.registerSystem<DebugDrawSystem>(getEngine(), getResourceManager());
+	initSystems();
+	initResources();
 
 	ComponentsRegistration::RegisterComponents(mComponentFactory);
 
@@ -48,4 +44,19 @@ void Game::update(float dt)
 {
 	mSystemsManager.update(&mWorld, dt);
 	mKeyStates.clearLastFrameState();
+}
+
+void Game::initSystems()
+{
+	mSystemsManager.registerSystem<ControlSystem>(getEngine(), &mKeyStates);
+	mSystemsManager.registerSystem<CollisionSystem>();
+	mSystemsManager.registerSystem<RenderSystem>(getEngine(), getResourceManager());
+	mSystemsManager.registerSystem<ResourceStreamingSystem>(getResourceManager());
+	mSystemsManager.registerSystem<AiSystem>();
+	mSystemsManager.registerSystem<DebugDrawSystem>(getEngine(), getResourceManager());
+}
+
+void Game::initResources()
+{
+	getResourceManager()->loadAtlasesData("resources/atlas/atlas-list.json");
 }

@@ -34,10 +34,17 @@ float Vector2D::qSize() const
 	return (x * x) + (y * y);
 }
 
+bool Vector2D::isZeroLength() const
+{
+	return x == 0.0f && y == 0.0f;
+}
+
 Vector2D Vector2D::ort() const
 {
-	if (x == 0.0f && y == 0.0f)
+	if (isZeroLength())
+	{
 		return ZERO_VECTOR;
+	}
 
 	return (*this) / size();
 }
