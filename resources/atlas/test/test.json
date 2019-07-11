@@ -1,0 +1,44 @@
+{"frames": [
+
+{
+	"filename": "resources/textures/collision.png",
+	"frame": {"x":40,"y":4,"w":64,"h":64},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
+	"sourceSize": {"w":64,"h":64}
+},
+{
+	"filename": "resources/textures/hero.png",
+	"frame": {"x":4,"y":4,"w":32,"h":32},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+	"sourceSize": {"w":32,"h":32}
+},
+{
+	"filename": "resources/textures/light.png",
+	"frame": {"x":4,"y":134,"w":300,"h":300},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":300,"h":300},
+	"sourceSize": {"w":300,"h":300}
+},
+{
+	"filename": "resources/textures/testTexture.png",
+	"frame": {"x":108,"y":4,"w":126,"h":126},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":126,"h":126},
+	"sourceSize": {"w":126,"h":126}
+}],
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "resources/atlas/test/test.png",
+	"format": "RGBA8888",
+	"size": {"w":512,"h":512},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:afca45872d2586f80224cbdd4f9406cf:5d22b675e00d87e41d90afb8cac17beb:02ab132358d6d8b512e80119463a8329$"
+}
+}

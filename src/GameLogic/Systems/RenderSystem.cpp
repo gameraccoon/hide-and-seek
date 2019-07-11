@@ -11,8 +11,10 @@
 
 #include "Utils/Geometry/VisibilityPolygon.h"
 
+#include "HAL/Base/Alghorithms.h"
 #include "HAL/Base/Engine.h"
 #include "HAL/Internal/SdlSurface.h"
+
 #include <glm/matrix.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -20,6 +22,7 @@ RenderSystem::RenderSystem(HAL::Engine* engine, const std::shared_ptr<HAL::Resou
 	: mEngine(engine)
 	, mResourceManager(resourceManager)
 {
+	mLightSpriteHandle = resourceManager->lockSprite("resources/textures/light.png");
 }
 
 void RenderSystem::update(World* world, float /*dt*/)
@@ -55,39 +58,40 @@ void RenderSystem::update(World* world, float /*dt*/)
 	{
 		world->getEntityManger().forEachComponentSet<RenderComponent, TransformComponent>([&drawShift, &resourceManager = mResourceManager, engine = mEngine](RenderComponent* renderComponent, TransformComponent* transformComponent)
 		{
-			ResourceHandle textureHandle = renderComponent->getTextureHandle();
-			if (textureHandle.isValid())
+			ResourceHandle spriteHandle = renderComponent->getSpriteHandle();
+			if (spriteHandle.isValid())
 			{
-				const Graphics::Texture& texture = resourceManager->getTexture(textureHandle);
-				if (texture.isValid())
+				const Graphics::Sprite& sprite = resourceManager->getSprite(spriteHandle);
+				if (sprite.isValid())
 				{
 					auto location = transformComponent->getLocation() + drawShift;
 					auto anchor = renderComponent->getAnchor();
 					auto size = renderComponent->getSize();
-					engine->render(texture.getSurface(), location.x, location.y, size.x, size.y, anchor.x, anchor.y, transformComponent->getRotation().getValue(), 1.0f);
+					engine->render(sprite.getSurface(), location, size, anchor, sprite.getUV(), transformComponent->getRotation().getValue(), 1.0f);
 				}
 			}
 		});
 	}
 }
 
-void RenderSystem::drawVisibilityPolygon(const std::vector<Vector2D>& polygon, const Vector2D& fowSize, const Vector2D& drawShift)
+void RenderSystem::drawVisibilityPolygon(const Graphics::Sprite& lightSprite, const std::vector<Vector2D>& polygon, const Vector2D& fowSize, const Vector2D& drawShift)
 {
 	if (polygon.size() > 2)
 	{
+		Graphics::QuadUV quadUV = lightSprite.getUV();
+
 		std::vector<HAL::DrawPoint> drawablePolygon;
 		drawablePolygon.reserve(polygon.size() + 2);
-		drawablePolygon.push_back(HAL::DrawPoint{ZERO_VECTOR, Vector2D(0.5f, 0.5f)});
+		drawablePolygon.push_back(HAL::DrawPoint{ZERO_VECTOR, Graphics::QuadLerp(quadUV, 0.5f, 0.5f)});
 		for (auto& point : polygon)
 		{
-			drawablePolygon.push_back(HAL::DrawPoint{point, Vector2D(0.5f-point.x/fowSize.x, 0.5f-point.y/fowSize.y)});
+			drawablePolygon.push_back(HAL::DrawPoint{point, Graphics::QuadLerp(quadUV, 0.5f-point.x/fowSize.x, 0.5f-point.y/fowSize.y)});
 		}
-		drawablePolygon.push_back(HAL::DrawPoint{polygon[0], Vector2D(0.5f-polygon[0].x/fowSize.x, 0.5f-polygon[0].y/fowSize.y)});
+		drawablePolygon.push_back(HAL::DrawPoint{polygon[0], Graphics::QuadLerp(quadUV, 0.5f-polygon[0].x/fowSize.x, 0.5f-polygon[0].y/fowSize.y)});
 
-		static HAL::Internal::SdlSurface surface("resources/textures/light.png");
 		glm::mat4 transform(1.0f);
 		transform = glm::translate(transform, glm::vec3(drawShift.x, drawShift.y, 0.0f));
-		mEngine->renderFan(&surface, drawablePolygon, transform, 0.5f);
+		mEngine->renderFan(lightSprite.getSurface(), drawablePolygon, transform, 0.5f);
 	}
 }
 
@@ -110,6 +114,12 @@ Vector2D RenderSystem::GetPlayerSightPosition(World* world)
 
 void RenderSystem::drawLights(World* world, const Vector2D& drawShift, const Vector2D& maxFov)
 {
+	const Graphics::Sprite& lightSprite = mResourceManager->getSprite(mLightSpriteHandle);
+	if (!lightSprite.isValid())
+	{
+		return;
+	}
+
 	const auto collidableComponents = world->getEntityManger().getComponents<CollisionComponent, TransformComponent>();
 	VisibilityPolygonCalculator visibilityPolygonCalculator;
 
@@ -117,15 +127,15 @@ void RenderSystem::drawLights(World* world, const Vector2D& drawShift, const Vec
 	// draw player visibility polygon
 	Vector2D playerSightPosition = GetPlayerSightPosition(world);
 	visibilityPolygonCalculator.calculateVisibilityPolygon(polygon, collidableComponents, playerSightPosition, maxFov);
-	drawVisibilityPolygon(polygon, maxFov, drawShift + playerSightPosition);
+	drawVisibilityPolygon(lightSprite, polygon, maxFov, drawShift + playerSightPosition);
 
 	// ToDo: we calculate visibility polygon for every light source in the each frame to
 	// be able to work with worst-case scenario as long as possible
 	// optimizations such as dirty flag and spatial hash are on the way to be impelemnted
 	// draw light
-	world->getEntityManger().forEachComponentSet<LightComponent, TransformComponent>([&collidableComponents, &visibilityPolygonCalculator, maxFov, &drawShift, &polygon, this](LightComponent* /*light*/, TransformComponent* transform)
+	world->getEntityManger().forEachComponentSet<LightComponent, TransformComponent>([&collidableComponents, &visibilityPolygonCalculator, maxFov, &drawShift, &lightSprite, &polygon, this](LightComponent* /*light*/, TransformComponent* transform)
 	{
 		visibilityPolygonCalculator.calculateVisibilityPolygon(polygon, collidableComponents, transform->getLocation(), maxFov);
-		drawVisibilityPolygon(polygon, maxFov, drawShift + transform->getLocation());
+		drawVisibilityPolygon(lightSprite, polygon, maxFov, drawShift + transform->getLocation());
 	});
 }

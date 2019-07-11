@@ -2,14 +2,6 @@
 
 #include <nlohmann/json.hpp>
 
-Hull::Hull()
-{
-}
-
-Hull::~Hull()
-{
-}
-
 void Hull::generateBorders()
 {
     borders.clear();

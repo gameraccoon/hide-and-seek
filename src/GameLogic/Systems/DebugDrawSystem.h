@@ -34,6 +34,6 @@ private:
 	HAL::Engine* mEngine;
 	std::shared_ptr<HAL::ResourceManager> mResourceManager;
 
-	ResourceHandle mCollisionTextureHandle;
-	ResourceHandle mNavmeshTextureHandle;
+	ResourceHandle mCollisionSpriteHandle;
+	ResourceHandle mNavmeshSpriteHandle;
 };

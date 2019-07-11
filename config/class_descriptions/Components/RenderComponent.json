@@ -20,7 +20,7 @@
 			"include": "<string>"
 		},
 		{
-			"name": "textureHandle",
+			"name": "spriteHandle",
 			"type": "ResourceHandle",
 			"include": "\"GameData/Core/ResourceHandle.h\"",
 			"flags": ["transient"]

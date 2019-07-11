@@ -106,28 +106,28 @@ namespace HAL
 		mPimpl->start();
 	}
 
-	void Engine::render(Internal::SdlSurface* surface, const glm::mat4& transform, float width, float height, float alpha)
+	void Engine::render(Internal::SdlSurface* surface, const glm::mat4& transform, Vector2D size, Graphics::QuadUV uv, float alpha)
 	{
 		glLoadMatrixf(reinterpret_cast<const float*>(&transform));
 		surface->bind();
 
 		glBegin(GL_QUADS);
 		glColor4f(1.0f, 1.0f, 1.0f, alpha);
-		glTexCoord2f(0.0f, 1.0f); glVertex2f(0.0f, height);
-		glTexCoord2f(1.0f, 1.0f); glVertex2f(width, height);
-		glTexCoord2f(1.0f, 0.0f); glVertex2f(width, 0.0f);
-		glTexCoord2f(0.0f, 0.0f); glVertex2f(0.0f, 0.0f);
+		glTexCoord2f(uv.U1, uv.V2); glVertex2f(0.0f, size.y);
+		glTexCoord2f(uv.U2, uv.V2); glVertex2f(size.x, size.y);
+		glTexCoord2f(uv.U2, uv.V1); glVertex2f(size.x, 0.0f);
+		glTexCoord2f(uv.U1, uv.V1); glVertex2f(0.0f, 0.0f);
 		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		glEnd();
 	}
 
-	void Engine::render(Internal::SdlSurface* surface, float x, float y, float width, float height, float ancX, float ancY, float rotation, float alpha)
+	void Engine::render(Internal::SdlSurface* surface, Vector2D pos, Vector2D size, Vector2D ancor, Graphics::QuadUV uv, float rotation, float alpha)
 	{
 		glm::mat4 transformation;
-		transformation = glm::translate(transformation, glm::vec3(x, y, 0.0f));
+		transformation = glm::translate(transformation, glm::vec3(pos.x, pos.y, 0.0f));
 		transformation = glm::rotate(transformation, rotation, glm::vec3(0.0f, 0.0f, 1.0f));
-		transformation = glm::translate(transformation, glm::vec3(-width*ancX, -height*ancY, 0.0f));
-		render(surface, transformation, width, height, alpha);
+		transformation = glm::translate(transformation, glm::vec3(-size.x*ancor.x, -size.y*ancor.y, 0.0f));
+		render(surface, transformation, size, uv, alpha);
 	}
 
 	void Engine::renderFan(Internal::SdlSurface* surface, const std::vector<DrawPoint>& points, const glm::mat4& transform, float alpha)

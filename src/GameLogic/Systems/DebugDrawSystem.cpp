@@ -8,10 +8,12 @@
 #include "GameData/Components/AiControllerComponent.generated.h"
 #include "GameData/World.h"
 
-#include "HAL/Base/Engine.h"
 #include "Utils/Geometry/VisibilityPolygon.h"
 
+#include "HAL/Base/Alghorithms.h"
+#include "HAL/Base/Engine.h"
 #include "HAL/Internal/SdlSurface.h"
+
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <DetourNavMesh.h>
@@ -20,8 +22,8 @@ DebugDrawSystem::DebugDrawSystem(HAL::Engine* engine, const std::shared_ptr<HAL:
 	: mEngine(engine)
 	, mResourceManager(resourceManager)
 {
-	mCollisionTextureHandle = resourceManager->lockTexture("resources/textures/collision.png");
-	mNavmeshTextureHandle = resourceManager->lockTexture("resources/textures/testTexture.png");
+	mCollisionSpriteHandle = resourceManager->lockSprite("resources/textures/collision.png");
+	mNavmeshSpriteHandle = resourceManager->lockSprite("resources/textures/testTexture.png");
 }
 
 void DebugDrawSystem::update(World* world, float /*dt*/)
@@ -49,15 +51,16 @@ void DebugDrawSystem::update(World* world, float /*dt*/)
 	auto [renderMode] = world->getWorldComponents().getComponents<RenderModeComponent>();
 	if (renderMode && renderMode->getIsDrawDebugCollisionsEnabled())
 	{
-		const Graphics::Texture& collisionTexture = mResourceManager->getTexture(mCollisionTextureHandle);
-		world->getEntityManger().forEachComponentSet<CollisionComponent>([collisionTexture, drawShift, engine = mEngine](CollisionComponent* collisionComponent)
+		const Graphics::Sprite& collisionSprite = mResourceManager->getSprite(mCollisionSpriteHandle);
+		Graphics::QuadUV quadUV = collisionSprite.getUV();
+		world->getEntityManger().forEachComponentSet<CollisionComponent>([&collisionSprite, &quadUV, drawShift, engine = mEngine](CollisionComponent* collisionComponent)
 		{
-			engine->render(collisionTexture.getSurface(),
-				collisionComponent->getBoundingBox().minX + drawShift.x,
-				collisionComponent->getBoundingBox().minY + drawShift.y,
-				0.0f, 0.0f,
-				(collisionComponent->getBoundingBox().maxX - collisionComponent->getBoundingBox().minX) / collisionTexture.getWidth(),
-				(collisionComponent->getBoundingBox().maxY - collisionComponent->getBoundingBox().minY) / collisionTexture.getHeight());
+			engine->render(collisionSprite.getSurface(),
+				Vector2D(collisionComponent->getBoundingBox().minX + drawShift.x, collisionComponent->getBoundingBox().minY + drawShift.y),
+				Vector2D(collisionComponent->getBoundingBox().maxX-collisionComponent->getBoundingBox().minX,
+						 collisionComponent->getBoundingBox().maxY-collisionComponent->getBoundingBox().minY),
+				ZERO_VECTOR,
+				quadUV);
 			return true;
 		});
 	}
@@ -65,7 +68,8 @@ void DebugDrawSystem::update(World* world, float /*dt*/)
 	if (renderMode && renderMode->getIsDrawDebugNavmeshEnabled())
 	{
 		srand(300);
-		const Graphics::Texture& navMeshTexture = mResourceManager->getTexture(mNavmeshTextureHandle);
+		const Graphics::Sprite& navMeshSprite = mResourceManager->getSprite(mNavmeshSpriteHandle);
+		Graphics::QuadUV quadUV = navMeshSprite.getUV();
 		auto [navMeshComponent] = world->getWorldComponents().getComponents<NavMeshComponent>();
 
 		if (navMeshComponent)
@@ -90,11 +94,11 @@ void DebugDrawSystem::update(World* world, float /*dt*/)
 
 								float x = tile->verts[poly.verts[j] * 3];
 								float y = tile->verts[poly.verts[j] * 3 + 2];
-								drawablePolygon.push_back(HAL::DrawPoint{Vector2D(x, y), Vector2D(u, v)});
+								drawablePolygon.push_back(HAL::DrawPoint{Vector2D(x, y), Graphics::QuadLerp(quadUV, u, v)});
 							}
 							glm::mat4 transform(1.0f);
 							transform = glm::translate(transform, glm::vec3(drawShift.x, drawShift.y, 0.0f));
-							mEngine->renderFan(navMeshTexture.getSurface(), drawablePolygon, transform, 0.3f);
+							mEngine->renderFan(navMeshSprite.getSurface(), drawablePolygon, transform, 0.3f);
 						}
 					}
 				}
@@ -104,8 +108,9 @@ void DebugDrawSystem::update(World* world, float /*dt*/)
 
 	if (renderMode && renderMode->getIsDrawDebugAiPathsEnabled())
 	{
-		const Graphics::Texture& navMeshTexture = mResourceManager->getTexture(mNavmeshTextureHandle);
-		world->getEntityManger().forEachComponentSet<AiControllerComponent>([drawShift, navMeshTexture, engine = mEngine](AiControllerComponent* aiController)
+		const Graphics::Sprite& navMeshSprite = mResourceManager->getSprite(mNavmeshSpriteHandle);
+		Graphics::QuadUV quadUV = navMeshSprite.getUV();
+		world->getEntityManger().forEachComponentSet<AiControllerComponent>([drawShift, &quadUV, &navMeshSprite, engine = mEngine](AiControllerComponent* aiController)
 		{
 			std::vector<Vector2D>& path = aiController->getPathRef().getSmoothPathRef();
 			if (path.size() > 1)
@@ -121,8 +126,8 @@ void DebugDrawSystem::update(World* world, float /*dt*/)
 
 					Vector2D normal = (path[1] - path[0]).normal() * 3;
 
-					drawablePolygon.push_back(HAL::DrawPoint{path[0] + normal, Vector2D(u1, v1)});
-					drawablePolygon.push_back(HAL::DrawPoint{path[0] - normal, Vector2D(u2, v2)});
+					drawablePolygon.push_back(HAL::DrawPoint{path[0] + normal, Graphics::QuadLerp(quadUV, u1, v1)});
+					drawablePolygon.push_back(HAL::DrawPoint{path[0] - normal, Graphics::QuadLerp(quadUV, u2, v2)});
 				}
 
 				for (size_t i = 1; i < path.size(); ++i)
@@ -134,13 +139,13 @@ void DebugDrawSystem::update(World* world, float /*dt*/)
 
 					Vector2D normal = (path[i] - path[i-1]).normal() * 3;
 
-					drawablePolygon.push_back(HAL::DrawPoint{path[i] + normal, Vector2D(u1, v1)});
-					drawablePolygon.push_back(HAL::DrawPoint{path[i] - normal, Vector2D(u2, v2)});
+					drawablePolygon.push_back(HAL::DrawPoint{path[i] + normal, Graphics::QuadLerp(quadUV, u1, v1)});
+					drawablePolygon.push_back(HAL::DrawPoint{path[i] - normal, Graphics::QuadLerp(quadUV, u2, v2)});
 				}
 
 				glm::mat4 transform(1.0f);
 				transform = glm::translate(transform, glm::vec3(drawShift.x, drawShift.y, 0.0f));
-				engine->renderStrip(navMeshTexture.getSurface(), drawablePolygon, transform, 0.5f);
+				engine->renderStrip(navMeshSprite.getSurface(), drawablePolygon, transform, 0.5f);
 			}
 		});
 	}

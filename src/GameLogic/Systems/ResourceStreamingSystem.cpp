@@ -13,9 +13,9 @@ void ResourceStreamingSystem::update(World* world, float /*dt*/)
 {
 	world->getEntityManger().forEachComponentSet<RenderComponent>([&resourceManager = mResourceManager](RenderComponent* renderComponent)
 	{
-		if (ResourceHandle textureHandle = renderComponent->getTextureHandle(); !textureHandle.isValid())
+		if (ResourceHandle textureHandle = renderComponent->getSpriteHandle(); !textureHandle.isValid())
 		{
-			renderComponent->setTextureHandle(resourceManager->lockTexture(renderComponent->getTexturePath()));
+			renderComponent->setSpriteHandle(resourceManager->lockSprite(renderComponent->getTexturePath()));
 		}
 	});
 }

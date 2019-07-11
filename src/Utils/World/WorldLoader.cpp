@@ -38,7 +38,7 @@ namespace WorldLoader
 
 			mapFile << std::setw(4) << mapJson << std::endl;
 		} catch (const std::exception& e) {
-			LogError("Can't save level to file '%s': %s", levelPath.c_str(), e.what());
+			LogError("Can't save world to file '%s': %s", levelPath.c_str(), e.what());
 		}
 	}
 
@@ -66,11 +66,11 @@ namespace WorldLoader
 		}
 		catch(const nlohmann::detail::exception& e)
 		{
-			LogError("Can't parse '%s': %s", levelPath.c_str(), e.what());
+			LogError("Can't parse world '%s': %s", levelPath.c_str(), e.what());
 		}
 		catch(const std::exception& e)
 		{
-			LogError("Can't open '%s': %s", levelPath.c_str(), e.what());
+			LogError("Can't open world '%s': %s", levelPath.c_str(), e.what());
 		}
 	}
 }

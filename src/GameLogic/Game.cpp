@@ -17,8 +17,8 @@
 
 void Game::start(ArgumentsParser& arguments)
 {
-	initSystems();
 	initResources();
+	initSystems();
 
 	ComponentsRegistration::RegisterComponents(mComponentFactory);
 

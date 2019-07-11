@@ -17,9 +17,6 @@ public:
 		,None
 	};
 
-	Hull();
-	~Hull();
-
 	/** Pre-calculated squared radius */
 	float getQRadius() const;
 	/** Get the radius */

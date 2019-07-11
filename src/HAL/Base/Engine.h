@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "HAL/Graphics/Texture.h"
+#include "HAL/Base/Types.h"
 
 #include "GameData/Core/Vector2D.h"
 
@@ -37,8 +38,8 @@ namespace HAL
 		void start(IGame* game);
 		void quit();
 
-		void render(Internal::SdlSurface* surface, const glm::mat4& transform, float width, float height, float alpha = 1.0f);
-		void render(Internal::SdlSurface* surface, float x, float y, float width, float height, float ancX = 0.0f, float ancY = 0.0f, float rotation = 0.0f, float alpha = 1.0f);
+		void render(Internal::SdlSurface* surface, const glm::mat4& transform, Vector2D size, Graphics::QuadUV uv, float alpha = 1.0f);
+		void render(Internal::SdlSurface* surface, Vector2D pos, Vector2D size, Vector2D ancor, Graphics::QuadUV uv, float rotation = 0.0f, float alpha = 1.0f);
 		void renderFan(Internal::SdlSurface* surface, const std::vector<DrawPoint>& points, const glm::mat4& transform, float alpha);
 		void renderStrip(Internal::SdlSurface* surface, const std::vector<DrawPoint>& points, const glm::mat4& transform, float alpha);
 

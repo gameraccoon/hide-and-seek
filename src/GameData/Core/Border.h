@@ -6,7 +6,7 @@ class Border
 {
 public:
 	Border(const Vector2D& a, const Vector2D& b);
-	~Border();
+
 	/** Get normal-vector for this border */
 	Vector2D getNormal() const;
 	/** Get first point of this segment */
@@ -17,13 +17,16 @@ public:
 	void setA(const Vector2D& a);
 	/** Change second point of this segment (and recalculate normal) */
 	void setB(const Vector2D& b);
-protected:
+
+private:
+	/** Calculate normal for this hull */
+	void calculateNormal();
+
+private:
 	/** First point */
 	Vector2D aPoint;
 	/** Second point */
 	Vector2D bPoint;
 	/** Normal of this border */
 	Vector2D normal;
-	/** Calculate normal for this hull */
-	void calculateNormal();
 };

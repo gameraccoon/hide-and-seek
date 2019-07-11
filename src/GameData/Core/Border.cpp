@@ -7,10 +7,6 @@ Border::Border(const Vector2D& a, const Vector2D& b) : aPoint(a),
 {
 }
 
-Border::~Border()
-{
-}
-
 Vector2D Border::getNormal() const
 {
 	return normal;
@@ -42,3 +38,5 @@ void Border::calculateNormal()
 {
 	normal = (bPoint - aPoint).normal();
 }
+
+static_assert(std::is_trivially_copyable<Border>(), "Border should be trivially copyable");
