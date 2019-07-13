@@ -3,7 +3,10 @@
 #include <unordered_map>
 
 #include "ECS/System.h"
+
 #include "HAL/Base/Engine.h"
+
+#include "GameLogic/SharedManagers/WorldHolder.h"
 
 /**
  * System that resolve object collisions
@@ -14,7 +17,11 @@ public:
 	typedef std::unordered_map<int, bool> KeyStatesMap;
 
 public:
+	CollisionSystem(WorldHolder& worldHolder);
 	~CollisionSystem() override = default;
 
-	void update(World* world, float dt) override;
+	void update() override;
+
+private:
+	WorldHolder& mWorldHolder;
 };

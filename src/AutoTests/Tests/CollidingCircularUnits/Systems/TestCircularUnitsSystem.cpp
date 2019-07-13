@@ -8,8 +8,19 @@
 #include "GameData/Components/TransformComponent.generated.h"
 #include "GameData/Components/MovementComponent.generated.h"
 
-void TestCircularUnitsSystem::update(World* world, float dt)
+
+TestCircularUnitsSystem::TestCircularUnitsSystem(WorldHolder &worldHolder, const TimeData &timeData)
+	: mWorldHolder(worldHolder)
+	, mTime(timeData)
 {
+
+}
+
+void TestCircularUnitsSystem::update()
+{
+	World* world = mWorldHolder.world;
+	float dt = mTime.dt;
+
 	OptionalEntity playerEntity = world->getPlayerControlledEntity();
 	if (!playerEntity.isValid())
 	{

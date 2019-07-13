@@ -22,6 +22,8 @@ void Game::start(ArgumentsParser& arguments)
 
 	ComponentsRegistration::RegisterComponents(mComponentFactory);
 
+	mWorldHolder.world = &mWorld;
+
 	if (arguments.hasArgument("world"))
 	{
 		WorldLoader::LoadWorld(mWorld, arguments.getArgumentValue("world"), mComponentFactory);
@@ -42,18 +44,19 @@ void Game::setKeyState(int key, bool isPressed)
 
 void Game::update(float dt)
 {
-	mSystemsManager.update(&mWorld, dt);
+	mTime.update(dt);
+	mSystemsManager.update();
 	mKeyStates.clearLastFrameState();
 }
 
 void Game::initSystems()
 {
-	mSystemsManager.registerSystem<ControlSystem>(getEngine(), &mKeyStates);
-	mSystemsManager.registerSystem<CollisionSystem>();
-	mSystemsManager.registerSystem<RenderSystem>(getEngine(), getResourceManager());
-	mSystemsManager.registerSystem<ResourceStreamingSystem>(getResourceManager());
-	mSystemsManager.registerSystem<AiSystem>();
-	mSystemsManager.registerSystem<DebugDrawSystem>(getEngine(), getResourceManager());
+	mSystemsManager.registerSystem<ControlSystem>(mWorldHolder, mTime, getEngine(), &mKeyStates);
+	mSystemsManager.registerSystem<CollisionSystem>(mWorldHolder);
+	mSystemsManager.registerSystem<RenderSystem>(mWorldHolder, getEngine(), getResourceManager());
+	mSystemsManager.registerSystem<ResourceStreamingSystem>(mWorldHolder, getResourceManager());
+	mSystemsManager.registerSystem<AiSystem>(mWorldHolder, mTime);
+	mSystemsManager.registerSystem<DebugDrawSystem>(mWorldHolder, getEngine(), getResourceManager());
 }
 
 void Game::initResources()

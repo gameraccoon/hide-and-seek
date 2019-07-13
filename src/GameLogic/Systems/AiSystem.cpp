@@ -13,6 +13,7 @@
 #include <DetourNavMeshQuery.h>
 #include <string.h>
 
+
 inline bool inRange(const float* v1, const float* v2, const float r, const float h)
 {
 	const float dx = v2[0] - v1[0];
@@ -340,8 +341,18 @@ static void RecalcNavmesh(dtNavMesh* m_navMesh, dtNavMeshQuery* m_navQuery, floa
 	}
 }
 
-void AiSystem::update(World* world, float dt)
+
+AiSystem::AiSystem(WorldHolder &worldHolder, const TimeData& timeData)
+	: mWorldHolder(worldHolder)
+	, mTime(timeData)
 {
+}
+
+void AiSystem::update()
+{
+	World* world = mWorldHolder.world;
+	float dt = mTime.dt;
+
 	auto [navMeshComponent] = world->getWorldComponents().getComponents<NavMeshComponent>();
 
 	if (navMeshComponent == nullptr)

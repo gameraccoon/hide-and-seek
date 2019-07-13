@@ -4,10 +4,19 @@
 #include "GameData/Components/TransformComponent.generated.h"
 #include "GameData/Components/MovementComponent.generated.h"
 #include "GameData/World.h"
+
 #include "Utils/Geometry/Collide.h"
 
-void CollisionSystem::update(World* world, float /*dt*/)
+
+CollisionSystem::CollisionSystem(WorldHolder &worldHolder)
+	: mWorldHolder(worldHolder)
 {
+}
+
+void CollisionSystem::update()
+{
+	World* world = mWorldHolder.world;
+
 	auto components = world->getEntityManger().getComponents<CollisionComponent, TransformComponent>();
 
 	for (auto& [collision, transform] : components)

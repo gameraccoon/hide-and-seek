@@ -4,13 +4,17 @@
 
 #include "GameData/World.h"
 
-ResourceStreamingSystem::ResourceStreamingSystem(std::shared_ptr<HAL::ResourceManager> resourceManager)
-	: mResourceManager(resourceManager)
+
+ResourceStreamingSystem::ResourceStreamingSystem(WorldHolder& worldHolder, std::shared_ptr<HAL::ResourceManager> resourceManager)
+	: mWorldHolder(worldHolder)
+	, mResourceManager(resourceManager)
 {
 }
 
-void ResourceStreamingSystem::update(World* world, float /*dt*/)
+void ResourceStreamingSystem::update()
 {
+	World* world = mWorldHolder.world;
+
 	world->getEntityManger().forEachComponentSet<RenderComponent>([&resourceManager = mResourceManager](RenderComponent* renderComponent)
 	{
 		if (ResourceHandle textureHandle = renderComponent->getSpriteHandle(); !textureHandle.isValid())

@@ -8,6 +8,9 @@
 #include "HAL/GameBase.h"
 #include "HAL/KeyStatesMap.h"
 
+#include "GameLogic/SharedManagers/TimeData.h"
+#include "GameLogic/SharedManagers/WorldHolder.h"
+
 class Game : public HAL::GameBase
 {
 public:
@@ -20,8 +23,10 @@ private:
 	void initResources();
 
 private:
+	WorldHolder mWorldHolder;
 	World mWorld;
 	HAL::KeyStatesMap mKeyStates;
 	SystemsManager mSystemsManager;
 	ComponentFactory mComponentFactory;
+	TimeData mTime;
 };

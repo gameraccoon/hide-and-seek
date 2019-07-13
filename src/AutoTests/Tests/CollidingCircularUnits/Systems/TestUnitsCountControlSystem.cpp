@@ -10,6 +10,12 @@
 
 #include "GameData/World.h"
 
+
+TestUnitsCountControlSystem::TestUnitsCountControlSystem(WorldHolder& worldHolder)
+	: mWorldHolder(worldHolder)
+{
+}
+
 static void spawnUnit(EntityManager& entityManager, Vector2D pos)
 {
 	Entity entity = entityManager.addEntity();
@@ -56,8 +62,10 @@ static void spawnUnits(EntityManager& entityManager, int count, Vector2D pos)
 	}
 }
 
-void TestUnitsCountControlSystem::update(World* world, float )
+void TestUnitsCountControlSystem::update()
 {
+	World* world = mWorldHolder.world;
+
 	if (ticksPassed == 5)
 	{
 		spawnUnits(world->getEntityManger(), 500, Vector2D(-400.0f, 0.0f));

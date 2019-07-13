@@ -4,8 +4,11 @@
 #include <vector>
 
 #include "ECS/System.h"
+
 #include "HAL/Base/ResourceManager.h"
 #include "HAL/EngineFwd.h"
+
+#include "GameLogic/SharedManagers/WorldHolder.h"
 
 class TransformComponent;
 class CollisionComponent;
@@ -20,10 +23,10 @@ public:
 	typedef std::unordered_map<int, bool> KeyStatesMap;
 
 public:
-	DebugDrawSystem(HAL::Engine* engine, const std::shared_ptr<HAL::ResourceManager>& resourceManager);
+	DebugDrawSystem(WorldHolder& worldHolder, HAL::Engine* engine, const std::shared_ptr<HAL::ResourceManager>& resourceManager);
 	~DebugDrawSystem() override = default;
 
-	void update(World* world, float dt) override;
+	void update() override;
 
 private:
 	void drawVisibilityPolygon(const std::vector<Vector2D>& polygon, const Vector2D& fowSize, const Vector2D& drawShift);
@@ -31,6 +34,7 @@ private:
 	void drawLights(World* world, const Vector2D& drawShift, const Vector2D& maxFov);
 
 private:
+	WorldHolder& mWorldHolder;
 	HAL::Engine* mEngine;
 	std::shared_ptr<HAL::ResourceManager> mResourceManager;
 

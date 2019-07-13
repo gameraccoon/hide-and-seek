@@ -21,13 +21,17 @@
 
 void CollidingCircularUnitsTestCase::start(ArgumentsParser& /*arguments*/)
 {
-	mSystemsManager.registerSystem<TestUnitsCountControlSystem>();
-	mSystemsManager.registerSystem<TestCircularUnitsSystem>();
-	mSystemsManager.registerSystem<CollisionSystem>();
-	mSystemsManager.registerSystem<RenderSystem>(getEngine(), getResourceManager());
-	mSystemsManager.registerSystem<ResourceStreamingSystem>(getResourceManager());
+	getResourceManager()->loadAtlasesData("resources/atlas/atlas-list.json");
+
+	mSystemsManager.registerSystem<TestUnitsCountControlSystem>(mWorldHolder);
+	mSystemsManager.registerSystem<TestCircularUnitsSystem>(mWorldHolder, mTime);
+	mSystemsManager.registerSystem<CollisionSystem>(mWorldHolder);
+	mSystemsManager.registerSystem<RenderSystem>(mWorldHolder, getEngine(), getResourceManager());
+	mSystemsManager.registerSystem<ResourceStreamingSystem>(mWorldHolder, getResourceManager());
 
 	ComponentsRegistration::RegisterComponents(mComponentFactory);
+
+	mWorldHolder.world = &mWorld;
 
 	Entity playerEntity = mWorld.getEntityManger().addEntity();
 	TransformComponent* transform = mWorld.getEntityManger().addComponent<TransformComponent>(playerEntity);
@@ -55,6 +59,7 @@ void CollidingCircularUnitsTestCase::update(float)
 	}
 
 	constexpr float fixedDt = 0.16f;
-	mSystemsManager.update(&mWorld, fixedDt);
+	mTime.update(fixedDt);
+	mSystemsManager.update();
 	++ticksCount;
 }

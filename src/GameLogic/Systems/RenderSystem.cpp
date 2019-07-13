@@ -18,15 +18,19 @@
 #include <glm/matrix.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-RenderSystem::RenderSystem(HAL::Engine* engine, const std::shared_ptr<HAL::ResourceManager>& resourceManager)
-	: mEngine(engine)
+
+RenderSystem::RenderSystem(WorldHolder& worldHolder, HAL::Engine* engine, const std::shared_ptr<HAL::ResourceManager>& resourceManager)
+	: mWorldHolder(worldHolder)
+	, mEngine(engine)
 	, mResourceManager(resourceManager)
 {
 	mLightSpriteHandle = resourceManager->lockSprite("resources/textures/light.png");
 }
 
-void RenderSystem::update(World* world, float /*dt*/)
+void RenderSystem::update()
 {
+	World* world = mWorldHolder.world;
+
 	static const Vector2D maxFov(500.0f, 500.0f);
 
 	OptionalEntity mainCamera = world->getMainCamera();

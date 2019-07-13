@@ -18,16 +18,20 @@
 
 #include <DetourNavMesh.h>
 
-DebugDrawSystem::DebugDrawSystem(HAL::Engine* engine, const std::shared_ptr<HAL::ResourceManager>& resourceManager)
-	: mEngine(engine)
+
+DebugDrawSystem::DebugDrawSystem(WorldHolder& worldHolder, HAL::Engine* engine, const std::shared_ptr<HAL::ResourceManager>& resourceManager)
+	: mWorldHolder(worldHolder)
+	, mEngine(engine)
 	, mResourceManager(resourceManager)
 {
 	mCollisionSpriteHandle = resourceManager->lockSprite("resources/textures/collision.png");
 	mNavmeshSpriteHandle = resourceManager->lockSprite("resources/textures/testTexture.png");
 }
 
-void DebugDrawSystem::update(World* world, float /*dt*/)
+void DebugDrawSystem::update()
 {
+	World* world = mWorldHolder.world;
+
 	static const Vector2D maxFov(500.0f, 500.0f);
 
 	OptionalEntity mainCamera = world->getMainCamera();
@@ -67,7 +71,6 @@ void DebugDrawSystem::update(World* world, float /*dt*/)
 
 	if (renderMode && renderMode->getIsDrawDebugNavmeshEnabled())
 	{
-		srand(300);
 		const Graphics::Sprite& navMeshSprite = mResourceManager->getSprite(mNavmeshSpriteHandle);
 		Graphics::QuadUV quadUV = navMeshSprite.getUV();
 		auto [navMeshComponent] = world->getWorldComponents().getComponents<NavMeshComponent>();
@@ -148,5 +151,10 @@ void DebugDrawSystem::update(World* world, float /*dt*/)
 				engine->renderStrip(navMeshSprite.getSurface(), drawablePolygon, transform, 0.5f);
 			}
 		});
+	}
+
+	if (renderMode && renderMode->getIsDrawDebugFpsEnabled())
+	{
+
 	}
 }

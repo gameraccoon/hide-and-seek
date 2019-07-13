@@ -4,8 +4,6 @@
 #include <memory>
 #include "ECS/System.h"
 
-class World;
-
 /**
  * Manager for game systems
  */
@@ -18,7 +16,7 @@ public:
 		mSystems.emplace_back(new T(std::forward<Args>(args)...));
 	}
 
-	void update(World* world, float dt);
+	void update();
 
 private:
 	std::vector<std::unique_ptr<System>> mSystems;

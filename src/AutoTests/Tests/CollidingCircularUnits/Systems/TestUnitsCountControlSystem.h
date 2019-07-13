@@ -4,11 +4,17 @@
 
 #include "ECS/System.h"
 
+#include "GameLogic/SharedManagers/WorldHolder.h"
+
 class TestUnitsCountControlSystem : public System
 {
 public:
-	void update(World* world, float dt) override;
+	TestUnitsCountControlSystem(WorldHolder& worldHolder);
+
+	void update() override;
 
 private:
+private:
+	WorldHolder& mWorldHolder;
 	int ticksPassed = 0;
 };

@@ -9,8 +9,11 @@
 
 #include "GameData/World.h"
 
-ControlSystem::ControlSystem(HAL::Engine* engine, HAL::KeyStatesMap* keyStates)
-	: mEngine(engine)
+
+ControlSystem::ControlSystem(WorldHolder& worldHolder, const TimeData& timeData, HAL::Engine* engine, HAL::KeyStatesMap* keyStates)
+	: mWorldHolder(worldHolder)
+	, mTime(timeData)
+	, mEngine(engine)
 	, mKeyStates(keyStates)
 {
 }
@@ -28,8 +31,11 @@ void UpdateRenderStateOnPressed(HAL::KeyStatesMap* keys, World* world, int key, 
 	}
 }
 
-void ControlSystem::update(World* world, float dt)
+void ControlSystem::update()
 {
+	World* world = mWorldHolder.world;
+	float dt = mTime.dt;
+
 	float speed = 50.0f;
 	if (mKeyStates->isPressed(SDLK_LSHIFT) || mKeyStates->isPressed(SDLK_RSHIFT))
 	{

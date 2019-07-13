@@ -7,18 +7,23 @@
 
 #include "HAL/KeyStatesMap.h"
 
+#include "GameLogic/SharedManagers/TimeData.h"
+#include "GameLogic/SharedManagers/WorldHolder.h"
+
 /**
  * System that handles movement controls
  */
 class ControlSystem : public System
 {
 public:
-	ControlSystem(HAL::Engine* engine, HAL::KeyStatesMap* keyStates);
+	ControlSystem(WorldHolder& worldHolder, const TimeData& timeData, HAL::Engine* engine, HAL::KeyStatesMap* keyStates);
 	~ControlSystem() override = default;
 
-	void update(World* world, float dt) override;
+	void update() override;
 
 private:
+	WorldHolder& mWorldHolder;
+	const TimeData& mTime;
 	HAL::Engine* mEngine;
 	HAL::KeyStatesMap* mKeyStates;
 };
