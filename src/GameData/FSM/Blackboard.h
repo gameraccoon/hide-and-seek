@@ -1,24 +1,19 @@
 #pragma once
 
-#include <vector>
 #include <unordered_map>
-#include <string>
 #include <any>
 #include <typeindex>
-#include <functional>
-#include <memory>
 
 #include "Debug/Assert.h"
 
 namespace FSM
 {
+	template <typename KeyType>
 	class Blackboard
 	{
 	public:
-		using KeyType = std::string;
-	public:
 		template <typename T>
-		void setValue(KeyType key, T value)
+		void setValue(KeyType key, std::common_type_t<T> value)
 		{
 			mValues.insert_or_assign(std::forward<KeyType>(key), std::forward<T>(value));
 		}
@@ -50,6 +45,6 @@ namespace FSM
 		}
 
 	private:
-		std::unordered_map<std::string, std::any> mValues;
+		std::unordered_map<KeyType, std::any> mValues;
 	};
 }

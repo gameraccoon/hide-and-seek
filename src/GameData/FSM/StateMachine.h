@@ -2,9 +2,6 @@
 
 #include <vector>
 #include <map>
-#include <string>
-#include <typeindex>
-#include <functional>
 #include <memory>
 
 #include "GameData/FSM/Blackboard.h"
@@ -12,19 +9,22 @@
 
 namespace FSM
 {
-	template <typename StateIDType>
+	template <typename StateIDType, typename BlackboardKeyType>
 	class StateMachine
 	{
 	public:
+		using BlackboardType = Blackboard<BlackboardKeyType>;
+		using BaseLinkRuleType = LinkRule<BlackboardKeyType>;
+
 		struct LinkPair
 		{
-			LinkPair(StateIDType followingState, std::unique_ptr<LinkRule> linkFollowRule)
+			LinkPair(StateIDType followingState, std::unique_ptr<BaseLinkRuleType> linkFollowRule)
 				: followingState(std::forward<StateIDType>(followingState))
-				, linkFollowRule(std::forward<std::unique_ptr<LinkRule>>(linkFollowRule))
+				, linkFollowRule(std::forward<std::unique_ptr<BaseLinkRuleType>>(linkFollowRule))
 			{}
 
 			StateIDType followingState;
-			std::unique_ptr<LinkRule> linkFollowRule;
+			std::unique_ptr<BaseLinkRuleType> linkFollowRule;
 		};
 
 		struct StateLinks
@@ -60,11 +60,11 @@ namespace FSM
 
 		StateIDType getCurrentState() const { return mCurrentState; }
 		void setState(StateIDType newState) { mCurrentState = newState; }
-		Blackboard& getBlackboardRef() { return mBlackboard; }
+		BlackboardType& getBlackboardRef() { return mBlackboard; }
 
 	private:
 		std::map<StateIDType, StateLinks> mStates;
-		Blackboard mBlackboard;
+		BlackboardType mBlackboard;
 		StateIDType mCurrentState;
 	};
 }

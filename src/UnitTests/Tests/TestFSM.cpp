@@ -10,14 +10,21 @@ enum class TestStates
 	StateFour
 };
 
+enum class BlackboardTestValues
+{
+	One,
+	Two,
+	Three
+};
+
 TEST(FSM, BasicStateAndLink)
 {
-	using TestFSM = FSM::StateMachine<TestStates>;
+	using TestFSM = FSM::StateMachine<TestStates, BlackboardTestValues>;
 
 	TestFSM fsm;
 
 	TestFSM::StateLinks stateOneLinks;
-	stateOneLinks.links.emplace_back(TestStates::StateTwo, std::make_unique<FSM::LinkRules::FunctorLink>([](const FSM::Blackboard&){
+	stateOneLinks.links.emplace_back(TestStates::StateTwo, std::make_unique<FSM::LinkRules::FunctorLink<BlackboardTestValues>>([](const TestFSM::BlackboardType&){
 		return true;
 	}));
 	fsm.addState(TestStates::StateOne, std::move(stateOneLinks));
@@ -32,16 +39,16 @@ TEST(FSM, BasicStateAndLink)
 
 TEST(FSM, EqualityLinkRule)
 {
-	using TestFSM = FSM::StateMachine<TestStates>;
+	using TestFSM = FSM::StateMachine<TestStates, BlackboardTestValues>;
 
 	TestFSM fsm;
 
 	TestFSM::StateLinks stateOneLinks;
-	stateOneLinks.links.emplace_back(TestStates::StateTwo, std::make_unique<FSM::LinkRules::VariableEqualLink<bool>>("test", true));
+	stateOneLinks.links.emplace_back(TestStates::StateTwo, std::make_unique<FSM::LinkRules::VariableEqualLink<BlackboardTestValues, bool>>(BlackboardTestValues::One, true));
 	fsm.addState(TestStates::StateOne, std::move(stateOneLinks));
 
 	TestFSM::StateLinks stateTwoLinks;
-	stateTwoLinks.links.emplace_back(TestStates::StateOne, std::make_unique<FSM::LinkRules::VariableEqualLink<bool>>("test", false));
+	stateTwoLinks.links.emplace_back(TestStates::StateOne, std::make_unique<FSM::LinkRules::VariableEqualLink<BlackboardTestValues, bool>>(BlackboardTestValues::One, false));
 	fsm.addState(TestStates::StateTwo, std::move(stateTwoLinks));
 
 	fsm.setState(TestStates::StateOne);
@@ -49,12 +56,12 @@ TEST(FSM, EqualityLinkRule)
 
 	EXPECT_EQ(TestStates::StateOne, fsm.getCurrentState());
 
-	fsm.getBlackboardRef().setValue("test", true);
+	fsm.getBlackboardRef().setValue<bool>(BlackboardTestValues::One, true);
 	fsm.update();
 
 	EXPECT_EQ(TestStates::StateTwo, fsm.getCurrentState());
 
-	fsm.getBlackboardRef().setValue("test", false);
+	fsm.getBlackboardRef().setValue<bool>(BlackboardTestValues::One, false);
 	fsm.update();
 
 	EXPECT_EQ(TestStates::StateOne, fsm.getCurrentState());
@@ -62,16 +69,16 @@ TEST(FSM, EqualityLinkRule)
 
 TEST(FSM, DoubleLinkJump)
 {
-	using TestFSM = FSM::StateMachine<TestStates>;
+	using TestFSM = FSM::StateMachine<TestStates, std::string>;
 
 	TestFSM fsm;
 
 	TestFSM::StateLinks stateOneLinks;
-	stateOneLinks.links.emplace_back(TestStates::StateTwo, std::make_unique<FSM::LinkRules::VariableEqualLink<bool>>("stepOne", true));
+	stateOneLinks.links.emplace_back(TestStates::StateTwo, std::make_unique<FSM::LinkRules::VariableEqualLink<std::string, bool>>("stepOne", true));
 	fsm.addState(TestStates::StateOne, std::move(stateOneLinks));
 
 	TestFSM::StateLinks stateTwoLinks;
-	stateTwoLinks.links.emplace_back(TestStates::StateThree, std::make_unique<FSM::LinkRules::VariableEqualLink<bool>>("stepTwo", true));
+	stateTwoLinks.links.emplace_back(TestStates::StateThree, std::make_unique<FSM::LinkRules::VariableEqualLink<std::string, bool>>("stepTwo", true));
 	fsm.addState(TestStates::StateTwo, std::move(stateTwoLinks));
 
 	fsm.addState(TestStates::StateTwo, TestFSM::StateLinks());
@@ -81,12 +88,12 @@ TEST(FSM, DoubleLinkJump)
 
 	EXPECT_EQ(TestStates::StateOne, fsm.getCurrentState());
 
-	fsm.getBlackboardRef().setValue("stepTwo", true);
+	fsm.getBlackboardRef().setValue<bool>("stepTwo", true);
 	fsm.update();
 
 	EXPECT_EQ(TestStates::StateOne, fsm.getCurrentState());
 
-	fsm.getBlackboardRef().setValue("stepOne", true);
+	fsm.getBlackboardRef().setValue<bool>("stepOne", true);
 	fsm.update();
 
 	EXPECT_EQ(TestStates::StateThree, fsm.getCurrentState());
@@ -94,11 +101,23 @@ TEST(FSM, DoubleLinkJump)
 
 TEST(FSM, Blackboard)
 {
-	FSM::Blackboard blackboard;
+	{
+		FSM::Blackboard<std::string> blackboard;
 
-	blackboard.setValue<int>("test", 1);
+		blackboard.setValue<int>("test", 1);
 
-	EXPECT_EQ(1, blackboard.getValue<int>("test"));
-	EXPECT_EQ(0, blackboard.getValue<int>("non-existent"));
-	EXPECT_EQ(3, blackboard.getValue<int>("non-existent", 3));
+		EXPECT_EQ(1, blackboard.getValue<int>("test"));
+		EXPECT_EQ(0, blackboard.getValue<int>("non-existent"));
+		EXPECT_EQ(3, blackboard.getValue<int>("non-existent", 3));
+	}
+
+	{
+		FSM::Blackboard<BlackboardTestValues> blackboard;
+
+		blackboard.setValue<int>(BlackboardTestValues::One, 1);
+
+		EXPECT_EQ(1, blackboard.getValue<int>(BlackboardTestValues::One));
+		EXPECT_EQ(0, blackboard.getValue<int>(BlackboardTestValues::Two));
+		EXPECT_EQ(3, blackboard.getValue<int>(BlackboardTestValues::Two, 3));
+	}
 }

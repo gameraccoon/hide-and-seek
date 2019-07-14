@@ -9,11 +9,15 @@
 
 namespace FSM
 {
+	template<typename BlackboardKeyType>
 	class LinkRule
 	{
 	public:
+		using BlackboardType = Blackboard<BlackboardKeyType>;
+
+	public:
 		virtual ~LinkRule() = default;
-		virtual bool canFollow(const Blackboard& blackboard) const = 0;
+		virtual bool canFollow(const BlackboardType& blackboard) const = 0;
 	};
 
 	namespace LinkRules
@@ -21,14 +25,23 @@ namespace FSM
 		/**
 		 * Link that can be parametrized with functor
 		 */
-		class FunctorLink : public LinkRule
+		template<typename BlackboardKeyType>
+		class FunctorLink : public LinkRule<BlackboardKeyType>
 		{
 		public:
-			using CanFollowFn = std::function<bool(const Blackboard& blackboard)>;
+			using BlackboardType = Blackboard<BlackboardKeyType>;
+			using CanFollowFn = std::function<bool(const BlackboardType& blackboard)>;
 
 		public:
-			FunctorLink(CanFollowFn canFollowFn);
-			bool canFollow(const Blackboard& blackboard) const;
+			FunctorLink(CanFollowFn canFollowFn)
+				: mCanFollowFn(canFollowFn)
+			{
+			}
+
+			bool canFollow(const Blackboard<BlackboardKeyType>& blackboard) const
+			{
+				return mCanFollowFn(blackboard);
+			}
 
 		private:
 			CanFollowFn mCanFollowFn;
@@ -37,26 +50,26 @@ namespace FSM
 		/**
 		 * Link that will be followed if a blackboard variable have a specific value
 		 */
-		template<typename T>
-		class VariableEqualLink : public LinkRule
+		template<typename BlackboardKeyType, typename T>
+		class VariableEqualLink : public LinkRule<BlackboardKeyType>
 		{
 		public:
-			using CanFollowFn = std::function<bool(const Blackboard& blackboard)>;
+			using BlackboardType = Blackboard<BlackboardKeyType>;
 
 		public:
-			VariableEqualLink(const std::string& name, T expectedValue)
-				: mName(name)
-				, mExpectedValue(expectedValue)
+			VariableEqualLink(BlackboardKeyType name, T expectedValue)
+				: mName(std::forward<BlackboardKeyType>(name))
+				, mExpectedValue(std::forward<T>(expectedValue))
 			{
 			}
 
-			bool canFollow(const Blackboard& blackboard) const
+			bool canFollow(const BlackboardType& blackboard) const
 			{
-				return blackboard.getValue<T>(mName) == mExpectedValue;
+				return blackboard.template getValue<T>(mName) == mExpectedValue;
 			}
 
 		private:
-			std::string mName;
+			BlackboardKeyType mName;
 			T mExpectedValue;
 		};
 	}
