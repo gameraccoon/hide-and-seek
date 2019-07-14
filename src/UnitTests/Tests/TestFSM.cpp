@@ -23,13 +23,13 @@ TEST(FSM, BasicStateAndLink)
 
 	TestFSM fsm;
 
-	TestFSM::StateLinks stateOneLinks;
-	stateOneLinks.links.emplace_back(TestStates::StateTwo, std::make_unique<FSM::LinkRules::FunctorLink<BlackboardTestValues>>([](const TestFSM::BlackboardType&){
+	TestFSM::StateLinkRules stateOneLinks;
+	stateOneLinks.emplaceLink<FSM::LinkRules::FunctorLink>(TestStates::StateTwo, [](const TestFSM::BlackboardType&){
 		return true;
-	}));
+	});
 	fsm.addState(TestStates::StateOne, std::move(stateOneLinks));
 
-	fsm.addState(TestStates::StateTwo, TestFSM::StateLinks());
+	fsm.addState(TestStates::StateTwo, TestFSM::StateLinkRules());
 
 	fsm.setState(TestStates::StateOne);
 	fsm.update();
@@ -43,12 +43,12 @@ TEST(FSM, EqualityLinkRule)
 
 	TestFSM fsm;
 
-	TestFSM::StateLinks stateOneLinks;
-	stateOneLinks.links.emplace_back(TestStates::StateTwo, std::make_unique<FSM::LinkRules::VariableEqualLink<BlackboardTestValues, bool>>(BlackboardTestValues::One, true));
+	TestFSM::StateLinkRules stateOneLinks;
+	stateOneLinks.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(TestStates::StateTwo, BlackboardTestValues::One, true);
 	fsm.addState(TestStates::StateOne, std::move(stateOneLinks));
 
-	TestFSM::StateLinks stateTwoLinks;
-	stateTwoLinks.links.emplace_back(TestStates::StateOne, std::make_unique<FSM::LinkRules::VariableEqualLink<BlackboardTestValues, bool>>(BlackboardTestValues::One, false));
+	TestFSM::StateLinkRules stateTwoLinks;
+	stateTwoLinks.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(TestStates::StateOne, BlackboardTestValues::One, false);
 	fsm.addState(TestStates::StateTwo, std::move(stateTwoLinks));
 
 	fsm.setState(TestStates::StateOne);
@@ -73,15 +73,15 @@ TEST(FSM, DoubleLinkJump)
 
 	TestFSM fsm;
 
-	TestFSM::StateLinks stateOneLinks;
-	stateOneLinks.links.emplace_back(TestStates::StateTwo, std::make_unique<FSM::LinkRules::VariableEqualLink<std::string, bool>>("stepOne", true));
+	TestFSM::StateLinkRules stateOneLinks;
+	stateOneLinks.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(TestStates::StateTwo, "stepOne", true);
 	fsm.addState(TestStates::StateOne, std::move(stateOneLinks));
 
-	TestFSM::StateLinks stateTwoLinks;
-	stateTwoLinks.links.emplace_back(TestStates::StateThree, std::make_unique<FSM::LinkRules::VariableEqualLink<std::string, bool>>("stepTwo", true));
+	TestFSM::StateLinkRules stateTwoLinks;
+	stateTwoLinks.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(TestStates::StateThree, "stepTwo", true);
 	fsm.addState(TestStates::StateTwo, std::move(stateTwoLinks));
 
-	fsm.addState(TestStates::StateTwo, TestFSM::StateLinks());
+	fsm.addState(TestStates::StateTwo, TestFSM::StateLinkRules());
 
 	fsm.setState(TestStates::StateOne);
 	fsm.update();

@@ -27,15 +27,22 @@ namespace FSM
 			std::unique_ptr<BaseLinkRuleType> linkFollowRule;
 		};
 
-		struct StateLinks
+		struct StateLinkRules
 		{
+			// less verbose emplace function
+			template <template<typename...> typename LinkRuleType, typename... Types, typename... Args>
+			void emplaceLink(StateIDType state, Args... args)
+			{
+				links.emplace_back(std::forward<StateIDType>(state), std::make_unique<LinkRuleType<BlackboardKeyType, Types...>>(std::forward<Args>(args)...));
+			}
+
 			std::vector<LinkPair> links;
 		};
 
 	public:
-		void addState(StateIDType stateID, StateLinks stateLinks)
+		void addState(StateIDType stateID, StateLinkRules stateLinkRules)
 		{
-			mStates.emplace(std::forward<StateIDType>(stateID), std::forward<StateLinks>(stateLinks));
+			mStates.emplace(std::forward<StateIDType>(stateID), std::forward<StateLinkRules>(stateLinkRules));
 		}
 
 		void update()
@@ -63,7 +70,7 @@ namespace FSM
 		BlackboardType& getBlackboardRef() { return mBlackboard; }
 
 	private:
-		std::map<StateIDType, StateLinks> mStates;
+		std::map<StateIDType, StateLinkRules> mStates;
 		BlackboardType mBlackboard;
 		StateIDType mCurrentState;
 	};
