@@ -9,6 +9,13 @@
 
 namespace FSM
 {
+	/**
+	 * Finite State Machine implementation
+	 *
+	 * The SM can be initialized by adding states calling addState method.
+	 * The current state and the blackboard are stored outside the class, allowing
+	 * using one SM for multiple state instanses.
+	 */
 	template <typename StateIDType, typename BlackboardKeyType>
 	class StateMachine
 	{
@@ -42,36 +49,41 @@ namespace FSM
 	public:
 		void addState(StateIDType stateID, StateLinkRules stateLinkRules)
 		{
-			mStates.emplace(std::forward<StateIDType>(stateID), std::forward<StateLinkRules>(stateLinkRules));
+			bool isEmplaced;
+			std::tie(std::ignore, isEmplaced) = mStates.emplace(std::forward<StateIDType>(stateID), std::forward<StateLinkRules>(stateLinkRules));
+			Assert(isEmplaced, "State is already exists");
 		}
 
-		void update()
+		virtual StateIDType getNextState(const BlackboardType& blackboard, StateIDType previousState) const
 		{
 			bool needToProcess = true;
-			StateIDType previousState = mCurrentState;
+			StateIDType currentState = previousState;
 			while (needToProcess == true)
 			{
 				needToProcess = false;
-				for (const LinkPair& link : mStates[mCurrentState].links)
+				auto stateIt = mStates.find(currentState);
+				if (stateIt == mStates.end())
 				{
-					if (link.linkFollowRule->canFollow(mBlackboard))
+					break;
+				}
+
+				for (const LinkPair& link : stateIt->second.links)
+				{
+					if (link.linkFollowRule->canFollow(blackboard))
 					{
-						mCurrentState = link.followingState;
+						currentState = link.followingState;
 						needToProcess = true;
 
-						AssertRetVoid(mCurrentState != previousState, "FSM cycle detected");
+						AssertRet(currentState != previousState, currentState, "FSM cycle detected");
+						break;
 					}
 				}
 			}
+
+			return currentState;
 		}
 
-		StateIDType getCurrentState() const { return mCurrentState; }
-		void setState(StateIDType newState) { mCurrentState = newState; }
-		BlackboardType& getBlackboardRef() { return mBlackboard; }
-
-	private:
+	protected:
 		std::map<StateIDType, StateLinkRules> mStates;
-		BlackboardType mBlackboard;
-		StateIDType mCurrentState;
 	};
 }

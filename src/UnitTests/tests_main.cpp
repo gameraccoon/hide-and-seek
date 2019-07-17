@@ -39,12 +39,12 @@ public:
 
 class TestInfoLogger : public EmptyTestEventListener
 {
-	// Called before a test starts.
+	// Called before a test starts
 	virtual void OnTestStart(const TestInfo& test_info);
-	// Called after a failed assertion or a SUCCEED() invocation.
+	// Called after a failed assertion or a SUCCEED() invocation
 	virtual void OnTestPartResult(const TestPartResult& test_part_result);
-	// Called after a test ends.
-	virtual void OnTestEnd(const TestInfo& /*test_info*/);
+	// Called after a test ends
+	virtual void OnTestEnd(const TestInfo& test_info);
 };
 
 void SGTestingEnvironment::SetUp()
@@ -58,22 +58,22 @@ void SGTestingEnvironment::TearDown()
 // Called before a test starts.
 void TestInfoLogger::OnTestStart(const TestInfo& test_info)
 {
-	LogInfo(std::string("======= Test ") + test_info.test_case_name() + "." + test_info.name() + " starting.");
+	LogInfo("======= Test %s.%s starting.", test_info.test_case_name(), test_info.name());
 }
 
 // Called after a failed assertion or a SUCCEED() invocation.
 void TestInfoLogger::OnTestPartResult(const TestPartResult& test_part_result)
 {
 	if (test_part_result.failed()) {
-		LogError(std::string("=======").append(test_part_result.failed() ? "Failure" : "Success") + "in "
-			+ test_part_result.file_name() + ":" + std::to_string(test_part_result.line_number()) + "\n" + test_part_result.summary());
+		LogError("======= %s in %s:%d\n%s", (test_part_result.failed() ? "Failure" : "Success"),
+			test_part_result.file_name(), test_part_result.line_number(), test_part_result.summary());
 	}
 }
 
 // Called after a test ends.
 void TestInfoLogger::OnTestEnd(const TestInfo& /*test_info*/)
 {
-	//LogInfo(std::string("======= Test ") + test_info.test_case_name() + "." + test_info.name() + " ending.");
+	//LogInfo("======= Test %s.%s ending.", test_info.test_case_name(), test_info.name());
 }
 
 int main(int argc, char* argv[])

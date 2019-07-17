@@ -1,13 +1,16 @@
 #include <gtest/gtest.h>
 
 #include "GameData/FSM/StateMachine.h"
+#include "GameData/FSM/HierarchicalStateMachine.h"
 
 enum class TestStates
 {
 	StateOne,
 	StateTwo,
 	StateThree,
-	StateFour
+	StateFour,
+	ParentStateOne,
+	ParentStateTwo
 };
 
 enum class BlackboardTestValues
@@ -16,88 +19,6 @@ enum class BlackboardTestValues
 	Two,
 	Three
 };
-
-TEST(FSM, BasicStateAndLink)
-{
-	using TestFSM = FSM::StateMachine<TestStates, BlackboardTestValues>;
-
-	TestFSM fsm;
-
-	TestFSM::StateLinkRules stateOneLinks;
-	stateOneLinks.emplaceLink<FSM::LinkRules::FunctorLink>(TestStates::StateTwo, [](const TestFSM::BlackboardType&){
-		return true;
-	});
-	fsm.addState(TestStates::StateOne, std::move(stateOneLinks));
-
-	fsm.addState(TestStates::StateTwo, TestFSM::StateLinkRules());
-
-	fsm.setState(TestStates::StateOne);
-	fsm.update();
-
-	EXPECT_EQ(TestStates::StateTwo, fsm.getCurrentState());
-}
-
-TEST(FSM, EqualityLinkRule)
-{
-	using TestFSM = FSM::StateMachine<TestStates, BlackboardTestValues>;
-
-	TestFSM fsm;
-
-	TestFSM::StateLinkRules stateOneLinks;
-	stateOneLinks.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(TestStates::StateTwo, BlackboardTestValues::One, true);
-	fsm.addState(TestStates::StateOne, std::move(stateOneLinks));
-
-	TestFSM::StateLinkRules stateTwoLinks;
-	stateTwoLinks.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(TestStates::StateOne, BlackboardTestValues::One, false);
-	fsm.addState(TestStates::StateTwo, std::move(stateTwoLinks));
-
-	fsm.setState(TestStates::StateOne);
-	fsm.update();
-
-	EXPECT_EQ(TestStates::StateOne, fsm.getCurrentState());
-
-	fsm.getBlackboardRef().setValue<bool>(BlackboardTestValues::One, true);
-	fsm.update();
-
-	EXPECT_EQ(TestStates::StateTwo, fsm.getCurrentState());
-
-	fsm.getBlackboardRef().setValue<bool>(BlackboardTestValues::One, false);
-	fsm.update();
-
-	EXPECT_EQ(TestStates::StateOne, fsm.getCurrentState());
-}
-
-TEST(FSM, DoubleLinkJump)
-{
-	using TestFSM = FSM::StateMachine<TestStates, std::string>;
-
-	TestFSM fsm;
-
-	TestFSM::StateLinkRules stateOneLinks;
-	stateOneLinks.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(TestStates::StateTwo, "stepOne", true);
-	fsm.addState(TestStates::StateOne, std::move(stateOneLinks));
-
-	TestFSM::StateLinkRules stateTwoLinks;
-	stateTwoLinks.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(TestStates::StateThree, "stepTwo", true);
-	fsm.addState(TestStates::StateTwo, std::move(stateTwoLinks));
-
-	fsm.addState(TestStates::StateTwo, TestFSM::StateLinkRules());
-
-	fsm.setState(TestStates::StateOne);
-	fsm.update();
-
-	EXPECT_EQ(TestStates::StateOne, fsm.getCurrentState());
-
-	fsm.getBlackboardRef().setValue<bool>("stepTwo", true);
-	fsm.update();
-
-	EXPECT_EQ(TestStates::StateOne, fsm.getCurrentState());
-
-	fsm.getBlackboardRef().setValue<bool>("stepOne", true);
-	fsm.update();
-
-	EXPECT_EQ(TestStates::StateThree, fsm.getCurrentState());
-}
 
 TEST(FSM, Blackboard)
 {
@@ -120,4 +41,147 @@ TEST(FSM, Blackboard)
 		EXPECT_EQ(0, blackboard.getValue<int>(BlackboardTestValues::Two));
 		EXPECT_EQ(3, blackboard.getValue<int>(BlackboardTestValues::Two, 3));
 	}
+}
+
+TEST(FSM, BasicStateAndLink)
+{
+	using StateIDType = TestStates;
+	using BlackBoardKeyType = BlackboardTestValues;
+	using TestFSM = FSM::StateMachine<StateIDType, BlackBoardKeyType>;
+
+	FSM::Blackboard<BlackBoardKeyType> blackboard;
+	TestFSM fsm;
+	StateIDType currentState = TestStates::StateOne;
+
+	TestFSM::StateLinkRules stateOneLinks;
+	stateOneLinks.emplaceLink<FSM::LinkRules::FunctorLink>(TestStates::StateTwo, [](const TestFSM::BlackboardType&){
+		return true;
+	});
+	fsm.addState(TestStates::StateOne, std::move(stateOneLinks));
+
+	fsm.addState(TestStates::StateTwo, TestFSM::StateLinkRules());
+
+	currentState = fsm.getNextState(blackboard, currentState);
+
+	EXPECT_EQ(TestStates::StateTwo, currentState);
+}
+
+TEST(FSM, EqualityLinkRule)
+{
+	using StateIDType = TestStates;
+	using BlackBoardKeyType = BlackboardTestValues;
+	using TestFSM = FSM::StateMachine<StateIDType, BlackBoardKeyType>;
+
+	FSM::Blackboard<BlackBoardKeyType> blackboard;
+	TestFSM fsm;
+	StateIDType currentState = TestStates::StateOne;
+
+	TestFSM::StateLinkRules stateOneLinks;
+	stateOneLinks.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(TestStates::StateTwo, BlackboardTestValues::One, true);
+	fsm.addState(TestStates::StateOne, std::move(stateOneLinks));
+
+	TestFSM::StateLinkRules stateTwoLinks;
+	stateTwoLinks.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(TestStates::StateOne, BlackboardTestValues::One, false);
+	fsm.addState(TestStates::StateTwo, std::move(stateTwoLinks));
+
+	currentState = fsm.getNextState(blackboard, currentState);
+
+	EXPECT_EQ(TestStates::StateOne, currentState);
+
+	blackboard.setValue<bool>(BlackboardTestValues::One, true);
+	currentState = fsm.getNextState(blackboard, currentState);
+
+	EXPECT_EQ(TestStates::StateTwo, currentState);
+
+	blackboard.setValue<bool>(BlackboardTestValues::One, false);
+	currentState = fsm.getNextState(blackboard, currentState);
+
+	EXPECT_EQ(TestStates::StateOne, currentState);
+}
+
+TEST(FSM, DoubleLinkJump)
+{
+	using StateIDType = TestStates;
+	using BlackBoardKeyType = std::string;
+	using TestFSM = FSM::StateMachine<StateIDType, BlackBoardKeyType>;
+
+	FSM::Blackboard<BlackBoardKeyType> blackboard;
+	TestFSM fsm;
+	StateIDType currentState = TestStates::StateOne;
+
+	TestFSM::StateLinkRules stateOneLinks;
+	stateOneLinks.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(TestStates::StateTwo, "stepTwo", true);
+	fsm.addState(TestStates::StateOne, std::move(stateOneLinks));
+
+	TestFSM::StateLinkRules stateTwoLinks;
+	stateTwoLinks.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(TestStates::StateThree, "stepOne", true);
+	fsm.addState(TestStates::StateTwo, std::move(stateTwoLinks));
+
+	fsm.addState(TestStates::StateThree, TestFSM::StateLinkRules());
+
+	currentState = fsm.getNextState(blackboard, currentState);
+
+	EXPECT_EQ(TestStates::StateOne, currentState);
+
+	blackboard.setValue<bool>("stepOne", true);
+	currentState = fsm.getNextState(blackboard, currentState);
+
+	EXPECT_EQ(TestStates::StateOne, currentState);
+
+	blackboard.setValue<bool>("stepTwo", true);
+	currentState = fsm.getNextState(blackboard, currentState);
+
+	EXPECT_EQ(TestStates::StateThree, currentState);
+}
+
+TEST(FSM, HierarchicalStateMachine)
+{
+	using StateIDType = TestStates;
+	using BlackBoardKeyType = std::string;
+	using TestFSM = FSM::HierarchicalStateMachine<StateIDType, BlackBoardKeyType>;
+
+	FSM::Blackboard<BlackBoardKeyType> blackboard;
+	TestFSM fsm;
+	StateIDType currentState = TestStates::StateOne;
+
+	TestFSM::StateLinkRules stateOneLinks;
+	stateOneLinks.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(TestStates::StateTwo, "stepOne", true);
+	fsm.addState(TestStates::StateOne, std::move(stateOneLinks));
+
+	TestFSM::StateLinkRules stateTwoLinks;
+	stateTwoLinks.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(TestStates::StateThree, "stepTwo", true);
+	fsm.addState(TestStates::StateTwo, std::move(stateTwoLinks));
+
+	fsm.addState(TestStates::StateThree, TestFSM::StateLinkRules());
+
+	TestFSM::StateLinkRules parentStateOneLinks;
+	parentStateOneLinks.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(TestStates::StateFour, "stepTwo", true);
+	fsm.addState(TestStates::ParentStateOne, std::move(parentStateOneLinks));
+	fsm.linkStates(TestStates::StateOne, TestStates::ParentStateOne, true);
+	fsm.linkStates(TestStates::StateTwo, TestStates::ParentStateOne);
+	fsm.linkStates(TestStates::StateThree, TestStates::ParentStateOne);
+
+	TestFSM::StateLinkRules stateFourLinks;
+	stateFourLinks.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(TestStates::ParentStateOne, "stepThree", true);
+	fsm.addState(TestStates::StateFour, std::move(stateFourLinks));
+
+	currentState = fsm.getNextState(blackboard, currentState);
+
+	EXPECT_EQ(TestStates::StateOne, currentState);
+
+	blackboard.setValue<bool>("stepOne", true);
+	currentState = fsm.getNextState(blackboard, currentState);
+
+	EXPECT_EQ(TestStates::StateTwo, currentState);
+
+	blackboard.setValue<bool>("stepTwo", true);
+	currentState = fsm.getNextState(blackboard, currentState);
+
+	EXPECT_EQ(TestStates::StateFour, currentState);
+
+	blackboard.setValue<bool>("stepTwo", false);
+	blackboard.setValue<bool>("stepThree", true);
+	currentState = fsm.getNextState(blackboard, currentState);
+
+	EXPECT_EQ(TestStates::StateTwo, currentState);
 }
