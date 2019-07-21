@@ -2,7 +2,7 @@
 	{
 		"name": "attribute_includes",
 		"params": ["not_empty", "sort", "remove_duplicates"],
-		"value_to_empty_test": "attribute_include"
+		"value_to_empty_test": "attribute_includes"
 	},
 	{
 		"name": "attributes_constructor_arguments",
@@ -50,7 +50,7 @@
 	{
 		"name": "editor/editable_attribute_includes",
 		"params": ["not_empty", "sort", "remove_duplicates"],
-		"value_to_empty_test": "attribute_include",
+		"value_to_empty_test": "attribute_includes",
 		"blacklist": ["transient"]
 	}
 ]

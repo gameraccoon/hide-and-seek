@@ -6,23 +6,23 @@
 			"name": "size",
 			"type": "Vector2D",
 			"default": " = ZERO_VECTOR",
-			"include": "\"GameData/Core/Vector2D.h\""
+			"includes": ["\"GameData/Core/Vector2D.h\""]
 		},
 		{
 			"name": "anchor",
 			"type": "Vector2D",
 			"default": " = Vector2D(0.5f, 0.5f)",
-			"include": "\"GameData/Core/Vector2D.h\""
+			"includes": ["\"GameData/Core/Vector2D.h\""]
 		},
 		{
 			"name": "texturePath",
 			"type": "std::string",
-			"include": "<string>"
+			"includes": ["<string>"]
 		},
 		{
 			"name": "spriteHandle",
 			"type": "ResourceHandle",
-			"include": "\"GameData/Core/ResourceHandle.h\"",
+			"includes": ["\"GameData/Core/ResourceHandle.h\""],
 			"flags": ["transient"]
 		}
 	]

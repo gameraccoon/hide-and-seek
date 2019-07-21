@@ -6,13 +6,13 @@
 			"name": "location",
 			"type": "Vector2D",
 			"default": " = ZERO_VECTOR",
-			"include": "\"GameData/Core/Vector2D.h\""
+			"includes": ["\"GameData/Core/Vector2D.h\""]
 		},
 		{
 			"name": "rotation",
 			"type": "Rotator",
 			"default": " = Rotator(0.0f)",
-			"include": "\"GameData/Core/Rotator.h\""
+			"includes": ["\"GameData/Core/Rotator.h\""]
 		}
 	]
 }

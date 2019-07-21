@@ -148,7 +148,7 @@ set_target_properties(${APP_NAME} PROPERTIES
 find_package(PythonInterp 3.5 REQUIRED)
 add_custom_target(
 	CodeGeneration
-	COMMAND ${PYTHON_EXECUTABLE} ${GAME_BASE_DIR}/scripts/build/cpp_code_generate.py ${GAME_BASE_DIR}/
+	COMMAND ${PYTHON_EXECUTABLE} ${GAME_BASE_DIR}/scripts/build/code_generate.py ${GAME_BASE_DIR}/
 	COMMENT "C++ code generation"
 )
 

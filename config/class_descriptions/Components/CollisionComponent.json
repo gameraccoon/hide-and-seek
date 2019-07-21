@@ -5,7 +5,7 @@
 		{
 			"name": "geometry",
 			"type": "Hull",
-			"include": "\"GameData/Core/Hull.h\"",
+			"includes": ["\"GameData/Core/Hull.h\""],
 			"flags": ["get_by_ref"]
 		},
 		{
@@ -18,14 +18,14 @@
 			"name": "boundingBox",
 			"type": "BoundingBox",
 			"default": " = BoundingBox(Vector2D(0.0f, 0.0f), Vector2D(0.0f, 0.0f))",
-			"include": "\"GameData/Core/BoundingBox.h\"",
+			"includes": ["\"GameData/Core/BoundingBox.h\""],
 			"flags": ["transient", "get_by_ref"]
 		},
 		{
 			"name": "originalBoundingBox",
 			"type": "BoundingBox",
 			"default": " = BoundingBox(Vector2D(0.0f, 0.0f), Vector2D(0.0f, 0.0f))",
-			"include": "\"GameData/Core/BoundingBox.h\"",
+			"includes": ["\"GameData/Core/BoundingBox.h\""],
 			"flags": ["transient", "get_by_ref"]
 		}
 	]

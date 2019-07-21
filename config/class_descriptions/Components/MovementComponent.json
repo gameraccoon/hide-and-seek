@@ -7,13 +7,13 @@
 			"name": "speed",
 			"type": "Vector2D",
 			"default": " = ZERO_VECTOR",
-			"include": "\"GameData/Core/Vector2D.h\""
+			"includes": ["\"GameData/Core/Vector2D.h\""]
 		},
 		{
 			"name": "lastStep",
 			"type": "Vector2D",
 			"default": " = ZERO_VECTOR",
-			"include": "\"GameData/Core/Vector2D.h\""
+			"includes": ["\"GameData/Core/Vector2D.h\""]
 		}
 	]
 }

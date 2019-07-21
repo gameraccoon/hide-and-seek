@@ -1,0 +1,2 @@
+if (value == "{enum_value}")
+		return {enum_name}::{enum_value};{delim_endl}{delim_tab}

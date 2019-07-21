@@ -4,6 +4,8 @@ import json
 import os
 from os import path
 
+from generators.shared_functions import *
+
 import sys
 
 if len(sys.argv) > 1:
@@ -11,32 +13,10 @@ if len(sys.argv) > 1:
 else:
     working_dir = os.getcwd()
 
-templates_dir = path.join(working_dir, "config/code_generation/templates")
+
+configs_dir = path.join(working_dir, "config/code_generation/components")
+templates_dir = path.join(configs_dir, "templates")
 descriptions_dir = path.join(working_dir, "config/class_descriptions/Components")
-configs_dir = path.join(working_dir, "config/code_generation")
-
-
-def capitalize(input_str):
-    return input_str[:1].capitalize() + input_str[1:]
-
-
-def read_template(template_name):
-    with open(path.join(templates_dir, template_name + ".template"), 'r') as template_file:
-        return template_file.read().rstrip('\n')
-
-
-def replace_content(template_string, data_dictionary):
-    return template_string.format(**data_dictionary)
-
-
-def write_file(generated_file_name, content):
-    if os.path.isfile(generated_file_name):
-        with open(generated_file_name, 'r') as generated_file:
-            if content == generated_file.read():
-                return
-
-    with open(generated_file_name, 'w') as generated_file:
-        generated_file.write(content)
 
 
 def get_base_data_dictionary(data_description):
@@ -56,10 +36,12 @@ def get_attribute_data_dictionary(attribute):
 
     attribute_data_dictionary["attribute_name_capital"] = capitalize(attribute["name"])
 
-    if "include" in attribute and len(attribute["include"]) > 0:
-        attribute_data_dictionary["attribute_include_full"] = "#include " + attribute["include"]
-    else:
-        attribute_data_dictionary["attribute_include_full"] = ""
+    attribute_data_dictionary["attribute_include_full"] = ""
+    if "includes" in attribute:
+        for include in attribute["includes"]:
+            attribute_data_dictionary["attribute_include_full"] += ("#include %s\n" % include)
+    attribute_data_dictionary["attribute_include_full"] = attribute_data_dictionary["attribute_include_full"].rstrip("\n")
+
 
 # fill missing fields from defaults
     for field_name, field_value in attribute_optional_fields.items():
@@ -75,7 +57,7 @@ def append_attributes_data_dictionary(data_dictionary, data_description):
 
         template_params = set(attribute_template_data["params"])
 
-        template = read_template(template_name)
+        template = read_template(template_name, templates_dir)
         replacement_content = ""
         replacement_content_elements = []
 
@@ -132,7 +114,7 @@ def get_full_data_dictionary(data_description):
 
 
 def generate_component_cpp_file(template_name, destination_dir, file_name_template, full_data_dictionary):
-    template = read_template(template_name)
+    template = read_template(template_name, templates_dir)
     generated_content = replace_content(template, full_data_dictionary)
     file_name = replace_content(file_name_template, full_data_dictionary)
 
@@ -143,7 +125,7 @@ def generate_component_cpp_file(template_name, destination_dir, file_name_templa
 
 
 def generate_per_attribute_cpp_files(data_description, template_name, destination_dir, file_name_template, full_data_dictionary):
-    template = read_template(template_name)
+    template = read_template(template_name, templates_dir)
     for attribute in data_description["attributes"]:
         attribute_dict = {
             **full_data_dictionary,
@@ -172,11 +154,6 @@ def generate_files(file_infos, data_description):
                                         path.join(working_dir, file_info["output_dir"]),
                                         file_info["name_template"],
                                         full_data_dict)
-
-
-def load_json(file_path):
-    with open(file_path) as f:
-        return json.load(f)
 
 
 def load_component_data_description(file_path):

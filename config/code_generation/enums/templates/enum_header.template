@@ -1,0 +1,14 @@
+#pragma once
+
+#include <string>
+
+template <typename T>
+std::string enum_to_string(T value);
+
+template <typename T>
+T string_to_enum(const std::string& value);
+
+enum class {enum_name}
+{{
+	{enum_value}
+}};

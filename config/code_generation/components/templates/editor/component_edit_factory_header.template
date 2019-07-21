@@ -3,7 +3,7 @@
 #include "src/componenteditcontent/abstracteditfactory.h"
 #include "src/componenteditcontent/typeeditconstructorhelpers.h"
 
-{editor/editable_attribute_includes}
+{attribute_includes}
 
 class {class_name}EditData : public EditData
 {{

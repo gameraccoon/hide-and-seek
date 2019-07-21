@@ -1,0 +1,18 @@
+#include "GameData/Enums/{enum_name}.generated.h"
+
+template <>
+std::string enum_to_string({enum_name} value)
+{{
+	switch(value)
+	{{
+		{enum_to_string_case}
+	}}
+	return "";
+}}
+
+template <>
+{enum_name} string_to_enum(const std::string& value)
+{{
+	{string_to_enum_case}
+	return static_cast<{enum_name}>(0);
+}}
