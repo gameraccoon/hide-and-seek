@@ -30,11 +30,11 @@ TEST(Collision, Circular)
 	World world;
 
 	Hull hull1;
-	hull1.type = Hull::Type::Circular;
+	hull1.type = HullType::Circular;
 	hull1.setRadius(10.0f);
 
 	Hull hull2;
-	hull2.type = Hull::Type::Circular;
+	hull2.type = HullType::Circular;
 	hull2.setRadius(50.0f);
 
 	Vector2D resist = ZERO_VECTOR;
@@ -47,11 +47,11 @@ TEST(Collision, Angular)
 	World world;
 
 	Hull hull1;
-	hull1.type = Hull::Type::Circular;
+	hull1.type = HullType::Circular;
 	hull1.setRadius(1.0f);
 
 	Hull hull2;
-	hull2.type = Hull::Type::Angular;
+	hull2.type = HullType::Angular;
 	hull2.points.push_back(Vector2D(10.0f, 9.0f));
 	hull2.points.push_back(Vector2D(2.0f, 12.0f));
 	hull2.points.push_back(Vector2D(3.0f, 5.0f));
@@ -82,11 +82,11 @@ TEST(Collision, CornerCase1)
 	World world;
 
 	Hull hull1;
-	hull1.type = Hull::Type::Circular;
+	hull1.type = HullType::Circular;
 	hull1.setRadius(32.0f);
 
 	Hull hull2;
-	hull2.type = Hull::Type::Angular;
+	hull2.type = HullType::Angular;
 	hull2.points.push_back(Vector2D(60.0, -60.0));
 	hull2.points.push_back(Vector2D(60.0, 60.0));
 	hull2.points.push_back(Vector2D(-60.0, 60.0));

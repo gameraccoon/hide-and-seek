@@ -176,6 +176,18 @@ namespace TypesEditConstructor
 		Edit<Hull>::Ptr edit = std::make_shared<Edit<Hull>>(initialValue);
 		Edit<Hull>::WeakPtr editWeakPtr = edit;
 
+		Edit<HullType>::Ptr editType = FillEdit<HullType>::Call(layout, "type", initialValue.type);
+		editType->bindOnChange([editWeakPtr](HullType /*oldValue*/, HullType newValue, bool)
+		{
+			if (Edit<Hull>::Ptr edit = editWeakPtr.lock())
+			{
+				Hull hull = edit->getPreviousValue();
+				hull.type = newValue;
+				edit->transmitValueChange(hull);
+			}
+		});
+		edit->addChild(editType);
+
 		Edit<float>::Ptr editRadius = FillEdit<float>::Call(layout, "radius", initialValue.getQRadius());
 		editRadius->bindOnChange([editWeakPtr](float /*oldValue*/, float newValue, bool)
 		{

@@ -27,7 +27,7 @@ static void spawnUnit(EntityManager& entityManager, Vector2D pos)
 	render->setTexturePath("resources/textures/hero.png");
 	CollisionComponent* collision = entityManager.addComponent<CollisionComponent>(entity);
 	Hull& hull = collision->getGeometryRef();
-	hull.type = Hull::Type::Circular;
+	hull.type = HullType::Circular;
 	hull.setRadius(10.0f);
 	entityManager.addComponent<AiControllerComponent>(entity);
 }

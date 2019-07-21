@@ -24,7 +24,7 @@ namespace Collide
 	bool IsCollideGeometry(const Hull& hull1, const Hull& hull2, const Vector2D& center1, const Vector2D& center2, Vector2D& outResist)
 	{
 		// circle vs circle
-		if (hull1.type == Hull::Type::Circular && hull2.type == Hull::Type::Circular)
+		if (hull1.type == HullType::Circular && hull2.type == HullType::Circular)
 		{
 			float dist = (center2 - center1).qSize() - (hull1.getQRadius() + hull2.getQRadius() + 2.0f * hull1.getRadius() * hull2.getRadius());
 			if (dist <= 0.0f)
@@ -35,11 +35,11 @@ namespace Collide
 			return false;
 		}
 		// circle vs rect
-		else if (hull1.type == Hull::Type::Circular || hull2.type == Hull::Type::Circular)
+		else if (hull1.type == HullType::Circular || hull2.type == HullType::Circular)
 		{
 			const Hull *cHull, *rHull;
 			const Vector2D *cCenter, *rCenter;
-			if (hull1.type == Hull::Type::Circular)
+			if (hull1.type == HullType::Circular)
 			{
 				cHull = &hull1;
 				cCenter = &center1;
@@ -181,7 +181,7 @@ namespace Collide
 	{
 		const Hull& geometry = collision->getGeometry();
 
-		if (geometry.type == Hull::Type::Circular)
+		if (geometry.type == HullType::Circular)
 		{
 			float radius = geometry.getRadius();
 			collision->setOriginalBoundingBox(BoundingBox(Vector2D(-radius, -radius), Vector2D(radius, radius)));

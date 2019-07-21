@@ -40,7 +40,7 @@ void CollisionSystem::update()
 
 				if (doCollide)
 				{
-					if (collision->getGeometry().type == Hull::Type::Angular)
+					if (collision->getGeometry().type == HullType::Angular)
 					{
 						transformComponent->setLocation(transformComponent->getLocation() + resist);
 					}

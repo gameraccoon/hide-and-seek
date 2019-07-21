@@ -61,7 +61,7 @@ TEST(VisibilityPolygon, OneBorder)
 	std::vector<std::tuple<CollisionComponent*, TransformComponent*>> components;
 	CollisionComponent collision;
 	Hull geometry;
-	geometry.type = Hull::Type::Angular;
+	geometry.type = HullType::Angular;
 	geometry.points = {{-60.0f, -50.0f}, {60.0f, -50.0f}, {60.0f, 50.0f}, {-60.0f, 50.0f}};
 	collision.setGeometry(geometry);
 	TransformComponent transform;
@@ -82,7 +82,7 @@ TEST(VisibilityPolygon, OneBorderEqualAngles)
 	std::vector<std::tuple<CollisionComponent*, TransformComponent*>> components;
 	CollisionComponent collision;
 	Hull geometry;
-	geometry.type = Hull::Type::Angular;
+	geometry.type = HullType::Angular;
 	geometry.points = {{60.0f, -60.0f}, {60.0f, 60.0f}, {-60.0f, 60.0f}, {-60.0f, -60.0f}};
 	collision.setGeometry(geometry);
 	TransformComponent transform;

@@ -11,7 +11,7 @@
                         "geometry": {
                             "points": [],
                             "radius": 16.0,
-                            "type": 1
+                            "type": "Circular"
                         }
                     },
                     null,

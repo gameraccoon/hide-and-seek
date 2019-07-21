@@ -6,17 +6,11 @@
 
 #include "GameData/Core/Vector2D.h"
 #include "GameData/Core/Border.h"
+#include "GameData/Enums/HullType.generated.h"
 
 class Hull
 {
 public:
-	enum class Type
-	{
-		Angular
-		,Circular
-		,None
-	};
-
 	/** Pre-calculated squared radius */
 	float getQRadius() const;
 	/** Get the radius */
@@ -36,7 +30,8 @@ public:
 	std::vector<Vector2D> points;
 	/** Borders of hull (calculates from Points) */
 	std::vector<Border> borders;
-	Type type;
+	HullType type;
+
 private:
 	/** Squared radius */
 	float qRadius;

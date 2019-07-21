@@ -57,7 +57,7 @@ void NavMeshGenerator::generateNavMesh(NavMesh& outNavMesh, const std::vector<st
 	{
 		Vector2D location = transform->getLocation();
 		const Hull& geometry = collision->getGeometry();
-		if (geometry.type == Hull::Type::Angular)
+		if (geometry.type == HullType::Angular)
 		{
 			TPPLPoly polygon;
 			polygon.Init(geometry.points.size());

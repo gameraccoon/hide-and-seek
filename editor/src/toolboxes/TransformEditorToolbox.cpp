@@ -329,7 +329,7 @@ void TransformEditorWidget::paintEvent(QPaintEvent*)
 			if (collision)
 			{
 				Hull geometry = collision->getGeometry();
-				if (geometry.type == Hull::Type::Angular)
+				if (geometry.type == HullType::Angular)
 				{
 					for (Vector2D& point : geometry.points)
 					{
@@ -375,7 +375,7 @@ void TransformEditorWidget::paintEvent(QPaintEvent*)
 		if (collision)
 		{
 			Hull geometry = collision->getGeometry();
-			if (geometry.type == Hull::Type::Angular)
+			if (geometry.type == HullType::Angular)
 			{
 				QPolygonF polygon;
 				for (Vector2D& point : geometry.points)

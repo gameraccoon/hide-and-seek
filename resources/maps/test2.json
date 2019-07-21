@@ -22,7 +22,7 @@
                         "geometry": {
                             "points": [],
                             "radius": 16.0,
-                            "type": 1
+                            "type": "Circular"
                         }
                     },
                     null,
@@ -47,7 +47,7 @@
                                 }
                             ],
                             "radius": 8.96831017167883e-44,
-                            "type": 0
+                            "type": "Angular"
                         }
                     },
                     {
@@ -71,7 +71,7 @@
                                 }
                             ],
                             "radius": 8.96831017167883e-44,
-                            "type": 0
+                            "type": "Angular"
                         }
                     },
                     null,
@@ -80,7 +80,7 @@
                         "geometry": {
                             "points": [],
                             "radius": 10.0,
-                            "type": 1
+                            "type": "Circular"
                         }
                     },
                     null,
