@@ -26,7 +26,7 @@ namespace TypesEditConstructor
 	}
 
 	template<>
-	Edit<float>::Ptr FillEdit<float>(QLayout* layout, const QString& label, const float& initialValue)
+	Edit<float>::Ptr FillEdit<float>::Call(QLayout* layout, const QString& label, const float& initialValue)
 	{
 		FillLabel(layout, label);
 
@@ -59,7 +59,7 @@ namespace TypesEditConstructor
 	}
 
 	template<>
-	Edit<bool>::Ptr FillEdit<bool>(QLayout* layout, const QString& label, const bool& initialValue)
+	Edit<bool>::Ptr FillEdit<bool>::Call(QLayout* layout, const QString& label, const bool& initialValue)
 	{
 		FillLabel(layout, label);
 
@@ -82,7 +82,7 @@ namespace TypesEditConstructor
 	}
 
 	template<>
-	Edit<std::string>::Ptr FillEdit<std::string>(QLayout* layout, const QString& label, const std::string& initialValue)
+	Edit<std::string>::Ptr FillEdit<std::string>::Call(QLayout* layout, const QString& label, const std::string& initialValue)
 	{
 		FillLabel(layout, label);
 
@@ -105,7 +105,7 @@ namespace TypesEditConstructor
 	}
 
 	template<>
-	Edit<Rotator>::Ptr FillEdit<Rotator>(QLayout* layout, const QString& label, const Rotator& initialValue)
+	Edit<Rotator>::Ptr FillEdit<Rotator>::Call(QLayout* layout, const QString& label, const Rotator& initialValue)
 	{
 		FillLabel(layout, label);
 
@@ -114,7 +114,7 @@ namespace TypesEditConstructor
 		Edit<Rotator>::Ptr edit = std::make_shared<Edit<Rotator>>(initialValue);
 		Edit<Rotator>::WeakPtr editWeakPtr = edit;
 
-		Edit<float>::Ptr editAngle = FillEdit<float>(innerLayout, "angle", initialValue.getValue() * RAD_TO_DEG);
+		Edit<float>::Ptr editAngle = FillEdit<float>::Call(innerLayout, "angle", initialValue.getValue() * RAD_TO_DEG);
 		editAngle->bindOnChange([editWeakPtr](float /*oldValue*/, float newValue, bool)
 		{
 			if (Edit<Rotator>::Ptr edit = editWeakPtr.lock())
@@ -132,7 +132,7 @@ namespace TypesEditConstructor
 	}
 
 	template<>
-	Edit<Vector2D>::Ptr FillEdit<Vector2D>(QLayout* layout, const QString& label, const Vector2D& initialValue)
+	Edit<Vector2D>::Ptr FillEdit<Vector2D>::Call(QLayout* layout, const QString& label, const Vector2D& initialValue)
 	{
 		FillLabel(layout, label);
 
@@ -141,7 +141,7 @@ namespace TypesEditConstructor
 		Edit<Vector2D>::Ptr edit = std::make_shared<Edit<Vector2D>>(initialValue);
 		Edit<Vector2D>::WeakPtr editWeakPtr = edit;
 
-		Edit<float>::Ptr editX = FillEdit<float>(innerLayout, "x", initialValue.x);
+		Edit<float>::Ptr editX = FillEdit<float>::Call(innerLayout, "x", initialValue.x);
 		editX->bindOnChange([editWeakPtr](float /*oldValue*/, float newValue, bool)
 		{
 			if (Edit<Vector2D>::Ptr edit = editWeakPtr.lock())
@@ -151,7 +151,7 @@ namespace TypesEditConstructor
 		});
 		edit->addChild(editX);
 
-		Edit<float>::Ptr editY = FillEdit<float>(innerLayout, "y", initialValue.y);
+		Edit<float>::Ptr editY = FillEdit<float>::Call(innerLayout, "y", initialValue.y);
 		editY->bindOnChange([editWeakPtr](float /*oldValue*/, float newValue, bool)
 		{
 			if (Edit<Vector2D>::Ptr edit = editWeakPtr.lock())
@@ -169,14 +169,14 @@ namespace TypesEditConstructor
 	}
 
 	template<>
-	Edit<Hull>::Ptr FillEdit<Hull>(QLayout* layout, const QString& label, const Hull& initialValue)
+	Edit<Hull>::Ptr FillEdit<Hull>::Call(QLayout* layout, const QString& label, const Hull& initialValue)
 	{
 		FillLabel(layout, label);
 
 		Edit<Hull>::Ptr edit = std::make_shared<Edit<Hull>>(initialValue);
 		Edit<Hull>::WeakPtr editWeakPtr = edit;
 
-		Edit<float>::Ptr editRadius = FillEdit<float>(layout, "radius", initialValue.getQRadius());
+		Edit<float>::Ptr editRadius = FillEdit<float>::Call(layout, "radius", initialValue.getQRadius());
 		editRadius->bindOnChange([editWeakPtr](float /*oldValue*/, float newValue, bool)
 		{
 			if (Edit<Hull>::Ptr edit = editWeakPtr.lock())
@@ -192,7 +192,7 @@ namespace TypesEditConstructor
 		int index = 0;
 		for (const Vector2D& point : initialValue.points)
 		{
-			Edit<Vector2D>::Ptr editPoint = FillEdit<Vector2D>(layout, QString("[%1]").arg(index), point);
+			Edit<Vector2D>::Ptr editPoint = FillEdit<Vector2D>::Call(layout, QString("[%1]").arg(index), point);
 			editPoint->bindOnChange([editWeakPtr, index](const Vector2D& /*oldValue*/, const Vector2D& newValue, bool)
 			{
 				if (Edit<Hull>::Ptr edit = editWeakPtr.lock())
