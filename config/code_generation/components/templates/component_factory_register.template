@@ -1,0 +1,1 @@
+componentFactory.registerComponent<{class_name}>();{delim_endl}{delim_tab}{delim_tab}

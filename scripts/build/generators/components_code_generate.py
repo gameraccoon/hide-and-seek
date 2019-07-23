@@ -124,6 +124,17 @@ def generate_component_cpp_file(template_name, destination_dir, file_name_templa
     write_file(path.join(destination_dir, file_name), generated_content)
 
 
+def generate_component_list_cpp_file(template_name, destination_dir, file_name_template, component_filled_templates):
+    template = read_template(template_name, templates_dir)
+    generated_content = replace_content(template, component_filled_templates)
+    file_name = replace_content(file_name_template, component_filled_templates)
+
+    if not os.path.exists(destination_dir):
+        os.makedirs(destination_dir)
+
+    write_file(path.join(destination_dir, file_name), generated_content)
+
+
 def generate_per_attribute_cpp_files(data_description, template_name, destination_dir, file_name_template, full_data_dictionary):
     template = read_template(template_name, templates_dir)
     for attribute in data_description["attributes"]:
@@ -141,14 +152,15 @@ def generate_per_attribute_cpp_files(data_description, template_name, destinatio
         write_file(path.join(destination_dir, file_name), generated_content)
 
 
-def generate_files(file_infos, data_description):
-    full_data_dict = get_full_data_dictionary(data_description)
+def generate_files(file_infos, data_description, full_data_dict):
     for file_info in file_infos:
-        if "per_attribute" in file_info and file_info["per_attribute"]:
+        if "flags" in file_info and "per_attribute" in file_info["flags"]:
             generate_per_attribute_cpp_files(data_description, file_info["template"],
                                              path.join(working_dir, file_info["output_dir"]),
                                              file_info["name_template"],
                                              full_data_dict)
+        elif "flags" in file_info and "list" in file_info["flags"]:
+            pass # generated in another function
         else:
             generate_component_cpp_file(file_info["template"],
                                         path.join(working_dir, file_info["output_dir"]),
@@ -165,10 +177,41 @@ def load_component_data_description(file_path):
     return component_data
 
 
+def generate_component_list_descriptions(components):
+    component_filled_templates = {}
+    for component_template in component_templates:
+        template = read_template(component_template["name"], templates_dir)
+        filled_template = ""
+        for component in components:
+            # skip delimiters for the last attribute
+            if component is components[len(components) - 1]:
+                delimiter_dict = empty_delimiter_dictionary
+            else:
+                delimiter_dict = delimiter_dictionary
+
+            filled_template = filled_template + replace_content(template, {
+                **component,
+                **delimiter_dict
+            })
+        component_filled_templates[component_template["name"]] = filled_template
+    return component_filled_templates
+
 def generate_all():
+    components = []
     for file_name in os.listdir(descriptions_dir):
         component = load_component_data_description(path.join(descriptions_dir, file_name))
-        generate_files(files_to_generate, component)
+        full_data_dict = get_full_data_dictionary(component)
+        generate_files(files_to_generate, component, full_data_dict)
+        components.append(full_data_dict)
+
+    # generate component lists
+    component_filled_templates = generate_component_list_descriptions(components)
+    for file_info in files_to_generate:
+        if "flags" in file_info and "list" in file_info["flags"]:
+            generate_component_list_cpp_file(file_info["template"],
+                                             path.join(working_dir, file_info["output_dir"]),
+                                             file_info["name_template"],
+                                             component_filled_templates)
 
 
 delimiter_dictionary = load_json(path.join(configs_dir, "delimiter_dictionary.json"))
@@ -176,6 +219,8 @@ delimiter_dictionary = load_json(path.join(configs_dir, "delimiter_dictionary.js
 empty_delimiter_dictionary = {key: "" for key in delimiter_dictionary.keys()}
 
 attribute_templates = load_json(path.join(configs_dir, "attribute_templates.json"))
+
+component_templates = load_json(path.join(configs_dir, "component_templates.json"))
 
 files_to_generate = load_json(path.join(configs_dir, "files_to_generate.json"))
 
