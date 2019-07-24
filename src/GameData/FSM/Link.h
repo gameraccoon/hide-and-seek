@@ -18,6 +18,7 @@ namespace FSM
 	public:
 		virtual ~LinkRule() = default;
 		virtual bool canFollow(const BlackboardType& blackboard) const = 0;
+		virtual std::unique_ptr<LinkRule<BlackboardKeyType>> makeCopy() const = 0;
 	};
 
 	namespace LinkRules
@@ -38,9 +39,14 @@ namespace FSM
 			{
 			}
 
-			bool canFollow(const Blackboard<BlackboardKeyType>& blackboard) const
+			bool canFollow(const Blackboard<BlackboardKeyType>& blackboard) const override
 			{
 				return mCanFollowFn(blackboard);
+			}
+
+			std::unique_ptr<LinkRule<BlackboardKeyType>> makeCopy() const override
+			{
+				return std::make_unique<FunctorLink<BlackboardKeyType>>(mCanFollowFn);
 			}
 
 		private:
@@ -63,9 +69,14 @@ namespace FSM
 			{
 			}
 
-			bool canFollow(const BlackboardType& blackboard) const
+			bool canFollow(const BlackboardType& blackboard) const override
 			{
 				return blackboard.template getValue<T>(mName) == mExpectedValue;
+			}
+
+			std::unique_ptr<LinkRule<BlackboardKeyType>> makeCopy() const override
+			{
+				return std::make_unique<VariableEqualLink<BlackboardKeyType, T>>(mName, mExpectedValue);
 			}
 
 		private:

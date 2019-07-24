@@ -30,6 +30,19 @@ namespace FSM
 				, linkFollowRule(std::forward<std::unique_ptr<BaseLinkRuleType>>(linkFollowRule))
 			{}
 
+			~LinkPair() = default;
+			LinkPair(LinkPair&& other) noexcept = default;
+			LinkPair& operator=(LinkPair&& other) noexcept = default;
+
+			LinkPair(const LinkPair& other)
+				: LinkPair(other.followingState, other.linkFollowRule->makeCopy())
+			{}
+
+			LinkPair& operator=(const LinkPair& other)
+			{
+				 return *this = LinkPair(other.followingState, other.linkFollowRule->makeCopy());
+			}
+
 			StateIDType followingState;
 			std::unique_ptr<BaseLinkRuleType> linkFollowRule;
 		};
