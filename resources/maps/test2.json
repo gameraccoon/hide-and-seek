@@ -113,14 +113,11 @@
                 ],
                 "MovementComponent": [
                     {
-                        "lastStep": {
+                        "previousStep": {
                             "x": 0.0,
                             "y": 0.0
                         },
-                        "speed": {
-                            "x": 0.0,
-                            "y": 0.0
-                        }
+                        "originalSpeed": 30.0
                     },
                     null,
                     null,
@@ -128,17 +125,14 @@
                     null,
                     null,
                     {
-                        "lastStep": {
+                        "previousStep": {
                             "x": 0.0,
                             "y": 0.0
                         },
-                        "speed": {
-                            "x": 0.0,
-                            "y": 0.0
-                        }
+                        "originalSpeed": 30.0
                     }
                 ],
-                "RenderComponent": [
+                "SpriteComponent": [
                     {
                         "anchor": {
                             "x": 0.5,
@@ -309,7 +303,8 @@
         "world_components": {
             "components": {
                 "NavMeshComponent": {},
-                "RenderModeComponent": {}
+                "RenderModeComponent": {},
+                "StateMachineComponent": {}
             }
         }
     }

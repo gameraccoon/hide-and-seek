@@ -7,13 +7,13 @@
 #include "GameLogic/SharedManagers/WorldHolder.h"
 
 /**
- * System that calculates AI
+ * System that ensures correct character state
  */
-class AiSystem : public System
+class CharacterStateSystem : public System
 {
 public:
-	AiSystem(WorldHolder& worldHolder);
-	~AiSystem() override = default;
+	CharacterStateSystem(WorldHolder& worldHolder);
+	~CharacterStateSystem() override = default;
 
 	void update() override;
 

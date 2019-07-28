@@ -28,7 +28,7 @@ public:
 	T* addComponent()
 	{
 		T* component = new T();
-		addToEntity(component, typeid(T));
+		addComponent(component, typeid(T));
 		return component;
 	}
 

@@ -1,6 +1,6 @@
 {
-	"component": "render",
-	"description": "Component that stores information about position and movement",
+	"component": "sprite",
+	"description": "Component that stores information about renderable sprite",
 	"attributes": [
 		{
 			"name": "size",

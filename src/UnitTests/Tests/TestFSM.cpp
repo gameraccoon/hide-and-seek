@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 
 #include "GameData/FSM/StateMachine.h"
-#include "GameData/FSM/HierarchicalStateMachine.h"
 
 enum class TestStates
 {
@@ -138,7 +137,7 @@ TEST(FSM, HierarchicalStateMachine)
 {
 	using StateIDType = TestStates;
 	using BlackBoardKeyType = std::string;
-	using TestFSM = FSM::HierarchicalStateMachine<StateIDType, BlackBoardKeyType>;
+	using TestFSM = FSM::StateMachine<StateIDType, BlackBoardKeyType>;
 
 	FSM::Blackboard<BlackBoardKeyType> blackboard;
 	TestFSM fsm;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GameData/World.h"
+class World;
 
 struct WorldHolder
 {

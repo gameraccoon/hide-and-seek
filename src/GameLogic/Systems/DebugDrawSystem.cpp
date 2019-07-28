@@ -1,6 +1,5 @@
 #include "GameLogic/Systems/DebugDrawSystem.h"
 
-#include "GameData/Components/RenderComponent.generated.h"
 #include "GameData/Components/TransformComponent.generated.h"
 #include "GameData/Components/CollisionComponent.generated.h"
 #include "GameData/Components/NavMeshComponent.generated.h"
@@ -69,7 +68,7 @@ void DebugDrawSystem::update()
 		});
 	}
 
-	if (renderMode && renderMode->getIsDrawDebugNavmeshEnabled())
+	if (renderMode && renderMode->getIsDrawDebugAiDataEnabled())
 	{
 		const Graphics::Sprite& navMeshSprite = mResourceManager->getSprite(mNavmeshSpriteHandle);
 		Graphics::QuadUV quadUV = navMeshSprite.getUV();
@@ -107,12 +106,7 @@ void DebugDrawSystem::update()
 				}
 			}
 		}
-	}
 
-	if (renderMode && renderMode->getIsDrawDebugAiPathsEnabled())
-	{
-		const Graphics::Sprite& navMeshSprite = mResourceManager->getSprite(mNavmeshSpriteHandle);
-		Graphics::QuadUV quadUV = navMeshSprite.getUV();
 		world->getEntityManger().forEachComponentSet<AiControllerComponent>([drawShift, &quadUV, &navMeshSprite, engine = mEngine](AiControllerComponent* aiController)
 		{
 			std::vector<Vector2D>& path = aiController->getPathRef().getSmoothPathRef();
@@ -153,7 +147,7 @@ void DebugDrawSystem::update()
 		});
 	}
 
-	if (renderMode && renderMode->getIsDrawDebugFpsEnabled())
+	if (renderMode && renderMode->getIsDrawDebugCharacterInfoEnabled())
 	{
 
 	}

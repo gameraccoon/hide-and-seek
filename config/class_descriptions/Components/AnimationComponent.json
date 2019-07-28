@@ -1,0 +1,15 @@
+{
+	"component": "animation",
+	"description": "Component that stores animation-related data",
+	"attributes": [
+		{
+			"name": "data",
+			"type": "std::vector<AnimationData<int, int>>",
+			"includes": [
+				"<vector>",
+				"\"GameData/Animation/AnimationData.h\""
+			],
+			"flags": ["transient", "get_by_ref"]
+		}
+	]
+}

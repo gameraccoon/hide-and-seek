@@ -2,11 +2,12 @@
 
 #include <sdl/SDL_keycode.h>
 
-#include "GameData/Components/RenderComponent.generated.h"
+#include "GameData/Components/SpriteComponent.generated.h"
 #include "GameData/Components/TransformComponent.generated.h"
 #include "GameData/Components/MovementComponent.generated.h"
 #include "GameData/Components/CollisionComponent.generated.h"
 #include "GameData/Components/AiControllerComponent.generated.h"
+#include "GameData/Components/CharacterStateComponent.generated.h"
 
 #include "GameData/World.h"
 
@@ -21,15 +22,17 @@ static void spawnUnit(EntityManager& entityManager, Vector2D pos)
 	Entity entity = entityManager.addEntity();
 	TransformComponent* transform = entityManager.addComponent<TransformComponent>(entity);
 	transform->setLocation(pos);
-	entityManager.addComponent<MovementComponent>(entity);
-	RenderComponent* render = entityManager.addComponent<RenderComponent>(entity);
-	render->setSize(Vector2D(20.0f, 20.0f));
-	render->setTexturePath("resources/textures/hero.png");
+	MovementComponent* movement = entityManager.addComponent<MovementComponent>(entity);
+	movement->setOriginalSpeed(30.0f);
+	SpriteComponent* sprite = entityManager.addComponent<SpriteComponent>(entity);
+	sprite->setSize(Vector2D(20.0f, 20.0f));
+	sprite->setTexturePath("resources/textures/hero.png");
 	CollisionComponent* collision = entityManager.addComponent<CollisionComponent>(entity);
 	Hull& hull = collision->getGeometryRef();
 	hull.type = HullType::Circular;
 	hull.setRadius(10.0f);
 	entityManager.addComponent<AiControllerComponent>(entity);
+	entityManager.addComponent<CharacterStateComponent>(entity);
 }
 
 static void spawnUnits(EntityManager& entityManager, int count, Vector2D pos)

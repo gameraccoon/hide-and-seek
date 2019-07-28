@@ -2,7 +2,7 @@
 
 #include <algorithm>
 
-#include "GameData/Components/RenderComponent.generated.h"
+#include "GameData/Components/SpriteComponent.generated.h"
 #include "GameData/Components/TransformComponent.generated.h"
 #include "GameData/Components/CollisionComponent.generated.h"
 #include "GameData/Components/LightComponent.generated.h"
@@ -60,18 +60,18 @@ void RenderSystem::update()
 
 	if (!renderMode || renderMode->getIsDrawVisibleEntitiesEnabled())
 	{
-		world->getEntityManger().forEachComponentSet<RenderComponent, TransformComponent>([&drawShift, &resourceManager = mResourceManager, engine = mEngine](RenderComponent* renderComponent, TransformComponent* transformComponent)
+		world->getEntityManger().forEachComponentSet<SpriteComponent, TransformComponent>([&drawShift, &resourceManager = mResourceManager, engine = mEngine](SpriteComponent* sprite, TransformComponent* transform)
 		{
-			ResourceHandle spriteHandle = renderComponent->getSpriteHandle();
+			ResourceHandle spriteHandle = sprite->getSpriteHandle();
 			if (spriteHandle.isValid())
 			{
-				const Graphics::Sprite& sprite = resourceManager->getSprite(spriteHandle);
-				if (sprite.isValid())
+				const Graphics::Sprite& spriteData = resourceManager->getSprite(spriteHandle);
+				if (spriteData.isValid())
 				{
-					auto location = transformComponent->getLocation() + drawShift;
-					auto anchor = renderComponent->getAnchor();
-					auto size = renderComponent->getSize();
-					engine->render(sprite.getSurface(), location, size, anchor, sprite.getUV(), transformComponent->getRotation().getValue(), 1.0f);
+					auto location = transform->getLocation() + drawShift;
+					auto anchor = sprite->getAnchor();
+					auto size = sprite->getSize();
+					engine->render(spriteData.getSurface(), location, size, anchor, spriteData.getUV(), transform->getRotation().getValue(), 1.0f);
 				}
 			}
 		});

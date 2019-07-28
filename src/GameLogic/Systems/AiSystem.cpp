@@ -5,6 +5,7 @@
 #include "GameData/Components/CollisionComponent.generated.h"
 #include "GameData/Components/TransformComponent.generated.h"
 #include "GameData/Components/MovementComponent.generated.h"
+#include "GameData/Components/CharacterStateComponent.generated.h"
 #include "GameData/World.h"
 
 #include "Utils/AI/NavMeshGenerator.h"
@@ -342,16 +343,14 @@ static void RecalcNavmesh(dtNavMesh* m_navMesh, dtNavMeshQuery* m_navQuery, floa
 }
 
 
-AiSystem::AiSystem(WorldHolder &worldHolder, const TimeData& timeData)
+AiSystem::AiSystem(WorldHolder &worldHolder)
 	: mWorldHolder(worldHolder)
-	, mTime(timeData)
 {
 }
 
 void AiSystem::update()
 {
 	World* world = mWorldHolder.world;
-	float dt = mTime.dt;
 
 	auto [navMeshComponent] = world->getWorldComponents().getComponents<NavMeshComponent>();
 
@@ -384,10 +383,9 @@ void AiSystem::update()
 		return;
 	}
 
-	float speed = 30.0f;
 	Vector2D targetLocation = playerTransform->getLocation();
 
-	world->getEntityManger().forEachComponentSet<AiControllerComponent, TransformComponent, MovementComponent>([targetLocation, navMesh, speed, dt](AiControllerComponent* aiController, TransformComponent* transform, MovementComponent* movement)
+	world->getEntityManger().forEachComponentSet<AiControllerComponent, TransformComponent, MovementComponent, CharacterStateComponent>([targetLocation, navMesh](AiControllerComponent* aiController, TransformComponent* transform, MovementComponent* movement, CharacterStateComponent* characterState)
 	{
 		Vector2D startLocation = transform->getLocation();
 
@@ -419,9 +417,9 @@ void AiSystem::update()
 		if (path.size() > 1)
 		{
 			Vector2D diff = path[1] - startLocation;
-			Vector2D vectorSpeed = diff.ort() * speed;
-			movement->setSpeed(vectorSpeed);
-			transform->setLocation(startLocation + vectorSpeed * dt);
+			movement->setMoveDirection(diff);
 		}
+
+		characterState->getBlackboardRef().setValue<bool>(CharacterStateBlackboardKeys::TryingToMove, path.size() > 1);
 	});
 }

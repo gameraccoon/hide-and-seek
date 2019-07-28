@@ -9,17 +9,14 @@
 #include "GameData/Components/MovementComponent.generated.h"
 
 
-TestCircularUnitsSystem::TestCircularUnitsSystem(WorldHolder &worldHolder, const TimeData &timeData)
+TestCircularUnitsSystem::TestCircularUnitsSystem(WorldHolder &worldHolder)
 	: mWorldHolder(worldHolder)
-	, mTime(timeData)
 {
-
 }
 
 void TestCircularUnitsSystem::update()
 {
 	World* world = mWorldHolder.world;
-	float dt = mTime.dt;
 
 	OptionalEntity playerEntity = world->getPlayerControlledEntity();
 	if (!playerEntity.isValid())
@@ -33,15 +30,10 @@ void TestCircularUnitsSystem::update()
 		return;
 	}
 
-	float speed = 30.0f;
 	Vector2D targetLocation = playerTransform->getLocation();
 
-	world->getEntityManger().forEachComponentSet<AiControllerComponent, TransformComponent, MovementComponent>([targetLocation, speed, dt](AiControllerComponent* /*aiController*/, TransformComponent* transform, MovementComponent* movement)
+	world->getEntityManger().forEachComponentSet<AiControllerComponent, TransformComponent, MovementComponent>([targetLocation](AiControllerComponent* /*aiController*/, TransformComponent* transform, MovementComponent* movement)
 	{
-		Vector2D startLocation = transform->getLocation();
-		Vector2D diff = targetLocation - startLocation;
-		Vector2D vectorSpeed = diff.ort() * speed;
-		movement->setSpeed(vectorSpeed);
-		transform->setLocation(startLocation + vectorSpeed * dt);
+		movement->setMoveDirection(targetLocation - transform->getLocation());
 	});
 }

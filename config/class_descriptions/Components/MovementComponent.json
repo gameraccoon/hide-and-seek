@@ -4,13 +4,32 @@
 	"description": "Component that stores information about position and movement",
 	"attributes": [
 		{
-			"name": "speed",
-			"type": "Vector2D",
-			"default": " = ZERO_VECTOR",
-			"includes": ["\"GameData/Core/Vector2D.h\""]
+			"name": "originalSpeed",
+			"type": "float",
+			"default": " = 0.0f"
 		},
 		{
-			"name": "lastStep",
+			"name": "speed",
+			"type": "float",
+			"default": " = 0.0f",
+			"flags": ["transient"]
+		},
+		{
+			"name": "moveDirection",
+			"type": "Vector2D",
+			"default": " = ZERO_VECTOR",
+			"includes": ["\"GameData/Core/Vector2D.h\""],
+			"flags": ["transient"]
+		},
+		{
+			"name": "sightDirection",
+			"type": "Vector2D",
+			"default": " = ZERO_VECTOR",
+			"includes": ["\"GameData/Core/Vector2D.h\""],
+			"flags": ["transient"]
+		},
+		{
+			"name": "previousStep",
 			"type": "Vector2D",
 			"default": " = ZERO_VECTOR",
 			"includes": ["\"GameData/Core/Vector2D.h\""]

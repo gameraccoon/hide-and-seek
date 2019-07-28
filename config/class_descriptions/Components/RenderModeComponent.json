@@ -27,13 +27,13 @@
 			"flags": ["transient"]
 		},
 		{
-			"name": "isDrawDebugNavmeshEnabled",
+			"name": "isDrawDebugAiDataEnabled",
 			"type": "bool",
 			"default": " = false",
 			"flags": ["transient"]
 		},
 		{
-			"name": "isDrawDebugAiPathsEnabled",
+			"name": "isDrawDebugCharacterInfoEnabled",
 			"type": "bool",
 			"default": " = false",
 			"flags": ["transient"]

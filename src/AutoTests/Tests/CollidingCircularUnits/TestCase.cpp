@@ -6,13 +6,16 @@
 
 #include "Utils/World/WorldLoader.h"
 
-#include "GameData/Components/RenderComponent.generated.h"
+#include "GameData/Components/SpriteComponent.generated.h"
 #include "GameData/Components/CollisionComponent.generated.h"
 #include "GameData/Components/TransformComponent.generated.h"
+#include "GameData/Components/StateMachineComponent.generated.h"
 
 #include "GameLogic/Systems/RenderSystem.h"
 #include "GameLogic/Systems/CollisionSystem.h"
 #include "GameLogic/Systems/ResourceStreamingSystem.h"
+#include "GameLogic/Systems/MovementSystem.h"
+#include "GameLogic/Systems/CharacterStateSystem.h"
 
 #include "GameLogic/ComponentsRegistration.h"
 
@@ -24,10 +27,12 @@ void CollidingCircularUnitsTestCase::start(ArgumentsParser& /*arguments*/)
 	getResourceManager()->loadAtlasesData("resources/atlas/atlas-list.json");
 
 	mSystemsManager.registerSystem<TestUnitsCountControlSystem>(mWorldHolder);
-	mSystemsManager.registerSystem<TestCircularUnitsSystem>(mWorldHolder, mTime);
+	mSystemsManager.registerSystem<TestCircularUnitsSystem>(mWorldHolder);
+	mSystemsManager.registerSystem<CharacterStateSystem>(mWorldHolder);
+	mSystemsManager.registerSystem<MovementSystem>(mWorldHolder, mTime);
 	mSystemsManager.registerSystem<CollisionSystem>(mWorldHolder);
-	mSystemsManager.registerSystem<RenderSystem>(mWorldHolder, getEngine(), getResourceManager());
 	mSystemsManager.registerSystem<ResourceStreamingSystem>(mWorldHolder, getResourceManager());
+	mSystemsManager.registerSystem<RenderSystem>(mWorldHolder, getEngine(), getResourceManager());
 
 	ComponentsRegistration::RegisterComponents(mComponentFactory);
 
@@ -36,9 +41,9 @@ void CollidingCircularUnitsTestCase::start(ArgumentsParser& /*arguments*/)
 	Entity playerEntity = mWorld.getEntityManger().addEntity();
 	TransformComponent* transform = mWorld.getEntityManger().addComponent<TransformComponent>(playerEntity);
 	transform->setLocation(Vector2D(0.0f, 0.0f));
-	RenderComponent* render = mWorld.getEntityManger().addComponent<RenderComponent>(playerEntity);
-	render->setSize(Vector2D(30.0f, 30.0f));
-	render->setTexturePath("resources/textures/hero.png");
+	SpriteComponent* sprite = mWorld.getEntityManger().addComponent<SpriteComponent>(playerEntity);
+	sprite->setSize(Vector2D(30.0f, 30.0f));
+	sprite->setTexturePath("resources/textures/hero.png");
 	CollisionComponent* collision = mWorld.getEntityManger().addComponent<CollisionComponent>(playerEntity);
 	Hull& hull = collision->getGeometryRef();
 	hull.type = HullType::Circular;
@@ -46,6 +51,8 @@ void CollidingCircularUnitsTestCase::start(ArgumentsParser& /*arguments*/)
 
 	mWorld.setPlayerControlledEntity(playerEntity);
 	mWorld.setMainCamera(playerEntity);
+
+	mWorld.getWorldComponents().addComponent<StateMachineComponent>();
 
 	// start the main loop
 	getEngine()->start(this);

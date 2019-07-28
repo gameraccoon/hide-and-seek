@@ -2,17 +2,16 @@
 
 #include <sdl/SDL_keycode.h>
 
-#include "GameData/Components/RenderComponent.generated.h"
 #include "GameData/Components/TransformComponent.generated.h"
 #include "GameData/Components/MovementComponent.generated.h"
 #include "GameData/Components/RenderModeComponent.generated.h"
+#include "GameData/Components/CharacterStateComponent.generated.h"
 
 #include "GameData/World.h"
 
 
-ControlSystem::ControlSystem(WorldHolder& worldHolder, const TimeData& timeData, HAL::Engine* engine, HAL::KeyStatesMap* keyStates)
+ControlSystem::ControlSystem(WorldHolder& worldHolder, HAL::Engine* engine, HAL::KeyStatesMap* keyStates)
 	: mWorldHolder(worldHolder)
-	, mTime(timeData)
 	, mEngine(engine)
 	, mKeyStates(keyStates)
 {
@@ -34,13 +33,8 @@ void UpdateRenderStateOnPressed(HAL::KeyStatesMap* keys, World* world, int key, 
 void ControlSystem::update()
 {
 	World* world = mWorldHolder.world;
-	float dt = mTime.dt;
 
-	float speed = 50.0f;
-	if (mKeyStates->isPressed(SDLK_LSHIFT) || mKeyStates->isPressed(SDLK_RSHIFT))
-	{
-		speed *= 3.0f;
-	}
+	bool isRunPressed = mKeyStates->isPressed(SDLK_LSHIFT) || mKeyStates->isPressed(SDLK_RSHIFT);
 
 	Vector2D movementDirection(0.0f, 0.0f);
 	if (mKeyStates->isPressed(SDLK_LEFT) || mKeyStates->isPressed(SDLK_a))
@@ -63,44 +57,43 @@ void ControlSystem::update()
 		movementDirection += DOWN_DIRECTION;
 	}
 
-	OptionalEntity mainCamera = world->getMainCamera();
-	if (!mainCamera.isValid())
+	OptionalEntity controlledEntity = world->getPlayerControlledEntity();
+	if (controlledEntity.isValid())
 	{
-		return;
-	}
-
-	auto [cameraTransform] = world->getEntityManger().getEntityComponents<TransformComponent>(mainCamera.getEntity());
-	if (cameraTransform == nullptr)
-	{
-		return;
-	}
-
-	Vector2D screenHalfSize = Vector2D(static_cast<float>(mEngine->getWidth()), static_cast<float>(mEngine->getHeight())) * 0.5f;
-	Vector2D mouseScreenPos(mEngine->getMouseX(), mEngine->getMouseY());
-
-	Vector2D drawShift = screenHalfSize - cameraTransform->getLocation();
-
-	if (OptionalEntity controlledEntity = world->getPlayerControlledEntity(); controlledEntity.isValid())
-	{
-		auto [transform, movement] = world->getEntityManger().getEntityComponents<TransformComponent, MovementComponent>(controlledEntity.getEntity());
-
-		if (transform != nullptr && movement != nullptr)
+		if (auto [characterState] = world->getEntityManger().getEntityComponents<CharacterStateComponent>(controlledEntity.getEntity()); characterState != nullptr)
 		{
-			Vector2D oldLocation = transform->getLocation();
-			Vector2D move = speed * movementDirection;
-			movement->setSpeed(move);
-			Vector2D controlledEntityPosition = oldLocation + move * dt;
-			transform->setLocation(controlledEntityPosition);
+			characterState->getBlackboardRef().setValue<bool>(CharacterStateBlackboardKeys::TryingToMove, !movementDirection.isZeroLength());
+			characterState->getBlackboardRef().setValue<bool>(CharacterStateBlackboardKeys::ReadyToRun, isRunPressed);
+		}
+	}
 
-			Vector2D direction = mouseScreenPos - oldLocation - drawShift;
-			transform->setRotation(direction.rotation());
+	OptionalEntity mainCamera = world->getMainCamera();
+	if (mainCamera.isValid())
+	{
+		auto [cameraTransform] = world->getEntityManger().getEntityComponents<TransformComponent>(mainCamera.getEntity());
+		if (cameraTransform == nullptr)
+		{
+			return;
+		}
+
+		Vector2D screenHalfSize = Vector2D(static_cast<float>(mEngine->getWidth()), static_cast<float>(mEngine->getHeight())) * 0.5f;
+		Vector2D mouseScreenPos(mEngine->getMouseX(), mEngine->getMouseY());
+
+		Vector2D drawShift = screenHalfSize - cameraTransform->getLocation();
+
+		if (controlledEntity.isValid())
+		{
+			auto [transform, movement] = world->getEntityManger().getEntityComponents<TransformComponent, MovementComponent>(controlledEntity.getEntity());
+
+			movement->setMoveDirection(movementDirection);
+			movement->setSightDirection(mouseScreenPos - transform->getLocation() - drawShift);
 		}
 	}
 
 	UpdateRenderStateOnPressed(mKeyStates, world, SDLK_F1, &RenderModeComponent::getIsDrawDebugFpsEnabled, &RenderModeComponent::setIsDrawDebugFpsEnabled);
 	UpdateRenderStateOnPressed(mKeyStates, world, SDLK_F2, &RenderModeComponent::getIsDrawDebugCollisionsEnabled, &RenderModeComponent::setIsDrawDebugCollisionsEnabled);
-	UpdateRenderStateOnPressed(mKeyStates, world, SDLK_F3, &RenderModeComponent::getIsDrawDebugNavmeshEnabled, &RenderModeComponent::setIsDrawDebugNavmeshEnabled);
+	UpdateRenderStateOnPressed(mKeyStates, world, SDLK_F3, &RenderModeComponent::getIsDrawDebugAiDataEnabled, &RenderModeComponent::setIsDrawDebugAiDataEnabled);
 	UpdateRenderStateOnPressed(mKeyStates, world, SDLK_F4, &RenderModeComponent::getIsDrawLightsEnabled, &RenderModeComponent::setIsDrawLightsEnabled);
 	UpdateRenderStateOnPressed(mKeyStates, world, SDLK_F5, &RenderModeComponent::getIsDrawVisibleEntitiesEnabled, &RenderModeComponent::setIsDrawVisibleEntitiesEnabled);
-	UpdateRenderStateOnPressed(mKeyStates, world, SDLK_F6, &RenderModeComponent::getIsDrawDebugAiPathsEnabled, &RenderModeComponent::setIsDrawDebugAiPathsEnabled);
+	UpdateRenderStateOnPressed(mKeyStates, world, SDLK_F6, &RenderModeComponent::getIsDrawDebugCharacterInfoEnabled, &RenderModeComponent::setIsDrawDebugCharacterInfoEnabled);
 }

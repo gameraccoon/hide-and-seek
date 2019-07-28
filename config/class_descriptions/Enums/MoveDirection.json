@@ -1,0 +1,11 @@
+{
+	"enum": {
+		"name": "MoveDirection",
+		"values": [
+			"Front",
+			"Back",
+			"Left",
+			"Right"
+		]
+	}
+}

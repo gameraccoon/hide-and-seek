@@ -16,14 +16,13 @@
 class ControlSystem : public System
 {
 public:
-	ControlSystem(WorldHolder& worldHolder, const TimeData& timeData, HAL::Engine* engine, HAL::KeyStatesMap* keyStates);
+	ControlSystem(WorldHolder& worldHolder, HAL::Engine* engine, HAL::KeyStatesMap* keyStates);
 	~ControlSystem() override = default;
 
 	void update() override;
 
 private:
 	WorldHolder& mWorldHolder;
-	const TimeData& mTime;
 	HAL::Engine* mEngine;
 	HAL::KeyStatesMap* mKeyStates;
 };

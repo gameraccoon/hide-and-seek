@@ -1,6 +1,6 @@
 #include "GameLogic/Systems/ResourceStreamingSystem.h"
 
-#include "GameData/Components/RenderComponent.generated.h"
+#include "GameData/Components/SpriteComponent.generated.h"
 
 #include "GameData/World.h"
 
@@ -15,11 +15,11 @@ void ResourceStreamingSystem::update()
 {
 	World* world = mWorldHolder.world;
 
-	world->getEntityManger().forEachComponentSet<RenderComponent>([&resourceManager = mResourceManager](RenderComponent* renderComponent)
+	world->getEntityManger().forEachComponentSet<SpriteComponent>([&resourceManager = mResourceManager](SpriteComponent* sprite)
 	{
-		if (ResourceHandle textureHandle = renderComponent->getSpriteHandle(); !textureHandle.isValid())
+		if (ResourceHandle textureHandle = sprite->getSpriteHandle(); !textureHandle.isValid())
 		{
-			renderComponent->setSpriteHandle(resourceManager->lockSprite(renderComponent->getTexturePath()));
+			sprite->setSpriteHandle(resourceManager->lockSprite(sprite->getTexturePath()));
 		}
 	});
 }

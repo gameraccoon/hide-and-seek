@@ -11,9 +11,57 @@
 #include "GameLogic/Systems/CollisionSystem.h"
 #include "GameLogic/Systems/ResourceStreamingSystem.h"
 #include "GameLogic/Systems/AiSystem.h"
+#include "GameLogic/Systems/CharacterStateSystem.h"
 #include "GameLogic/Systems/DebugDrawSystem.h"
+#include "GameLogic/Systems/MovementSystem.h"
 
 #include "GameLogic/ComponentsRegistration.h"
+
+#include "GameData/Components/StateMachineComponent.generated.h"
+
+// test
+static void FillTestStateMachine(StateMachineComponent* stateMachine)
+{
+	if (!stateMachine)
+	{
+		return;
+	}
+
+	using FSMType = FSM::StateMachine<CharacterState, CharacterStateBlackboardKeys>;
+	FSMType& sm = stateMachine->getCharacterSMRef();
+	{
+		FSMType::StateLinkRules rules;
+		rules.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(CharacterState::Walk, CharacterStateBlackboardKeys::TryingToMove, true);
+		rules.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(CharacterState::Shoot, CharacterStateBlackboardKeys::TryingToShoot, true);
+		sm.addState(CharacterState::Idle, std::move(rules));
+	}
+	{
+		FSMType::StateLinkRules rules;
+		rules.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(CharacterState::Idle, CharacterStateBlackboardKeys::TryingToMove, false);
+		rules.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(CharacterState::WalkAndShoot, CharacterStateBlackboardKeys::TryingToShoot, true);
+		rules.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(CharacterState::Run, CharacterStateBlackboardKeys::ReadyToRun, true);
+		sm.addState(CharacterState::Walk, std::move(rules));
+	}
+	{
+		FSMType::StateLinkRules rules;
+		rules.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(CharacterState::WalkAndShoot, CharacterStateBlackboardKeys::TryingToMove, true);
+		rules.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(CharacterState::Idle, CharacterStateBlackboardKeys::TryingToShoot, false);
+		sm.addState(CharacterState::Shoot, std::move(rules));
+	}
+	{
+		FSMType::StateLinkRules rules;
+		rules.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(CharacterState::Shoot, CharacterStateBlackboardKeys::TryingToMove, false);
+		rules.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(CharacterState::Walk, CharacterStateBlackboardKeys::TryingToShoot, false);
+		rules.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(CharacterState::Run, CharacterStateBlackboardKeys::ReadyToRun, true);
+		sm.addState(CharacterState::WalkAndShoot, std::move(rules));
+	}
+	{
+		FSMType::StateLinkRules rules;
+		rules.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(CharacterState::Walk, CharacterStateBlackboardKeys::ReadyToRun, false);
+		rules.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(CharacterState::Idle, CharacterStateBlackboardKeys::TryingToMove, false);
+		sm.addState(CharacterState::Run, std::move(rules));
+	}
+}
 
 void Game::start(ArgumentsParser& arguments)
 {
@@ -33,6 +81,10 @@ void Game::start(ArgumentsParser& arguments)
 		WorldLoader::LoadWorld(mWorld, "test", mComponentFactory);
 	}
 
+	// test
+	auto [sm] = mWorld.getWorldComponents().getComponents<StateMachineComponent>();
+	FillTestStateMachine(sm);
+
 	// start the main loop
 	getEngine()->start(this);
 }
@@ -51,11 +103,13 @@ void Game::update(float dt)
 
 void Game::initSystems()
 {
-	mSystemsManager.registerSystem<ControlSystem>(mWorldHolder, mTime, getEngine(), &mKeyStates);
+	mSystemsManager.registerSystem<ControlSystem>(mWorldHolder, getEngine(), &mKeyStates);
+	mSystemsManager.registerSystem<AiSystem>(mWorldHolder);
+	mSystemsManager.registerSystem<CharacterStateSystem>(mWorldHolder);
+	mSystemsManager.registerSystem<MovementSystem>(mWorldHolder, mTime);
 	mSystemsManager.registerSystem<CollisionSystem>(mWorldHolder);
-	mSystemsManager.registerSystem<RenderSystem>(mWorldHolder, getEngine(), getResourceManager());
 	mSystemsManager.registerSystem<ResourceStreamingSystem>(mWorldHolder, getResourceManager());
-	mSystemsManager.registerSystem<AiSystem>(mWorldHolder, mTime);
+	mSystemsManager.registerSystem<RenderSystem>(mWorldHolder, getEngine(), getResourceManager());
 	mSystemsManager.registerSystem<DebugDrawSystem>(mWorldHolder, getEngine(), getResourceManager());
 }
 
