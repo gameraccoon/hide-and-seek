@@ -302,9 +302,7 @@
         },
         "world_components": {
             "components": {
-                "NavMeshComponent": {},
-                "RenderModeComponent": {},
-                "StateMachineComponent": {}
+                "NavMeshComponent": {}
             }
         }
     }

@@ -1,0 +1,10 @@
+{
+    "gameData": {
+        "game_components": {
+            "components": {
+                "RenderModeComponent": {},
+                "StateMachineComponent": {}
+            }
+        }
+    }
+}

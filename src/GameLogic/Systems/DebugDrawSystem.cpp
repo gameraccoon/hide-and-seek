@@ -6,6 +6,7 @@
 #include "GameData/Components/RenderModeComponent.generated.h"
 #include "GameData/Components/AiControllerComponent.generated.h"
 #include "GameData/World.h"
+#include "GameData/GameData.h"
 
 #include "Utils/Geometry/VisibilityPolygon.h"
 
@@ -30,6 +31,7 @@ DebugDrawSystem::DebugDrawSystem(WorldHolder& worldHolder, HAL::Engine* engine, 
 void DebugDrawSystem::update()
 {
 	World* world = mWorldHolder.world;
+	GameData* gameData = mWorldHolder.gameData;
 
 	static const Vector2D maxFov(500.0f, 500.0f);
 
@@ -51,7 +53,7 @@ void DebugDrawSystem::update()
 
 	Vector2D drawShift = screenHalfSize - cameraLocation + (screenHalfSize - mouseScreenPos) * 0.5;
 
-	auto [renderMode] = world->getWorldComponents().getComponents<RenderModeComponent>();
+	auto [renderMode] = gameData->getGameComponents().getComponents<RenderModeComponent>();
 	if (renderMode && renderMode->getIsDrawDebugCollisionsEnabled())
 	{
 		const Graphics::Sprite& collisionSprite = mResourceManager->getSprite(mCollisionSpriteHandle);

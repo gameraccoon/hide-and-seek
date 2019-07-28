@@ -11,7 +11,7 @@
 #include "DockAreaWidget.h"
 
 #include "GameData/World.h"
-#include "Utils/World/WorldLoader.h"
+#include "Utils/World/GameDataLoader.h"
 
 #include "toolboxes/ComponentAttributesToolbox.h"
 #include "toolboxes/ComponentsListToolbox.h"
@@ -165,7 +165,7 @@ void MainWindow::on_actionOpen_World_triggered()
 	}
 
 	createWorld();
-	WorldLoader::LoadWorld(*mCurrentWorld.get(), fileName, mComponentFactory);
+	GameDataLoader::LoadWorld(*mCurrentWorld.get(), fileName, mComponentFactory);
 	mOpenedWorldPath = fileName;
 	ui->actionSave_World->setEnabled(true);
 	ui->actionCreate->setEnabled(true);
@@ -183,7 +183,7 @@ void MainWindow::on_actionSave_World_As_triggered()
 		return;
 	}
 
-	WorldLoader::SaveWorld(*mCurrentWorld.get(), fileName, mComponentFactory);
+	GameDataLoader::SaveWorld(*mCurrentWorld.get(), fileName, mComponentFactory);
 	mOpenedWorldPath = fileName;
 	ui->actionSave_World->setEnabled(true);
 }
@@ -195,7 +195,7 @@ void MainWindow::on_actionSave_World_triggered()
 		return;
 	}
 
-	WorldLoader::SaveWorld(*mCurrentWorld.get(), mOpenedWorldPath, mComponentFactory);
+	GameDataLoader::SaveWorld(*mCurrentWorld.get(), mOpenedWorldPath, mComponentFactory);
 }
 
 void MainWindow::on_actionRun_Game_triggered()
@@ -205,7 +205,7 @@ void MainWindow::on_actionRun_Game_triggered()
 		QDir().mkdir("./tmp");
 	}
 	static std::string tempWorldName = "./tmp/temp-editor-world.json";
-	WorldLoader::SaveWorld(*mCurrentWorld.get(), tempWorldName, mComponentFactory);
+	GameDataLoader::SaveWorld(*mCurrentWorld.get(), tempWorldName, mComponentFactory);
 	QProcess::startDetached("./Game", {"--world", QString::fromStdString(tempWorldName)});
 }
 

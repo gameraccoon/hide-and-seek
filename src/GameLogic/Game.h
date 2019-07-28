@@ -2,7 +2,10 @@
 
 #include "ECS/SystemsManager.h"
 #include "ECS/ComponentFactory.h"
+
 #include "GameData/World.h"
+#include "GameData/GameData.h"
+
 #include "Utils/Application/ArgumentsParser.h"
 
 #include "HAL/GameBase.h"
@@ -25,6 +28,8 @@ private:
 private:
 	WorldHolder mWorldHolder;
 	World mWorld;
+	GameData mGameData;
+
 	HAL::KeyStatesMap mKeyStates;
 	SystemsManager mSystemsManager;
 	ComponentFactory mComponentFactory;

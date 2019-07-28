@@ -11,13 +11,9 @@ ArgumentsParser::ArgumentsParser(int argc, char** argv, const std::string& argum
 	}
 }
 
-const std::string&ArgumentsParser::getArgumentValue(const std::string& argument) const
+std::string ArgumentsParser::getArgumentValue(const std::string &argument, const std::string &defaultValue) const
 {
-	static const std::string empty_string("");
-
-	std::vector<std::string>::const_iterator itr;
-
-	itr = std::find(this->mTokens.begin(), this->mTokens.end(), mArgumentSwitch + argument);
+	std::vector<std::string>::const_iterator itr = std::find(this->mTokens.begin(), this->mTokens.end(), mArgumentSwitch + argument);
 
 	if (itr != this->mTokens.end())
 	{
@@ -28,7 +24,7 @@ const std::string&ArgumentsParser::getArgumentValue(const std::string& argument)
 		}
 	}
 
-	return empty_string;
+	return defaultValue;
 }
 
 bool ArgumentsParser::hasArgument(const std::string& argument) const

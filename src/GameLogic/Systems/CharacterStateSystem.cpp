@@ -7,6 +7,7 @@
 #include "GameData/Components/MovementComponent.generated.h"
 
 #include "GameData/World.h"
+#include "GameData/GameData.h"
 
 
 CharacterStateSystem::CharacterStateSystem(WorldHolder &worldHolder)
@@ -27,8 +28,9 @@ static bool IsRunning(CharacterState state)
 void CharacterStateSystem::update()
 {
 	World* world = mWorldHolder.world;
+	GameData* gameData = mWorldHolder.gameData;
 
-	auto [stateMachine] = world->getWorldComponents().getComponents<StateMachineComponent>();
+	auto [stateMachine] = gameData->getGameComponents().getComponents<StateMachineComponent>();
 
 	if (stateMachine)
 	{

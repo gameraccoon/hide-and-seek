@@ -4,8 +4,6 @@
 
 #include "HAL/Base/Engine.h"
 
-#include "Utils/World/WorldLoader.h"
-
 #include "GameData/Components/SpriteComponent.generated.h"
 #include "GameData/Components/CollisionComponent.generated.h"
 #include "GameData/Components/TransformComponent.generated.h"

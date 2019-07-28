@@ -176,9 +176,6 @@
         },
         "world_components": {
             "components" : {
-                "RenderModeComponent": {
-                },
-                "StateMachineComponent": {}
             }
         },
         "main_camera": {

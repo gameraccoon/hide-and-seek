@@ -4,7 +4,7 @@
 
 #include "HAL/Base/Engine.h"
 
-#include "Utils/World/WorldLoader.h"
+#include "Utils/World/GameDataLoader.h"
 
 #include "GameLogic/Systems/RenderSystem.h"
 #include "GameLogic/Systems/ControlSystem.h"
@@ -71,18 +71,13 @@ void Game::start(ArgumentsParser& arguments)
 	ComponentsRegistration::RegisterComponents(mComponentFactory);
 
 	mWorldHolder.world = &mWorld;
+	mWorldHolder.gameData = &mGameData;
 
-	if (arguments.hasArgument("world"))
-	{
-		WorldLoader::LoadWorld(mWorld, arguments.getArgumentValue("world"), mComponentFactory);
-	}
-	else
-	{
-		WorldLoader::LoadWorld(mWorld, "test", mComponentFactory);
-	}
+	GameDataLoader::LoadWorld(mWorld, arguments.getArgumentValue("world", "test"), mComponentFactory);
+	GameDataLoader::LoadGameData(mGameData, arguments.getArgumentValue("gameData", "gameData"), mComponentFactory);
 
 	// test
-	auto [sm] = mWorld.getWorldComponents().getComponents<StateMachineComponent>();
+	auto [sm] = mGameData.getGameComponents().getComponents<StateMachineComponent>();
 	FillTestStateMachine(sm);
 
 	// start the main loop
