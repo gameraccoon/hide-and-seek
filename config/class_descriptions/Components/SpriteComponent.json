@@ -20,9 +20,12 @@
 			"includes": ["<string>"]
 		},
 		{
-			"name": "spriteHandle",
-			"type": "ResourceHandle",
-			"includes": ["\"GameData/Core/ResourceHandle.h\""],
+			"name": "spriteHandles",
+			"type": "std::vector<ResourceHandle>",
+			"includes": [
+				"<vector>",
+				"\"GameData/Core/ResourceHandle.h\""
+			],
 			"flags": ["transient"]
 		}
 	]

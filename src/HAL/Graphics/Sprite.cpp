@@ -11,16 +11,6 @@ namespace Graphics
 	{
 	}
 
-	int Sprite::getHeight() const
-	{
-		return mSurface->height();
-	}
-
-	int Sprite::getWidth() const
-	{
-		return mSurface->width();
-	}
-
 	HAL::Internal::SdlSurface* Sprite::getSurface() const
 	{
 		return mSurface;

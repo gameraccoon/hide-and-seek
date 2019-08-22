@@ -1,8 +1,10 @@
 #include "GameLogic/Systems/ResourceStreamingSystem.h"
 
 #include "GameData/Components/SpriteComponent.generated.h"
+#include "GameData/Components/AnimationDataComponent.generated.h"
 
 #include "GameData/World.h"
+#include "GameData/GameData.h"
 
 
 ResourceStreamingSystem::ResourceStreamingSystem(WorldHolder& worldHolder, std::shared_ptr<HAL::ResourceManager> resourceManager)
@@ -14,6 +16,7 @@ ResourceStreamingSystem::ResourceStreamingSystem(WorldHolder& worldHolder, std::
 void ResourceStreamingSystem::update()
 {
 	World* world = mWorldHolder.world;
+	GameData* gameData = mWorldHolder.gameData;
 
 	world->getEntityManger().forEachComponentSet<SpriteComponent>([&resourceManager = mResourceManager](SpriteComponent* sprite)
 	{
@@ -22,4 +25,20 @@ void ResourceStreamingSystem::update()
 			sprite->setSpriteHandle(resourceManager->lockSprite(sprite->getTexturePath()));
 		}
 	});
+
+	// ToDo: this can be optimized
+	auto [animationData] = gameData->getGameComponents().getComponents<AnimationDataComponent>();
+	if (animationData)
+	{
+		for (auto& data : animationData->getDatasRef())
+		{
+			for(auto& staticData : data.second.animDatas)
+			{
+				if (!staticData.second.animation.isValid())
+				{
+					staticData.second.animation = mResourceManager->lockSpriteAnimation(staticData.second.globalAnimId);
+				}
+			}
+		}
+	}
 }

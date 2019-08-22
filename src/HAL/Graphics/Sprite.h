@@ -22,9 +22,6 @@ namespace Graphics
 	public:
 		Sprite(HAL::Internal::SdlSurface* surface, QuadUV uv);
 
-		int getHeight() const;
-		int getWidth() const;
-
 		HAL::Internal::SdlSurface* getSurface() const;
 		QuadUV getUV() const { return mUV; }
 

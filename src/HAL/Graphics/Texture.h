@@ -21,9 +21,6 @@ namespace Graphics
 	public:
 		Texture(HAL::Internal::SdlSurface* surface);
 
-		int getHeight() const;
-		int getWidth() const;
-
 		HAL::Internal::SdlSurface* getSurface() const;
 
 		virtual bool isValid() const override;

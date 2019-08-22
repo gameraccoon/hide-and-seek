@@ -10,16 +10,6 @@ namespace Graphics
 	{
 	}
 
-	int Texture::getHeight() const
-	{
-		return mSurface->height();
-	}
-
-	int Texture::getWidth() const
-	{
-		return mSurface->width();
-	}
-
 	HAL::Internal::SdlSurface* Texture::getSurface() const
 	{
 		return mSurface;

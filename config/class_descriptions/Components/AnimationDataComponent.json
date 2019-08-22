@@ -1,0 +1,16 @@
+{
+	"component": "animationData",
+	"description": "Component that stores static data related to animations",
+	"attributes": [
+		{
+			"name": "datas",
+			"type": "std::unordered_map<std::string, AnimationData<int>>",
+			"includes": [
+				"<unordered_map>",
+				"<string>",
+				"\"GameData/Resources/AnimationData.h\""
+			],
+			"flags": ["transient", "get_by_ref"]
+		}
+	]
+}

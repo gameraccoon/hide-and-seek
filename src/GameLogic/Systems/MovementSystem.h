@@ -4,10 +4,8 @@
 
 #include "ECS/System.h"
 
-#include "HAL/Base/Engine.h"
-
-#include "GameLogic/SharedManagers/TimeData.h"
 #include "GameLogic/SharedManagers/WorldHolder.h"
+#include "GameLogic/SharedManagers/TimeData.h"
 
 /**
  * System that process characters and objects movement

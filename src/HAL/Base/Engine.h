@@ -3,18 +3,17 @@
 #include <glm/fwd.hpp>
 #include <memory>
 
-#include "HAL/Graphics/Texture.h"
-#include "HAL/Base/Types.h"
-
 #include "GameData/Core/Vector2D.h"
 
-namespace Internal
-{
-	class SdlSurface;
-}
+#include "HAL/Base/Types.h"
 
 namespace HAL
 {
+	namespace Internal
+	{
+		class SdlSurface;
+	}
+
 	class IGame;
 
 	struct DrawPoint

@@ -1,6 +1,6 @@
 {
 	"enum": {
-		"name": "MoveDirection",
+		"name": "MoveDirection4",
 		"values": [
 			"Front",
 			"Back",

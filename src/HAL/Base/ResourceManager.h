@@ -3,6 +3,7 @@
 #include <string>
 #include <map>
 #include <unordered_map>
+#include <functional>
 
 #include "HAL/EngineFwd.h"
 
@@ -10,6 +11,7 @@
 
 #include "HAL/Graphics/Texture.h"
 #include "HAL/Graphics/Sprite.h"
+#include "HAL/Graphics/SpriteAnimation.h"
 #include "HAL/Graphics/Font.h"
 
 namespace HAL
@@ -22,8 +24,11 @@ namespace HAL
 	public:
 		ResourceManager(Engine* engine);
 
-		const Graphics::Sprite getSprite(ResourceHandle handle);
+		const Graphics::Sprite& getSprite(ResourceHandle handle);
 		ResourceHandle lockSprite(const std::string& path);
+
+		const Graphics::SpriteAnimation& getSpriteAnimation(ResourceHandle handle);
+		ResourceHandle lockSpriteAnimation(const std::string& path);
 
 		const Graphics::Font& getFont(ResourceHandle handle);
 		ResourceHandle lockFont(const std::string& path);
@@ -39,6 +44,14 @@ namespace HAL
 			Graphics::QuadUV quadUV;
 		};
 
+		struct AnimationData
+		{
+			std::vector<std::string> framePaths;
+			int framesCount = 0;
+		};
+
+		using ReleaseFn = std::function<void(Resource*)>;
+
 	private:
 		void createResourceLock(const std::string& path);
 		void loadOneAtlasData(const std::string& path);
@@ -49,10 +62,13 @@ namespace HAL
 	private:
 		std::unordered_map<ResourceHandle::IndexType, std::unique_ptr<Resource>> mResources;
 		std::unordered_map<ResourceHandle::IndexType, int> mResourceLocksCount;
+		std::unordered_map<ResourceHandle::IndexType, ReleaseFn> mResourceReleaseFns;
 		std::unordered_map<std::string, ResourceHandle::IndexType> mPathsMap;
 		std::map<ResourceHandle::IndexType, std::string> mPathFindMap;
 
 		std::unordered_map<std::string, AtlasFrameData> mAtlasFrames;
+
+		std::unordered_map<std::string, AnimationData> mAnimationData;
 
 		Engine* mEngine;
 

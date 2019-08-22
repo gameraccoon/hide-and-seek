@@ -6,8 +6,8 @@
 
 #include <nlohmann/json.hpp>
 
-#include <Debug/Log.h>
-#include <Debug/Assert.h>
+#include "Debug/Log.h"
+#include "Debug/Assert.h"
 
 #include "HAL/Base/Engine.h"
 #include "../Internal/SdlSurface.h"
@@ -15,8 +15,9 @@
 namespace HAL
 {
 	static Graphics::Texture EMPTY_TEXTURE = Graphics::Texture(nullptr);
-	static Graphics::Font EMPTY_FONT = Graphics::Font(nullptr);
 	static Graphics::Sprite EMPTY_SPRITE = Graphics::Sprite(nullptr, Graphics::QuadUV());
+	static Graphics::SpriteAnimation EMPTY_SPRITE_ANIMATION = Graphics::SpriteAnimation(std::vector<ResourceHandle>());
+	static Graphics::Font EMPTY_FONT = Graphics::Font(nullptr);
 
 	ResourceManager::ResourceManager(Engine* engine)
 		: mEngine(engine)
@@ -30,11 +31,18 @@ namespace HAL
 		return static_cast<Graphics::Texture&>(*(it->second.get()));
 	}
 
-	const Graphics::Sprite ResourceManager::getSprite(ResourceHandle handle)
+	const Graphics::Sprite& ResourceManager::getSprite(ResourceHandle handle)
 	{
 		auto it = mResources.find(handle.ResourceIndex);
 		AssertRet(it != mResources.end(), EMPTY_SPRITE, "Trying to access non loaded sprite");
 		return static_cast<Graphics::Sprite&>(*(it->second.get()));
+	}
+
+	const Graphics::SpriteAnimation& ResourceManager::getSpriteAnimation(ResourceHandle handle)
+	{
+		auto it = mResources.find(handle.ResourceIndex);
+		AssertRet(it != mResources.end(), EMPTY_SPRITE_ANIMATION, "Trying to access non loaded sprite animation");
+		return static_cast<Graphics::SpriteAnimation&>(*(it->second.get()));
 	}
 
 	const Graphics::Font& ResourceManager::getFont(ResourceHandle handle)
@@ -126,19 +134,24 @@ namespace HAL
 		else
 		{
 			createResourceLock(path);
+			ResourceHandle originalTextureHandle;
 			auto it = mAtlasFrames.find(path);
 			if (it != mAtlasFrames.end())
 			{
-				auto originalTextureHandle = lockTexture(it->second.atlasPath);
+				originalTextureHandle = lockTexture(it->second.atlasPath);
 				const Graphics::Texture& texture = getTexture(originalTextureHandle);
 				mResources[mHandleIdx] = std::make_unique<Graphics::Sprite>(texture.getSurface(), it->second.quadUV);
 			}
 			else
 			{
-				auto originalTextureHandle = lockTexture(path);
+				originalTextureHandle = lockTexture(path);
 				const Graphics::Texture& texture = getTexture(originalTextureHandle);
 				mResources[mHandleIdx] = std::make_unique<Graphics::Sprite>(texture.getSurface(), Graphics::QuadUV());
 			}
+
+			mResourceReleaseFns[mHandleIdx] = [this, originalTextureHandle](Resource*){
+				unlockResource(originalTextureHandle);
+			};
 
 			return ResourceHandle(mHandleIdx++);
 		}
@@ -160,19 +173,60 @@ namespace HAL
 		}
 	}
 
+	ResourceHandle ResourceManager::lockSpriteAnimation(const std::string& path)
+	{
+		auto it = mPathsMap.find(path);
+		if (it != mPathsMap.end())
+		{
+			++mResourceLocksCount[it->second];
+			return ResourceHandle(it->second);
+		}
+		else
+		{
+			createResourceLock(path);
+			auto it = mAnimationData.find(path);
+			AssertFatal(it != mAnimationData.end(), "No animation found with path %s", path.c_str());
+
+			std::vector<ResourceHandle> frames;
+			for (const auto& animFramePath : it->second.framePaths)
+			{
+				auto spriteHandle = lockSprite(animFramePath);
+				frames.push_back(spriteHandle);
+			}
+			mResources[mHandleIdx] = std::make_unique<Graphics::SpriteAnimation>(std::move(frames));
+
+			mResourceReleaseFns[mHandleIdx] = [this](Resource* resource){
+				for (auto& spriteHandle : static_cast<Graphics::SpriteAnimation*>(resource)->getSprites())
+				{
+					unlockResource(spriteHandle);
+				}
+			};
+
+			return ResourceHandle(mHandleIdx++);
+		}
+	}
+
 	void ResourceManager::unlockResource(ResourceHandle handle)
 	{
-		auto it = mResourceLocksCount.find(handle.ResourceIndex);
-		AssertRetVoid(it != mResourceLocksCount.end(), "Unlocking non-locked resource");
-		if (it->second > 1)
+		auto locksCntIt = mResourceLocksCount.find(handle.ResourceIndex);
+		AssertRetVoid(locksCntIt != mResourceLocksCount.end(), "Unlocking non-locked resource");
+		if (locksCntIt->second > 1)
 		{
-			--it->second;
+			--(locksCntIt->second);
 			return;
 		}
 		else
 		{
 			// unload resource
-			mResources.erase(handle.ResourceIndex);
+			if (auto resourceIt = mResources.find(handle.ResourceIndex); resourceIt != mResources.end())
+			{
+				if (auto releaseFnIt = mResourceReleaseFns.find(handle.ResourceIndex); releaseFnIt != mResourceReleaseFns.end())
+				{
+					releaseFnIt->second(resourceIt->second.get());
+					mResourceReleaseFns.erase(releaseFnIt);
+				}
+				mResources.erase(resourceIt);
+			}
 			mResourceLocksCount.erase(handle.ResourceIndex);
 			auto pathIt = mPathFindMap.find(handle.ResourceIndex);
 			if (pathIt != mPathFindMap.end())

@@ -7,6 +7,7 @@
 #include "GameData/Components/CollisionComponent.generated.h"
 #include "GameData/Components/LightComponent.generated.h"
 #include "GameData/Components/RenderModeComponent.generated.h"
+#include "GameData/Components/AnimationComponent.generated.h"
 #include "GameData/World.h"
 
 #include "Utils/Geometry/VisibilityPolygon.h"
@@ -68,7 +69,7 @@ void RenderSystem::update()
 				const Graphics::Sprite& spriteData = resourceManager->getSprite(spriteHandle);
 				if (spriteData.isValid())
 				{
-					auto location = transform->getLocation() + drawShift;
+					auto location = transform->getLozcation() + drawShift;
 					auto anchor = sprite->getAnchor();
 					auto size = sprite->getSize();
 					engine->render(spriteData.getSurface(), location, size, anchor, spriteData.getUV(), transform->getRotation().getValue(), 1.0f);
