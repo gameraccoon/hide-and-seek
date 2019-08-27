@@ -23,7 +23,7 @@ public:
 	typedef std::unordered_map<int, bool> KeyStatesMap;
 
 public:
-	DebugDrawSystem(WorldHolder& worldHolder, HAL::Engine* engine, const std::shared_ptr<HAL::ResourceManager>& resourceManager);
+	DebugDrawSystem(WorldHolder& worldHolder, HAL::Engine* engine, HAL::ResourceManager* resourceManager);
 	~DebugDrawSystem() override = default;
 
 	void update() override;
@@ -36,7 +36,7 @@ private:
 private:
 	WorldHolder& mWorldHolder;
 	HAL::Engine* mEngine;
-	std::shared_ptr<HAL::ResourceManager> mResourceManager;
+	HAL::ResourceManager* mResourceManager;
 
 	ResourceHandle mCollisionSpriteHandle;
 	ResourceHandle mNavmeshSpriteHandle;

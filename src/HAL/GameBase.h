@@ -9,15 +9,16 @@ namespace HAL
 {
 	class GameBase : public IGame
 	{
-	protected:
-		GameBase();
-		virtual ~GameBase();
+	public:
+		GameBase(int windowWidth, int windowHeight);
+		~GameBase();
 
+	protected:
 		Engine* getEngine() { return mEngine.get(); }
-		std::shared_ptr<ResourceManager> getResourceManager() { return mResourceManager; }
+		ResourceManager* getResourceManager() { return mResourceManager.get(); }
 
 	private:
 		std::unique_ptr<Engine> mEngine;
-		std::shared_ptr<ResourceManager> mResourceManager;
+		std::unique_ptr<ResourceManager> mResourceManager;
 	};
 }

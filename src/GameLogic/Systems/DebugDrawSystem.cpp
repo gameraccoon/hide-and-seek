@@ -10,7 +10,6 @@
 
 #include "Utils/Geometry/VisibilityPolygon.h"
 
-#include "HAL/Base/Alghorithms.h"
 #include "HAL/Base/Engine.h"
 #include "HAL/Internal/SdlSurface.h"
 
@@ -19,7 +18,7 @@
 #include <DetourNavMesh.h>
 
 
-DebugDrawSystem::DebugDrawSystem(WorldHolder& worldHolder, HAL::Engine* engine, const std::shared_ptr<HAL::ResourceManager>& resourceManager)
+DebugDrawSystem::DebugDrawSystem(WorldHolder& worldHolder, HAL::Engine* engine, HAL::ResourceManager* resourceManager)
 	: mWorldHolder(worldHolder)
 	, mEngine(engine)
 	, mResourceManager(resourceManager)

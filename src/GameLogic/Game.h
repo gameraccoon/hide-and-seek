@@ -19,11 +19,12 @@ class Game : public HAL::GameBase
 public:
 	void start(ArgumentsParser& arguments);
 	void update(float dt) override;
-	void setKeyState(int key, bool isPressed) override;
+	void setKeyboardKeyState(int key, bool isPressed) override;
+	void setMouseKeyState(int key, bool isPressed) override;
 
 private:
 	void initSystems();
-	void initResources();
+	void initResources() override;
 
 private:
 	WorldHolder mWorldHolder;

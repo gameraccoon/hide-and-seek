@@ -9,6 +9,8 @@ namespace HAL
 	public:
 		virtual ~IGame() = default;
 		virtual void update(float dt) = 0;
-		virtual void setKeyState(int key, bool isPressed) = 0;
+		virtual void initResources() = 0;
+		virtual void setKeyboardKeyState(int key, bool isPressed) = 0;
+		virtual void setMouseKeyState(int key, bool isPressed) = 0;
 	};
 }

@@ -8,8 +8,8 @@ namespace HAL
 {
 	namespace Internal
 	{
-		GlContext::GlContext(SdlWindow& sdlWindow)
-			: mContext(SDL_GL_CreateContext(sdlWindow), SDL_GL_DeleteContext)
+		GlContext::GlContext(Window& window)
+			: mContext(SDL_GL_CreateContext(window.getRawWindow()))
 		{
 			const char* error = SDL_GetError();
 			if (*error != '\0')
@@ -18,9 +18,14 @@ namespace HAL
 			}
 		}
 
-		GlContext::operator SDL_GLContext()
+		GlContext::~GlContext()
 		{
-			return mContext.get();
+			SDL_GL_DeleteContext(mContext);
+		}
+
+		SDL_GLContext GlContext::getRawGLContext()
+		{
+			return mContext;
 		}
 	}
 }

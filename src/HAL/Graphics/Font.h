@@ -1,30 +1,27 @@
 #pragma once
 
-#include <memory>
+#include <string>
 
-#include "HAL/EngineFwd.h"
 #include "HAL/Base/Resource.h"
 
-namespace HAL
-{
-	namespace Internal
-	{
-		class SdlSurface;
-	}
-}
+struct FC_Font;
+struct SDL_Renderer;
 
 namespace Graphics
 {
 	class Font : public HAL::Resource
 	{
 	public:
-		Font(HAL::Internal::SdlSurface* surface);
+		Font() = default;
 
-		HAL::Internal::SdlSurface* getSurface() const;
+		explicit Font(const std::string& path, int fontSize, SDL_Renderer* renderer);
+		~Font() override;
 
-		virtual bool isValid() const override;
+		bool isValid() const override;
+
+		FC_Font* getRawFont() const;
 
 	private:
-		HAL::Internal::SdlSurface* mSurface = nullptr;
+		FC_Font* mFont = nullptr;
 	};
 }

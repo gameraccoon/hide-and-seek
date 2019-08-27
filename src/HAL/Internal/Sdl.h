@@ -4,14 +4,12 @@ namespace HAL
 {
 	namespace Internal
 	{
-		class Sdl
+		class SDLInstance
 		{
 		public:
-			Sdl(unsigned int flags);
-			~Sdl();
-
-		private:
-			Sdl(const Sdl&) = delete;
+			explicit SDLInstance(unsigned int flags);
+			SDLInstance(const SDLInstance&) = delete;
+			~SDLInstance();
 		};
 	}
 }

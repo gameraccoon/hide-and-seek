@@ -1,32 +1,43 @@
 #include "HAL/Graphics/Texture.h"
 
-#include "../Internal/SdlSurface.h"
-#include "HAL/Base/Engine.h"
+#include "Debug/Assert.h"
+
+#include "SDL.h"
+#include "HAL/Internal/SdlSurface.h"
 
 namespace Graphics
 {
-	Texture::Texture(HAL::Internal::SdlSurface* surface)
-		: mSurface(surface)
+	Texture::Texture(const std::string& path, SDL_Renderer* renderer)
 	{
+		HAL::Internal::Surface tempSurface(path.c_str());
+		mTexture = SDL_CreateTextureFromSurface(renderer, tempSurface.getRawSurface());
+		AssertFatal(mTexture, "Texture can't be created from SdlSurface");
+		mWidth = tempSurface.getWidth();
+		mHeight = tempSurface.getHeight();
 	}
 
-	int Texture::getHeight() const
+	Texture::~Texture()
 	{
-		return mSurface->height();
+		SDL_DestroyTexture(mTexture);
 	}
 
-	int Texture::getWidth() const
+	SDL_Texture* Texture::getRawTexture() const
 	{
-		return mSurface->width();
-	}
-
-	HAL::Internal::SdlSurface* Texture::getSurface() const
-	{
-		return mSurface;
+		return mTexture;
 	}
 
 	bool Texture::isValid() const
 	{
-		return mSurface != nullptr;
+		return mTexture != nullptr;
+	}
+
+	int Texture::getWidth() const
+	{
+		return mWidth;
+	}
+
+	int Texture::getHeight() const
+	{
+		return mHeight;
 	}
 }
