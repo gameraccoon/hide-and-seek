@@ -25,7 +25,7 @@ int main(int argc, char** argv)
 
 	if (arguments.getArgumentValue("case") == "CollidingCircularUnits")
 	{
-		CollidingCircularUnitsTestCase testCase;
+		CollidingCircularUnitsTestCase testCase(800, 600);
 		testCase.start(arguments);
 	}
 

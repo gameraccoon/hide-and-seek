@@ -7,31 +7,26 @@
 #include "HAL/Base/Resource.h"
 #include "HAL/Base/Types.h"
 
-namespace HAL
-{
-	namespace Internal
-	{
-		class SdlSurface;
-	}
-}
-
 namespace Graphics
 {
+	class Texture;
+
 	class Sprite : public HAL::Resource
 	{
 	public:
-		Sprite(HAL::Internal::SdlSurface* surface, QuadUV uv);
+		Sprite() = default;
+		Sprite(const Graphics::Texture* texture, QuadUV uv);
 
 		int getHeight() const;
 		int getWidth() const;
 
-		HAL::Internal::SdlSurface* getSurface() const;
+		const Graphics::Texture* getTexture() const;
 		QuadUV getUV() const { return mUV; }
 
 		virtual bool isValid() const override;
 
 	private:
-		HAL::Internal::SdlSurface* mSurface = nullptr;
+		const Graphics::Texture* mTexture = nullptr;
 		QuadUV mUV;
 	};
 }

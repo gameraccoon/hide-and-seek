@@ -21,7 +21,7 @@ public:
 	typedef std::unordered_map<int, bool> KeyStatesMap;
 
 public:
-	RenderSystem(WorldHolder& worldHolder, HAL::Engine* engine, const std::shared_ptr<HAL::ResourceManager>& resourceManager);
+	RenderSystem(WorldHolder& worldHolder, HAL::Engine* engine, HAL::ResourceManager* resourceManager);
 	~RenderSystem() override = default;
 
 	void update() override;
@@ -34,6 +34,6 @@ private:
 private:
 	WorldHolder& mWorldHolder;
 	HAL::Engine* mEngine;
-	std::shared_ptr<HAL::ResourceManager> mResourceManager;
+	HAL::ResourceManager* mResourceManager;
 	ResourceHandle mLightSpriteHandle;
 };

@@ -7,7 +7,7 @@ namespace HAL
 {
 	namespace Internal
 	{
-		Sdl::Sdl(unsigned int flags)
+		SDLInstance::SDLInstance(unsigned int flags)
 		{
 			if (SDL_Init(flags) != 0)
 			{
@@ -15,7 +15,7 @@ namespace HAL
 			}
 		}
 
-		Sdl::~Sdl()
+		SDLInstance::~SDLInstance()
 		{
 			SDL_Quit();
 		}

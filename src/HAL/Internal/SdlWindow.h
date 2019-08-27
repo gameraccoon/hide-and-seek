@@ -1,22 +1,21 @@
 #pragma once
 
-#include <memory>
-
 struct SDL_Window;
 
 namespace HAL
 {
 	namespace Internal
 	{
-		class SdlWindow
+		class Window
 		{
 		public:
-			SdlWindow(int width, int height);
-			operator SDL_Window*();
+			Window(int width, int height);
+			~Window();
+			SDL_Window* getRawWindow();
 			void show();
 
 		private:
-			std::unique_ptr<SDL_Window, void(*)(SDL_Window*)> mSDLWindow;
+			SDL_Window* mSDLWindow;
 		};
 	}
 }

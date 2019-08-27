@@ -1,6 +1,5 @@
 #pragma once
 
-#include <memory>
 #include <string>
 
 struct SDL_Surface;
@@ -9,19 +8,19 @@ namespace HAL
 {
 	namespace Internal
 	{
-		class SdlSurface
+		class Surface
 		{
 		public:
-			SdlSurface(const std::string& filename);
-			operator SDL_Surface*();
-			void bind();
-			int width() const;
-			int height() const;
+			explicit Surface(const std::string& filename);
+			~Surface();
+
+			int getWidth() const;
+			int getHeight() const;
+
+			SDL_Surface* getRawSurface();
 
 		private:
-			static void deleteTexture(unsigned int* textureId);
-			std::unique_ptr<SDL_Surface, void(*)(SDL_Surface*)> mSurface;
-			std::unique_ptr<unsigned int, void(*)(unsigned int*)> mTextureId;
+			SDL_Surface* mSurface;
 		};
 	}
 }

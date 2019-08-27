@@ -6,42 +6,53 @@
 
 #include <nlohmann/json.hpp>
 
-#include <Debug/Log.h>
-#include <Debug/Assert.h>
+#include "Debug/Log.h"
+#include "Debug/Assert.h"
 
 #include "HAL/Base/Engine.h"
-#include "../Internal/SdlSurface.h"
+#include "HAL/Internal/SdlSurface.h"
 
 namespace HAL
 {
-	static Graphics::Texture EMPTY_TEXTURE = Graphics::Texture(nullptr);
-	static Graphics::Font EMPTY_FONT = Graphics::Font(nullptr);
-	static Graphics::Sprite EMPTY_SPRITE = Graphics::Sprite(nullptr, Graphics::QuadUV());
+	static Graphics::Sprite EMPTY_SPRITE = Graphics::Sprite();
+	static Graphics::Texture EMPTY_TEXTURE = Graphics::Texture();
+	static Graphics::Font EMPTY_FONT = Graphics::Font();
+	static Audio::Sound EMPTY_SOUND = Audio::Sound();
+	static Audio::Music EMPTY_MUSIC = Audio::Music();
 
 	ResourceManager::ResourceManager(Engine* engine)
 		: mEngine(engine)
 	{
 	}
 
-	const Graphics::Texture& ResourceManager::getTexture(ResourceHandle handle)
+	template<>
+	const Graphics::Texture& ResourceManager::getEmptyResource<Graphics::Texture>()
 	{
-		auto it = mResources.find(handle.ResourceIndex);
-		AssertRet(it != mResources.end(), EMPTY_TEXTURE, "Trying to access non loaded texture");
-		return static_cast<Graphics::Texture&>(*(it->second.get()));
+		return EMPTY_TEXTURE;
 	}
 
-	const Graphics::Sprite ResourceManager::getSprite(ResourceHandle handle)
+	template<>
+	const Graphics::Sprite& ResourceManager::getEmptyResource<Graphics::Sprite>()
 	{
-		auto it = mResources.find(handle.ResourceIndex);
-		AssertRet(it != mResources.end(), EMPTY_SPRITE, "Trying to access non loaded sprite");
-		return static_cast<Graphics::Sprite&>(*(it->second.get()));
+		return EMPTY_SPRITE;
 	}
 
-	const Graphics::Font& ResourceManager::getFont(ResourceHandle handle)
+	template<>
+	const Graphics::Font& ResourceManager::getEmptyResource<Graphics::Font>()
 	{
-		auto it = mResources.find(handle.ResourceIndex);
-		AssertRet(it != mResources.end(), EMPTY_FONT, "Trying to access non loaded font");
-		return static_cast<Graphics::Font&>(*(it->second.get()));
+		return EMPTY_FONT;
+	}
+
+	template<>
+	const Audio::Sound& ResourceManager::getEmptyResource<Audio::Sound>()
+	{
+		return EMPTY_SOUND;
+	}
+
+	template<>
+	const Audio::Music& ResourceManager::getEmptyResource<Audio::Music>()
+	{
+		return EMPTY_MUSIC;
 	}
 
 	void ResourceManager::createResourceLock(const std::string& path)
@@ -110,7 +121,24 @@ namespace HAL
 		else
 		{
 			createResourceLock(path);
-			mResources[mHandleIdx] = std::make_unique<Graphics::Texture>(new Internal::SdlSurface(path));
+			mResources[mHandleIdx] = std::make_unique<Graphics::Texture>(path, mEngine->getRenderer()->getRawRenderer());
+			return ResourceHandle(mHandleIdx++);
+		}
+	}
+
+	ResourceHandle ResourceManager::lockFont(const std::string& path, int fontSize)
+	{
+		std::string id = path + ":" + std::to_string(fontSize);
+		auto it = mPathsMap.find(id);
+		if (it != mPathsMap.end())
+		{
+			++mResourceLocksCount[it->second];
+			return ResourceHandle(it->second);
+		}
+		else
+		{
+			createResourceLock(id);
+			mResources[mHandleIdx] = std::make_unique<Graphics::Font>(path, fontSize, mEngine->getRenderer()->getRawRenderer());
 			return ResourceHandle(mHandleIdx++);
 		}
 	}
@@ -130,21 +158,20 @@ namespace HAL
 			if (it != mAtlasFrames.end())
 			{
 				auto originalTextureHandle = lockTexture(it->second.atlasPath);
-				const Graphics::Texture& texture = getTexture(originalTextureHandle);
-				mResources[mHandleIdx] = std::make_unique<Graphics::Sprite>(texture.getSurface(), it->second.quadUV);
+				const Graphics::Texture& texture = getResource<Graphics::Texture>(originalTextureHandle);
+				mResources[mHandleIdx] = std::make_unique<Graphics::Sprite>(&texture, it->second.quadUV);
 			}
 			else
 			{
 				auto originalTextureHandle = lockTexture(path);
-				const Graphics::Texture& texture = getTexture(originalTextureHandle);
-				mResources[mHandleIdx] = std::make_unique<Graphics::Sprite>(texture.getSurface(), Graphics::QuadUV());
+				const Graphics::Texture& texture = getResource<Graphics::Texture>(originalTextureHandle);
+				mResources[mHandleIdx] = std::make_unique<Graphics::Sprite>(&texture, Graphics::QuadUV());
 			}
-
 			return ResourceHandle(mHandleIdx++);
 		}
 	}
 
-	ResourceHandle ResourceManager::lockFont(const std::string& path)
+	ResourceHandle ResourceManager::lockSound(const std::string& path)
 	{
 		auto it = mPathsMap.find(path);
 		if (it != mPathsMap.end())
@@ -155,24 +182,50 @@ namespace HAL
 		else
 		{
 			createResourceLock(path);
-			mResources[mHandleIdx] = std::make_unique<Graphics::Font>(new Internal::SdlSurface(path));
+			mResources[mHandleIdx] = std::make_unique<Audio::Sound>(path);
+			return ResourceHandle(mHandleIdx++);
+		}
+	}
+
+	ResourceHandle ResourceManager::lockMusic(const std::string& path)
+	{
+		auto it = mPathsMap.find(path);
+		if (it != mPathsMap.end())
+		{
+			++mResourceLocksCount[it->second];
+			return ResourceHandle(it->second);
+		}
+		else
+		{
+			createResourceLock(path);
+			mResources[mHandleIdx] = std::make_unique<Audio::Music>(path);
 			return ResourceHandle(mHandleIdx++);
 		}
 	}
 
 	void ResourceManager::unlockResource(ResourceHandle handle)
 	{
-		auto it = mResourceLocksCount.find(handle.ResourceIndex);
-		AssertRetVoid(it != mResourceLocksCount.end(), "Unlocking non-locked resource");
-		if (it->second > 1)
+		auto locksCntIt = mResourceLocksCount.find(handle.ResourceIndex);
+		AssertRetVoid(locksCntIt != mResourceLocksCount.end(), "Unlocking non-locked resource");
+		if (locksCntIt->second > 1)
 		{
-			--it->second;
+			--(locksCntIt->second);
 			return;
 		}
 		else
 		{
 			// unload resource
-			mResources.erase(handle.ResourceIndex);
+			auto resourceIt = mResources.find(handle.ResourceIndex);
+			if (resourceIt != mResources.end())
+			{
+				auto releaseFnIt = mResourceReleaseFns.find(handle.ResourceIndex);
+				if (releaseFnIt != mResourceReleaseFns.end())
+				{
+					releaseFnIt->second(resourceIt->second.get());
+					mResourceReleaseFns.erase(releaseFnIt);
+				}
+				mResources.erase(resourceIt);
+			}
 			mResourceLocksCount.erase(handle.ResourceIndex);
 			auto pathIt = mPathFindMap.find(handle.ResourceIndex);
 			if (pathIt != mPathFindMap.end())

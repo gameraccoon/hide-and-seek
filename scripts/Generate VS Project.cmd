@@ -3,5 +3,5 @@ set scriptDir=%CD%
 cd ..
 mkdir vs_project
 cd vs_project
-cmake build .. -G "Visual Studio 14 2015"
+cmake build .. -G "Visual Studio 15 2017"
 cd %scriptDir%

@@ -1,34 +1,31 @@
 #pragma once
 
-#include <memory>
-
-#include "HAL/EngineFwd.h"
+#include <string>
 
 #include "HAL/Base/Resource.h"
 
-namespace HAL
-{
-	namespace Internal
-	{
-		class SdlSurface;
-	}
-}
+struct SDL_Texture;
+struct SDL_Renderer;
 
 namespace Graphics
 {
 	class Texture : public HAL::Resource
 	{
 	public:
-		Texture(HAL::Internal::SdlSurface* surface);
+		Texture() = default;
+		explicit Texture(const std::string& path, SDL_Renderer* renderer);
+		~Texture() override;
 
-		int getHeight() const;
 		int getWidth() const;
+		int getHeight() const;
 
-		HAL::Internal::SdlSurface* getSurface() const;
+		SDL_Texture* getRawTexture() const;
 
 		virtual bool isValid() const override;
 
 	private:
-		HAL::Internal::SdlSurface* mSurface = nullptr;
+		SDL_Texture* mTexture = nullptr;
+		int mWidth = 0;
+		int mHeight = 0;
 	};
 }

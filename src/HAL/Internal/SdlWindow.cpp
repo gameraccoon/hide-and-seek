@@ -8,13 +8,13 @@ namespace HAL
 {
 	namespace Internal
 	{
-		SdlWindow::SdlWindow(int width, int height)
+		Window::Window(int width, int height)
 			: mSDLWindow(SDL_CreateWindow("Game"
 				, SDL_WINDOWPOS_UNDEFINED
 				, SDL_WINDOWPOS_UNDEFINED
 				, width
 				, height
-				, SDL_WINDOW_HIDDEN | SDL_WINDOW_OPENGL), SDL_DestroyWindow)
+				, SDL_WINDOW_HIDDEN | SDL_WINDOW_OPENGL))
 		{
             if (mSDLWindow == nullptr)
 			{
@@ -22,14 +22,19 @@ namespace HAL
 			}
 		}
 
-		void SdlWindow::show()
+		Window::~Window()
 		{
-			SDL_ShowWindow(mSDLWindow.get());
+			SDL_DestroyWindow(mSDLWindow);
 		}
 
-		SdlWindow::operator SDL_Window*()
+		void Window::show()
 		{
-			return mSDLWindow.get();
+			SDL_ShowWindow(mSDLWindow);
+		}
+
+		SDL_Window* Window::getRawWindow()
+		{
+			return mSDLWindow;
 		}
 	}
 }
