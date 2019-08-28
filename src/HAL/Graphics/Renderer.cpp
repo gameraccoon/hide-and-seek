@@ -10,6 +10,9 @@
 #include "HAL/Graphics/Texture.h"
 
 
+static constexpr double MATH_PI = 3.14159265358979323846;
+
+
 namespace Graphics
 {
 	Renderer::Renderer(HAL::Internal::Window& window)
@@ -80,10 +83,10 @@ namespace Graphics
 			static_cast<int>(size.y)
 		};
 		SDL_Point ancorPoint = {
-			static_cast<int>(ancor.x * texture.getWidth()),
-			static_cast<int>(ancor.y * texture.getHeight())
+			static_cast<int>(uvRect.w * ancor.x),
+			static_cast<int>(uvRect.h * ancor.y)
 		};
-		SDL_RenderCopyEx(mRenderer, texture.getRawTexture(), &uvRect, &outRect, rotation, &ancorPoint, SDL_RendererFlip::SDL_FLIP_NONE);
+		SDL_RenderCopyEx(mRenderer, texture.getRawTexture(), &uvRect, &outRect, static_cast<double>(rotation) / MATH_PI * 180.0, &ancorPoint, SDL_RendererFlip::SDL_FLIP_NONE);
 	}
 
 	void Renderer::render(const Graphics::Texture& texture, Vector2D pos, Vector2D size, Vector2D ancor, float rotation, Graphics::QuadUV uv, float alpha)
