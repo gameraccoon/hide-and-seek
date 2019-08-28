@@ -17,6 +17,8 @@
 class Game : public HAL::GameBase
 {
 public:
+	using HAL::GameBase::GameBase;
+
 	void start(ArgumentsParser& arguments);
 	void update(float dt) override;
 	void setKeyboardKeyState(int key, bool isPressed) override;
