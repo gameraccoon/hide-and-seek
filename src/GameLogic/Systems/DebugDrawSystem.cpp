@@ -11,7 +11,8 @@
 #include "Utils/Geometry/VisibilityPolygon.h"
 
 #include "HAL/Base/Engine.h"
-#include "HAL/Internal/SdlSurface.h"
+#include "HAL/Base/Math.h"
+#include "HAL/Graphics/Renderer.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -31,6 +32,7 @@ void DebugDrawSystem::update()
 {
 	World* world = mWorldHolder.world;
 	GameData* gameData = mWorldHolder.gameData;
+	Graphics::Renderer* renderer = mEngine->getRenderer();
 
 	static const Vector2D maxFov(500.0f, 500.0f);
 
@@ -55,15 +57,16 @@ void DebugDrawSystem::update()
 	auto [renderMode] = gameData->getGameComponents().getComponents<RenderModeComponent>();
 	if (renderMode && renderMode->getIsDrawDebugCollisionsEnabled())
 	{
-		const Graphics::Sprite& collisionSprite = mResourceManager->getSprite(mCollisionSpriteHandle);
+		const Graphics::Sprite& collisionSprite = mResourceManager->getResource<Graphics::Sprite>(mCollisionSpriteHandle);
 		Graphics::QuadUV quadUV = collisionSprite.getUV();
-		world->getEntityManger().forEachComponentSet<CollisionComponent>([&collisionSprite, &quadUV, drawShift, engine = mEngine](CollisionComponent* collisionComponent)
+		world->getEntityManger().forEachComponentSet<CollisionComponent>([&collisionSprite, &quadUV, drawShift, renderer](CollisionComponent* collisionComponent)
 		{
-			engine->render(collisionSprite.getSurface(),
+			renderer->render(*collisionSprite.getTexture(),
 				Vector2D(collisionComponent->getBoundingBox().minX + drawShift.x, collisionComponent->getBoundingBox().minY + drawShift.y),
 				Vector2D(collisionComponent->getBoundingBox().maxX-collisionComponent->getBoundingBox().minX,
 						 collisionComponent->getBoundingBox().maxY-collisionComponent->getBoundingBox().minY),
 				ZERO_VECTOR,
+				0.0f,
 				quadUV);
 			return true;
 		});
@@ -71,7 +74,7 @@ void DebugDrawSystem::update()
 
 	if (renderMode && renderMode->getIsDrawDebugAiDataEnabled())
 	{
-		const Graphics::Sprite& navMeshSprite = mResourceManager->getSprite(mNavmeshSpriteHandle);
+		const Graphics::Sprite& navMeshSprite = mResourceManager->getResource<Graphics::Sprite>(mNavmeshSpriteHandle);
 		Graphics::QuadUV quadUV = navMeshSprite.getUV();
 		auto [navMeshComponent] = world->getWorldComponents().getComponents<NavMeshComponent>();
 
@@ -88,7 +91,7 @@ void DebugDrawSystem::update()
 						for (int i = 0; i < tile->header->polyCount; ++i)
 						{
 							const auto& poly = tile->polys[i];
-							std::vector<HAL::DrawPoint> drawablePolygon;
+							std::vector<Graphics::DrawPoint> drawablePolygon;
 							drawablePolygon.reserve(3);
 							for (int j = 0; j < poly.vertCount; ++j)
 							{
@@ -97,11 +100,11 @@ void DebugDrawSystem::update()
 
 								float x = tile->verts[poly.verts[j] * 3];
 								float y = tile->verts[poly.verts[j] * 3 + 2];
-								drawablePolygon.push_back(HAL::DrawPoint{Vector2D(x, y), Graphics::QuadLerp(quadUV, u, v)});
+								drawablePolygon.push_back(Graphics::DrawPoint{Vector2D(x, y), Graphics::QuadLerp(quadUV, u, v)});
 							}
 							glm::mat4 transform(1.0f);
 							transform = glm::translate(transform, glm::vec3(drawShift.x, drawShift.y, 0.0f));
-							mEngine->renderFan(navMeshSprite.getSurface(), drawablePolygon, transform, 0.3f);
+							//renderer->renderFan(navMeshSprite.getTexture(), drawablePolygon, transform, 0.3f);
 						}
 					}
 				}
@@ -113,7 +116,7 @@ void DebugDrawSystem::update()
 			std::vector<Vector2D>& path = aiController->getPathRef().getSmoothPathRef();
 			if (path.size() > 1)
 			{
-				std::vector<HAL::DrawPoint> drawablePolygon;
+				std::vector<Graphics::DrawPoint> drawablePolygon;
 				drawablePolygon.reserve(path.size() * 2);
 
 				{
@@ -124,8 +127,8 @@ void DebugDrawSystem::update()
 
 					Vector2D normal = (path[1] - path[0]).normal() * 3;
 
-					drawablePolygon.push_back(HAL::DrawPoint{path[0] + normal, Graphics::QuadLerp(quadUV, u1, v1)});
-					drawablePolygon.push_back(HAL::DrawPoint{path[0] - normal, Graphics::QuadLerp(quadUV, u2, v2)});
+					drawablePolygon.push_back(Graphics::DrawPoint{path[0] + normal, Graphics::QuadLerp(quadUV, u1, v1)});
+					drawablePolygon.push_back(Graphics::DrawPoint{path[0] - normal, Graphics::QuadLerp(quadUV, u2, v2)});
 				}
 
 				for (size_t i = 1; i < path.size(); ++i)
@@ -137,13 +140,13 @@ void DebugDrawSystem::update()
 
 					Vector2D normal = (path[i] - path[i-1]).normal() * 3;
 
-					drawablePolygon.push_back(HAL::DrawPoint{path[i] + normal, Graphics::QuadLerp(quadUV, u1, v1)});
-					drawablePolygon.push_back(HAL::DrawPoint{path[i] - normal, Graphics::QuadLerp(quadUV, u2, v2)});
+					drawablePolygon.push_back(Graphics::DrawPoint{path[i] + normal, Graphics::QuadLerp(quadUV, u1, v1)});
+					drawablePolygon.push_back(Graphics::DrawPoint{path[i] - normal, Graphics::QuadLerp(quadUV, u2, v2)});
 				}
 
 				glm::mat4 transform(1.0f);
 				transform = glm::translate(transform, glm::vec3(drawShift.x, drawShift.y, 0.0f));
-				engine->renderStrip(navMeshSprite.getSurface(), drawablePolygon, transform, 0.5f);
+				//renderer->renderStrip(navMeshSprite.getTexture(), drawablePolygon, transform, 0.5f);
 			}
 		});
 	}

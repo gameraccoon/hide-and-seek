@@ -11,7 +11,7 @@
 
 #include "Utils/Geometry/VisibilityPolygon.h"
 
-#include "HAL/Base/Alghorithms.h"
+#include "HAL/Base/Math.h"
 #include "HAL/Base/Engine.h"
 #include "HAL/Internal/SdlSurface.h"
 
@@ -19,7 +19,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 
-RenderSystem::RenderSystem(WorldHolder& worldHolder, HAL::Engine* engine, const std::shared_ptr<HAL::ResourceManager>& resourceManager)
+RenderSystem::RenderSystem(WorldHolder& worldHolder, HAL::Engine* engine, HAL::ResourceManager* resourceManager)
 	: mWorldHolder(worldHolder)
 	, mEngine(engine)
 	, mResourceManager(resourceManager)
@@ -30,6 +30,7 @@ RenderSystem::RenderSystem(WorldHolder& worldHolder, HAL::Engine* engine, const 
 void RenderSystem::update()
 {
 	World* world = mWorldHolder.world;
+	Graphics::Renderer* renderer = mEngine->getRenderer();
 
 	static const Vector2D maxFov(500.0f, 500.0f);
 
@@ -60,18 +61,18 @@ void RenderSystem::update()
 
 	if (!renderMode || renderMode->getIsDrawVisibleEntitiesEnabled())
 	{
-		world->getEntityManger().forEachComponentSet<SpriteComponent, TransformComponent>([&drawShift, &resourceManager = mResourceManager, engine = mEngine](SpriteComponent* sprite, TransformComponent* transform)
+		world->getEntityManger().forEachComponentSet<SpriteComponent, TransformComponent>([&drawShift, &resourceManager = mResourceManager, renderer](SpriteComponent* sprite, TransformComponent* transform)
 		{
 			ResourceHandle spriteHandle = sprite->getSpriteHandle();
 			if (spriteHandle.isValid())
 			{
-				const Graphics::Sprite& spriteData = resourceManager->getSprite(spriteHandle);
+				const Graphics::Sprite& spriteData = resourceManager->getResource<Graphics::Sprite>(spriteHandle);
 				if (spriteData.isValid())
 				{
 					auto location = transform->getLocation() + drawShift;
 					auto anchor = sprite->getAnchor();
 					auto size = sprite->getSize();
-					engine->render(spriteData.getSurface(), location, size, anchor, spriteData.getUV(), transform->getRotation().getValue(), 1.0f);
+					renderer->render(*spriteData.getTexture(), location, size, anchor, transform->getRotation().getValue(), spriteData.getUV(), 1.0f);
 				}
 			}
 		});
@@ -84,18 +85,18 @@ void RenderSystem::drawVisibilityPolygon(const Graphics::Sprite& lightSprite, co
 	{
 		Graphics::QuadUV quadUV = lightSprite.getUV();
 
-		std::vector<HAL::DrawPoint> drawablePolygon;
+		std::vector<Graphics::DrawPoint> drawablePolygon;
 		drawablePolygon.reserve(polygon.size() + 2);
-		drawablePolygon.push_back(HAL::DrawPoint{ZERO_VECTOR, Graphics::QuadLerp(quadUV, 0.5f, 0.5f)});
+		drawablePolygon.push_back(Graphics::DrawPoint{ZERO_VECTOR, Graphics::QuadLerp(quadUV, 0.5f, 0.5f)});
 		for (auto& point : polygon)
 		{
-			drawablePolygon.push_back(HAL::DrawPoint{point, Graphics::QuadLerp(quadUV, 0.5f-point.x/fowSize.x, 0.5f-point.y/fowSize.y)});
+			drawablePolygon.push_back(Graphics::DrawPoint{point, Graphics::QuadLerp(quadUV, 0.5f-point.x/fowSize.x, 0.5f-point.y/fowSize.y)});
 		}
-		drawablePolygon.push_back(HAL::DrawPoint{polygon[0], Graphics::QuadLerp(quadUV, 0.5f-polygon[0].x/fowSize.x, 0.5f-polygon[0].y/fowSize.y)});
+		drawablePolygon.push_back(Graphics::DrawPoint{polygon[0], Graphics::QuadLerp(quadUV, 0.5f-polygon[0].x/fowSize.x, 0.5f-polygon[0].y/fowSize.y)});
 
 		glm::mat4 transform(1.0f);
 		transform = glm::translate(transform, glm::vec3(drawShift.x, drawShift.y, 0.0f));
-		mEngine->renderFan(lightSprite.getSurface(), drawablePolygon, transform, 0.5f);
+		//mEngine->getRenderer()->renderFan(*lightSprite.getTexture(), drawablePolygon, transform, 0.5f);
 	}
 }
 
@@ -118,7 +119,7 @@ Vector2D RenderSystem::GetPlayerSightPosition(World* world)
 
 void RenderSystem::drawLights(World* world, const Vector2D& drawShift, const Vector2D& maxFov)
 {
-	const Graphics::Sprite& lightSprite = mResourceManager->getSprite(mLightSpriteHandle);
+	const Graphics::Sprite& lightSprite = mResourceManager->getResource<Graphics::Sprite>(mLightSpriteHandle);
 	if (!lightSprite.isValid())
 	{
 		return;
