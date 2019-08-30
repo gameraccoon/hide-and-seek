@@ -14,12 +14,12 @@
 class ResourceStreamingSystem : public System
 {
 public:
-	ResourceStreamingSystem(WorldHolder& worldHolder, std::shared_ptr<HAL::ResourceManager> resourceManager);
+	ResourceStreamingSystem(WorldHolder& worldHolder, HAL::ResourceManager* resourceManager);
 	~ResourceStreamingSystem() override = default;
 
 	void update() override;
 
 private:
 	WorldHolder& mWorldHolder;
-	std::shared_ptr<HAL::ResourceManager> mResourceManager;
+	HAL::ResourceManager* mResourceManager;
 };

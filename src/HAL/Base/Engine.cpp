@@ -1,51 +1,44 @@
 #include "HAL/Base/Engine.h"
 
-#include <stdexcept>
-#include <algorithm>
-#include <vector>
-
-#include <glm/gtc/matrix_transform.hpp>
 #include <glew/glew.h>
-//#include <glm/glm.hpp>
 
-#include "../Internal/FontInternal.h"
-#include "../Internal/GlContext.h"
-#include "../Internal/Sdl.h"
-#include "../Internal/SdlWindow.h"
-#include "../Internal/SdlSurface.h"
+#include <SDL_ttf.h>
+#include <SDL_mixer.h>
+
+#include "Debug/Assert.h"
+
 #include "HAL/IGame.h"
-
+#include "HAL/Internal/GlContext.h"
+#include "HAL/Internal/Sdl.h"
+#include "HAL/Internal/SdlWindow.h"
 
 namespace HAL
 {
-	static const int WindowWidth = 800;
-	static const int WindowHeight = 600;
 	static const float MaxFrameTicks = 300.0f;
-	static const float TextScale = 0.5f;
 
 	struct Engine::Impl
 	{
-		Internal::Sdl mSdl;
-		Internal::SdlWindow mSdlWindow;
+		Internal::SDLInstance mSdl;
+		Internal::Window mWindow;
 		Internal::GlContext mGlContext;
+		Graphics::Renderer mRenderer;
 		float mElapsedTicks;
 		IGame* mGame;
 		bool mQuit;
 
 		float mMouseX;
 		float mMouseY;
-		bool mMouseButtonDown;
 
-		Impl()
-			: mSdl(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_NOPARACHUTE)
-			, mSdlWindow(WindowWidth, WindowHeight)
-			, mGlContext(mSdlWindow)
+		Impl(int windowWidth, int windowHeight)
+			: mSdl(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_NOPARACHUTE)
+			, mWindow(windowWidth, windowHeight)
+			, mGlContext(mWindow)
+			, mRenderer(mWindow)
 			, mElapsedTicks(static_cast<float>(SDL_GetTicks()))
 			, mGame(nullptr)
 			, mQuit(false)
-			, mMouseX(WindowWidth * 0.5f)
-			, mMouseY(WindowHeight * 0.5f)
-			, mMouseButtonDown(false)
+			, mMouseX(windowWidth * 0.5f)
+			, mMouseY(windowHeight * 0.5f)
 		{
 		}
 
@@ -57,8 +50,10 @@ namespace HAL
 		void parseEvents();
 	};
 
-	Engine::Engine()
-		: mPimpl(new Impl())
+	Engine::Engine(int windowWidth, int windowHeight)
+		: WindowWidth(windowWidth)
+		, WindowHeight(windowHeight)
+		, mPimpl(new Impl(windowWidth, windowHeight))
 	{
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
@@ -73,10 +68,22 @@ namespace HAL
 		glLoadIdentity();
 		glOrtho(0.0, WindowWidth, WindowHeight, 0.0, -1.0, 1.0);
 		glMatrixMode(GL_MODELVIEW);
+
+		if (TTF_Init() == -1)
+		{
+			Assert(false, "TTF_Init failed");
+		}
+
+		if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) == -1)
+		{
+			Assert(false, "TTF_Init failed");
+		}
 	}
 
 	Engine::~Engine()
 	{
+		Mix_CloseAudio();
+		TTF_Quit();
 	}
 
 	float Engine::getMouseX() const
@@ -89,11 +96,6 @@ namespace HAL
 		return mPimpl->mMouseY;
 	}
 
-	bool Engine::getMouseButtonDown() const
-	{
-		return mPimpl->mMouseButtonDown;
-	}
-
 	void Engine::quit()
 	{
 		mPimpl->mQuit = true;
@@ -102,130 +104,14 @@ namespace HAL
 	void Engine::start(IGame* game)
 	{
 		mPimpl->mGame = game;
-		mPimpl->mSdlWindow.show();
+		mPimpl->mWindow.show();
+		game->initResources();
 		mPimpl->start();
 	}
 
-	void Engine::render(Internal::SdlSurface* surface, const glm::mat4& transform, Vector2D size, Graphics::QuadUV uv, float alpha)
+	Graphics::Renderer* Engine::getRenderer()
 	{
-		glLoadMatrixf(reinterpret_cast<const float*>(&transform));
-		surface->bind();
-
-		glBegin(GL_QUADS);
-		glColor4f(1.0f, 1.0f, 1.0f, alpha);
-		glTexCoord2f(uv.U1, uv.V2); glVertex2f(0.0f, size.y);
-		glTexCoord2f(uv.U2, uv.V2); glVertex2f(size.x, size.y);
-		glTexCoord2f(uv.U2, uv.V1); glVertex2f(size.x, 0.0f);
-		glTexCoord2f(uv.U1, uv.V1); glVertex2f(0.0f, 0.0f);
-		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-		glEnd();
-	}
-
-	void Engine::render(Internal::SdlSurface* surface, Vector2D pos, Vector2D size, Vector2D ancor, Graphics::QuadUV uv, float rotation, float alpha)
-	{
-		glm::mat4 transformation;
-		transformation = glm::translate(transformation, glm::vec3(pos.x, pos.y, 0.0f));
-		transformation = glm::rotate(transformation, rotation, glm::vec3(0.0f, 0.0f, 1.0f));
-		transformation = glm::translate(transformation, glm::vec3(-size.x*ancor.x, -size.y*ancor.y, 0.0f));
-		render(surface, transformation, size, uv, alpha);
-	}
-
-	void Engine::renderFan(Internal::SdlSurface* surface, const std::vector<DrawPoint>& points, const glm::mat4& transform, float alpha)
-	{
-		glLoadMatrixf(reinterpret_cast<const float*>(&transform));
-		surface->bind();
-
-		glBegin(GL_TRIANGLE_FAN);
-		glColor4f(1.0f, 1.0f, 1.0f, alpha);
-		for (const DrawPoint& point : points)
-		{
-			glTexCoord2f(point.texturePoint.x, point.texturePoint.y);
-			glVertex2f(point.spacePoint.x, point.spacePoint.y);
-		}
-		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-		glEnd();
-	}
-
-	void Engine::renderStrip(Internal::SdlSurface* surface, const std::vector<DrawPoint>& points, const glm::mat4& transform, float alpha)
-	{
-		glLoadMatrixf(reinterpret_cast<const float*>(&transform));
-		surface->bind();
-
-		glBegin(GL_TRIANGLE_STRIP);
-		glColor4f(1.0f, 1.0f, 1.0f, alpha);
-		for (const DrawPoint& point : points)
-		{
-			glTexCoord2f(point.texturePoint.x, point.texturePoint.y);
-			glVertex2f(point.spacePoint.x, point.spacePoint.y);
-		}
-		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-		glEnd();
-	}
-
-	Internal::Glyph& findGlyph(char c)
-	{
-		auto found = std::lower_bound(std::begin(Internal::Font), std::end(Internal::Font), c);
-		if (found == std::end(Internal::Font) || c < *found)
-		{
-			found = std::lower_bound(std::begin(Internal::Font), std::end(Internal::Font), static_cast<int>('_'));
-		}
-		return *found;
-	}
-
-	float Engine::calculateStringWidth(const char* text) const
-	{
-		int advance = 0;
-		for (; *text; ++text)
-		{
-			Internal::Glyph& g = findGlyph(*text);
-			advance += g.advance;
-		}
-		return advance*TextScale;
-	}
-
-	void Engine::write(Internal::SdlSurface* fontSurface, const char* text, const glm::mat4& transform)
-	{
-		glLoadMatrixf(reinterpret_cast<const float*>(&transform));
-		int advance = 0;
-		for (; *text; ++text)
-		{
-			Internal::Glyph& g = findGlyph(*text);
-
-			float fontTexWidth = static_cast<float>(fontSurface->width());
-			float fontTexHeight = static_cast<float>(fontSurface->height());
-
-			float uvLeft = static_cast<float>(g.x) / fontTexWidth;
-			float uvRight = static_cast<float>(g.x + g.width) / fontTexWidth;
-			float uvBottom = static_cast<float>(g.y) / fontTexHeight;
-			float uvTop = static_cast<float>(g.y + g.height) / fontTexHeight;
-
-			float worldLeft = static_cast<float>(g.xoffset + advance);
-			float worldRight = static_cast<float>(g.xoffset + g.width + advance);
-			float worldBottom = static_cast<float>(g.yoffset);
-			float worldTop = static_cast<float>(g.yoffset + g.height);
-
-			fontSurface->bind();
-
-			glBegin(GL_QUADS);
-			glTexCoord2f(uvLeft / 2.0f, uvTop / 2.0f); glVertex2f(worldLeft * TextScale, worldTop * TextScale);
-			glTexCoord2f(uvRight / 2.0f, uvTop / 2.0f); glVertex2f(worldRight * TextScale, worldTop * TextScale);
-			glTexCoord2f(uvRight / 2.0f, uvBottom / 2.0f); glVertex2f(worldRight * TextScale, worldBottom * TextScale);
-			glTexCoord2f(uvLeft / 2.0f, uvBottom / 2.0f); glVertex2f(worldLeft * TextScale, worldBottom * TextScale);
-			glEnd();
-			advance += g.advance;
-		}
-	}
-
-	void Engine::write(Internal::SdlSurface* fontSurface, const char* text, float x, float y, float rotation)
-	{
-		glm::mat4 transformation;
-		transformation = glm::translate(transformation, glm::vec3(x, y, 0.0f));
-        if (rotation > 0.001f || rotation < -0.001f)
-		{
-			transformation = glm::rotate(transformation, rotation, glm::vec3(0.0f, 0.0f, 1.0f));
-			transformation = glm::translate(transformation, glm::vec3(-calculateStringWidth(text) / 2.0f, -20.0f, 0.0f));
-		}
-		write(fontSurface, text, transformation);
+		return &mPimpl->mRenderer;
 	}
 
 	int Engine::getWidth() const
@@ -242,14 +128,18 @@ namespace HAL
 	{
 		while (!mQuit)
 		{
-			SDL_GL_SwapWindow(mSdlWindow);
-			glClear(GL_COLOR_BUFFER_BIT);
+			mRenderer.clearFrame({0, 0, 0, 255});
 
 			parseEvents();
 
 			float currentTicks = static_cast<float>(SDL_GetTicks());
 			float lastFrameTicks = currentTicks - mElapsedTicks;
 			mElapsedTicks = currentTicks;
+
+			if (lastFrameTicks == 0)
+			{
+				continue;
+			}
 
 			lastFrameTicks = std::min(lastFrameTicks, MaxFrameTicks);
 			float lastFrameSeconds = lastFrameTicks * 0.001f;
@@ -258,6 +148,8 @@ namespace HAL
 			{
 				mGame->update(lastFrameSeconds);
 			}
+
+			mRenderer.finalizeFrame();
 		}
 	}
 
@@ -271,16 +163,16 @@ namespace HAL
 				mQuit = true;
 				break;
 			case SDL_KEYDOWN:
-				mGame->setKeyState(event.key.keysym.sym, true);
+				mGame->setKeyboardKeyState(event.key.keysym.sym, true);
 				break;
 			case SDL_KEYUP:
-				mGame->setKeyState(event.key.keysym.sym, false);
+				mGame->setKeyboardKeyState(event.key.keysym.sym, false);
 				break;
 			case SDL_MOUSEBUTTONDOWN:
-				mMouseButtonDown = true;
+				mGame->setMouseKeyState(event.button.button, true);
 				break;
 			case SDL_MOUSEBUTTONUP:
-				mMouseButtonDown = false;
+				mGame->setMouseKeyState(event.button.button, false);
 				break;
 			case SDL_MOUSEMOTION:
 				mMouseX = static_cast<float>(event.motion.x);

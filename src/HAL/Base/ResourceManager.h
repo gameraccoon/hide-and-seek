@@ -5,14 +5,18 @@
 #include <unordered_map>
 #include <functional>
 
-#include "HAL/EngineFwd.h"
+#include "Debug/Assert.h"
 
 #include "GameData/Core/ResourceHandle.h"
 
+#include "HAL/EngineFwd.h"
+
+#include "HAL/Audio/Music.h"
+#include "HAL/Audio/Sound.h"
+#include "HAL/Graphics/Font.h"
 #include "HAL/Graphics/Texture.h"
 #include "HAL/Graphics/Sprite.h"
 #include "HAL/Graphics/SpriteAnimation.h"
-#include "HAL/Graphics/Font.h"
 
 namespace HAL
 {
@@ -22,16 +26,22 @@ namespace HAL
 	class ResourceManager
 	{
 	public:
-		ResourceManager(Engine* engine);
+		explicit ResourceManager(Engine* engine);
 
-		const Graphics::Sprite& getSprite(ResourceHandle handle);
+		ResourceHandle lockFont(const std::string& path, int fontSize);
+		ResourceHandle lockTexture(const std::string& path);
 		ResourceHandle lockSprite(const std::string& path);
-
-		const Graphics::SpriteAnimation& getSpriteAnimation(ResourceHandle handle);
 		ResourceHandle lockSpriteAnimation(const std::string& path);
+		ResourceHandle lockSound(const std::string& path);
+		ResourceHandle lockMusic(const std::string& path);
 
-		const Graphics::Font& getFont(ResourceHandle handle);
-		ResourceHandle lockFont(const std::string& path);
+		template<typename T>
+		const T& getResource(ResourceHandle handle)
+		{
+			auto it = mResources.find(handle.ResourceIndex);
+			AssertRet(it != mResources.end(), getEmptyResource<T>(), "Trying to access non loaded resource");
+			return static_cast<T&>(*(it->second.get()));
+		}
 
 		void unlockResource(ResourceHandle handle);
 
@@ -53,11 +63,12 @@ namespace HAL
 		using ReleaseFn = std::function<void(Resource*)>;
 
 	private:
-		void createResourceLock(const std::string& path);
-		void loadOneAtlasData(const std::string& path);
+		template<typename T>
+		const T& getEmptyResource();
 
-		const Graphics::Texture& getTexture(ResourceHandle handle);
-		ResourceHandle lockTexture(const std::string& path);
+		void createResourceLock(const std::string& path);
+
+		void loadOneAtlasData(const std::string& path);
 
 	private:
 		std::unordered_map<ResourceHandle::IndexType, std::unique_ptr<Resource>> mResources;

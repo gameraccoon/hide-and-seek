@@ -15,9 +15,13 @@
 class CollidingCircularUnitsTestCase : public HAL::GameBase
 {
 public:
+	using HAL::GameBase::GameBase;
+
 	void start(ArgumentsParser& arguments);
 	void update(float dt) override;
-	void setKeyState(int, bool) override {}
+	void initResources() override {}
+	void setKeyboardKeyState(int, bool) override {}
+	void setMouseKeyState(int, bool) override {}
 
 private:
 	WorldHolder mWorldHolder;

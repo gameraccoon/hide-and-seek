@@ -21,6 +21,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${GAME_BIN_DIR})
 set(GAME_SRC_DIR ${GAME_BASE_DIR}/src)
 set(EXTERNALS_DIR ${GAME_BASE_DIR}/external)
 set(INTERMEDIATES_DIR ${GAME_BASE_DIR}/build/game)
+set(BIN_PLATFORM "x64")
 
 file (STRINGS "${GAME_BASE_DIR}/VersionInfo" EXECUTABLE_VERSION)
 file(STRINGS "${GAME_BASE_DIR}/BuildNum" BUILD_NUMBER)
@@ -64,11 +65,13 @@ include_directories(include)
 
 include_directories(
 	${EXTERNALS_DIR}/include
+	${EXTERNALS_DIR}/include/sdl
+	${EXTERNALS_DIR}/sources
 	${GAME_SRC_DIR}
 )
 
 link_directories(
-	${EXTERNALS_DIR}/lib
+	${EXTERNALS_DIR}/lib/${BIN_PLATFORM}
 	${GAME_BASE_DIR}/vs_project
 )
 
@@ -83,6 +86,8 @@ add_folder_as_library(${GAME_SRC_DIR}/GameData GameData)
 add_folder_as_library(${GAME_SRC_DIR}/GameLogic GameLogic)
 add_folder_as_library(${GAME_SRC_DIR}/Utils Utils)
 add_folder_as_library(${GAME_SRC_DIR}/HAL Hal)
+
+add_library(SDL_FontCache ${EXTERNALS_DIR}/sources/SDL_FontCache/SDL_FontCache.c)
 
 file(GLOB_RECURSE APP_SRC RELATIVE "" FOLLOW_SYMLINKS "${GAME_SRC_DIR}/GameMain/*")
 add_executable(${APP_NAME} "${APP_SRC}")
@@ -115,6 +120,9 @@ set(GENERAL_PROJECT_LIBS
 
 	SDL2
 	SDL2_image
+	SDL2_mixer
+	SDL_FontCache
+	SDL2_ttf
 	SDL2main
 )
 
@@ -186,3 +194,11 @@ add_custom_target(
 add_dependencies(GameData CodeGeneration)
 add_dependencies(Utils CodeGeneration)
 add_dependencies(GameLogic CodeGeneration)
+
+if (WIN32)
+	# copy dlls
+	file(GLOB WIN32_DLLS
+		"${EXTERNALS_DIR}/dll/${BIN_PLATFORM}/*"
+	)
+	file(COPY ${WIN32_DLLS} DESTINATION ${GAME_BIN_DIR})
+endif()

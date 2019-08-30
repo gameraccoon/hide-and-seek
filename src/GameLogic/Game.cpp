@@ -41,9 +41,13 @@ void Game::start(ArgumentsParser& arguments)
 	getEngine()->start(this);
 }
 
-void Game::setKeyState(int key, bool isPressed)
+void Game::setKeyboardKeyState(int key, bool isPressed)
 {
 	mKeyStates.updateState(key, isPressed);
+}
+
+void Game::setMouseKeyState(int /*key*/, bool /*isPressed*/)
+{
 }
 
 void Game::update(float dt)

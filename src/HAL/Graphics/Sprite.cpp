@@ -1,23 +1,23 @@
 #include "HAL/Graphics/Sprite.h"
 
-#include "../Internal/SdlSurface.h"
 #include "HAL/Base/Engine.h"
+#include "HAL/Graphics/Texture.h"
 
 namespace Graphics
 {
-	Sprite::Sprite(HAL::Internal::SdlSurface* surface, QuadUV uv)
-		: mSurface(surface)
+	Sprite::Sprite(const Graphics::Texture* texture, QuadUV uv)
+		: mTexture(texture)
 		, mUV(uv)
 	{
 	}
 
-	HAL::Internal::SdlSurface* Sprite::getSurface() const
+	const Graphics::Texture* Sprite::getTexture() const
 	{
-		return mSurface;
+		return mTexture;
 	}
 
 	bool Sprite::isValid() const
 	{
-		return mSurface != nullptr;
+		return mTexture != nullptr;
 	}
 }

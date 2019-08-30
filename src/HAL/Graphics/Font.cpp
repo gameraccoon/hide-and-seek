@@ -1,22 +1,29 @@
 #include "HAL/Graphics/Font.h"
 
-#include "../Internal/SdlSurface.h"
 #include "HAL/Base/Engine.h"
+
+#include "SDL_FontCache/SDL_FontCache.h"
 
 namespace Graphics
 {
-	Font::Font(HAL::Internal::SdlSurface* surface)
-		: mSurface(surface)
+	Font::Font(const std::string& path, int fontSize, SDL_Renderer* renderer)
 	{
+		mFont = FC_CreateFont();
+		FC_LoadFont(mFont, renderer, path.c_str(), fontSize, FC_MakeColor(0, 0, 0, 255), TTF_STYLE_NORMAL);
 	}
 
-	HAL::Internal::SdlSurface* Font::getSurface() const
+	Font::~Font()
 	{
-		return mSurface;
+		FC_FreeFont(mFont);
 	}
 
 	bool Font::isValid() const
 	{
-		return mSurface != nullptr;
+		return mFont != nullptr;
+	}
+
+	FC_Font* Font::getRawFont() const
+	{
+		return mFont;
 	}
 }

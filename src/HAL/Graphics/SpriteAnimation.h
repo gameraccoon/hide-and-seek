@@ -18,6 +18,7 @@ namespace Graphics
 	class SpriteAnimation : public HAL::Resource
 	{
 	public:
+		SpriteAnimation() = default;
 		explicit SpriteAnimation(std::vector<ResourceHandle>&& sprites);
 
 		bool isValid() const override;

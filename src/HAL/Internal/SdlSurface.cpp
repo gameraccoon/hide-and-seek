@@ -6,67 +6,36 @@
 #include <sdl/SDL.h>
 #include <sdl/SDL_image.h>
 
+#include "Debug/Assert.h"
+
 namespace HAL
 {
 	namespace Internal
 	{
-		SdlSurface::SdlSurface(const std::string& filename)
-			: mSurface(IMG_Load(filename.c_str()), SDL_FreeSurface)
-			, mTextureId(new unsigned int, &deleteTexture)
+		Surface::Surface(const std::string& filename)
+			: mSurface(IMG_Load(filename.c_str()))
 		{
-			if (mSurface == nullptr)
-			{
-				throw std::runtime_error(std::string("Unable to load texture ") + filename);
-			}
-
-			glGenTextures(1, mTextureId.get());
-			glBindTexture(GL_TEXTURE_2D, *mTextureId);
-
-			int mode;
-			switch (mSurface->format->BytesPerPixel)
-			{
-			case 4:
-				mode = GL_RGBA;
-				break;
-			case 3:
-				mode = GL_RGB;
-				break;
-			case 1:
-				mode = GL_LUMINANCE_ALPHA;
-				break;
-			default:
-				throw std::runtime_error("Image with unknown channel profile");
-			}
-
-            glTexImage2D(GL_TEXTURE_2D, 0, mode, mSurface->w, mSurface->h, 0, static_cast<GLenum>(mode), GL_UNSIGNED_BYTE, mSurface->pixels);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			AssertFatal(mSurface, "Unable to load texture");
 		}
 
-		void SdlSurface::deleteTexture(unsigned int* textureId)
+		Surface::~Surface()
 		{
-			glDeleteTextures(1, textureId);
-			delete textureId;
+			SDL_FreeSurface(mSurface);
 		}
 
-		void SdlSurface::bind()
-		{
-			glBindTexture(GL_TEXTURE_2D, *mTextureId);
-		}
-
-		int SdlSurface::width() const
+		int Surface::getWidth() const
 		{
 			return mSurface->w;
 		}
 
-		int SdlSurface::height() const
+		int Surface::getHeight() const
 		{
 			return mSurface->h;
 		}
 
-		SdlSurface::operator SDL_Surface*()
+		SDL_Surface* Surface::getRawSurface()
 		{
-			return mSurface.get();
+			return mSurface;
 		}
 	}
 }

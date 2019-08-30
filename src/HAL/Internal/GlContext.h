@@ -8,15 +8,17 @@ namespace HAL
 {
 	namespace Internal
 	{
-		class SdlWindow;
+		class Window;
 
 		class GlContext
 		{
 		public:
-			GlContext(SdlWindow& sdlWindow);
-			operator SDL_GLContext();
+			explicit GlContext(Window& window);
+			~GlContext();
+			SDL_GLContext getRawGLContext();
+
 		private:
-			std::unique_ptr<void, void(*)(SDL_GLContext)> mContext;
+			SDL_GLContext mContext;
 		};
 	}
 }

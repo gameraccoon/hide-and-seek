@@ -8,7 +8,7 @@ int main(int argc, char** argv)
 
 	ArgumentsParser arguments(argc, argv);
 
-	Game game;
+	Game game(800, 600);
 	game.start(arguments);
 
 	return 0;

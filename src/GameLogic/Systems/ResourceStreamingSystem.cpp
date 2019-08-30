@@ -7,7 +7,7 @@
 #include "GameData/GameData.h"
 
 
-ResourceStreamingSystem::ResourceStreamingSystem(WorldHolder& worldHolder, std::shared_ptr<HAL::ResourceManager> resourceManager)
+ResourceStreamingSystem::ResourceStreamingSystem(WorldHolder& worldHolder, HAL::ResourceManager* resourceManager)
 	: mWorldHolder(worldHolder)
 	, mResourceManager(resourceManager)
 {
