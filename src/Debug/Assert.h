@@ -1,69 +1,88 @@
 #pragma once
+
 #include "Log.h"
 
 #ifdef DEBUG
-	#define AssertInner(cond, message, ...) \
+#define ReportError(...) \
 	do \
 	{ \
-		if (!(cond)) \
+		LogAssertHelper("false", __FILE__, __LINE__, ##__VA_ARGS__); \
+	} while(0)
+#else
+#define ReportError(...) do { } while(0)
+#endif
+
+#ifdef DEBUG
+#define ReportFatalError(...) \
+	do \
+	{ \
+		LogAssertHelper("false", __FILE__, __LINE__, ##__VA_ARGS__); \
+		std::terminate(); \
+	} while(0)
+#else
+#define ReportFatalError(...) do { } while(0)
+#endif
+
+#ifdef DEBUG
+	#define Assert(cond, ...) \
+	do \
+	{ \
+		if (static_cast<bool>(cond) == false) \
 		{ \
-			LogError("Assertion failed '%s' %s line %d. Message: " message " (%d)", STR(cond), __FILE__, __LINE__, ##__VA_ARGS__); \
+			LogAssertHelper(STR(cond), __FILE__, __LINE__, ##__VA_ARGS__); \
 		} \
 	} while(0)
 #else
-	#define AssertInner(cond, message, ...) \
-		do { (void)sizeof(cond); (void)sizeof(message); } while(0)
+	#define Assert(...) do { } while(0)
 #endif
-#define Assert(cond, ...) AssertInner(cond, ##__VA_ARGS__, 0)
 
-#define AssertFatalInner(cond, message, ...) \
+#ifdef DEBUG
+#define AssertFatal(cond, ...) \
 do { \
 	if (static_cast<bool>(cond) == false) \
 	{ \
-		AssertInner(false, message, ##__VA_ARGS__); \
+		LogAssertHelper(STR(cond), __FILE__, __LINE__, ##__VA_ARGS__); \
 		std::terminate(); \
 	} \
 } while(0)
-#define AssertFatal(cond, ...) AssertFatalInner(cond, ##__VA_ARGS__, 0)
+#else
+#define AssertFatal(...) do { } while(0)
+#endif
 
 // macros for lazy programmers below (check condition and return/break/etc. even in release)
 
-#define AssertRetInner(cond, ret, message, ...) \
+#define AssertRet(cond, ret, ...) \
 do { \
 	if (static_cast<bool>(cond) == false) \
 	{ \
-		AssertInner(false, message, ##__VA_ARGS__); \
+		LogAssertHelper(STR(cond), __FILE__, __LINE__, ##__VA_ARGS__); \
 		return (ret); \
 	} \
 } while(0)
-#define AssertRet(cond, ret, ...) AssertRetInner(cond, ret, ##__VA_ARGS__, 0)
 
-#define AssertRetVoidInner(cond, message, ...) \
+#define AssertRetVoid(cond, ...) \
 do { \
 	if (static_cast<bool>(cond) == false) \
 	{ \
-		AssertInner(false, message, ##__VA_ARGS__); \
+		LogAssertHelper(STR(cond), __FILE__, __LINE__, ##__VA_ARGS__); \
 		return; \
 	} \
 } while(0)
-#define AssertRetVoid(cond, ...) AssertRetVoidInner(cond, ##__VA_ARGS__, 0)
 
-#define AssertBreakInner(cond, message, ...) \
+#define AssertBreak(cond, ...) \
 do { \
 	if (static_cast<bool>(cond) == false) \
 	{ \
-		AssertInner(false, message, ##__VA_ARGS__); \
+		LogAssertHelper(STR(cond), __FILE__, __LINE__, ##__VA_ARGS__); \
 		break; \
 	} \
 } while(0)
-#define AssertBreak(cond, ...) AssertBreakInner(cond, ##__VA_ARGS__, 0)
 
-#define AssertContinueInner(cond, message, ...) \
+#define AssertContinue(cond, ...) \
 do { \
 	if (static_cast<bool>(cond) == false) \
 	{ \
-		AssertInner(false, message, ##__VA_ARGS__); \
+		LogAssertHelper(STR(cond), __FILE__, __LINE__, ##__VA_ARGS__); \
 		continue; \
 	} \
 } while(0)
-#define AssertContinue(cond, ...) AssertContinueInner(cond, ##__VA_ARGS__, 0)

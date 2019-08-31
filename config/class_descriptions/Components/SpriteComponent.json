@@ -15,9 +15,10 @@
 			"includes": ["\"GameData/Core/Vector2D.h\""]
 		},
 		{
-			"name": "texturePath",
-			"type": "std::string",
-			"includes": ["<string>"]
+			"name": "spritePaths",
+			"type": "std::vector<std::string>",
+			"includes": ["<string>", "<vector>"],
+			"flags": ["get_by_ref"]
 		},
 		{
 			"name": "spriteHandles",
@@ -26,7 +27,7 @@
 				"<vector>",
 				"\"GameData/Core/ResourceHandle.h\""
 			],
-			"flags": ["transient"]
+			"flags": ["transient", "get_by_ref"]
 		}
 	]
 }

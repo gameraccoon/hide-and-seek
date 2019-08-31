@@ -64,13 +64,13 @@ void RenderSystem::update()
 	{
 		world->getEntityManger().forEachComponentSet<SpriteComponent, TransformComponent>([&drawShift, &resourceManager = mResourceManager, renderer](SpriteComponent* sprite, TransformComponent* transform)
 		{
-			ResourceHandle spriteHandle = sprite->getSpriteHandle();
-			if (spriteHandle.isValid())
+			std::vector<ResourceHandle> spriteHandle = sprite->getSpriteHandles();
+			if (spriteHandle.size() > 0 && spriteHandle[0].isValid())
 			{
-				const Graphics::Sprite& spriteData = resourceManager->getResource<Graphics::Sprite>(spriteHandle);
+				const Graphics::Sprite& spriteData = resourceManager->getResource<Graphics::Sprite>(spriteHandle[0]);
 				if (spriteData.isValid())
 				{
-					auto location = transform->getLozcation() + drawShift;
+					auto location = transform->getLocation() + drawShift;
 					auto anchor = sprite->getAnchor();
 					auto size = sprite->getSize();
 					renderer->render(*spriteData.getTexture(), location, size, anchor, transform->getRotation().getValue(), spriteData.getUV(), 1.0f);

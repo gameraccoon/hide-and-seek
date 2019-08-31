@@ -26,7 +26,8 @@ static void spawnUnit(EntityManager& entityManager, Vector2D pos)
 	movement->setOriginalSpeed(30.0f);
 	SpriteComponent* sprite = entityManager.addComponent<SpriteComponent>(entity);
 	sprite->setSize(Vector2D(20.0f, 20.0f));
-	sprite->setTexturePath("resources/textures/hero.png");
+	sprite->getSpritePathsRef().emplace_back("resources/textures/hero.png");
+	sprite->getSpriteHandlesRef().emplace_back();
 	CollisionComponent* collision = entityManager.addComponent<CollisionComponent>(entity);
 	Hull& hull = collision->getGeometryRef();
 	hull.type = HullType::Circular;

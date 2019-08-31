@@ -41,7 +41,8 @@ void CollidingCircularUnitsTestCase::start(ArgumentsParser& /*arguments*/)
 	transform->setLocation(Vector2D(0.0f, 0.0f));
 	SpriteComponent* sprite = mWorld.getEntityManger().addComponent<SpriteComponent>(playerEntity);
 	sprite->setSize(Vector2D(30.0f, 30.0f));
-	sprite->setTexturePath("resources/textures/hero.png");
+	sprite->getSpritePathsRef().emplace_back("resources/textures/hero.png");
+	sprite->getSpriteHandlesRef().emplace_back();
 	CollisionComponent* collision = mWorld.getEntityManger().addComponent<CollisionComponent>(playerEntity);
 	Hull& hull = collision->getGeometryRef();
 	hull.type = HullType::Circular;

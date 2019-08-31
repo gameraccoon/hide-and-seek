@@ -20,9 +20,10 @@ void ResourceStreamingSystem::update()
 
 	world->getEntityManger().forEachComponentSet<SpriteComponent>([&resourceManager = mResourceManager](SpriteComponent* sprite)
 	{
-		if (ResourceHandle textureHandle = sprite->getSpriteHandle(); !textureHandle.isValid())
+		std::vector<ResourceHandle>& spriteHandles = sprite->getSpriteHandlesRef();
+		for (size_t i = 0; i < spriteHandles.size(); ++i)
 		{
-			sprite->setSpriteHandle(resourceManager->lockSprite(sprite->getTexturePath()));
+			spriteHandles[i] = resourceManager->lockSprite(sprite->getSpritePaths()[i]);
 		}
 	});
 
