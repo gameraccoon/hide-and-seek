@@ -35,5 +35,6 @@ void TestCircularUnitsSystem::update()
 	world->getEntityManger().forEachComponentSet<AiControllerComponent, TransformComponent, MovementComponent>([targetLocation](AiControllerComponent* /*aiController*/, TransformComponent* transform, MovementComponent* movement)
 	{
 		movement->setMoveDirection(targetLocation - transform->getLocation());
+		movement->setSpeed(movement->getOriginalSpeed());
 	});
 }

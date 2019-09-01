@@ -113,7 +113,7 @@ namespace StateMachines
 			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, MoveDirection4>(CharacterLegsAnimationState::Walk, CharacterStateBlackboardKeys::TryingToMove, MoveDirection4::Front);
 			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, MoveDirection4>(CharacterLegsAnimationState::Walk, CharacterStateBlackboardKeys::TryingToMove, MoveDirection4::Back);
 			sm.addState(CharacterLegsAnimationState::StrafeLeft, std::move(rules));
-			sm.linkStates(CharacterLegsAnimationState::StrafeLeft, CharacterLegsAnimationState::MetaWalk, true);
+			sm.linkStates(CharacterLegsAnimationState::StrafeLeft, CharacterLegsAnimationState::MetaWalk, false);
 		}
 
 		{
@@ -121,7 +121,7 @@ namespace StateMachines
 			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, MoveDirection4>(CharacterLegsAnimationState::Walk, CharacterStateBlackboardKeys::TryingToMove, MoveDirection4::Front);
 			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, MoveDirection4>(CharacterLegsAnimationState::Walk, CharacterStateBlackboardKeys::TryingToMove, MoveDirection4::Back);
 			sm.addState(CharacterLegsAnimationState::StrafeRight, std::move(rules));
-			sm.linkStates(CharacterLegsAnimationState::StrafeRight, CharacterLegsAnimationState::MetaWalk, true);
+			sm.linkStates(CharacterLegsAnimationState::StrafeRight, CharacterLegsAnimationState::MetaWalk, false);
 		}
 	}
 

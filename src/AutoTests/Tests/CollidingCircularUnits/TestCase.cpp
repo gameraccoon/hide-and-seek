@@ -35,6 +35,7 @@ void CollidingCircularUnitsTestCase::start(ArgumentsParser& /*arguments*/)
 	ComponentsRegistration::RegisterComponents(mComponentFactory);
 
 	mWorldHolder.world = &mWorld;
+	mWorldHolder.gameData = &mGameData;
 
 	Entity playerEntity = mWorld.getEntityManger().addEntity();
 	TransformComponent* transform = mWorld.getEntityManger().addComponent<TransformComponent>(playerEntity);

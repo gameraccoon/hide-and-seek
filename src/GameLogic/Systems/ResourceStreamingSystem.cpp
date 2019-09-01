@@ -20,6 +20,11 @@ void ResourceStreamingSystem::update()
 
 	world->getEntityManger().forEachComponentSet<SpriteComponent>([&resourceManager = mResourceManager](SpriteComponent* sprite)
 	{
+		if (!sprite->getSpritePaths().empty() && sprite->getSpriteHandles().empty())
+		{
+			sprite->getSpriteHandlesRef().resize(sprite->getSpritePaths().size());
+		}
+
 		std::vector<ResourceHandle>& spriteHandles = sprite->getSpriteHandlesRef();
 		for (size_t i = 0; i < spriteHandles.size(); ++i)
 		{

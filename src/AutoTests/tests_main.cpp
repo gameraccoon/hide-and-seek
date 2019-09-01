@@ -1,6 +1,6 @@
 #include "Utils/Application/ArgumentsParser.h"
 
-#include "Debug/Log.h"
+#include "Debug/Assert.h"
 
 #include "AutoTests/Tests/CollidingCircularUnits/TestCase.h"
 

@@ -4,6 +4,7 @@
 #include "ECS/ComponentFactory.h"
 
 #include "GameData/World.h"
+#include "GameData/GameData.h"
 
 #include "Utils/Application/ArgumentsParser.h"
 
@@ -26,6 +27,7 @@ public:
 private:
 	WorldHolder mWorldHolder;
 	World mWorld;
+	GameData mGameData;
 	TimeData mTime;
 	SystemsManager mSystemsManager;
 	ComponentFactory mComponentFactory;
