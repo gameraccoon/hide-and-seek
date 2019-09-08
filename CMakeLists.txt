@@ -55,6 +55,11 @@ else()
 	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_RELEASE} -O2")
 endif()
 
+# code generation
+execute_process(
+	COMMAND ${PYTHON_EXECUTABLE} ${GAME_BASE_DIR}/scripts/build/code_generate.py ${GAME_BASE_DIR}
+)
+
 if (NOT WIN32)
     find_package(SDL2 REQUIRED)
     find_package(SDL2_image REQUIRED)
@@ -183,17 +188,6 @@ if (NOT ${PROJECT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR})
 	file(REMOVE_RECURSE ${GAME_BIN_DIR}/resources)
 	file(COPY "${PROJECT_SOURCE_DIR}/resources" DESTINATION ${GAME_BIN_DIR})
 endif()
-
-# code generation
-find_package(PythonInterp 3.5 REQUIRED)
-add_custom_target(
-	CodeGeneration
-	COMMAND ${PYTHON_EXECUTABLE} ${GAME_BASE_DIR}/scripts/build/code_generate.py ${GAME_BASE_DIR}
-	COMMENT "C++ code generation"
-)
-add_dependencies(GameData CodeGeneration)
-add_dependencies(Utils CodeGeneration)
-add_dependencies(GameLogic CodeGeneration)
 
 if (WIN32)
 	# copy dlls

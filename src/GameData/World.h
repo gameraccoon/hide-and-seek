@@ -12,7 +12,7 @@ public:
 	OptionalEntity getPlayerControlledEntity() { return mPlayerControlledEntity; }
 	void setPlayerControlledEntity(const OptionalEntity& newEntity) { mPlayerControlledEntity = newEntity; }
 
-	EntityManager& getEntityManger() { return mEntityManager; }
+	EntityManager& getEntityManager() { return mEntityManager; }
 	ComponentSetHolder& getWorldComponents() { return mWorldComponents; }
 
 	nlohmann::json toJson(const ComponentFactory& componentFactory) const;

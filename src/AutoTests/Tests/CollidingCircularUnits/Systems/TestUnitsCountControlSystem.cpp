@@ -2,7 +2,7 @@
 
 #include <sdl/SDL_keycode.h>
 
-#include "GameData/Components/SpriteComponent.generated.h"
+#include "GameData/Components/SpriteCreatorComponent.generated.h"
 #include "GameData/Components/TransformComponent.generated.h"
 #include "GameData/Components/MovementComponent.generated.h"
 #include "GameData/Components/CollisionComponent.generated.h"
@@ -20,18 +20,27 @@ TestUnitsCountControlSystem::TestUnitsCountControlSystem(WorldHolder& worldHolde
 static void spawnUnit(EntityManager& entityManager, Vector2D pos)
 {
 	Entity entity = entityManager.addEntity();
-	TransformComponent* transform = entityManager.addComponent<TransformComponent>(entity);
-	transform->setLocation(pos);
-	MovementComponent* movement = entityManager.addComponent<MovementComponent>(entity);
-	movement->setOriginalSpeed(30.0f);
-	SpriteComponent* sprite = entityManager.addComponent<SpriteComponent>(entity);
-	sprite->setSize(Vector2D(20.0f, 20.0f));
-	sprite->getSpritePathsRef().emplace_back("resources/textures/hero.png");
-	sprite->getSpriteHandlesRef().emplace_back();
-	CollisionComponent* collision = entityManager.addComponent<CollisionComponent>(entity);
-	Hull& hull = collision->getGeometryRef();
-	hull.type = HullType::Circular;
-	hull.setRadius(10.0f);
+	{
+		TransformComponent* transform = entityManager.addComponent<TransformComponent>(entity);
+		transform->setLocation(pos);
+	}
+	{
+		MovementComponent* movement = entityManager.addComponent<MovementComponent>(entity);
+		movement->setOriginalSpeed(30.0f);
+	}
+	{
+		SpriteCreatorComponent* sprite = entityManager.addComponent<SpriteCreatorComponent>(entity);
+		SpriteDescription spriteDesc;
+		spriteDesc.params.size = Vector2D(20.0f, 20.0f);
+		spriteDesc.path = "resources/textures/hero.png";
+		sprite->getDescriptionsRef().emplace_back(std::move(spriteDesc));
+	}
+	{
+		CollisionComponent* collision = entityManager.addComponent<CollisionComponent>(entity);
+		Hull& hull = collision->getGeometryRef();
+		hull.type = HullType::Circular;
+		hull.setRadius(10.0f);
+	}
 	entityManager.addComponent<AiControllerComponent>(entity);
 	entityManager.addComponent<CharacterStateComponent>(entity);
 }
@@ -72,7 +81,7 @@ void TestUnitsCountControlSystem::update()
 
 	if (ticksPassed == 5)
 	{
-		spawnUnits(world->getEntityManger(), 500, Vector2D(-400.0f, 0.0f));
+		spawnUnits(world->getEntityManager(), 500, Vector2D(-400.0f, 0.0f));
 	}
 
 	++ticksPassed;

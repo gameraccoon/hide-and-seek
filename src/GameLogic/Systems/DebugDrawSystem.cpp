@@ -42,7 +42,7 @@ void DebugDrawSystem::update()
 		return;
 	}
 
-	auto [cameraTransformComponent] = world->getEntityManger().getEntityComponents<TransformComponent>(mainCamera.getEntity());
+	auto [cameraTransformComponent] = world->getEntityManager().getEntityComponents<TransformComponent>(mainCamera.getEntity());
 	if (cameraTransformComponent == nullptr)
 	{
 		return;
@@ -59,7 +59,7 @@ void DebugDrawSystem::update()
 	{
 		const Graphics::Sprite& collisionSprite = mResourceManager->getResource<Graphics::Sprite>(mCollisionSpriteHandle);
 		Graphics::QuadUV quadUV = collisionSprite.getUV();
-		world->getEntityManger().forEachComponentSet<CollisionComponent>([&collisionSprite, &quadUV, drawShift, renderer](CollisionComponent* collisionComponent)
+		world->getEntityManager().forEachComponentSet<CollisionComponent>([&collisionSprite, &quadUV, drawShift, renderer](CollisionComponent* collisionComponent)
 		{
 			renderer->render(*collisionSprite.getTexture(),
 				Vector2D(collisionComponent->getBoundingBox().minX + drawShift.x, collisionComponent->getBoundingBox().minY + drawShift.y),
@@ -111,7 +111,7 @@ void DebugDrawSystem::update()
 			}
 		}
 
-		world->getEntityManger().forEachComponentSet<AiControllerComponent>([drawShift, &quadUV, &navMeshSprite, renderer](AiControllerComponent* aiController)
+		world->getEntityManager().forEachComponentSet<AiControllerComponent>([drawShift, &quadUV, &navMeshSprite, renderer](AiControllerComponent* aiController)
 		{
 			std::vector<Vector2D>& path = aiController->getPathRef().getSmoothPathRef();
 			if (path.size() > 1)

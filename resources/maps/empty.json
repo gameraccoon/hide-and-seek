@@ -49,15 +49,17 @@
                         "originalSpeed": 30.0
                     }
                 ],
-                "SpriteComponent": [
+                "SpriteDescriptionComponent": [
                     {
-                        "anchor": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "size": {
-                            "x": 32.0,
-                            "y": 32.0
+                        "params": {
+                            "anchor": {
+                                "x": 0.5,
+                                "y": 0.5
+                            },
+                            "size": {
+                                "x": 32.0,
+                                "y": 32.0
+                            },
                         },
                         "texturePath": "resources/textures/hero.png"
                     },

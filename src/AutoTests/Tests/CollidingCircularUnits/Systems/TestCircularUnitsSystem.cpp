@@ -24,7 +24,7 @@ void TestCircularUnitsSystem::update()
 		return;
 	}
 
-	auto [playerTransform] = world->getEntityManger().getEntityComponents<TransformComponent>(playerEntity.getEntity());
+	auto [playerTransform] = world->getEntityManager().getEntityComponents<TransformComponent>(playerEntity.getEntity());
 	if (playerTransform == nullptr)
 	{
 		return;
@@ -32,7 +32,7 @@ void TestCircularUnitsSystem::update()
 
 	Vector2D targetLocation = playerTransform->getLocation();
 
-	world->getEntityManger().forEachComponentSet<AiControllerComponent, TransformComponent, MovementComponent>([targetLocation](AiControllerComponent* /*aiController*/, TransformComponent* transform, MovementComponent* movement)
+	world->getEntityManager().forEachComponentSet<AiControllerComponent, TransformComponent, MovementComponent>([targetLocation](AiControllerComponent* /*aiController*/, TransformComponent* transform, MovementComponent* movement)
 	{
 		movement->setMoveDirection(targetLocation - transform->getLocation());
 		movement->setSpeed(movement->getOriginalSpeed());

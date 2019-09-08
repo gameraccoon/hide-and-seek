@@ -1,6 +1,6 @@
 #include "GameLogic/Systems/AnimationSystem.h"
 
-#include "GameData/Components/SpriteComponent.generated.h"
+#include "GameData/Components/RenderComponent.generated.h"
 #include "GameData/Components/AnimationComponent.generated.h"
 #include "GameData/World.h"
 

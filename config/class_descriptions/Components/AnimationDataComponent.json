@@ -4,10 +4,9 @@
 	"attributes": [
 		{
 			"name": "datas",
-			"type": "std::unordered_map<std::string, AnimationData<int>>",
+			"type": "std::vector<AnimationData>",
 			"includes": [
-				"<unordered_map>",
-				"<string>",
+				"<vector>",
 				"\"GameData/Resources/AnimationData.h\""
 			],
 			"flags": ["transient", "get_by_ref"]

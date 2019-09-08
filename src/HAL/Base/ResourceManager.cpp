@@ -39,6 +39,12 @@ namespace HAL
 	}
 
 	template<>
+	const Graphics::SpriteAnimation& ResourceManager::getEmptyResource<Graphics::SpriteAnimation>()
+	{
+		return EMPTY_SPRITE_ANIMATION;
+	}
+
+	template<>
 	const Graphics::Font& ResourceManager::getEmptyResource<Graphics::Font>()
 	{
 		return EMPTY_FONT;

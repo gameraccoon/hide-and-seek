@@ -58,7 +58,7 @@ void ControlSystem::update()
 	OptionalEntity controlledEntity = world->getPlayerControlledEntity();
 	if (controlledEntity.isValid())
 	{
-		if (auto [characterState] = world->getEntityManger().getEntityComponents<CharacterStateComponent>(controlledEntity.getEntity()); characterState != nullptr)
+		if (auto [characterState] = world->getEntityManager().getEntityComponents<CharacterStateComponent>(controlledEntity.getEntity()); characterState != nullptr)
 		{
 			characterState->getBlackboardRef().setValue<bool>(CharacterStateBlackboardKeys::TryingToMove, !movementDirection.isZeroLength());
 			characterState->getBlackboardRef().setValue<bool>(CharacterStateBlackboardKeys::ReadyToRun, isRunPressed);
@@ -68,7 +68,7 @@ void ControlSystem::update()
 	OptionalEntity mainCamera = world->getMainCamera();
 	if (mainCamera.isValid())
 	{
-		auto [cameraTransform] = world->getEntityManger().getEntityComponents<TransformComponent>(mainCamera.getEntity());
+		auto [cameraTransform] = world->getEntityManager().getEntityComponents<TransformComponent>(mainCamera.getEntity());
 		if (cameraTransform == nullptr)
 		{
 			return;
@@ -81,7 +81,7 @@ void ControlSystem::update()
 
 		if (controlledEntity.isValid())
 		{
-			auto [transform, movement] = world->getEntityManger().getEntityComponents<TransformComponent, MovementComponent>(controlledEntity.getEntity());
+			auto [transform, movement] = world->getEntityManager().getEntityComponents<TransformComponent, MovementComponent>(controlledEntity.getEntity());
 
 			movement->setMoveDirection(movementDirection);
 			movement->setSightDirection(mouseScreenPos - transform->getLocation() - drawShift);

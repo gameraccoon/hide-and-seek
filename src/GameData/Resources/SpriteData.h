@@ -1,14 +1,16 @@
 #pragma once
 
-#include <string>
-
 #include "GameData/Core/ResourceHandle.h"
-#include "GameData/Core/Vector2D.h"
+#include "GameData/Resources/SpriteParams.h"
 
-class SpriteData
+struct SpriteData
 {
-public:
-	Vector2D mSize = ZERO_VECTOR;
-	Vector2D mAnchor = Vector2D(0.5f, 0.5f);
-	ResourceHandle mSpriteHandle;
+	SpriteData() = default;
+	SpriteData(SpriteParams params, ResourceHandle spriteHandle)
+		: params(params)
+		, spriteHandle(spriteHandle)
+	{}
+
+	SpriteParams params;
+	ResourceHandle spriteHandle;
 };

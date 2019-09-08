@@ -5,9 +5,9 @@
 
 namespace Animations
 {
-	static void RegisterCharacterAnimation(AnimationDataComponent* animationData)
+	static void RegisterCharacterAnimation(AnimationDataComponent* /*animationData*/)
 	{
-		AnimationData<int> characterAnimationData;
+/*		AnimationData<int> characterAnimationData;
 
 		AnimationData<int>::AnimData idleAnimData;
 		idleAnimData.globalAnimId = "animations/character/handgun_idle.json";
@@ -33,7 +33,7 @@ namespace Animations
 		reloadAnimData.isLooped = false;
 		characterAnimationData.animDatas.emplace(static_cast<int>(CharacterAnimationState::Reload), std::move(reloadAnimData));
 
-		animationData->getDatasRef().emplace(get_enum_name<CharacterAnimationState>(), std::move(characterAnimationData));
+		animationData->getDatasRef().emplace(get_enum_name<CharacterAnimationState>(), std::move(characterAnimationData));*/
 	}
 
 	static void RegisterCharacterLegsAnimation(AnimationDataComponent* /*animationData*/)
