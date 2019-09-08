@@ -16,17 +16,17 @@ bool RemoveEntityCommand::doCommand(World* world)
 {
 	if (mSerializedComponents.empty())
 	{
-		world->getEntityManger().getPrefabFromEntity(mSerializedComponents, mEntity);
+		world->getEntityManager().getPrefabFromEntity(mSerializedComponents, mEntity);
 	}
 
-	world->getEntityManger().removeEntity(mEntity);
+	world->getEntityManager().removeEntity(mEntity);
 	return false;
 }
 
 bool RemoveEntityCommand::undoCommand(World* world)
 {
-	world->getEntityManger().insertEntityUnsafe(mEntity);
-	world->getEntityManger().applyPrefabToExistentEntity(mSerializedComponents, mEntity, *mComponentFactory);
+	world->getEntityManager().insertEntityUnsafe(mEntity);
+	world->getEntityManager().applyPrefabToExistentEntity(mSerializedComponents, mEntity, *mComponentFactory);
 	return false;
 }
 

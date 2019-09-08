@@ -13,7 +13,7 @@ bool ChangeEntityGroupLocationCommand::doCommand(World* world)
 {
 	for (Entity& entity : mEntities)
 	{
-		auto [component] = world->getEntityManger().getEntityComponents<TransformComponent>(entity);
+		auto [component] = world->getEntityManager().getEntityComponents<TransformComponent>(entity);
 		if (component)
 		{
 			component->setLocation(component->getLocation() + mShift);
@@ -26,7 +26,7 @@ bool ChangeEntityGroupLocationCommand::undoCommand(World* world)
 {
 	for (Entity& entity : mEntities)
 	{
-		auto [component] = world->getEntityManger().getEntityComponents<TransformComponent>(entity);
+		auto [component] = world->getEntityManager().getEntityComponents<TransformComponent>(entity);
 		if (component)
 		{
 			component->setLocation(component->getLocation() - mShift);

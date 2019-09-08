@@ -11,13 +11,13 @@ AddEntityCommand::AddEntityCommand(Entity entity)
 
 bool AddEntityCommand::doCommand(World* world)
 {
-	world->getEntityManger().insertEntityUnsafe(mEntity);
+	world->getEntityManager().insertEntityUnsafe(mEntity);
 	return false;
 }
 
 bool AddEntityCommand::undoCommand(World* world)
 {
-	world->getEntityManger().removeEntity(mEntity);
+	world->getEntityManager().removeEntity(mEntity);
 	return false;
 }
 

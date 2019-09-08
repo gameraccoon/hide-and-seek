@@ -229,7 +229,7 @@ void MainWindow::on_actionCreate_triggered()
 {
 	if (mCurrentWorld)
 	{
-		mCommandStack.executeNewCommand<AddEntityCommand>(mCurrentWorld.get(), mCurrentWorld->getEntityManger().getNonExistentEntity());
+		mCommandStack.executeNewCommand<AddEntityCommand>(mCurrentWorld.get(), mCurrentWorld->getEntityManager().getNonExistentEntity());
 	}
 }
 

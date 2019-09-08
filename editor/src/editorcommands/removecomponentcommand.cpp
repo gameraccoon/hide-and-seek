@@ -19,7 +19,7 @@ bool RemoveComponentCommand::doCommand(World* world)
 
 	if (mSerializedComponent.empty())
 	{
-		std::vector<BaseComponent*> components = world->getEntityManger().getAllEntityComponents(mEntity);
+		std::vector<BaseComponent*> components = world->getEntityManager().getAllEntityComponents(mEntity);
 
 		auto it = std::find_if(components.begin(), components.end(), [&typeName](BaseComponent* component)
 		{
@@ -34,7 +34,7 @@ bool RemoveComponentCommand::doCommand(World* world)
 		(*it)->toJson(mSerializedComponent);
 	}
 
-	world->getEntityManger().removeComponent(
+	world->getEntityManager().removeComponent(
 		mEntity,
 		mComponentFactory->getTypeIDFromString(typeName).value()
 	);
@@ -47,7 +47,7 @@ bool RemoveComponentCommand::undoCommand(World* world)
 
 	component->fromJson(mSerializedComponent);
 
-	world->getEntityManger().addComponent(
+	world->getEntityManager().addComponent(
 		mEntity,
 		component,
 		mComponentFactory->getTypeIDFromString(mComponentTypeName.toStdString()).value()

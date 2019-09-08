@@ -12,7 +12,7 @@ void ComponentContentFactory::registerComponents()
 	ComponentRegistration::RegisterToEditFactory(mFactories);
 }
 
-void ComponentContentFactory::replaceEditContent(QLayout* layout, const Entity& entity, const BaseComponent* component, EditorCommandsStack& commandStack, World* world)
+void ComponentContentFactory::replaceEditContent(QLayout* layout, Entity entity, const BaseComponent* component, EditorCommandsStack& commandStack, World* world)
 {
 	auto it = mFactories.find(component->getComponentTypeName());
 

@@ -183,11 +183,8 @@ target_link_libraries(${AUTOTESTS_NAME}
 	${GENERAL_PROJECT_LIBS}
 )
 
-# copy resources
-if (NOT ${PROJECT_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_BINARY_DIR})
-	file(REMOVE_RECURSE ${GAME_BIN_DIR}/resources)
-	file(COPY "${PROJECT_SOURCE_DIR}/resources" DESTINATION ${GAME_BIN_DIR})
-endif()
+# symlink resources dir
+execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink "${PROJECT_SOURCE_DIR}/resources" "${GAME_BIN_DIR}/resources")
 
 if (WIN32)
 	# copy dlls
