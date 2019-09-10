@@ -68,6 +68,7 @@ set(APP_SRCS
 aux_source_directory(src/editorcommands APP_SRCS)
 aux_source_directory(src/editorcommands/generated APP_SRCS)
 aux_source_directory(src/componenteditcontent APP_SRCS)
+aux_source_directory(src/componenteditcontent/customtypeeditconstructors APP_SRCS)
 aux_source_directory(src/componenteditcontent/generated APP_SRCS)
 aux_source_directory(src/toolboxes APP_SRCS)
 aux_source_directory(src/editorsystems APP_SRCS)

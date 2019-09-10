@@ -76,28 +76,40 @@
                 ],
                 "SpriteComponent": [
                     {
-                        "anchor": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "size": {
-                            "x": 32.0,
-                            "y": 32.0
-                        },
-                        "texturePath": "resources/textures/hero.png"
+                        "descriptions": [
+                            {
+                                "params": {
+                                    "anchor": {
+                                        "x": 0.5,
+                                        "y": 0.5
+                                    },
+                                    "size": {
+                                        "x": 32.0,
+                                        "y": 32.0
+                                    }
+                                },
+                                "path": "resources/textures/hero.png"
+                            }
+                        ]
                     },
                     null,
                     null,
                     {
-                        "anchor": {
-                            "x": 0.5,
-                            "y": 0.5
-                        },
-                        "size": {
-                            "x": 120.0,
-                            "y": 120.0
-                        },
-                        "texturePath": "resources/textures/testTexture.png"
+                        "descriptions": [
+                            {
+                                "params": {
+                                    "anchor": {
+                                        "x": 0.5,
+                                        "y": 0.5
+                                    },
+                                    "size": {
+                                        "x": 120.0,
+                                        "y": 120.0
+                                    }
+                                },
+                                "path": "resources/textures/testTexture.png"
+                            }
+                        ]
                     },
                     null,
                     null,
