@@ -9,6 +9,7 @@ struct AnimationData
 {
 	std::vector<ResourceHandle> sprites;
 	AnimationParams params;
-	unsigned int spriteId;
+	float progress = 0;
+	int spriteId;
 	ResourceHandle animation;
 };
