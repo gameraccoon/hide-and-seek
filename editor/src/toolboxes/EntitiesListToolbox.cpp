@@ -120,7 +120,7 @@ void EntitiesListToolbox::updateContent()
 	}
 
 	QStringList entitiesStringList;
-	const auto& entities = currentWorld->getEntityManger().getEntities();
+	const auto& entities = currentWorld->getEntityManager().getEntities();
 	for (auto& entity : entities)
 	{
 		entitiesStringList.append(QString::number(entity.first));
@@ -283,8 +283,8 @@ void EntitiesListToolbox::bindEvents()
 {
 	if (World* currentWorld = mMainWindow->getCurrentWorld())
 	{
-		mOnEntityAddedHandle = currentWorld->getEntityManger().OnEntityAdded.bind([this]{updateContent();});
-		mOnEntityRemovedHandle = currentWorld->getEntityManger().OnEntityRemoved.bind([this]{updateContent();});
+		mOnEntityAddedHandle = currentWorld->getEntityManager().OnEntityAdded.bind([this]{updateContent();});
+		mOnEntityRemovedHandle = currentWorld->getEntityManager().OnEntityRemoved.bind([this]{updateContent();});
 	}
 }
 
@@ -292,7 +292,7 @@ void EntitiesListToolbox::unbindEvents()
 {
 	if (World* currentWorld = mMainWindow->getCurrentWorld())
 	{
-		currentWorld->getEntityManger().OnEntityAdded.unbind(mOnEntityAddedHandle);
-		currentWorld->getEntityManger().OnEntityRemoved.unbind(mOnEntityRemovedHandle);
+		currentWorld->getEntityManager().OnEntityAdded.unbind(mOnEntityAddedHandle);
+		currentWorld->getEntityManager().OnEntityRemoved.unbind(mOnEntityRemovedHandle);
 	}
 }

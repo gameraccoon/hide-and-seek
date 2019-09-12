@@ -11,16 +11,6 @@ namespace Graphics
 	{
 	}
 
-	int Sprite::getHeight() const
-	{
-		return mTexture->getHeight();
-	}
-
-	int Sprite::getWidth() const
-	{
-		return mTexture->getWidth();
-	}
-
 	const Graphics::Texture* Sprite::getTexture() const
 	{
 		return mTexture;

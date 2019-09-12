@@ -16,6 +16,7 @@
 #include "HAL/Graphics/Font.h"
 #include "HAL/Graphics/Texture.h"
 #include "HAL/Graphics/Sprite.h"
+#include "HAL/Graphics/SpriteAnimation.h"
 
 namespace HAL
 {
@@ -30,6 +31,7 @@ namespace HAL
 		ResourceHandle lockFont(const std::string& path, int fontSize);
 		ResourceHandle lockTexture(const std::string& path);
 		ResourceHandle lockSprite(const std::string& path);
+		ResourceHandle lockSpriteAnimation(const std::string& path);
 		ResourceHandle lockSound(const std::string& path);
 		ResourceHandle lockMusic(const std::string& path);
 
@@ -37,7 +39,7 @@ namespace HAL
 		const T& getResource(ResourceHandle handle)
 		{
 			auto it = mResources.find(handle.ResourceIndex);
-			AssertRet(it != mResources.end(), getEmptyResource<T>(), "Trying to access non loaded resource");
+			AssertFatal(it != mResources.end(), "Trying to access non loaded resource");
 			return static_cast<T&>(*(it->second.get()));
 		}
 
@@ -58,9 +60,10 @@ namespace HAL
 		template<typename T>
 		const T& getEmptyResource();
 
-		void createResourceLock(const std::string& path);
+		int createResourceLock(const std::string& path);
 
 		void loadOneAtlasData(const std::string& path);
+		std::vector<std::string> loadAnimData(const std::string& path);
 
 	private:
 		std::unordered_map<ResourceHandle::IndexType, std::unique_ptr<Resource>> mResources;

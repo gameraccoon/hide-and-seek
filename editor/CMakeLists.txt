@@ -51,6 +51,11 @@ else()
 	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_RELEASE} -O2")
 endif()
 
+# code generation
+execute_process(
+	COMMAND ${PYTHON_EXECUTABLE} ${GAME_BASE_DIR}/scripts/build/code_generate.py ${GAME_BASE_DIR}
+)
+
 set(APP_SRCS
 	src/main.cpp
 	src/mainwindow.cpp
@@ -63,6 +68,7 @@ set(APP_SRCS
 aux_source_directory(src/editorcommands APP_SRCS)
 aux_source_directory(src/editorcommands/generated APP_SRCS)
 aux_source_directory(src/componenteditcontent APP_SRCS)
+aux_source_directory(src/componenteditcontent/customtypeeditconstructors APP_SRCS)
 aux_source_directory(src/componenteditcontent/generated APP_SRCS)
 aux_source_directory(src/toolboxes APP_SRCS)
 aux_source_directory(src/editorsystems APP_SRCS)
@@ -143,15 +149,3 @@ set_target_properties(${APP_NAME} PROPERTIES
 	LIBRARY_OUTPUT_DIRECTORY "${INTERMEDIATES_DIR}/${ads_PlatformDir}/lib"
 	RUNTIME_OUTPUT_DIRECTORY "${GAME_BIN_DIR}"
 )
-
-# code generation
-find_package(PythonInterp 3.5 REQUIRED)
-add_custom_target(
-	CodeGeneration
-	COMMAND ${PYTHON_EXECUTABLE} ${GAME_BASE_DIR}/scripts/build/code_generate.py ${GAME_BASE_DIR}/
-	COMMENT "C++ code generation"
-)
-
-add_dependencies(GameData CodeGeneration)
-add_dependencies(Utils CodeGeneration)
-add_dependencies(${APP_NAME} CodeGeneration)

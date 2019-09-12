@@ -77,3 +77,9 @@ void LogError(const std::string& message, Args... args)
 {
 	Log::Instance().writeError(FormatString(message, std::forward<Args>(args)...));
 }
+
+template<typename... Args>
+void LogAssertHelper(const char* condition, const char* file, size_t line, const std::string& message, Args... args)
+{
+	Log::Instance().writeError(FormatString(std::string("Assertion failed '%s' %s:%d. Message: '").append(message), condition, file, line, std::forward<Args>(args)...));
+}

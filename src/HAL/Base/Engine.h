@@ -3,9 +3,11 @@
 #include <memory>
 
 #include "HAL/Graphics/Renderer.h"
+#include "HAL/Base/Types.h"
 
 namespace HAL
 {
+
 	class IGame;
 
 	class Engine

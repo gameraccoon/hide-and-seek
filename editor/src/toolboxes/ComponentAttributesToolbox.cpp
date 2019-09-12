@@ -108,7 +108,7 @@ void ComponentAttributesToolbox::onSelectedComponentChange(const QString& compon
 	if (ok && index != 0)
 	{
 		Entity entity = Entity(static_cast<Entity::EntityID>(index));
-		std::vector<BaseComponent*> entityComponents = currentWorld->getEntityManger().getAllEntityComponents(entity);
+		std::vector<BaseComponent*> entityComponents = currentWorld->getEntityManager().getAllEntityComponents(entity);
 		auto it = std::find_if(entityComponents.begin(), entityComponents.end(), [componentTypeName = componentTypeName.toStdString()](BaseComponent* component)
 		{
 			return component->getComponentTypeName().compare(componentTypeName) == 0;

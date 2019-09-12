@@ -1,0 +1,15 @@
+{
+	"component": "spriteCreator",
+	"description": "Component that stores info about sprites",
+	"attributes": [
+		{
+			"name": "descriptions",
+			"type": "std::vector<SpriteDescription>",
+			"includes": [
+				"\"GameData/Resources/SpriteDescription.h\"",
+				"<vector>"
+			],
+			"flags": ["get_by_ref"]
+		}
+	]
+}

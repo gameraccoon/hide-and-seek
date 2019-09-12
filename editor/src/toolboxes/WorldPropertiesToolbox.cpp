@@ -71,7 +71,7 @@ void WorldPropertiesToolbox::updateContent()
 	}
 
 	QStringList entitiesStringList;
-	const auto& entities = currentWorld->getEntityManger().getEntities();
+	const auto& entities = currentWorld->getEntityManager().getEntities();
 	for (auto& entity : entities)
 	{
 		entitiesStringList.append(QString::number(entity.first));

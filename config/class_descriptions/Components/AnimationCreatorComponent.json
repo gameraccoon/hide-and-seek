@@ -1,0 +1,15 @@
+{
+	"component": "animationCreator",
+	"description": "Component that stores animation-related data",
+	"attributes": [
+		{
+			"name": "descriptions",
+			"type": "std::vector<AnimationDescription>",
+			"includes": [
+				"<vector>",
+				"\"GameData/Resources/AnimationDescription.h\""
+			],
+			"flags": ["get_by_ref"]
+		}
+	]
+}

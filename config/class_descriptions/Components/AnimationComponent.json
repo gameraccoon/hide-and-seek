@@ -4,10 +4,10 @@
 	"attributes": [
 		{
 			"name": "data",
-			"type": "std::vector<AnimationData<int, int>>",
+			"type": "std::vector<AnimationState<int>>",
 			"includes": [
 				"<vector>",
-				"\"GameData/Animation/AnimationData.h\""
+				"\"GameData/Resources/AnimationState.h\""
 			],
 			"flags": ["transient", "get_by_ref"]
 		}

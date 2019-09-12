@@ -17,9 +17,9 @@ bool AddEntityGroupCommand::doCommand(World* world)
 	mCreatedEntities.clear();
 	for (const auto& serializedObject : mEntities)
 	{
-		Entity entity = world->getEntityManger().createPrefabInstance(serializedObject, *mComponentFactory);
+		Entity entity = world->getEntityManager().createPrefabInstance(serializedObject, *mComponentFactory);
 		mCreatedEntities.push_back(entity);
-		auto [transform] = world->getEntityManger().getEntityComponents<TransformComponent>(entity);
+		auto [transform] = world->getEntityManager().getEntityComponents<TransformComponent>(entity);
 		if (transform)
 		{
 			transform->setLocation(transform->getLocation() + mShift);
@@ -32,7 +32,7 @@ bool AddEntityGroupCommand::undoCommand(World* world)
 {
 	for (Entity entity : mCreatedEntities)
 	{
-		world->getEntityManger().removeEntity(entity);
+		world->getEntityManager().removeEntity(entity);
 	}
 	return false;
 }

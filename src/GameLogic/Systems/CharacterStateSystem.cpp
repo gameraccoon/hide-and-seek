@@ -34,7 +34,7 @@ void CharacterStateSystem::update()
 
 	if (stateMachine)
 	{
-		world->getEntityManger().forEachComponentSet<CharacterStateComponent, MovementComponent>([stateMachine](CharacterStateComponent* characterState, MovementComponent* movement)
+		world->getEntityManager().forEachComponentSet<CharacterStateComponent, MovementComponent>([stateMachine](CharacterStateComponent* characterState, MovementComponent* movement)
 		{
 			CharacterState state = stateMachine->getCharacterSM().getNextState(characterState->getBlackboard(), characterState->getState());
 			characterState->setState(state);

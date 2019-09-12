@@ -11,7 +11,7 @@ namespace Graphics
 	{
 		HAL::Internal::Surface tempSurface(path.c_str());
 		mTexture = SDL_CreateTextureFromSurface(renderer, tempSurface.getRawSurface());
-		AssertFatal(mTexture, "Texture can't be created from SdlSurface");
+		AssertFatal(mTexture, "Texture can't be created from SdlSurface: %s", path.c_str());
 		mWidth = tempSurface.getWidth();
 		mHeight = tempSurface.getHeight();
 	}
@@ -19,11 +19,6 @@ namespace Graphics
 	Texture::~Texture()
 	{
 		SDL_DestroyTexture(mTexture);
-	}
-
-	SDL_Texture* Texture::getRawTexture() const
-	{
-		return mTexture;
 	}
 
 	bool Texture::isValid() const
@@ -39,5 +34,10 @@ namespace Graphics
 	int Texture::getHeight() const
 	{
 		return mHeight;
+	}
+
+	SDL_Texture* Texture::getRawTexture() const
+	{
+		return mTexture;
 	}
 }

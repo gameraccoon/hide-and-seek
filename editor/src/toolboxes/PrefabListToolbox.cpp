@@ -145,7 +145,7 @@ void PrefabListToolbox::createPrefabFromEntity(const QString &prefabName, Entity
 
 	PrefabData prefabData;
 	prefabData.name = prefabName;
-	currentWorld->getEntityManger().getPrefabFromEntity(prefabData.data, entity);
+	currentWorld->getEntityManager().getPrefabFromEntity(prefabData.data, entity);
 	mPrefabs.push_back(prefabData);
 	updateContent();
 }
@@ -259,7 +259,7 @@ void PrefabListToolbox::createInstance()
 		return;
 	}
 
-	currentWorld->getEntityManger().createPrefabInstance(it->data, mMainWindow->getComponentFactory());
+	currentWorld->getEntityManager().createPrefabInstance(it->data, mMainWindow->getComponentFactory());
 }
 
 void to_json(nlohmann::json& outJson, const PrefabListToolbox::PrefabData& data)

@@ -113,7 +113,7 @@ void TransformEditorToolbox::onEntitySelected(OptionalEntity entity)
 	}
 
 	mContent->mSelectedEntities.clear();
-	if (entity.isValid() && world->getEntityManger().doesEntityHaveComponent<TransformComponent>(entity.getEntity()))
+	if (entity.isValid() && world->getEntityManager().doesEntityHaveComponent<TransformComponent>(entity.getEntity()))
 	{
 		mContent->mSelectedEntities.push_back(entity.getEntity());
 	}
@@ -172,9 +172,9 @@ void TransformEditorToolbox::onCopyCommand()
 	for (Entity entity : mContent->mSelectedEntities)
 	{
 		nlohmann::json serializedEntity;
-		world->getEntityManger().getPrefabFromEntity(serializedEntity, entity);
+		world->getEntityManager().getPrefabFromEntity(serializedEntity, entity);
 		mCopiedObjects.push_back(serializedEntity);
-		auto [transform] = world->getEntityManger().getEntityComponents<TransformComponent>(entity);
+		auto [transform] = world->getEntityManager().getEntityComponents<TransformComponent>(entity);
 		if (transform)
 		{
 			center += transform->getLocation();
@@ -312,11 +312,11 @@ void TransformEditorWidget::paintEvent(QPaintEvent*)
 
 	QPainter painter(this);
 
-	mWorld->getEntityManger().forEachComponentSetWithEntity<TransformComponent>([&painter, this](Entity entity, TransformComponent* transform)
+	mWorld->getEntityManager().forEachComponentSetWithEntity<TransformComponent>([&painter, this](Entity entity, TransformComponent* transform)
 	{
 		Vector2D location = transform->getLocation();
 
-		auto [collision] = mWorld->getEntityManger().getEntityComponents<CollisionComponent>(entity);
+		auto [collision] = mWorld->getEntityManager().getEntityComponents<CollisionComponent>(entity);
 
 		if (std::find(mSelectedEntities.begin(), mSelectedEntities.end(), entity) != mSelectedEntities.end())
 		{
@@ -449,7 +449,7 @@ OptionalEntity TransformEditorWidget::getEntityUnderPoint(const QPoint& pos)
 
 	if (mWorld)
 	{
-		mWorld->getEntityManger().forEachComponentSetWithEntity<TransformComponent>([worldPos, &findResult](Entity entity, TransformComponent* transform){
+		mWorld->getEntityManager().forEachComponentSetWithEntity<TransformComponent>([worldPos, &findResult](Entity entity, TransformComponent* transform){
 			Vector2D location = transform->getLocation();
 			if (location.x - 10 < worldPos.x && location.x + 10 > worldPos.x
 				&&
@@ -492,7 +492,7 @@ void TransformEditorWidget::addEntitiesInRectToSelection(const Vector2D &start, 
 
 	if (mWorld)
 	{
-		mWorld->getEntityManger().forEachComponentSetWithEntity<TransformComponent>([this, lt, rd](Entity entity, TransformComponent* transform)
+		mWorld->getEntityManager().forEachComponentSetWithEntity<TransformComponent>([this, lt, rd](Entity entity, TransformComponent* transform)
 		{
 			Vector2D location = transform->getLocation();
 			if (lt.x < location.x && location.x < rd.x && lt.y < location.y && location.y < rd.y)

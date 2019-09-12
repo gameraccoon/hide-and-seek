@@ -16,12 +16,12 @@ namespace Graphics
 		explicit Texture(const std::string& path, SDL_Renderer* renderer);
 		~Texture() override;
 
-		int getWidth() const;
+		virtual bool isValid() const override;
+
 		int getHeight() const;
+		int getWidth() const;
 
 		SDL_Texture* getRawTexture() const;
-
-		virtual bool isValid() const override;
 
 	private:
 		SDL_Texture* mTexture = nullptr;

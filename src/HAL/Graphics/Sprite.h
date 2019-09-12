@@ -17,9 +17,6 @@ namespace Graphics
 		Sprite() = default;
 		Sprite(const Graphics::Texture* texture, QuadUV uv);
 
-		int getHeight() const;
-		int getWidth() const;
-
 		const Graphics::Texture* getTexture() const;
 		QuadUV getUV() const { return mUV; }
 

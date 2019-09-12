@@ -116,7 +116,7 @@ void EntityManager::removeEntity(Entity entity)
 	OnEntityRemoved.broadcast();
 }
 
-std::vector<BaseComponent*> EntityManager::getAllEntityComponents(const Entity& entity)
+std::vector<BaseComponent*> EntityManager::getAllEntityComponents(Entity entity)
 {
 	std::vector<BaseComponent*> components;
 	auto entityIdxItr = mEntityIndexMap.find(entity.getID());
@@ -134,7 +134,7 @@ std::vector<BaseComponent*> EntityManager::getAllEntityComponents(const Entity& 
 	return components;
 }
 
-void EntityManager::addComponent(const Entity& entity, BaseComponent* component, std::type_index typeID)
+void EntityManager::addComponent(Entity entity, BaseComponent* component, std::type_index typeID)
 {
 	auto entityIdxItr = mEntityIndexMap.find(entity.getID());
 	if (entityIdxItr == mEntityIndexMap.end())
@@ -145,7 +145,7 @@ void EntityManager::addComponent(const Entity& entity, BaseComponent* component,
 	addComponentToEntity(entityIdxItr->second, component, typeID);
 }
 
-void EntityManager::removeComponent(const Entity& entity, std::type_index typeID)
+void EntityManager::removeComponent(Entity entity, std::type_index typeID)
 {
 	auto entityIdxItr = mEntityIndexMap.find(entity.getID());
 	if (entityIdxItr == mEntityIndexMap.end())
@@ -162,6 +162,31 @@ void EntityManager::removeComponent(const Entity& entity, std::type_index typeID
 
 		OnComponentRemoved.broadcast();
 	}
+}
+
+void EntityManager::scheduleAddComponentToEntity(Entity entity, BaseComponent* component, std::type_index typeID)
+{
+	mScheduledComponentAdditions.emplace_back(entity, component, typeID);
+}
+
+void EntityManager::scheduleRemoveComponent(Entity entity, std::type_index typeID)
+{
+	mScheduledComponentRemovements.emplace_back(entity, typeID);
+}
+
+void EntityManager::executeScheduledActions()
+{
+	for (const auto& addition : mScheduledComponentAdditions)
+	{
+		addComponent(addition.entity, addition.component, addition.typeID);
+	}
+	mScheduledComponentAdditions.clear();
+
+	for (const auto& removement : mScheduledComponentRemovements)
+	{
+		removeComponent(removement.entity, removement.typeID);
+	}
+	mScheduledComponentRemovements.clear();
 }
 
 void EntityManager::getPrefabFromEntity(nlohmann::json& json, Entity entity)

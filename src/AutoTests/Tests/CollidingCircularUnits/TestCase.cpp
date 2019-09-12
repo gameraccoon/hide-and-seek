@@ -4,7 +4,7 @@
 
 #include "HAL/Base/Engine.h"
 
-#include "GameData/Components/SpriteComponent.generated.h"
+#include "GameData/Components/SpriteCreatorComponent.generated.h"
 #include "GameData/Components/CollisionComponent.generated.h"
 #include "GameData/Components/TransformComponent.generated.h"
 #include "GameData/Components/StateMachineComponent.generated.h"
@@ -35,17 +35,26 @@ void CollidingCircularUnitsTestCase::start(ArgumentsParser& /*arguments*/)
 	ComponentsRegistration::RegisterComponents(mComponentFactory);
 
 	mWorldHolder.world = &mWorld;
+	mWorldHolder.gameData = &mGameData;
 
-	Entity playerEntity = mWorld.getEntityManger().addEntity();
-	TransformComponent* transform = mWorld.getEntityManger().addComponent<TransformComponent>(playerEntity);
-	transform->setLocation(Vector2D(0.0f, 0.0f));
-	SpriteComponent* sprite = mWorld.getEntityManger().addComponent<SpriteComponent>(playerEntity);
-	sprite->setSize(Vector2D(30.0f, 30.0f));
-	sprite->setTexturePath("resources/textures/hero.png");
-	CollisionComponent* collision = mWorld.getEntityManger().addComponent<CollisionComponent>(playerEntity);
-	Hull& hull = collision->getGeometryRef();
-	hull.type = HullType::Circular;
-	hull.setRadius(15.0f);
+	Entity playerEntity = mWorld.getEntityManager().addEntity();
+	{
+		TransformComponent* transform = mWorld.getEntityManager().addComponent<TransformComponent>(playerEntity);
+		transform->setLocation(Vector2D(0.0f, 0.0f));
+	}
+	{
+		SpriteCreatorComponent* sprite = mWorld.getEntityManager().addComponent<SpriteCreatorComponent>(playerEntity);
+		SpriteDescription spriteDesc;
+		spriteDesc.params.size = Vector2D(30.0f, 30.0f);
+		spriteDesc.path = "resources/textures/hero.png";
+		sprite->getDescriptionsRef().emplace_back(std::move(spriteDesc));
+	}
+	{
+		CollisionComponent* collision = mWorld.getEntityManager().addComponent<CollisionComponent>(playerEntity);
+		Hull& hull = collision->getGeometryRef();
+		hull.type = HullType::Circular;
+		hull.setRadius(15.0f);
+	}
 
 	mWorld.setPlayerControlledEntity(playerEntity);
 	mWorld.setMainCamera(playerEntity);

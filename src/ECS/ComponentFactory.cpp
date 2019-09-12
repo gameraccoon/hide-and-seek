@@ -1,6 +1,6 @@
 #include "ComponentFactory.h"
 
-#include <Debug/Assert.h>
+#include "Debug/Assert.h"
 
 ComponentFactory::CreationFn ComponentFactory::getCreationFn(const std::string& typeName) const
 {

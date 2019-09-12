@@ -4,8 +4,6 @@
 
 #include "ECS/System.h"
 
-#include "HAL/Base/Engine.h"
-
 #include "GameLogic/SharedManagers/WorldHolder.h"
 
 /**

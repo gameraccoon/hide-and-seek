@@ -21,12 +21,12 @@ public:
 	Entity getNonExistentEntity();
 	void insertEntityUnsafe(Entity entity);
 
-	std::vector<BaseComponent*> getAllEntityComponents(const Entity& entity);
+	std::vector<BaseComponent*> getAllEntityComponents(Entity entity);
 
 	template<typename ComponentType>
-	bool doesEntityHaveComponent(const Entity& entity)
+	bool doesEntityHaveComponent(Entity entity)
 	{
-		auto entityIdxItr = mEntityIndexMap.find(entity.getID());
+		auto entityIdxItr = mEntityIndexMap.find(std::forward<Entity>(entity).getID());
 		if (entityIdxItr == mEntityIndexMap.end())
 		{
 			return false;
@@ -38,9 +38,9 @@ public:
 	}
 
 	template<typename T>
-	T* addComponent(const Entity& entity)
+	T* addComponent(Entity entity)
 	{
-		auto entityIdxItr = mEntityIndexMap.find(entity.getID());
+		auto entityIdxItr = mEntityIndexMap.find(std::forward<Entity>(entity).getID());
 		if (entityIdxItr == mEntityIndexMap.end())
 		{
 			return nullptr;
@@ -53,11 +53,37 @@ public:
 		return component;
 	}
 
-	void addComponent(const Entity& entity, BaseComponent* component, std::type_index typeID);
-	void removeComponent(const Entity& entity, std::type_index typeID);
+	void addComponent(Entity entity, BaseComponent* component, std::type_index typeID);
+
+	template<typename T>
+	void removeComponent(Entity entity)
+	{
+		removeComponent(std::forward<Entity>(entity), typeid(T));
+	}
+
+	void removeComponent(Entity entity, std::type_index typeID);
+
+	template<typename T>
+	T* scheduleAddComponent(Entity entity)
+	{
+		T* component = new T();
+		scheduleAddComponentToEntity(entity, component, typeid(T));
+		return component;
+	}
+
+	void scheduleAddComponentToEntity(Entity entity, BaseComponent* component, std::type_index typeID);
+
+	template<typename T>
+	void scheduleRemoveComponent(Entity entity)
+	{
+		scheduleRemoveComponent(std::forward<Entity>(entity), typeid(T));
+	}
+
+	void scheduleRemoveComponent(Entity entity, std::type_index typeID);
+	void executeScheduledActions();
 
 	template<typename... Components>
-	std::tuple<Components*...> getEntityComponents(const Entity& entity)
+	std::tuple<Components*...> getEntityComponents(Entity entity)
 	{
 		auto entityIdxItr = mEntityIndexMap.find(entity.getID());
 		if (entityIdxItr == mEntityIndexMap.end())
@@ -170,8 +196,38 @@ public:
 	nlohmann::json toJson(const class ComponentFactory& componentFactory) const;
 	void fromJson(const nlohmann::json& json, const class ComponentFactory& componentFactory);
 
+public:
+	MulticastDelegate<> OnEntityAdded;
+	MulticastDelegate<> OnEntityRemoved;
+	MulticastDelegate<> OnComponentAdded;
+	MulticastDelegate<> OnComponentRemoved;
+
 private:
 	typedef size_t EntityIndex;
+
+	struct ComponentToAdd
+	{
+		Entity entity;
+		BaseComponent* component;
+		std::type_index typeID;
+
+		ComponentToAdd(Entity entity, BaseComponent* component, std::type_index typeID)
+			: entity(entity),
+			  component(component),
+			  typeID(typeID)
+		{}
+	};
+
+	struct ComponentToRemove
+	{
+		Entity entity;
+		std::type_index typeID;
+
+		ComponentToRemove(Entity entity, std::type_index typeID)
+			: entity(entity),
+			  typeID(typeID)
+		{}
+	};
 
 private:
 	template<int I = 0>
@@ -218,16 +274,13 @@ private:
 
 	void addComponentToEntity(EntityIndex entityIdx, BaseComponent* component, std::type_index typeID);
 
-public:
-	MulticastDelegate<> OnEntityAdded;
-	MulticastDelegate<> OnEntityRemoved;
-	MulticastDelegate<> OnComponentAdded;
-	MulticastDelegate<> OnComponentRemoved;
-
 private:
 	std::unordered_map<std::type_index, std::vector<BaseComponent*>> mComponents;
 	std::unordered_map<Entity::EntityID, EntityIndex> mEntityIndexMap;
 	std::unordered_map<EntityIndex, Entity::EntityID> mIndexEntityMap;
+
+	std::vector<ComponentToAdd> mScheduledComponentAdditions;
+	std::vector<ComponentToRemove> mScheduledComponentRemovements;
 
 	EntityIndex mNextEntityIndex = 0;
 };

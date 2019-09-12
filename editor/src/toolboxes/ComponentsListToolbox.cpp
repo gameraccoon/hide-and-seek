@@ -89,7 +89,7 @@ void ComponentsListToolbox::onSelectedEntityChanged(OptionalEntity newEntity)
 	if (currentWorld && newEntity.isValid())
 	{
 		unsigned int entityUid = newEntity.getEntity().getID();
-		std::vector<BaseComponent*> components = currentWorld->getEntityManger().getAllEntityComponents(Entity(entityUid));
+		std::vector<BaseComponent*> components = currentWorld->getEntityManager().getAllEntityComponents(Entity(entityUid));
 		for (auto& component : components)
 		{
 			componentsList->addItem(QString::fromStdString(component->getComponentTypeName()));
@@ -170,8 +170,8 @@ void ComponentsListToolbox::bindEvents()
 {
 	if (World* currentWorld = mMainWindow->getCurrentWorld())
 	{
-		mOnComponentAddedHandle = currentWorld->getEntityManger().OnComponentAdded.bind([this]{updateContent();});
-		mOnComponentRemovedHandle = currentWorld->getEntityManger().OnComponentRemoved.bind([this]{updateContent();});
+		mOnComponentAddedHandle = currentWorld->getEntityManager().OnComponentAdded.bind([this]{updateContent();});
+		mOnComponentRemovedHandle = currentWorld->getEntityManager().OnComponentRemoved.bind([this]{updateContent();});
 	}
 }
 
@@ -179,7 +179,7 @@ void ComponentsListToolbox::unbindEvents()
 {
 	if (World* currentWorld = mMainWindow->getCurrentWorld())
 	{
-		currentWorld->getEntityManger().OnComponentAdded.unbind(mOnComponentAddedHandle);
-		currentWorld->getEntityManger().OnComponentRemoved.unbind(mOnComponentRemovedHandle);
+		currentWorld->getEntityManager().OnComponentAdded.unbind(mOnComponentAddedHandle);
+		currentWorld->getEntityManager().OnComponentRemoved.unbind(mOnComponentRemovedHandle);
 	}
 }

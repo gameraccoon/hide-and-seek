@@ -2,9 +2,9 @@
 
 #include <nlohmann/json.hpp>
 
-#include <Debug/Assert.h>
+#include "Debug/Assert.h"
 
-void to_json(nlohmann::json& outJson, const Entity& entity)
+void to_json(nlohmann::json& outJson, Entity entity)
 {
 	outJson = nlohmann::json{{"id", entity.mId}};
 }
@@ -32,3 +32,7 @@ void from_json(const nlohmann::json& json, OptionalEntity& outEntity)
 	json.at("valid").get_to(outEntity.mIsValid);
 	json.at("id").get_to(outEntity.mId);
 }
+
+static_assert(sizeof(Entity) == sizeof(unsigned int), "Entity is too big");
+static_assert(std::is_trivially_copyable<Entity>(), "Entity should be trivially copyable");
+static_assert(std::is_trivially_copyable<OptionalEntity>(), "OptionalEntity should be trivially copyable");

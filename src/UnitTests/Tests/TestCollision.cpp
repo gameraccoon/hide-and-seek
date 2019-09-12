@@ -9,8 +9,8 @@
 
 static CollisionComponent* prepareCollision(World& world, const Vector2D& location, const Hull& hull)
 {
-	auto entity = world.getEntityManger().addEntity();
-	auto collision = world.getEntityManger().addComponent<CollisionComponent>(entity);
+	auto entity = world.getEntityManager().addEntity();
+	auto collision = world.getEntityManager().addComponent<CollisionComponent>(entity);
 	collision->setGeometry(hull);
 	Collide::UpdateOriginalBoundingBox(collision);
 	collision->setBoundingBox(collision->getOriginalBoundingBox() + location);
