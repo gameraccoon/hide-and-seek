@@ -50,7 +50,7 @@ void RenderSystem::update()
 	auto [renderMode] = world->getWorldComponents().getComponents<RenderModeComponent>();
 
 	Vector2D cameraLocation = cameraTransformComponent->getLocation();
-	Vector2D mouseScreenPos(200, 300);
+	Vector2D mouseScreenPos(mEngine->getMouseX(), mEngine->getMouseY());
 	Vector2D screenHalfSize = Vector2D(static_cast<float>(mEngine->getWidth()), static_cast<float>(mEngine->getHeight())) * 0.5f;
 
 	Vector2D drawShift = screenHalfSize - cameraLocation + (screenHalfSize - mouseScreenPos) * 0.5;
@@ -64,11 +64,12 @@ void RenderSystem::update()
 	{
 		world->getEntityManager().forEachComponentSet<RenderComponent, TransformComponent>([&drawShift, &resourceManager = mResourceManager, renderer](RenderComponent* render, TransformComponent* transform)
 		{
+			auto location = transform->getLocation() + drawShift;
+			float rotation = transform->getRotation().getValue();
 			for (const auto& data : render->getSpriteDatas())
 			{
 				const Graphics::Sprite& spriteData = resourceManager->getResource<Graphics::Sprite>(data.spriteHandle);
-				auto location = transform->getLocation() + drawShift;
-				renderer->render(*spriteData.getTexture(), location, data.params.size, data.params.anchor, transform->getRotation().getValue(), spriteData.getUV(), 1.0f);
+				renderer->render(*spriteData.getTexture(), location, data.params.size, data.params.anchor, rotation, spriteData.getUV(), 1.0f);
 			}
 		});
 	}

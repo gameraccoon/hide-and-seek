@@ -39,7 +39,7 @@ namespace HAL
 		const T& getResource(ResourceHandle handle)
 		{
 			auto it = mResources.find(handle.ResourceIndex);
-			AssertRet(it != mResources.end(), getEmptyResource<T>(), "Trying to access non loaded resource");
+			AssertFatal(it != mResources.end(), "Trying to access non loaded resource");
 			return static_cast<T&>(*(it->second.get()));
 		}
 
@@ -54,21 +54,16 @@ namespace HAL
 			Graphics::QuadUV quadUV;
 		};
 
-		struct AnimationData
-		{
-			std::vector<std::string> framePaths;
-			int framesCount = 0;
-		};
-
 		using ReleaseFn = std::function<void(Resource*)>;
 
 	private:
 		template<typename T>
 		const T& getEmptyResource();
 
-		void createResourceLock(const std::string& path);
+		int createResourceLock(const std::string& path);
 
 		void loadOneAtlasData(const std::string& path);
+		std::vector<std::string> loadAnimData(const std::string& path);
 
 	private:
 		std::unordered_map<ResourceHandle::IndexType, std::unique_ptr<Resource>> mResources;
@@ -78,8 +73,6 @@ namespace HAL
 		std::map<ResourceHandle::IndexType, std::string> mPathFindMap;
 
 		std::unordered_map<std::string, AtlasFrameData> mAtlasFrames;
-
-		std::unordered_map<std::string, AnimationData> mAnimationData;
 
 		Engine* mEngine;
 

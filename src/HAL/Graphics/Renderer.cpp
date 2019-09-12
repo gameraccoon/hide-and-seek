@@ -86,8 +86,8 @@ namespace Graphics
 			static_cast<int>(size.y)
 		};
 		SDL_Point ancorPoint = {
-			static_cast<int>(uvRect.w * ancor.x),
-			static_cast<int>(uvRect.h * ancor.y)
+			static_cast<int>(size.x * ancor.x),
+			static_cast<int>(size.y * ancor.y)
 		};
 		SDL_RenderCopyEx(mRenderer, texture.getRawTexture(), &uvRect, &outRect, static_cast<double>(rotation) / MATH_PI * 180.0, &ancorPoint, SDL_RendererFlip::SDL_FLIP_NONE);
 	}

@@ -11,7 +11,7 @@ namespace Graphics
 	{
 		HAL::Internal::Surface tempSurface(path.c_str());
 		mTexture = SDL_CreateTextureFromSurface(renderer, tempSurface.getRawSurface());
-		AssertFatal(mTexture, "Texture can't be created from SdlSurface");
+		AssertFatal(mTexture, "Texture can't be created from SdlSurface: %s", path.c_str());
 		mWidth = tempSurface.getWidth();
 		mHeight = tempSurface.getHeight();
 	}

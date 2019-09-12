@@ -62,11 +62,12 @@ namespace HAL
 		return EMPTY_MUSIC;
 	}
 
-	void ResourceManager::createResourceLock(const std::string& path)
+	int ResourceManager::createResourceLock(const std::string& path)
 	{
 		mPathsMap[path] = mHandleIdx;
 		mPathFindMap[mHandleIdx] = path;
 		mResourceLocksCount[mHandleIdx] = 1;
+		return mHandleIdx++;
 	}
 
 	void ResourceManager::loadOneAtlasData(const std::string &path)
@@ -117,6 +118,42 @@ namespace HAL
 		}
 	}
 
+	std::vector<std::string> ResourceManager::loadAnimData(const std::string& path)
+	{
+		namespace fs = std::experimental::filesystem;
+		fs::path atlasDescPath(path);
+
+		std::vector<std::string> result;
+		std::string pathBase;
+		int framesCount = 0;
+
+		try
+		{
+			std::ifstream animDescriptionFile(atlasDescPath);
+			nlohmann::json animJson;
+			animDescriptionFile >> animJson;
+
+			animJson.at("path").get_to(pathBase);
+			animJson.at("frames").get_to(framesCount);
+
+		}
+		catch(const nlohmann::detail::exception& e)
+		{
+			LogError("Can't parse animation data '%s': %s", path.c_str(), e.what());
+		}
+		catch(const std::exception& e)
+		{
+			LogError("Can't open animation data '%s': %s", path.c_str(), e.what());
+		}
+
+		for (int i = 0; i < framesCount; ++i)
+		{
+			result.emplace_back(pathBase + std::to_string(i) + ".png");
+		}
+
+		return result;
+	}
+
 	ResourceHandle ResourceManager::lockTexture(const std::string& path)
 	{
 		auto it = mPathsMap.find(path);
@@ -127,9 +164,9 @@ namespace HAL
 		}
 		else
 		{
-			createResourceLock(path);
-			mResources[mHandleIdx] = std::make_unique<Graphics::Texture>(path, mEngine->getRenderer()->getRawRenderer());
-			return ResourceHandle(mHandleIdx++);
+			int thisHandle = createResourceLock(path);
+			mResources[thisHandle] = std::make_unique<Graphics::Texture>(path, mEngine->getRenderer()->getRawRenderer());
+			return ResourceHandle(thisHandle);
 		}
 	}
 
@@ -144,15 +181,17 @@ namespace HAL
 		}
 		else
 		{
-			createResourceLock(id);
-			mResources[mHandleIdx] = std::make_unique<Graphics::Font>(path, fontSize, mEngine->getRenderer()->getRawRenderer());
-			return ResourceHandle(mHandleIdx++);
+
+			int thisHandle = createResourceLock(id);
+			mResources[thisHandle] = std::make_unique<Graphics::Font>(path, fontSize, mEngine->getRenderer()->getRawRenderer());
+			return ResourceHandle(thisHandle);
 		}
 	}
 
 	ResourceHandle ResourceManager::lockSprite(const std::string& path)
 	{
-		auto it = mPathsMap.find(path);
+		std::string spritePathId = "spr-" + path;
+		auto it = mPathsMap.find(spritePathId);
 		if (it != mPathsMap.end())
 		{
 			++mResourceLocksCount[it->second];
@@ -160,22 +199,22 @@ namespace HAL
 		}
 		else
 		{
-			createResourceLock(path);
+			int thisHandle = createResourceLock(spritePathId);
 			ResourceHandle originalTextureHandle;
 			auto it = mAtlasFrames.find(path);
 			if (it != mAtlasFrames.end())
 			{
 				originalTextureHandle = lockTexture(it->second.atlasPath);
 				const Graphics::Texture& texture = getResource<Graphics::Texture>(originalTextureHandle);
-				mResources[mHandleIdx] = std::make_unique<Graphics::Sprite>(&texture, it->second.quadUV);
+				mResources[thisHandle] = std::make_unique<Graphics::Sprite>(&texture, it->second.quadUV);
 			}
 			else
 			{
 				originalTextureHandle = lockTexture(path);
 				const Graphics::Texture& texture = getResource<Graphics::Texture>(originalTextureHandle);
-				mResources[mHandleIdx] = std::make_unique<Graphics::Sprite>(&texture, Graphics::QuadUV());
+				mResources[thisHandle] = std::make_unique<Graphics::Sprite>(&texture, Graphics::QuadUV());
 			}
-			return ResourceHandle(mHandleIdx++);
+			return ResourceHandle(thisHandle);
 		}
 	}
 
@@ -189,9 +228,9 @@ namespace HAL
 		}
 		else
 		{
-			createResourceLock(path);
-			mResources[mHandleIdx] = std::make_unique<Audio::Sound>(path);
-			return ResourceHandle(mHandleIdx++);
+			int thisHandle = createResourceLock(path);
+			mResources[thisHandle] = std::make_unique<Audio::Sound>(path);
+			return ResourceHandle(thisHandle);
 		}
 	}
 
@@ -205,9 +244,9 @@ namespace HAL
 		}
 		else
 		{
-			createResourceLock(path);
-			mResources[mHandleIdx] = std::make_unique<Audio::Music>(path);
-			return ResourceHandle(mHandleIdx++);
+			int thisHandle = createResourceLock(path);
+			mResources[thisHandle] = std::make_unique<Audio::Music>(path);
+			return ResourceHandle(thisHandle);
 		}
 	}
 
@@ -221,26 +260,26 @@ namespace HAL
 		}
 		else
 		{
-			createResourceLock(path);
-			auto it = mAnimationData.find(path);
-			AssertFatal(it != mAnimationData.end(), "No animation found with path %s", path.c_str());
+			int thisHandle = createResourceLock(path);
+			std::vector<std::string> framePaths = loadAnimData(path);
 
 			std::vector<ResourceHandle> frames;
-			for (const auto& animFramePath : it->second.framePaths)
+			for (const auto& animFramePath : framePaths)
 			{
 				auto spriteHandle = lockSprite(animFramePath);
 				frames.push_back(spriteHandle);
 			}
-			mResources[mHandleIdx] = std::make_unique<Graphics::SpriteAnimation>(std::move(frames));
+			mResources[thisHandle] = std::make_unique<Graphics::SpriteAnimation>(std::move(frames));
 
-			mResourceReleaseFns[mHandleIdx] = [this](Resource* resource){
+			mResourceReleaseFns[thisHandle] = [this](Resource* resource)
+			{
 				for (auto& spriteHandle : static_cast<Graphics::SpriteAnimation*>(resource)->getSprites())
 				{
 					unlockResource(spriteHandle);
 				}
 			};
 
-			return ResourceHandle(mHandleIdx++);
+			return ResourceHandle(thisHandle);
 		}
 	}
 
