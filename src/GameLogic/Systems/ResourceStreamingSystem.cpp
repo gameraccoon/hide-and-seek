@@ -64,9 +64,10 @@ void ResourceStreamingSystem::update()
 			animations[i].params = descriptions[i].params;
 			animations[i].sprites = resourceManager->getResource<Graphics::SpriteAnimation>(animations[i].animation).getSprites();
 
-			AssertFatal(!animations[i].sprites.empty(), "Empty SpriteAnimation '%s'", descriptions[i].path);
+			AssertFatal(!animations[i].sprites.empty(), "Empty SpriteAnimation '%s'", descriptions[i].path.c_str());
 			spriteDatas.emplace_back(descriptions[i].spriteParams, animations[i].sprites.front());
 			int id = render->getMaxSpriteId();
+			animations[i].spriteId = id;
 			render->getSpriteIdsRef().push_back(id++);
 			render->setMaxSpriteId(id);
 

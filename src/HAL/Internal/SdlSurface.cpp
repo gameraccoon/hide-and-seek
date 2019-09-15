@@ -15,7 +15,7 @@ namespace HAL
 		Surface::Surface(const std::string& filename)
 			: mSurface(IMG_Load(filename.c_str()))
 		{
-			AssertFatal(mSurface, "Unable to load texture");
+			AssertFatal(mSurface, "Unable to load texture %s", filename.c_str());
 		}
 
 		Surface::~Surface()

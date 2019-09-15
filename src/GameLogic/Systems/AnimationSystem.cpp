@@ -15,7 +15,8 @@ void AnimationSystem::update()
 	World* world = mWorldHolder.world;
 	float dt = mTime.dt;
 
-	world->getEntityManager().forEachComponentSet<AnimationDataComponent, RenderComponent>([dt](AnimationDataComponent* animationData, RenderComponent* render){
+	world->getEntityManager().forEachComponentSet<AnimationDataComponent, RenderComponent>([dt](AnimationDataComponent* animationData, RenderComponent* render)
+	{
 		std::vector<AnimationData>& animationDatas = animationData->getDatasRef();
 		for (auto& data : animationDatas)
 		{
