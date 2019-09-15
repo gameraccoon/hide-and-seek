@@ -18,7 +18,7 @@ class Vector2D;
 class RenderSystem : public System
 {
 public:
-	typedef std::unordered_map<int, bool> KeyStatesMap;
+	using KeyStatesMap = std::unordered_map<int, bool>;
 
 public:
 	RenderSystem(WorldHolder& worldHolder, HAL::Engine* engine, HAL::ResourceManager* resourceManager);

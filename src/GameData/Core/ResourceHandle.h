@@ -3,7 +3,7 @@
 class ResourceHandle
 {
 public:
-	typedef int IndexType;
+	using IndexType = int;
 
 public:
 	ResourceHandle() = default;

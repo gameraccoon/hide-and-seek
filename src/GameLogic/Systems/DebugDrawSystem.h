@@ -20,7 +20,7 @@ class Vector2D;
 class DebugDrawSystem : public System
 {
 public:
-	typedef std::unordered_map<int, bool> KeyStatesMap;
+	using KeyStatesMap = std::unordered_map<int, bool>;
 
 public:
 	DebugDrawSystem(WorldHolder& worldHolder, HAL::Engine* engine, HAL::ResourceManager* resourceManager);

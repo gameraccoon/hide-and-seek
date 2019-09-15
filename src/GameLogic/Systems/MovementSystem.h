@@ -13,7 +13,7 @@
 class MovementSystem : public System
 {
 public:
-	typedef std::unordered_map<int, bool> KeyStatesMap;
+	using KeyStatesMap = std::unordered_map<int, bool>;
 
 public:
 	MovementSystem(WorldHolder& worldHolder, const TimeData& timeData);

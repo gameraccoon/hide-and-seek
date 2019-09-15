@@ -7,7 +7,7 @@
 class EditorCommandsStack
 {
 public:
-	typedef std::function<void(EditorCommand::EffectType, bool, bool)> OnChangeFn;
+	using OnChangeFn = std::function<void(EditorCommand::EffectType, bool, bool)>;
 
 public:
 	template<typename T, typename... Args>

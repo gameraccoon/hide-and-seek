@@ -1,5 +1,7 @@
 #pragma once
 
+#include "GameData/Core/GameTime.h"
+
 class TimeData
 {
 public:
@@ -13,7 +15,7 @@ public:
 	static constexpr int parallelCyclesCount = cycleLengthMax / cycleLength;
 
 	float dt = 0.0f;
-	int currentCycle = 0;
-	int cyclesPassed = 0;
-	float cycleTime[parallelCyclesCount];
+	GameTime::CycleIdxType currentCycle = 0;
+	GameTime::CycleIdxType cyclesPassed = 0;
+	GameTime::CycleTimeType cycleTime[parallelCyclesCount];
 };

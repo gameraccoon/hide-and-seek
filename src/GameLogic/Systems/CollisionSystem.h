@@ -12,7 +12,7 @@
 class CollisionSystem : public System
 {
 public:
-	typedef std::unordered_map<int, bool> KeyStatesMap;
+	using KeyStatesMap = std::unordered_map<int, bool>;
 
 public:
 	CollisionSystem(WorldHolder& worldHolder);

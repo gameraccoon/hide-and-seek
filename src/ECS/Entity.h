@@ -7,7 +7,7 @@
 class Entity
 {
 public:
-	typedef unsigned int EntityID;
+	using EntityID = unsigned int;
 
 public:
 	explicit Entity(EntityID id) : mId(id) {}

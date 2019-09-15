@@ -11,7 +11,7 @@
 class ComponentFactory
 {
 public:
-	typedef std::function<BaseComponent*()> CreationFn;
+	using CreationFn = std::function<BaseComponent*()>;
 
 	template<typename T>
 	void registerComponent()

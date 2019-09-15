@@ -203,7 +203,7 @@ public:
 	MulticastDelegate<> OnComponentRemoved;
 
 private:
-	typedef size_t EntityIndex;
+	using EntityIndex = size_t;
 
 	struct ComponentToAdd
 	{
