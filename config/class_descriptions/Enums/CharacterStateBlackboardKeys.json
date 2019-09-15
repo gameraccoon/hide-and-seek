@@ -1,0 +1,12 @@
+{
+	"enum": {
+		"name": "CharacterStateBlackboardKeys",
+		"values": [
+			"TryingToMove",
+			"ReadyToRun",
+			"TryingToShoot",
+			"Reloading",
+			"Direction"
+		]
+	}
+}

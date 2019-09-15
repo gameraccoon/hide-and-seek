@@ -1,0 +1,1 @@
+#include "src/editorcommands/generated/Change{class_name}{attribute_name_capital}Command.generated.h"{delim_endl}

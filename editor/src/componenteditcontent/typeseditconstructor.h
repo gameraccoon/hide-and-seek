@@ -1,0 +1,138 @@
+#ifndef TYPESEDITCONSTRUCTOR_H
+#define TYPESEDITCONSTRUCTOR_H
+
+#include <vector>
+#include <memory>
+
+#include <QObject>
+#include <QLayout>
+#include <QString>
+#include <QPushButton>
+
+#include <QComboBox>
+
+#include "typeeditconstructorhelpers.h"
+
+template <typename T>
+std::string enum_to_string(T value);
+
+template <typename T>
+T string_to_enum(const std::string& value);
+
+template <typename T>
+std::vector<T> get_all_enum_values();
+
+template <typename T>
+std::vector<std::string> get_all_enum_value_names();
+
+namespace TypesEditConstructor
+{
+	// helpers
+	void FillLabel(QLayout* layout, const QString& label);
+
+	template<typename T, class Enable = void>
+	struct FillEdit {
+		static typename Edit<T>::Ptr Call(QLayout* layout, const QString& label, const T& initialValue);
+	};
+
+	// partial specilization for enums
+	template<typename T>
+	struct FillEdit<T, typename std::enable_if<std::is_enum<T>::value>::type> {
+		static typename Edit<T>::Ptr Call(QLayout* layout, const QString& label, const T& initialValue)
+		{
+			FillLabel(layout, label);
+
+			QComboBox* stringList = new QComboBox();
+			for (const std::string& value : get_all_enum_value_names<T>())
+			{
+				stringList->addItem(QString::fromStdString(value));
+			}
+			stringList->setCurrentText(QString::fromStdString(enum_to_string(initialValue)));
+
+			typename Edit<T>::Ptr edit = std::make_shared<Edit<T>>(initialValue);
+			typename Edit<T>::WeakPtr editWeakPtr = edit;
+
+			QObject::connect(stringList, &QComboBox::currentTextChanged, edit->getOwner(), [editWeakPtr](const QString& newValue)
+			{
+				if (typename Edit<T>::Ptr edit = editWeakPtr.lock())
+				{
+					edit->transmitValueChange(string_to_enum<T>(newValue.toStdString()));
+				}
+			});
+
+			layout->addWidget(stringList);
+			return edit;
+		}
+	};
+
+	template<>
+	Edit<float>::Ptr FillEdit<float>::Call(QLayout* layout, const QString& label, const float& initialValue);
+
+	template <typename T>
+	using is_vector = std::is_same<T, std::vector<typename T::value_type, typename T::allocator_type>>;
+
+	// partial specilization for vectors
+	template<typename T>
+	struct FillEdit<T, typename std::enable_if<is_vector<T>::value>::type> {
+		static typename Edit<T>::Ptr Call(QLayout* layout, const QString& label, const T& initialValue)
+		{
+			using item_type = typename T::value_type;
+
+			typename Edit<T>::Ptr edit = std::make_shared<Edit<T>>(initialValue);
+			typename Edit<T>::WeakPtr editWeakPtr = edit;
+
+			FillLabel(layout, label);
+
+			int index = 0;
+			for (const item_type& item : initialValue)
+			{
+				typename Edit<item_type>::Ptr editItem = FillEdit<item_type>::Call(layout, QString("[%1]").arg(index), item);
+				editItem->bindOnChange([editWeakPtr, index](const item_type& /*oldValue*/, const item_type& newValue, bool)
+				{
+					if (typename Edit<T>::Ptr edit = editWeakPtr.lock())
+					{
+						T container = edit->getPreviousValue();
+						container[static_cast<size_t>(index)] = newValue;
+						edit->transmitValueChange(container);
+					}
+				});
+				edit->addChild(editItem);
+
+				QPushButton* removeButton = new QPushButton();
+				removeButton->setText("x");
+				Edit<bool>::Ptr removeItem = std::make_shared<Edit<bool>>(false);
+				QObject::connect(removeButton, &QPushButton::pressed, edit->getOwner(), [editWeakPtr, index]()
+				{
+					if (typename Edit<T>::Ptr edit = editWeakPtr.lock())
+					{
+						T container = edit->getPreviousValue();
+						container.erase(container.begin() + index);
+						edit->transmitValueChange(container, true);
+					}
+				});
+				edit->addChild(removeItem);
+				layout->addWidget(removeButton);
+				index++;
+			}
+
+			QPushButton* addButton = new QPushButton();
+			addButton->setText("add item");
+			Edit<bool>::Ptr addItem = std::make_shared<Edit<bool>>(false);
+			QObject::connect(addButton, &QPushButton::pressed, edit->getOwner(), [editWeakPtr]()
+			{
+				if (typename Edit<T>::Ptr edit = editWeakPtr.lock())
+				{
+					T container = edit->getPreviousValue();
+					container.push_back(item_type());
+					edit->transmitValueChange(container, true);
+				}
+			});
+			edit->addChild(addItem);
+			layout->addWidget(addButton);
+
+			return edit;
+		}
+	};
+}
+
+#endif // TYPESEDITCONSTRUCTOR_H

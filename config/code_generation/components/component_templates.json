@@ -1,0 +1,17 @@
+[
+	{
+		"name": "component_includes"
+	},
+	{
+		"name": "component_factory_register"
+	},
+	{
+		"name": "editor/component_edit_factory_includes"
+	},
+	{
+		"name": "editor/component_factory_register"
+	},
+	{
+		"name": "editor/component_edit_factory_register"
+	}
+]

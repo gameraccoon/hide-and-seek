@@ -1,38 +1,25 @@
-Simple 2D game.
-Created on C++ with HGE.
-Uses Lua as script language and SQLite as database engine.
+Simple 2D game
+Made with C++
 
-Libraries
-DebugHelpers - base for debugging and logging.
-SGEngine - game engine (actor, world, AI, ...)
-HgeInterface - classes that works with HGE (camera, input, ...)
-LuaInterface - classes that works with Lua (script language)
-SqliteInterface - classes that works with SQLite (databases)
-StealthGame - contains some actors and AI definitions
+Uses: SDL2, Lua, gtest, Qt (editor), cmake, python
 
-Game - main application
-Editor - editor application
+Modules
+DebugHelpers - base for debugging and logging
+Engine - game engine (components, world, collision, ...)
+StealthGame - classes that instanciate game configs + Systems
+SystemInterface - classes that works with HGE (camera, input, ...)
+UnitTests - unit tests for engine code
 
+To build the game you need:
+- git-lfs
+- CMake
+- a compiler that supports C++17
+- for linux you need to install SLD2 and SDL2_Image
+- for windows and Visual Studio only Debug version is working now
 
-Controls:
-Game
-W/A/S/D - move the Hero
-Q/E - rotate camera left/right
-LMB - fire
-RMB - place a light emitter
-C - show/hide axis-aligned bounding boxes
-F - hide/show Fog of war
-P - show/hide paths
-M - show/hide models of collision
-H - hide/show shadows
-L - hide/show lite points
+To build the editor you need:
+- git-lfs
+- cmake
+- a compiler that supports C++17
+- QT Creator
 
-Editor
-Left/Right/Up/Down - move the camera
-Q/E - rotate camera left/right
-Mouse Scroll Up/Mouse scroll Down - change the actor to place
-LMB - select and move actor by mouse
-RMB(holding) - move the camera
-Delete - delete the selected actor
-Ctrl+LMB - place the choosen actor
-Ctrl+S - save the level

@@ -1,7 +1,7 @@
-#ifndef LOG_H
-#define LOG_H
+#pragma once
 
 #include <string>
+#include "StringHelpers.h"
 
 /**
  * Class that helps to write log messages.
@@ -18,17 +18,17 @@ public:
 	static Log& Instance();
 
 	/* Logging functions */
-	void writeError(std::string text);
-	void writeWarning(std::string text);
-	void writeLog(std::string text);
-	void writeInit(std::string text);
+	void writeError(const std::string& text);
+	void writeWarning(const std::string& text);
+	void writeLog(const std::string& text);
+	void writeInit(const std::string& text);
 
 private:
 	/** Write line with timestamp */
-	void writeLine(std::string text);
+	void writeLine(const std::string& text);
 
 	/** Filestream that holds the logfile handler */
-	std::ofstream *logFileStream;
+	std::ofstream *mLogFileStream;
 
 	/** Construct singletone information */
 	static void create();
@@ -40,16 +40,46 @@ private:
 	static void killPhoenixSingletone();
 
 	/** Single instance of class log */
-	static Log* singleInstance;
+	static Log* mSingleInstance;
 
 	/** Flag shows that singletone was created and destroyed */
-	static bool isDestroyed;
+	static bool mIsDestroyed;
+	/** Flag shows that this is the first life of this singletone */
+	static bool mIsFirstLife;
 
 	/* Turn off unusable operations */
 	Log();
 	~Log();
-	Log(const Log&);
-	void operator=(const Log&);
+	Log(const Log&) = delete;
+	void operator=(const Log&) = delete;
 };
 
-#endif
+template<typename... Args>
+void LogInit(const std::string& message, Args... args)
+{
+	Log::Instance().writeInit(FormatString(message, std::forward<Args>(args)...));
+}
+
+template<typename... Args>
+void LogInfo(const std::string& message, Args... args)
+{
+	Log::Instance().writeLog(FormatString(message, std::forward<Args>(args)...));
+}
+
+template<typename... Args>
+void LogWarning(const std::string& message, Args... args)
+{
+	Log::Instance().writeWarning(FormatString(message, std::forward<Args>(args)...));
+}
+
+template<typename... Args>
+void LogError(const std::string& message, Args... args)
+{
+	Log::Instance().writeError(FormatString(message, std::forward<Args>(args)...));
+}
+
+template<typename... Args>
+void LogAssertHelper(const char* condition, const char* file, size_t line, const std::string& message, Args... args)
+{
+	Log::Instance().writeError(FormatString(std::string("Assertion failed '%s' %s:%d. Message: '").append(message), condition, file, line, std::forward<Args>(args)...));
+}

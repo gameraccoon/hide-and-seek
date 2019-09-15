@@ -1,0 +1,12 @@
+{
+	"component": "navMesh",
+	"description": "Component that stores part of NavMesh",
+	"attributes": [
+		{
+			"name": "navMesh",
+			"type": "NavMesh",
+			"includes": ["\"GameData/AI/NavMesh.h\""],
+			"flags": ["transient", "get_by_ref"]
+		}
+	]
+}

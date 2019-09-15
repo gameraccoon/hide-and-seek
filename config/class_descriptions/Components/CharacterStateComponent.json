@@ -1,0 +1,21 @@
+{
+	"component": "characterState",
+	"description": "Component that stores state of one character",
+	"attributes": [
+		{
+			"name": "state",
+			"type": "CharacterState",
+			"includes": ["\"GameData/Enums/CharacterState.generated.h\""],
+			"default": " = CharacterState::Idle"
+		},
+		{
+			"name": "blackboard",
+			"type": "FSM::Blackboard<CharacterStateBlackboardKeys>",
+			"includes": [
+				"\"GameData/Enums/CharacterStateBlackboardKeys.generated.h\"",
+				"\"GameData/FSM/Blackboard.h\""
+			],
+			"flags": ["transient", "get_by_ref"]
+		}
+	]
+}

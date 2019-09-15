@@ -1,0 +1,21 @@
+#pragma once
+
+#include "src/componenteditcontent/abstracteditfactory.h"
+#include "src/componenteditcontent/typeeditconstructorhelpers.h"
+
+{attribute_includes}
+
+class {class_name}EditData : public EditData
+{{
+public:
+	void fillContent(QLayout* layout, Entity entity, const BaseComponent* component, EditorCommandsStack& commandStack, World* world) override;
+
+private:
+	{editor/attribute_edit_fields}
+}};
+
+class {class_name}EditFactory : public AbstractEditFactory
+{{
+public:
+	std::shared_ptr<EditData> getEditData() override;
+}};

@@ -1,14 +1,38 @@
+# cmake files
+CMakeCache.txt
+CMakeFiles
+cmake_install.cmake
+
+# generated binaries
 *.exe
-*.exe.*
-Debug
-Release
+
+# vs files
 *.user
-*.log
-log.txt
-*_log.txt
 *.sdf
 *.ilk
 *.pdb
 *.suo
 *.opensdf
 *.ipch
+*.db
+*.opendb
+*.vcxproj.filters
+*.vcxproj
+*.sln
+
+# generated code
+*.generated.cpp
+*.generated.h
+
+# other
+*.log
+log.txt
+*_log.txt
+.vs
+*.obj
+*.tlog
+*.lib
+*.cache
+/bin
+/build
+__pycache__

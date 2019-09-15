@@ -1,0 +1,14 @@
+{
+	"enum": {
+		"name": "CharacterLegsAnimationState",
+		"values": [
+			"Idle",
+			"Walk",
+			"Run",
+			"StrafeLeft",
+			"StrafeRight",
+
+			"MetaWalk"
+		]
+	}
+}

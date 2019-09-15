@@ -1,34 +1,52 @@
-#include "Log.h"
+#include "Debug/Log.h"
 
 #include <fstream>
-#include <ctime>
+#include <chrono>
+#include <iomanip>
+#include <experimental/filesystem>
 
-Log* Log::singleInstance = nullptr;
-bool Log::isDestroyed = false;
+Log* Log::mSingleInstance = nullptr;
+bool Log::mIsDestroyed = false;
+bool Log::mIsFirstLife = true;
 
 Log::Log()
 {
-	static const std::string LOG_FILE = std::string("./logs/").append("log.txt"); 
+	const std::string LOG_FILE = std::string("./logs/").append("log.txt");
 
-	this->logFileStream = new std::ofstream(LOG_FILE, std::ios_base::trunc);
-	this->writeInit("Log file created");
+	if (mIsFirstLife)
+	{
+		namespace fs = std::experimental::filesystem;
+		if (!fs::is_directory("./logs") || !fs::exists("./logs"))
+		{
+			fs::create_directory("logs");
+		}
+
+		mLogFileStream = new std::ofstream(LOG_FILE, std::ios_base::trunc);
+		writeLog("Log file created");
+	}
+	else
+	{
+		mLogFileStream = new std::ofstream(LOG_FILE, std::ios_base::app);
+	}
 }
 
 Log::~Log()
 {
-	this->logFileStream->close();
-	delete this->logFileStream;
+	writeLog("End of log");
+	mLogFileStream->close();
+	delete mLogFileStream;
 
-	singleInstance = nullptr;
-	isDestroyed = true;
+	Log::mSingleInstance = nullptr;
+	Log::mIsDestroyed = true;
+	Log::mIsFirstLife = false;
 }
 
 Log& Log::Instance()
 {
-	// if we haven't instance of the Log
-	if (Log::singleInstance == nullptr)
+	// if we don't have the instance of the Log
+	if (Log::mSingleInstance == nullptr)
 	{
-		if (isDestroyed)
+		if (mIsDestroyed)
 		{
 			// the Log was destroyed
 			Log::onDeadReference();
@@ -36,11 +54,11 @@ Log& Log::Instance()
 		else
 		{
 			// first access, create single instance
-			Log::singleInstance = new Log();
+			Log::create();
 		}
 	}
 
-	return *Log::singleInstance;
+	return *Log::mSingleInstance;
 }
 
 void Log::create()
@@ -50,7 +68,7 @@ void Log::create()
 	 * and it be automatically destroyed on program shutdown
 	 */
 	static Log theInstance;
-	Log::singleInstance = &theInstance;
+	Log::mSingleInstance = &theInstance;
 }
 
 void Log::onDeadReference()
@@ -58,43 +76,51 @@ void Log::onDeadReference()
 	// Get the old singletone location in the memory (ash of the phoenix)
 	Log::create();
 	// Create new singletone on this place
-	new (singleInstance) Log;
+	new (Log::mSingleInstance) Log;
 	// Say that we want to destroy this singletone on the application shutdown
 	atexit(killPhoenixSingletone);
 	// Say that the singletone is ready to use
-	Log::isDestroyed = false;
+	Log::mIsDestroyed = false;
 }
 
 void Log::killPhoenixSingletone()
 {
-	delete Log::singleInstance;
+	Log::mSingleInstance->~Log();
+	operator delete(Log::mSingleInstance);
 }
 
-void Log::writeError(std::string text)
+void Log::writeError(const std::string& text)
 {
-	this->writeLine(std::string(" Error: ").append(text));
+	writeLine(std::string(" Error: ").append(text));
+	*mLogFileStream << std::flush;
 }
 
-void Log::writeWarning(std::string text)
+void Log::writeWarning(const std::string& text)
 {
-	this->writeLine(std::string(" Warning: ").append(text));
+	writeLine(std::string(" Warning: ").append(text));
+	*mLogFileStream << std::flush;
 }
 
-void Log::writeLog(std::string text)
+void Log::writeLog(const std::string& text)
 {
-	this->writeLine(std::string(" Log: ").append(text));
+	writeLine(std::string(" Log: ").append(text));
 }
 
-void Log::writeInit(std::string text)
+void Log::writeInit(const std::string& text)
 {
-	this->writeLine(std::string(" Init: ").append(text));
+	writeLine(std::string(" Init: ").append(text));
 }
 
-void Log::writeLine(std::string text)
+void Log::writeLine(const std::string& text)
 {
-	if (this->logFileStream->is_open())
+	if (mLogFileStream->is_open())
 	{
-		*this->logFileStream << std::time(0);
-		*this->logFileStream << text << std::endl;
+		auto now = std::chrono::system_clock::now();
+		auto in_time_t = std::chrono::system_clock::to_time_t(now);
+
+		*mLogFileStream << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %X");
+		*mLogFileStream << text << "\n";
 	}
+
+	std::clog << text << "\n";
 }

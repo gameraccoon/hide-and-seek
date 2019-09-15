@@ -1,0 +1,46 @@
+[
+	{
+		"name_template": "{class_name}.generated.h",
+		"template": "component_header",
+		"output_dir": "src/GameData/Components/"
+	},
+	{
+		"name_template": "{class_name}.generated.cpp",
+		"template": "component_source",
+		"output_dir": "src/GameData/Components/"
+	},
+	{
+		"name_template": "{class_name}EditFactory.generated.h",
+		"template": "editor/component_edit_factory_header",
+		"output_dir": "editor/src/componenteditcontent/generated/"
+	},
+	{
+		"name_template": "{class_name}EditFactory.generated.cpp",
+		"template": "editor/component_edit_factory_source",
+		"output_dir": "editor/src/componenteditcontent/generated/"
+	},
+	{
+		"name_template": "Change{class_name}{attribute_name_capital}Command.generated.h",
+		"template": "editor/attribute_edit_command_header",
+		"output_dir": "editor/src/editorcommands/generated/",
+		"flags": ["per_attribute"]
+	},
+	{
+		"name_template": "Change{class_name}{attribute_name_capital}Command.generated.cpp",
+		"template": "editor/attribute_edit_command_source",
+		"output_dir": "editor/src/editorcommands/generated/",
+		"flags": ["per_attribute"]
+	},
+	{
+		"name_template": "ComponentsRegistration.generated.cpp",
+		"template": "components_registration_source",
+		"output_dir": "src/GameLogic/",
+		"flags": ["list"]
+	},
+	{
+		"name_template": "componentregistration.generated.cpp",
+		"template": "editor/components_registration_source",
+		"output_dir": "editor/src/componenteditcontent/",
+		"flags": ["list"]
+	}
+]

@@ -1,0 +1,206 @@
+{
+    "prefabs": [
+        {
+            "data": {
+                "LightComponent": {
+                    "brightness": 1.0
+                },
+                "TransformComponent": {
+                    "location": {
+                        "x": 50.0,
+                        "y": -28.0
+                    },
+                    "rotation": {
+                        "v": 0.0
+                    }
+                }
+            },
+            "name": "light"
+        },
+        {
+            "data": {
+                "CollisionComponent": {
+                    "geometry": {
+                        "points": [
+                            {
+                                "x": 60.0,
+                                "y": -10.0
+                            },
+                            {
+                                "x": 60.0,
+                                "y": 10.0
+                            },
+                            {
+                                "x": -60.0,
+                                "y": 10.0
+                            },
+                            {
+                                "x": -60.0,
+                                "y": -10.0
+                            }
+                        ],
+                        "radius": 8.96831017167883e-44,
+                        "type": 0
+                    }
+                },
+                "RenderComponent": {
+                    "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "size": {
+                        "x": 120.0,
+                        "y": 20.0
+                    },
+                    "texturePath": "resources/textures/testTexture.png"
+                },
+                "TransformComponent": {
+                    "location": {
+                        "x": -112.0,
+                        "y": 37.0
+                    },
+                    "rotation": {
+                        "v": 0.0
+                    }
+                }
+            },
+            "name": "wall-horisontal"
+        },
+        {
+            "data": {
+                "CollisionComponent": {
+                    "geometry": {
+                        "points": [
+                            {
+                                "x": 10.0,
+                                "y": -60.0
+                            },
+                            {
+                                "x": 10.0,
+                                "y": 60.0
+                            },
+                            {
+                                "x": -10.0,
+                                "y": 60.0
+                            },
+                            {
+                                "x": -10.0,
+                                "y": -60.0
+                            }
+                        ],
+                        "radius": 8.96831017167883e-44,
+                        "type": 0
+                    }
+                },
+                "RenderComponent": {
+                    "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "size": {
+                        "x": 20.0,
+                        "y": 120.0
+                    },
+                    "texturePath": "resources/textures/testTexture.png"
+                },
+                "TransformComponent": {
+                    "location": {
+                        "x": -97.0,
+                        "y": 179.0
+                    },
+                    "rotation": {
+                        "v": 0.0
+                    }
+                }
+            },
+            "name": "wall-vertical"
+        },
+        {
+            "data": {
+                "CollisionComponent": {
+                    "geometry": {
+                        "points": [],
+                        "radius": 16.0,
+                        "type": 1
+                    }
+                },
+                "MovementComponent": {
+                    "lastStep": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "speed": {
+                        "x": 0.0,
+                        "y": 0.0
+                    }
+                },
+                "RenderComponent": {
+                    "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "size": {
+                        "x": 32.0,
+                        "y": 32.0
+                    },
+                    "texturePath": "resources/textures/hero.png"
+                },
+                "TransformComponent": {
+                    "location": {
+                        "x": 79.0,
+                        "y": 40.0
+                    },
+                    "rotation": {
+                        "v": 0.0
+                    }
+                }
+            },
+            "name": "player"
+        },
+        {
+            "data": {
+                "AiControllerComponent": {
+                    "isEnemy": true
+                },
+                "CollisionComponent": {
+                    "geometry": {
+                        "points": [],
+                        "radius": 10.0,
+                        "type": 1
+                    }
+                },
+                "MovementComponent": {
+                    "lastStep": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "speed": {
+                        "x": 0.0,
+                        "y": 0.0
+                    }
+                },
+                "RenderComponent": {
+                    "anchor": {
+                        "x": 0.5,
+                        "y": 0.5
+                    },
+                    "size": {
+                        "x": 20.0,
+                        "y": 20.0
+                    },
+                    "texturePath": "resources/textures/hero.png"
+                },
+                "TransformComponent": {
+                    "location": {
+                        "x": 187.0,
+                        "y": 12.0
+                    },
+                    "rotation": {
+                        "v": 0.0
+                    }
+                }
+            },
+            "name": "ai-driven-entity"
+        }
+    ]
+}

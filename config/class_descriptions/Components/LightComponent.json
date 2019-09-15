@@ -1,0 +1,11 @@
+{
+	"component": "light",
+	"description": "Component that stores information about a light emitter",
+	"attributes": [
+		{
+			"name": "brightness",
+			"type": "float",
+			"default": " = 1.0f"
+		}
+	]
+}
