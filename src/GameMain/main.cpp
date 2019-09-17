@@ -1,5 +1,7 @@
 #include "GameLogic/Game.h"
 
+#include <time.h>
+
 #include "Utils/Application/ArgumentsParser.h"
 
 int main(int argc, char** argv)

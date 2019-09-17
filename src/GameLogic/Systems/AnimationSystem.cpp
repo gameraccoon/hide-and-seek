@@ -1,5 +1,7 @@
 #include "GameLogic/Systems/AnimationSystem.h"
 
+#include <algorithm>
+
 #include "GameData/Components/RenderComponent.generated.h"
 #include "GameData/Components/AnimationDataComponent.generated.h"
 #include "GameData/World.h"

@@ -1,5 +1,7 @@
 #include "GameLogic/Systems/DebugDrawSystem.h"
 
+#include <algorithm>
+
 #include "GameData/Components/TransformComponent.generated.h"
 #include "GameData/Components/CollisionComponent.generated.h"
 #include "GameData/Components/NavMeshComponent.generated.h"
