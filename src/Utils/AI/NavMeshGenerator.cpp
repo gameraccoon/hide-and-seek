@@ -62,10 +62,10 @@ void NavMeshGenerator::generateNavMesh(NavMesh& outNavMesh, const std::vector<st
 			TPPLPoly polygon;
 			polygon.Init(geometry.points.size());
 
-			size_t size = geometry.points.size();
-			for (size_t i = 0; i < size; ++i)
+			size_t pointsSize = geometry.points.size();
+			for (size_t i = 0; i < pointsSize; ++i)
 			{
-				const Vector2D& point = geometry.points[size - 1 - i];
+				const Vector2D& point = geometry.points[pointsSize - 1 - i];
 				polygon[i].x = point.x + location.x;
 				polygon[i].y = point.y + location.y;
 			}

@@ -8,13 +8,13 @@ TimeData::TimeData()
 	}
 }
 
-void TimeData::update(float dt)
+void TimeData::update(float deltaTime)
 {
-	this->dt = dt;
+	dt = deltaTime;
 
 	for (int i = 0; i < parallelCyclesCount; ++i)
 	{
-		cycleTime[i] += dt;
+		cycleTime[i] += deltaTime;
 	}
 
 	if (cycleTime[currentCycle] > cycleLength)

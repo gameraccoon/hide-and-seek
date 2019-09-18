@@ -191,11 +191,11 @@ namespace HAL
 	ResourceHandle ResourceManager::lockSprite(const std::string& path)
 	{
 		std::string spritePathId = "spr-" + path;
-		auto it = mPathsMap.find(spritePathId);
-		if (it != mPathsMap.end())
+		auto spritePathIt = mPathsMap.find(spritePathId);
+		if (spritePathIt != mPathsMap.end())
 		{
-			++mResourceLocksCount[it->second];
-			return ResourceHandle(it->second);
+			++mResourceLocksCount[spritePathIt->second];
+			return ResourceHandle(spritePathIt->second);
 		}
 		else
 		{

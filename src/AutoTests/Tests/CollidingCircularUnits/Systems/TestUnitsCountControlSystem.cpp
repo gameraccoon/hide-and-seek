@@ -51,7 +51,7 @@ static void spawnUnits(EntityManager& entityManager, int count, Vector2D pos)
 	int m = count / n;
 	constexpr float distance = 50.0f;
 
-	Vector2D centerShifted = pos - Vector2D(n - 1, m - ((count == m * n) ? 1 : 0)) * (distance / 2.0f);
+	Vector2D centerShifted = pos - Vector2D(static_cast<float>(n - 1), m - ((count == m * n) ? 1.0f : 0.0f)) * (distance * 0.5f);
 
 	constexpr int jitterRand = 500;
 	constexpr float jitterMax = 30.0f;

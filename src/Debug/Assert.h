@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Log.h"
-#include "OptimizationHelpers.h"
+#include "CompilerHelpers.h"
 
 #ifdef DEBUG
 #define ReportError(...) \
@@ -28,7 +28,7 @@
 	#define Assert(cond, ...) \
 	do \
 	{ \
-		if almost_never(static_cast<bool>(cond) == false) \
+		if ALMOST_NEVER(static_cast<bool>(cond) == false) \
 		{ \
 			LogAssertHelper(STR(cond), __FILE__, __LINE__, ##__VA_ARGS__); \
 		} \
@@ -40,7 +40,7 @@
 #ifdef DEBUG
 #define AssertFatal(cond, ...) \
 do { \
-	if almost_never(static_cast<bool>(cond) == false) \
+	if ALMOST_NEVER(static_cast<bool>(cond) == false) \
 	{ \
 		LogAssertHelper(STR(cond), __FILE__, __LINE__, ##__VA_ARGS__); \
 		std::terminate(); \
@@ -54,7 +54,7 @@ do { \
 
 #define AssertRet(cond, ret, ...) \
 do { \
-	if almost_never(static_cast<bool>(cond) == false) \
+	if ALMOST_NEVER(static_cast<bool>(cond) == false) \
 	{ \
 		LogAssertHelper(STR(cond), __FILE__, __LINE__, ##__VA_ARGS__); \
 		return (ret); \
@@ -63,7 +63,7 @@ do { \
 
 #define AssertRetVoid(cond, ...) \
 do { \
-	if almost_never(static_cast<bool>(cond) == false) \
+	if ALMOST_NEVER(static_cast<bool>(cond) == false) \
 	{ \
 		LogAssertHelper(STR(cond), __FILE__, __LINE__, ##__VA_ARGS__); \
 		return; \
@@ -72,7 +72,7 @@ do { \
 
 #define AssertBreak(cond, ...) \
 do { \
-	if almost_never(static_cast<bool>(cond) == false) \
+	if ALMOST_NEVER(static_cast<bool>(cond) == false) \
 	{ \
 		LogAssertHelper(STR(cond), __FILE__, __LINE__, ##__VA_ARGS__); \
 		break; \
@@ -81,7 +81,7 @@ do { \
 
 #define AssertContinue(cond, ...) \
 do { \
-	if almost_never(static_cast<bool>(cond) == false) \
+	if ALMOST_NEVER(static_cast<bool>(cond) == false) \
 	{ \
 		LogAssertHelper(STR(cond), __FILE__, __LINE__, ##__VA_ARGS__); \
 		continue; \

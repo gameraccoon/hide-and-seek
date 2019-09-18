@@ -98,7 +98,7 @@ void RenderSystem::drawVisibilityPolygon(const Graphics::Sprite& lightSprite, co
 
 Vector2D RenderSystem::GetPlayerSightPosition(World* world)
 {
-	Vector2D result;
+	Vector2D result(0.0f, 0.0f);
 
 	if (OptionalEntity playerEntity = world->getPlayerControlledEntity(); playerEntity.isValid())
 	{

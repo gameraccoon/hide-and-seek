@@ -41,7 +41,7 @@ Entity EntityManager::addEntity()
 		++insertionTrial;
 	}
 
-	Assert(false, "Can't generate unique ID for an entity");
+	ReportError("Can't generate unique ID for an entity");
 	return Entity(0);
 }
 
@@ -60,7 +60,7 @@ Entity EntityManager::getNonExistentEntity()
 		++generationTrial;
 	}
 
-	Assert(false, "Can't generate unique ID for an entity");
+	ReportError("Can't generate unique ID for an entity");
 	return Entity(0);
 }
 

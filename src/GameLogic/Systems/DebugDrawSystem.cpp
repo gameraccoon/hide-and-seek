@@ -90,9 +90,9 @@ void DebugDrawSystem::update()
 					if (const dtMeshTile* tile = navmesh->getTile(i); tile && tile->header)
 					{
 						std::vector<std::array<Vector2D, 3>> points;
-						for (int i = 0; i < tile->header->polyCount; ++i)
+						for (int k = 0; k < tile->header->polyCount; ++k)
 						{
-							const auto& poly = tile->polys[i];
+							const auto& poly = tile->polys[k];
 							std::vector<Graphics::DrawPoint> drawablePolygon;
 							drawablePolygon.reserve(3);
 							for (int j = 0; j < poly.vertCount; ++j)

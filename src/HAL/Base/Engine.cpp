@@ -71,12 +71,12 @@ namespace HAL
 
 		if (TTF_Init() == -1)
 		{
-			Assert(false, "TTF_Init failed");
+			ReportError("TTF_Init failed");
 		}
 
 		if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) == -1)
 		{
-			Assert(false, "TTF_Init failed");
+			ReportError("TTF_Init failed");
 		}
 	}
 
