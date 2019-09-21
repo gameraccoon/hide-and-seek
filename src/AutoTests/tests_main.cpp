@@ -4,6 +4,22 @@
 
 #include "AutoTests/Tests/CollidingCircularUnits/TestCase.h"
 
+using CasesMap = std::map<std::string, std::function<void(const ArgumentsParser& arguments)>>;
+
+CasesMap getCases()
+{
+	return CasesMap
+	({
+		{
+			"CollidingCircularUnits", [](const ArgumentsParser& args)
+			{
+				 CollidingCircularUnitsTestCase testCase(800, 600);
+				 testCase.start(args);
+			}
+		}
+	});
+}
+
 int main(int argc, char** argv)
 {
 	ArgumentsParser arguments(argc, argv);
@@ -17,16 +33,32 @@ int main(int argc, char** argv)
 
 	std::srand(seed);
 
-	if (!arguments.hasArgument("case"))
+	auto cases = getCases();
+
+	if (arguments.hasArgument("list-cases"))
 	{
-		Log::Instance().writeError("test case name not provided");
+		for (const auto& casePair : cases)
+		{
+			std::cout << casePair.first << "\n";
+		}
 		return 0;
 	}
 
-	if (arguments.getArgumentValue("case") == "CollidingCircularUnits")
+	if (!arguments.hasArgument("case"))
 	{
-		CollidingCircularUnitsTestCase testCase(800, 600);
-		testCase.start(arguments);
+		Log::Instance().writeError("Test case name not provided");
+		return 1;
+	}
+
+	auto caseIt = cases.find(arguments.getArgumentValue("case"));
+	if (caseIt != cases.end())
+	{
+		caseIt->second(arguments);
+	}
+	else
+	{
+		Log::Instance().writeError("Unknown test " + arguments.getArgumentValue("case"));
+		return 1;
 	}
 
 	return 0;

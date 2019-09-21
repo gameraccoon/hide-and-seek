@@ -20,7 +20,7 @@
 #include "AutoTests/Tests/CollidingCircularUnits/Systems/TestCircularUnitsSystem.h"
 #include "AutoTests/Tests/CollidingCircularUnits/Systems/TestUnitsCountControlSystem.h"
 
-void CollidingCircularUnitsTestCase::start(ArgumentsParser& /*arguments*/)
+void CollidingCircularUnitsTestCase::start(const ArgumentsParser& /*arguments*/)
 {
 	getResourceManager()->loadAtlasesData("resources/atlas/atlas-list.json");
 
