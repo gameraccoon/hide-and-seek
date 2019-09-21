@@ -20,7 +20,7 @@
 #include "AutoTests/Tests/CollidingCircularUnits/Systems/TestCircularUnitsSystem.h"
 #include "AutoTests/Tests/CollidingCircularUnits/Systems/TestUnitsCountControlSystem.h"
 
-void CollidingCircularUnitsTestCase::start(const ArgumentsParser& /*arguments*/)
+void CollidingCircularUnitsTestCase::start(const ArgumentsParser& arguments)
 {
 	getResourceManager()->loadAtlasesData("resources/atlas/atlas-list.json");
 
@@ -61,19 +61,32 @@ void CollidingCircularUnitsTestCase::start(const ArgumentsParser& /*arguments*/)
 
 	mWorld.getWorldComponents().addComponent<StateMachineComponent>();
 
+	mOneFrame = arguments.hasArgument("one-frame");
+
 	// start the main loop
 	getEngine()->start(this);
 }
 
 void CollidingCircularUnitsTestCase::update(float)
 {
-	if (ticksCount == 100)
+	constexpr float fixedDt = 0.16f;
+
+	if (mOneFrame)
+	{
+		for (int i = mTicksCount; i < mTicksToFinish - 1; ++i)
+		{
+			mTime.update(fixedDt);
+			mSystemsManager.update();
+		}
+		mTicksCount = mTicksToFinish - 1;
+	}
+
+	mTime.update(fixedDt);
+	mSystemsManager.update();
+	++mTicksCount;
+
+	if (mTicksCount >= mTicksToFinish)
 	{
 		getEngine()->quit();
 	}
-
-	constexpr float fixedDt = 0.16f;
-	mTime.update(fixedDt);
-	mSystemsManager.update();
-	++ticksCount;
 }

@@ -31,5 +31,7 @@ private:
 	TimeData mTime;
 	SystemsManager mSystemsManager;
 	ComponentFactory mComponentFactory;
-	int ticksCount = 0;
+	int mTicksCount = 0;
+	static const int mTicksToFinish = 100;
+	bool mOneFrame = false;
 };
