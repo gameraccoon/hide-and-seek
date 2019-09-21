@@ -15,12 +15,10 @@
 #include "GameLogic/Systems/MovementSystem.h"
 #include "GameLogic/Systems/CharacterStateSystem.h"
 
-#include "GameLogic/ComponentsRegistration.h"
-
 #include "AutoTests/Tests/CollidingCircularUnits/Systems/TestCircularUnitsSystem.h"
 #include "AutoTests/Tests/CollidingCircularUnits/Systems/TestUnitsCountControlSystem.h"
 
-void CollidingCircularUnitsTestCase::start(const ArgumentsParser& arguments)
+void CollidingCircularUnitsTestCase::initTestCase(const ArgumentsParser& /*arguments*/)
 {
 	getResourceManager()->loadAtlasesData("resources/atlas/atlas-list.json");
 
@@ -31,11 +29,6 @@ void CollidingCircularUnitsTestCase::start(const ArgumentsParser& arguments)
 	mSystemsManager.registerSystem<CollisionSystem>(mWorldHolder);
 	mSystemsManager.registerSystem<ResourceStreamingSystem>(mWorldHolder, getResourceManager());
 	mSystemsManager.registerSystem<RenderSystem>(mWorldHolder, getEngine(), getResourceManager());
-
-	ComponentsRegistration::RegisterComponents(mComponentFactory);
-
-	mWorldHolder.world = &mWorld;
-	mWorldHolder.gameData = &mGameData;
 
 	Entity playerEntity = mWorld.getEntityManager().addEntity();
 	{
@@ -60,33 +53,4 @@ void CollidingCircularUnitsTestCase::start(const ArgumentsParser& arguments)
 	mWorld.setMainCamera(playerEntity);
 
 	mWorld.getWorldComponents().addComponent<StateMachineComponent>();
-
-	mOneFrame = arguments.hasArgument("one-frame");
-
-	// start the main loop
-	getEngine()->start(this);
-}
-
-void CollidingCircularUnitsTestCase::update(float)
-{
-	constexpr float fixedDt = 0.16f;
-
-	if (mOneFrame)
-	{
-		for (int i = mTicksCount; i < mTicksToFinish - 1; ++i)
-		{
-			mTime.update(fixedDt);
-			mSystemsManager.update();
-		}
-		mTicksCount = mTicksToFinish - 1;
-	}
-
-	mTime.update(fixedDt);
-	mSystemsManager.update();
-	++mTicksCount;
-
-	if (mTicksCount >= mTicksToFinish)
-	{
-		getEngine()->quit();
-	}
 }
