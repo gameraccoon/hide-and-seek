@@ -12,6 +12,7 @@ public:
 	~TestCircularUnitsSystem() override = default;
 
 	void update() override;
+	std::string getName() override { return "TestCircularUnitsSystem"; }
 
 private:
 	WorldHolder& mWorldHolder;

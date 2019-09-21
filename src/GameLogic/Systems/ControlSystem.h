@@ -20,6 +20,7 @@ public:
 	~ControlSystem() override = default;
 
 	void update() override;
+	std::string getName() override { return "ControlSystem"; }
 
 private:
 	WorldHolder& mWorldHolder;

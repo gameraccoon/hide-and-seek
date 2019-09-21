@@ -27,6 +27,7 @@ public:
 	~DebugDrawSystem() override = default;
 
 	void update() override;
+	std::string getName() override { return "DebugDrawSystem"; }
 
 private:
 	void drawVisibilityPolygon(const std::vector<Vector2D>& polygon, const Vector2D& fowSize, const Vector2D& drawShift);

@@ -16,6 +16,7 @@ public:
 	~AiSystem() override = default;
 
 	void update() override;
+	std::string getName() override { return "AiSystem"; }
 
 private:
 	WorldHolder& mWorldHolder;

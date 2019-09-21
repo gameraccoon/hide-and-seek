@@ -18,6 +18,7 @@ public:
 	~ResourceStreamingSystem() override = default;
 
 	void update() override;
+	std::string getName() override { return "ResourceStreamingSystem"; }
 
 private:
 	WorldHolder& mWorldHolder;

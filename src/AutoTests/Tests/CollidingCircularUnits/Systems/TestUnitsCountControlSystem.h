@@ -12,6 +12,7 @@ public:
 	TestUnitsCountControlSystem(WorldHolder& worldHolder);
 
 	void update() override;
+	std::string getName() override { return "TestUnitsCountControlSystem"; }
 
 private:
 private:

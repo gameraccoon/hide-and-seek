@@ -1,6 +1,6 @@
 #pragma once
 
-#include <memory>
+#include <string>
 
 /**
  * The base class for game Systems (ECS ideology)
@@ -13,4 +13,7 @@ public:
 	virtual ~System() = default;
 
 	virtual void update() = 0;
+
+	// for debug purposes
+	virtual std::string getName() = 0;
 };

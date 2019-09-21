@@ -16,6 +16,7 @@ public:
 	~CharacterStateSystem() override = default;
 
 	void update() override;
+	std::string getName() override { return "CharacterStateSystem"; }
 
 private:
 	WorldHolder& mWorldHolder;

@@ -25,6 +25,7 @@ public:
 	~RenderSystem() override = default;
 
 	void update() override;
+	std::string getName() override { return "RenderSystem"; }
 
 private:
 	void drawVisibilityPolygon(const Graphics::Sprite& lightSprite, const std::vector<Vector2D>& polygon, const Vector2D& fowSize, const Vector2D& drawShift);

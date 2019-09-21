@@ -17,6 +17,7 @@ public:
 	~AnimationSystem() override = default;
 
 	void update() override;
+	std::string getName() override { return "AnimationSystem"; }
 
 private:
 	WorldHolder& mWorldHolder;

@@ -20,6 +20,7 @@ public:
 	~MovementSystem() override = default;
 
 	void update() override;
+	std::string getName() override { return "MovementSystem"; }
 
 private:
 	WorldHolder& mWorldHolder;

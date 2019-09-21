@@ -23,6 +23,7 @@ public:
 
 protected:
 	virtual void initTestCase(const ArgumentsParser& arguments) = 0;
+	virtual void finalizeTestCase();
 
 protected:
 	WorldHolder mWorldHolder;
@@ -36,4 +37,12 @@ private:
 	int mTicksCount = 0;
 	ComponentFactory mComponentFactory;
 	bool mOneFrame = false;
+
+#ifdef PROFILE_SYSTEMS
+private:
+	void printSystemFrameRecords(std::ostream& outStream);
+	bool mProfileSystems = false;
+	std::string mSystemProfileOutputPath = "systemProfile.csv";
+	std::vector<SystemsFrameTime> mSystemFrameRecords;
+#endif // PROFILE_SYSTEMS
 };
