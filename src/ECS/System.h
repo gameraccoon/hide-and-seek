@@ -13,6 +13,7 @@ public:
 	virtual ~System() = default;
 
 	virtual void update() = 0;
+	virtual void initResources() {}
 
 	// for debug purposes
 	virtual std::string getName() = 0;

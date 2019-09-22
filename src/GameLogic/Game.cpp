@@ -23,7 +23,6 @@
 
 void Game::start(ArgumentsParser& arguments)
 {
-	initResources();
 	initSystems();
 
 	ComponentsRegistration::RegisterComponents(mComponentFactory);
@@ -54,6 +53,7 @@ void Game::setKeyboardKeyState(int key, bool isPressed)
 
 void Game::setMouseKeyState(int /*key*/, bool /*isPressed*/)
 {
+
 }
 
 void Game::update(float dt)
@@ -78,12 +78,13 @@ void Game::initSystems()
 	mSystemsManager.registerSystem<ResourceStreamingSystem>(mWorldHolder, getResourceManager());
 	mSystemsManager.registerSystem<AnimationSystem>(mWorldHolder, mTime);
 	mSystemsManager.registerSystem<RenderSystem>(mWorldHolder, getEngine(), getResourceManager());
-	mSystemsManager.registerSystem<DebugDrawSystem>(mWorldHolder, getEngine(), getResourceManager());
+	mSystemsManager.registerSystem<DebugDrawSystem>(mWorldHolder, mTime, getEngine(), getResourceManager());
 }
 
 void Game::initResources()
 {
 	getResourceManager()->loadAtlasesData("resources/atlas/atlas-list.json");
+	mSystemsManager.initResources();
 }
 
 void Game::onGameShutdown()

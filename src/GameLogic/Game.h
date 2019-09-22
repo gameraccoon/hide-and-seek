@@ -24,10 +24,10 @@ public:
 	void update(float dt) override;
 	void setKeyboardKeyState(int key, bool isPressed) override;
 	void setMouseKeyState(int key, bool isPressed) override;
+	void initResources() override;
 
 private:
 	void initSystems();
-	void initResources() override;
 	void onGameShutdown();
 
 private:

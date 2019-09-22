@@ -31,6 +31,14 @@ void SystemsManager::update()
 #endif // PROFILE_SYSTEMS
 }
 
+void SystemsManager::initResources()
+{
+	for (std::unique_ptr<System>& system : mSystems)
+	{
+		system->initResources();
+	}
+}
+
 SystemsFrameTime SystemsManager::getPreviousFrameTimeData()
 {
 	return mPreviousFrameTime;

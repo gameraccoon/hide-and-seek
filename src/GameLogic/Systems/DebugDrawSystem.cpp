@@ -21,13 +21,12 @@
 #include <DetourNavMesh.h>
 
 
-DebugDrawSystem::DebugDrawSystem(WorldHolder& worldHolder, HAL::Engine* engine, HAL::ResourceManager* resourceManager)
+DebugDrawSystem::DebugDrawSystem(WorldHolder& worldHolder, const TimeData& timeData, HAL::Engine* engine, HAL::ResourceManager* resourceManager)
 	: mWorldHolder(worldHolder)
+	, mTime(timeData)
 	, mEngine(engine)
 	, mResourceManager(resourceManager)
 {
-	mCollisionSpriteHandle = resourceManager->lockSprite("resources/textures/collision.png");
-	mNavmeshSpriteHandle = resourceManager->lockSprite("resources/textures/testTexture.png");
 }
 
 void DebugDrawSystem::update()
@@ -153,8 +152,18 @@ void DebugDrawSystem::update()
 		});
 	}
 
-	if (renderMode && renderMode->getIsDrawDebugCharacterInfoEnabled())
+	if (renderMode && renderMode->getIsDrawDebugFpsEnabled())
 	{
-
+		const Graphics::Font& font = mResourceManager->getResource<Graphics::Font>(mFontHandle);
+		float dt = mTime.dt;
+		renderer->renderText(font, Vector2D(20.0f, 20.0f), {255, 255, 255, 255}, std::string("FPS: ").append(std::to_string(static_cast<int>(1/dt))).c_str());
+		renderer->renderText(font, Vector2D(20.0f, 40.0f), {255, 255, 255, 255}, std::string("ms: ").append(std::to_string(static_cast<int>(dt*1000))).c_str());
 	}
+}
+
+void DebugDrawSystem::initResources()
+{
+	mCollisionSpriteHandle = mResourceManager->lockSprite("resources/textures/collision.png");
+	mNavmeshSpriteHandle = mResourceManager->lockSprite("resources/textures/testTexture.png");
+	mFontHandle = mResourceManager->lockFont("resources/fonts/prstart.ttf", 16);
 }
