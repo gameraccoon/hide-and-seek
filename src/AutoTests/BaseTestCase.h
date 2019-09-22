@@ -7,6 +7,7 @@
 #include "GameData/GameData.h"
 
 #include "Utils/Application/ArgumentsParser.h"
+#include "Utils/Profiling/SystemFrameRecords.h"
 
 #include "HAL/GameBase.h"
 
@@ -38,11 +39,7 @@ private:
 	ComponentFactory mComponentFactory;
 	bool mOneFrame = false;
 
-#ifdef PROFILE_SYSTEMS
-private:
-	void printSystemFrameRecords(std::ostream& outStream);
 	bool mProfileSystems = false;
+	SystemFrameRecords mSystemFrameRecords;
 	std::string mSystemProfileOutputPath = "systemProfile.csv";
-	std::vector<SystemsFrameTime> mSystemFrameRecords;
-#endif // PROFILE_SYSTEMS
 };

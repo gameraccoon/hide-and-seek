@@ -38,8 +38,13 @@ void Game::start(ArgumentsParser& arguments)
 	auto [sm] = mGameData.getGameComponents().getComponents<StateMachineComponent>();
 	StateMachines::RegisterStateMachines(sm);
 
+	mProfileSystems = arguments.hasArgument("profile-systems");
+	mSystemProfileOutputPath = arguments.getArgumentValue("profile-systems", mSystemProfileOutputPath);
+
 	// start the main loop
 	getEngine()->start(this);
+
+	onGameShutdown();
 }
 
 void Game::setKeyboardKeyState(int key, bool isPressed)
@@ -56,6 +61,11 @@ void Game::update(float dt)
 	mTime.update(dt);
 	mSystemsManager.update();
 	mKeyStates.clearLastFrameState();
+
+	if (mProfileSystems)
+	{
+		mSystemFrameRecords.addFrame(mSystemsManager.getPreviousFrameTimeData());
+	}
 }
 
 void Game::initSystems()
@@ -74,4 +84,12 @@ void Game::initSystems()
 void Game::initResources()
 {
 	getResourceManager()->loadAtlasesData("resources/atlas/atlas-list.json");
+}
+
+void Game::onGameShutdown()
+{
+	if (mProfileSystems)
+	{
+		mSystemFrameRecords.printToFile(mSystemsManager.getSystemNames(), mSystemProfileOutputPath);
+	}
 }

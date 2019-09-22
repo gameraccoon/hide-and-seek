@@ -31,15 +31,12 @@ public:
 	}
 
 	void update();
+
+	SystemsFrameTime getPreviousFrameTimeData();
 	std::vector<std::string> getSystemNames();
 
 private:
 	std::vector<std::unique_ptr<System>> mSystems;
-
-#ifdef PROFILE_SYSTEMS
-public:
-	SystemsFrameTime getLastFrameData();
-private:
-	SystemsFrameTime mLastFrameTime;
-#endif // PROFILE_SYSTEMS
+	SystemsFrameTime mThisFrameTime;
+	SystemsFrameTime mPreviousFrameTime;
 };

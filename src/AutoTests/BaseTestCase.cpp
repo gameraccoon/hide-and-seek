@@ -1,7 +1,5 @@
 #include "AutoTests/BaseTestCase.h"
 
-#include <fstream>
-#include <experimental/filesystem>
 #include <memory>
 
 #include "HAL/Base/Engine.h"
@@ -17,11 +15,8 @@ void BaseTestCase::start(const ArgumentsParser& arguments)
 
 	mOneFrame = arguments.hasArgument("one-frame");
 
-#ifdef PROFILE_SYSTEMS
 	mProfileSystems = arguments.hasArgument("profile-systems");
 	mSystemProfileOutputPath = arguments.getArgumentValue("profile-systems", mSystemProfileOutputPath);
-	mSystemFrameRecords.reserve(mTicksToFinish);
-#endif // PROFILE_SYSTEMS
 
 	initTestCase(arguments);
 
@@ -39,9 +34,10 @@ void BaseTestCase::update(float)
 		mSystemsManager.update();
 		++mTicksCount;
 
-#ifdef PROFILE_SYSTEMS
-		mSystemFrameRecords.emplace_back(mSystemsManager.getLastFrameData());
-#endif // PROFILE_SYSTEMS
+		if (mProfileSystems)
+		{
+			mSystemFrameRecords.addFrame(mSystemsManager.getPreviousFrameTimeData());
+		}
 	}
 	while (mOneFrame && mTicksCount < mTicksToFinish);
 
@@ -54,36 +50,8 @@ void BaseTestCase::update(float)
 
 void BaseTestCase::finalizeTestCase()
 {
-#ifdef PROFILE_SYSTEMS
 	if (mProfileSystems)
 	{
-		namespace fs = std::experimental::filesystem;
-		fs::path outPath(mSystemProfileOutputPath);
-		std::ofstream outFile(outPath);
-		printSystemFrameRecords(outFile);
-	}
-#endif // PROFILE_SYSTEMS
-}
-
-#ifdef PROFILE_SYSTEMS
-void BaseTestCase::printSystemFrameRecords(std::ostream& outStream)
-{
-	// printing in CSV format
-	outStream << "\"Total\"";
-	for (const auto& systemName : mSystemsManager.getSystemNames())
-	{
-		outStream << ",\"" << systemName << "\"";
-	}
-	outStream << "\n";
-
-	for (const auto& frameRecord : mSystemFrameRecords)
-	{
-		outStream << frameRecord.frameTime.count();
-		for (const auto& systemTime : frameRecord.systemTime)
-		{
-			outStream << "," << systemTime.count();
-		}
-		outStream << "\n";
+		mSystemFrameRecords.printToFile(mSystemsManager.getSystemNames(), mSystemProfileOutputPath);
 	}
 }
-#endif // PROFILE_SYSTEMS

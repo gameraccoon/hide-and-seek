@@ -7,6 +7,7 @@
 #include "GameData/GameData.h"
 
 #include "Utils/Application/ArgumentsParser.h"
+#include "Utils/Profiling/SystemFrameRecords.h"
 
 #include "HAL/GameBase.h"
 #include "HAL/KeyStatesMap.h"
@@ -27,6 +28,7 @@ public:
 private:
 	void initSystems();
 	void initResources() override;
+	void onGameShutdown();
 
 private:
 	WorldHolder mWorldHolder;
@@ -37,4 +39,8 @@ private:
 	SystemsManager mSystemsManager;
 	ComponentFactory mComponentFactory;
 	TimeData mTime;
+
+	bool mProfileSystems = false;
+	SystemFrameRecords mSystemFrameRecords;
+	std::string mSystemProfileOutputPath = "systemProfile.csv";
 };
