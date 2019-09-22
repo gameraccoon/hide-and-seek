@@ -156,7 +156,27 @@ void DebugDrawSystem::update()
 	{
 		const Graphics::Font& font = mResourceManager->getResource<Graphics::Font>(mFontHandle);
 		float dt = mTime.dt;
-		renderer->renderText(font, Vector2D(20.0f, 20.0f), {255, 255, 255, 255}, std::string("FPS: ").append(std::to_string(static_cast<int>(1/dt))).c_str());
+		static Graphics::Color normalColor{255, 255, 255, 255};
+		static Graphics::Color badColor{255, 145, 0, 255};
+		static Graphics::Color veryBadColor{255, 0, 0, 255};
+
+		int fps = static_cast<int>(1/dt);
+
+		Graphics::Color fpsColor;
+		if (fps >= 30)
+		{
+			fpsColor = normalColor;
+		}
+		else if (fps > 20)
+		{
+			fpsColor = badColor;
+		}
+		else
+		{
+			fpsColor = veryBadColor;
+		}
+
+		renderer->renderText(font, Vector2D(20.0f, 20.0f), fpsColor, std::string("FPS: ").append(std::to_string(fps)).c_str());
 		renderer->renderText(font, Vector2D(20.0f, 40.0f), {255, 255, 255, 255}, std::string("ms: ").append(std::to_string(static_cast<int>(dt*1000))).c_str());
 	}
 }
