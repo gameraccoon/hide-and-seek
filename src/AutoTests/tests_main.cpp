@@ -46,7 +46,7 @@ int main(int argc, char** argv)
 
 	if (!arguments.hasArgument("case"))
 	{
-		Log::Instance().writeError("Test case name not provided");
+		LogError("Test case name not provided");
 		return 1;
 	}
 
@@ -57,7 +57,7 @@ int main(int argc, char** argv)
 	}
 	else
 	{
-		Log::Instance().writeError("Unknown test " + arguments.getArgumentValue("case"));
+		LogError("Unknown test " + arguments.getArgumentValue("case"));
 		return 1;
 	}
 

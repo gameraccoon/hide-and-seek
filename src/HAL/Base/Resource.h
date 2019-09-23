@@ -8,6 +8,10 @@ namespace HAL
 	class Resource
 	{
 	public:
+		Resource() = default;
+		Resource(const Resource&) = delete;
+		Resource& operator=(Resource&) = delete;
+
 		virtual ~Resource() = default;
 		virtual bool isValid() const = 0;
 	};

@@ -7,6 +7,7 @@
 #include "GameData/Components/NavMeshComponent.generated.h"
 #include "GameData/Components/RenderModeComponent.generated.h"
 #include "GameData/Components/AiControllerComponent.generated.h"
+#include "GameData/Components/CharacterStateComponent.generated.h"
 #include "GameData/World.h"
 #include "GameData/GameData.h"
 
@@ -178,6 +179,15 @@ void DebugDrawSystem::update()
 
 		renderer->renderText(font, Vector2D(20.0f, 20.0f), fpsColor, std::string("FPS: ").append(std::to_string(fps)).c_str());
 		renderer->renderText(font, Vector2D(20.0f, 40.0f), {255, 255, 255, 255}, std::string("ms: ").append(std::to_string(static_cast<int>(dt*1000))).c_str());
+	}
+
+	if (renderMode && renderMode->getIsDrawDebugCharacterInfoEnabled())
+	{
+		const Graphics::Font& font = mResourceManager->getResource<Graphics::Font>(mFontHandle);
+		world->getEntityManager().forEachComponentSet<CharacterStateComponent, TransformComponent>([renderer, &font, drawShift](CharacterStateComponent* characterState, TransformComponent* transform)
+		{
+			renderer->renderText(font, transform->getLocation() + drawShift, {255, 255, 255, 255}, enum_to_string(characterState->getState()).c_str());
+		});
 	}
 }
 
