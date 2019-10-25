@@ -4,5 +4,5 @@
 
 namespace ComponentsRegistration
 {
-	void RegisterComponents(ComponentFactory &componentFactory);
+	void RegisterComponents(ComponentFactory& componentFactory);
 }

@@ -1,15 +1,17 @@
 #pragma once
 
+#include <vector>
 #include <string>
 
 #include "GameData/Core/ResourceHandle.h"
+#include "GameData/FSM/Blackboard.h"
 
 template <typename StateIDType>
 class AnimationState
 {
 public:
 	StateIDType currentState;
-	float progress = 0.0f; // [0;1]
-	ResourceHandle animHandle;
-	std::string animStateId;
+	std::vector<std::pair<StateIDType, ResourceHandle>> animations;
+	std::string stateMachineId;
+	int animationIdx;
 };

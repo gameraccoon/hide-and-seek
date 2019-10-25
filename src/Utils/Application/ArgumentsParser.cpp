@@ -11,7 +11,7 @@ ArgumentsParser::ArgumentsParser(int argc, char** argv, const std::string& argum
 	}
 }
 
-std::string ArgumentsParser::getArgumentValue(const std::string &argument, const std::string &defaultValue) const
+std::string ArgumentsParser::getArgumentValue(const std::string& argument, const std::string& defaultValue) const
 {
 	std::vector<std::string>::const_iterator itr = std::find(this->mTokens.begin(), this->mTokens.end(), mArgumentSwitch + argument);
 

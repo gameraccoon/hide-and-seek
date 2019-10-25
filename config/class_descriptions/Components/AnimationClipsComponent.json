@@ -1,0 +1,15 @@
+{
+	"component": "animationClips",
+	"description": "Component that stores data for currently playing animation clips",
+	"attributes": [
+		{
+			"name": "datas",
+			"type": "std::vector<AnimationClip>",
+			"includes": [
+				"<vector>",
+				"\"GameData/Resources/AnimationClip.h\""
+			],
+			"flags": ["transient", "get_by_ref"]
+		}
+	]
+}

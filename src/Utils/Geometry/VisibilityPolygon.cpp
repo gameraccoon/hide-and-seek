@@ -9,7 +9,7 @@
 #include "Utils/Geometry/RayTrace.h"
 #include "Utils/Geometry/Collide.h"
 
-static float CalcClockwiseDirection(const Vector2D &a, const Vector2D &b)
+static float CalcClockwiseDirection(const Vector2D& a, const Vector2D& b)
 {
 	return a.x * (b.y - a.y) - a.y * (b.x - a.x);
 }

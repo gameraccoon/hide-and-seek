@@ -121,7 +121,7 @@ void WorldPropertiesToolbox::updateContent()
 	delete oldContent;
 }
 
-void WorldPropertiesToolbox::onControledEntityChanged(const QString &arg1)
+void WorldPropertiesToolbox::onControledEntityChanged(const QString& arg1)
 {
 	World* currentWorld = mMainWindow->getCurrentWorld();
 	if (currentWorld == nullptr)
@@ -144,7 +144,7 @@ void WorldPropertiesToolbox::onControledEntityChanged(const QString &arg1)
 		controlledEntityCombobox);
 }
 
-void WorldPropertiesToolbox::onCameraEntityChanged(const QString &arg1)
+void WorldPropertiesToolbox::onCameraEntityChanged(const QString& arg1)
 {
 	World* currentWorld = mMainWindow->getCurrentWorld();
 	if (currentWorld == nullptr)

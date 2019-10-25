@@ -1,0 +1,23 @@
+{
+	"component": "animationGroups",
+	"description": "Component that stores animation groups data",
+	"attributes": [
+		{
+			"name": "data",
+			"type": "std::vector<AnimationGroup<std::string>>",
+			"includes": [
+				"<vector>",
+				"\"GameData/Resources/AnimationGroup.h\""
+			],
+			"flags": ["transient", "get_by_ref"]
+		},
+		{
+			"name": "blackboard",
+			"type": "FSM::Blackboard<std::string>",
+			"includes": [
+				"\"GameData/FSM/Blackboard.h\""
+			],
+			"flags": ["transient", "get_by_ref"]
+		}
+	]
+}

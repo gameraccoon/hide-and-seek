@@ -23,7 +23,7 @@ namespace RayTrace
 		//
 		const float EPS = 1E-4f;
 	}
-	static inline int getDotCode(const BoundingBox &box, const Vector2D &dot)
+	static inline int getDotCode(const BoundingBox& box, const Vector2D& dot)
 	{
 		return (((dot.x < box.minX) ? LEFT_BIT : 0)
 				| ((dot.x > box.maxX) ? RIGHT_BIT : 0)
@@ -31,7 +31,7 @@ namespace RayTrace
 				| ((dot.y > box.maxY) ? TOP_BIT : 0));
 	}
 
-	inline void Swap(float &a, float &b)
+	inline void Swap(float& a, float& b)
 	{
 		float temp;
 		temp = a;
@@ -64,7 +64,7 @@ namespace RayTrace
 		return std::max(a1, c1) <= std::min(b1, d1);
 	}
 
-	bool AreLinesIntersect(const Vector2D &A1, const Vector2D &A2, const Vector2D &B1, const Vector2D &B2)
+	bool AreLinesIntersect(const Vector2D& A1, const Vector2D& A2, const Vector2D& B1, const Vector2D& B2)
 	{
 		if (IsAAIntersect(A1.x, A2.x, B1.x, B2.x)
 			&& IsAAIntersect(A1.y, A2.y, B1.y, B2.y)
@@ -76,7 +76,7 @@ namespace RayTrace
 		return false;
 	}
 
-	bool IsLineIntersectAABB(const BoundingBox &box, const Vector2D &first, const Vector2D &last)
+	bool IsLineIntersectAABB(const BoundingBox& box, const Vector2D& first, const Vector2D& last)
 	{
 		float l = box.minX;
 		float t = box.minY;
@@ -152,7 +152,7 @@ namespace RayTrace
 //				const Hull *hull = actorCollisionComponent->getGeometry();
 
 //				// for each border
-//				for (auto &border : hull->borders)
+//				for (auto& border : hull->borders)
 //				{
 //					Vector2D actorsLocation(actorTransformComponent->getLocation());
 //					// if ray have different direction with normal
@@ -171,7 +171,7 @@ namespace RayTrace
 		return false;
 	}
 
-//	IActor* trace(World * world, const Vector2D &startPoint, const Vector2D &endPoint,
+//	IActor* trace(World * world, const Vector2D& startPoint, const Vector2D& endPoint,
 //		Vector2D *outPoint, Vector2D *outNormal)
 //	{
 //		// nearest actor that intersects ray
@@ -227,7 +227,7 @@ namespace RayTrace
 //				const Hull *hull = actorCollisionComponent->getGeometry();
 
 //				// for each border
-//				for (auto &border : hull->borders)
+//				for (auto& border : hull->borders)
 //				{
 //					Vector2D actorsLocation(actorTransformComponent->getLocation());
 
@@ -270,7 +270,7 @@ namespace RayTrace
 //		return nearestActor;
 //	}
 
-	Vector2D GetPointIntersect2Lines(const Vector2D &A1, const Vector2D &A2, const Vector2D &B1, const Vector2D &B2)
+	Vector2D GetPointIntersect2Lines(const Vector2D& A1, const Vector2D& A2, const Vector2D& B1, const Vector2D& B2)
 	{
 		float DA1 = A1.y - A2.y;
 		float DB1 = A2.x - A1.x;

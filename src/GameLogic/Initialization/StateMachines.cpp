@@ -41,87 +41,81 @@ namespace StateMachines
 		}
 	}
 
-	static void RegisterCharacterAnimationSM(FSM::StateMachine<CharacterAnimationState, CharacterStateBlackboardKeys>& sm)
+	static void RegisterCharacterAnimationSM(FSM::StateMachine<std::string, std::string>& sm)
 	{
-		using FSMType = FSM::StateMachine<CharacterAnimationState, CharacterStateBlackboardKeys>;
+		using FSMType = FSM::StateMachine<std::string, std::string>;
 
 		{
 			FSMType::StateLinkRules rules;
-			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(CharacterAnimationState::Move, CharacterStateBlackboardKeys::TryingToMove, true);
-			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(CharacterAnimationState::Shoot, CharacterStateBlackboardKeys::TryingToShoot, true);
-			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(CharacterAnimationState::Reload, CharacterStateBlackboardKeys::Reloading, true);
-			sm.addState(CharacterAnimationState::Idle, std::move(rules));
+			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, std::string>("move", "charState", enum_to_string(CharacterState::Walk));
+			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, std::string>("move", "charState", enum_to_string(CharacterState::Run));
+			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, std::string>("shoot", "charState", enum_to_string(CharacterState::Shoot));
+			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, std::string>("shoot", "charState", enum_to_string(CharacterState::WalkAndShoot));
+			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, std::string>("reload", "charState", enum_to_string(CharacterState::Reload));
+			sm.addState("idle", std::move(rules));
 		}
-
 		{
 			FSMType::StateLinkRules rules;
-			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(CharacterAnimationState::Idle, CharacterStateBlackboardKeys::TryingToMove, false);
-			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(CharacterAnimationState::Reload, CharacterStateBlackboardKeys::Reloading, true);
-			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(CharacterAnimationState::Shoot, CharacterStateBlackboardKeys::TryingToShoot, true);
-			sm.addState(CharacterAnimationState::Move, std::move(rules));
+			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, std::string>("idle", "charState", enum_to_string(CharacterState::Idle));
+			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, std::string>("reload", "charState", enum_to_string(CharacterState::Reload));
+			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, std::string>("shoot", "charState", enum_to_string(CharacterState::Shoot));
+			sm.addState("move", std::move(rules));
 		}
-
 		{
 			FSMType::StateLinkRules rules;
-			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(CharacterAnimationState::Idle, CharacterStateBlackboardKeys::Reloading, false);
-			sm.addState(CharacterAnimationState::Reload, std::move(rules));
+			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>("idle", enum_to_string(CharacterStateBlackboardKeys::Reloading), false);
+			sm.addState("reload", std::move(rules));
 		}
-
 		{
 			FSMType::StateLinkRules rules;
-			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(CharacterAnimationState::Idle, CharacterStateBlackboardKeys::TryingToShoot, false);
-			sm.addState(CharacterAnimationState::Shoot, std::move(rules));
+			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>("idle", enum_to_string(CharacterStateBlackboardKeys::TryingToShoot), false);
+			sm.addState("shoot", std::move(rules));
 		}
 	}
 
-	static void RegisterCharacterLegsAnimationSM(FSM::StateMachine<CharacterLegsAnimationState, CharacterStateBlackboardKeys>& sm)
+	static void RegisterCharacterLegsAnimationSM(FSM::StateMachine<std::string, std::string>& sm)
 	{
-		using FSMType = FSM::StateMachine<CharacterLegsAnimationState, CharacterStateBlackboardKeys>;
+		using FSMType = FSM::StateMachine<std::string, std::string>;
 
 		// Top level states
 		{
 			FSMType::StateLinkRules rules;
-			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(CharacterLegsAnimationState::Idle, CharacterStateBlackboardKeys::TryingToMove, false);
-			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(CharacterLegsAnimationState::Run, CharacterStateBlackboardKeys::ReadyToRun, true);
-			sm.addState(CharacterLegsAnimationState::MetaWalk, std::move(rules));
+			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>("idle", enum_to_string(CharacterStateBlackboardKeys::TryingToMove), false);
+			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>("run", enum_to_string(CharacterStateBlackboardKeys::ReadyToRun), true);
+			sm.addState("metawalk", std::move(rules));
 		}
-
 		{
 			FSMType::StateLinkRules rules;
-			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(CharacterLegsAnimationState::MetaWalk, CharacterStateBlackboardKeys::TryingToMove, true);
-			sm.addState(CharacterLegsAnimationState::Idle, std::move(rules));
+			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>("metawalk", enum_to_string(CharacterStateBlackboardKeys::TryingToMove), true);
+			sm.addState("idle", std::move(rules));
 		}
-
 		{
 			FSMType::StateLinkRules rules;
-			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(CharacterLegsAnimationState::MetaWalk, CharacterStateBlackboardKeys::ReadyToRun, false);
-			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(CharacterLegsAnimationState::Idle, CharacterStateBlackboardKeys::TryingToMove, false);
-			sm.addState(CharacterLegsAnimationState::Run, std::move(rules));
+			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>("metawalk", enum_to_string(CharacterStateBlackboardKeys::ReadyToRun), false);
+			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>("idle", enum_to_string(CharacterStateBlackboardKeys::TryingToMove), false);
+			sm.addState("run", std::move(rules));
 		}
-
 		// Substates of MetaWalk
 		{
 			FSMType::StateLinkRules rules;
-			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, MoveDirection4>(CharacterLegsAnimationState::StrafeLeft, CharacterStateBlackboardKeys::TryingToMove, MoveDirection4::Left);
-			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, MoveDirection4>(CharacterLegsAnimationState::StrafeRight, CharacterStateBlackboardKeys::TryingToMove, MoveDirection4::Right);
-			sm.addState(CharacterLegsAnimationState::Walk, std::move(rules));
-			sm.linkStates(CharacterLegsAnimationState::Walk, CharacterLegsAnimationState::MetaWalk, true);
+			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, MoveDirection4>("strafeleft", enum_to_string(CharacterStateBlackboardKeys::TryingToMove), MoveDirection4::Left);
+			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, MoveDirection4>("straferight", enum_to_string(CharacterStateBlackboardKeys::TryingToMove), MoveDirection4::Right);
+			sm.addState("walk", std::move(rules));
+			sm.linkStates("walk", "metawalk", true);
 		}
-
 		{
 			FSMType::StateLinkRules rules;
-			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, MoveDirection4>(CharacterLegsAnimationState::Walk, CharacterStateBlackboardKeys::TryingToMove, MoveDirection4::Front);
-			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, MoveDirection4>(CharacterLegsAnimationState::Walk, CharacterStateBlackboardKeys::TryingToMove, MoveDirection4::Back);
-			sm.addState(CharacterLegsAnimationState::StrafeLeft, std::move(rules));
-			sm.linkStates(CharacterLegsAnimationState::StrafeLeft, CharacterLegsAnimationState::MetaWalk, false);
+			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, MoveDirection4>("walk", enum_to_string(CharacterStateBlackboardKeys::TryingToMove), MoveDirection4::Front);
+			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, MoveDirection4>("walk", enum_to_string(CharacterStateBlackboardKeys::TryingToMove), MoveDirection4::Back);
+			sm.addState("strafeleft", std::move(rules));
+			sm.linkStates("strafeleft", "metawalk", false);
 		}
-
 		{
 			FSMType::StateLinkRules rules;
-			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, MoveDirection4>(CharacterLegsAnimationState::Walk, CharacterStateBlackboardKeys::TryingToMove, MoveDirection4::Front);
-			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, MoveDirection4>(CharacterLegsAnimationState::Walk, CharacterStateBlackboardKeys::TryingToMove, MoveDirection4::Back);
-			sm.addState(CharacterLegsAnimationState::StrafeRight, std::move(rules));
-			sm.linkStates(CharacterLegsAnimationState::StrafeRight, CharacterLegsAnimationState::MetaWalk, false);
+			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, MoveDirection4>("walk", enum_to_string(CharacterStateBlackboardKeys::TryingToMove), MoveDirection4::Front);
+			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, MoveDirection4>("walk", enum_to_string(CharacterStateBlackboardKeys::TryingToMove), MoveDirection4::Back);
+			sm.addState("straferight", std::move(rules));
+			sm.linkStates("straferight", "metawalk", false);
 		}
 	}
 
@@ -133,7 +127,7 @@ namespace StateMachines
 		}
 
 		RegisterCharacterSM(stateMachine->getCharacterSMRef());
-		RegisterCharacterAnimationSM(stateMachine->getCharacterAnimationSMRef());
-		RegisterCharacterLegsAnimationSM(stateMachine->getCharacterLegsAnimationSMRef());
+		RegisterCharacterAnimationSM(stateMachine->getAnimationSMsRef()["pistol"]);
+		RegisterCharacterLegsAnimationSM(stateMachine->getAnimationSMsRef()["feet"]);
 	}
 }

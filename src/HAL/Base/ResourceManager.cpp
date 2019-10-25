@@ -70,7 +70,7 @@ namespace HAL
 		return mHandleIdx++;
 	}
 
-	void ResourceManager::loadOneAtlasData(const std::string &path)
+	void ResourceManager::loadOneAtlasData(const std::string& path)
 	{
 		namespace fs = std::experimental::filesystem;
 		fs::path atlasDescPath(path);

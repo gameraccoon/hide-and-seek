@@ -343,7 +343,7 @@ static void RecalcNavmesh(dtNavMesh* m_navMesh, dtNavMeshQuery* m_navQuery, floa
 }
 
 
-AiSystem::AiSystem(WorldHolder &worldHolder)
+AiSystem::AiSystem(WorldHolder& worldHolder)
 	: mWorldHolder(worldHolder)
 {
 }
@@ -360,7 +360,7 @@ void AiSystem::update()
 	}
 
 	// ToDo: we recalculate navmesh every frame to be able to work with worst-case scenario as long as possible
-	// optimizations such as dirty flag and spatial hash are on the way to be impelemnted
+	// optimizations such as dirty flag and spatial hash are on the way to be impelemented
 	NavMeshGenerator generator;
 	std::vector<std::tuple<CollisionComponent*, TransformComponent*>> collisions = world->getEntityManager().getComponents<CollisionComponent, TransformComponent>();
 	generator.generateNavMesh(navMeshComponent->getNavMeshRef(), collisions);

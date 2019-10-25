@@ -120,7 +120,7 @@ void TransformEditorToolbox::onEntitySelected(OptionalEntity entity)
 	mContent->repaint();
 }
 
-void TransformEditorToolbox::onEntitiesMoved(std::vector<Entity> entities, const Vector2D &shift)
+void TransformEditorToolbox::onEntitiesMoved(std::vector<Entity> entities, const Vector2D& shift)
 {
 	World* world = mMainWindow->getCurrentWorld();
 	if (world == nullptr)
@@ -139,7 +139,7 @@ void TransformEditorToolbox::onFreeMoveChanged(int newValue)
 	}
 }
 
-void TransformEditorToolbox::showContextMenu(const QPoint &pos)
+void TransformEditorToolbox::showContextMenu(const QPoint& pos)
 {
 	QMenu contextMenu(tr("Context menu"), this);
 
@@ -463,7 +463,7 @@ OptionalEntity TransformEditorWidget::getEntityUnderPoint(const QPoint& pos)
 	return findResult;
 }
 
-void TransformEditorWidget::addEntitiesInRectToSelection(const Vector2D &start, const Vector2D &end)
+void TransformEditorWidget::addEntitiesInRectToSelection(const Vector2D& start, const Vector2D& end)
 {
 	Vector2D lt;
 	Vector2D rd;

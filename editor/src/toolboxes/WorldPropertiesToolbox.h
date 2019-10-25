@@ -26,8 +26,8 @@ public:
 
 private:
 	void updateContent();
-	void onControledEntityChanged(const QString &arg1);
-	void onCameraEntityChanged(const QString &arg1);
+	void onControledEntityChanged(const QString& arg1);
+	void onCameraEntityChanged(const QString& arg1);
 
 private:
 	MainWindow* mMainWindow;

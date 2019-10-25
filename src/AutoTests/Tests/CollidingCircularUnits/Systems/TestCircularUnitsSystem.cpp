@@ -9,7 +9,7 @@
 #include "GameData/Components/MovementComponent.generated.h"
 
 
-TestCircularUnitsSystem::TestCircularUnitsSystem(WorldHolder &worldHolder)
+TestCircularUnitsSystem::TestCircularUnitsSystem(WorldHolder& worldHolder)
 	: mWorldHolder(worldHolder)
 {
 }

@@ -123,7 +123,7 @@ void PrefabListToolbox::saveToFile(QString filePath)
 	}
 }
 
-void PrefabListToolbox::createPrefabFromEntity(const QString &prefabName, Entity entity)
+void PrefabListToolbox::createPrefabFromEntity(const QString& prefabName, Entity entity)
 {
 	auto it = std::find_if(mPrefabs.begin(), mPrefabs.end(), [prefabName](const PrefabData& prefabData)
 	{

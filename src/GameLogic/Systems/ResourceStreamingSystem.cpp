@@ -2,8 +2,9 @@
 
 #include "GameData/Components/SpriteCreatorComponent.generated.h"
 #include "GameData/Components/RenderComponent.generated.h"
-#include "GameData/Components/AnimationDataComponent.generated.h"
-#include "GameData/Components/AnimationCreatorComponent.generated.h"
+#include "GameData/Components/AnimationClipsComponent.generated.h"
+#include "GameData/Components/AnimationClipCreatorComponent.generated.h"
+#include "GameData/Components/AnimationGroupsComponent.generated.h"
 
 #include "GameData/World.h"
 #include "GameData/GameData.h"
@@ -20,6 +21,7 @@ void ResourceStreamingSystem::update()
 	World* world = mWorldHolder.world;
 //	GameData* gameData = mWorldHolder.gameData;
 
+	// load sprites
 	world->getEntityManager().forEachComponentSetWithEntity<SpriteCreatorComponent>([&resourceManager = mResourceManager, &entityManager = world->getEntityManager()](Entity entity, SpriteCreatorComponent* spriteCreator)
 	{
 		const auto& descriptions = spriteCreator->getDescriptions();
@@ -41,14 +43,15 @@ void ResourceStreamingSystem::update()
 	});
 	world->getEntityManager().executeScheduledActions();
 
-	world->getEntityManager().forEachComponentSetWithEntity<AnimationCreatorComponent>([&resourceManager = mResourceManager, &entityManager = world->getEntityManager()](Entity entity, AnimationCreatorComponent* animationCreator)
+	// load single animations clips
+	world->getEntityManager().forEachComponentSetWithEntity<AnimationClipCreatorComponent>([&resourceManager = mResourceManager, &entityManager = world->getEntityManager()](Entity entity, AnimationClipCreatorComponent* animationClipCreator)
 	{
-		const auto& descriptions = animationCreator->getDescriptionsRef();
+		const auto& descriptions = animationClipCreator->getDescriptionsRef();
 		Assert(!descriptions.empty(), "Animation descriptions should not be empty");
 
-		AnimationDataComponent* animationData = entityManager.scheduleAddComponent<AnimationDataComponent>(entity);
+		AnimationClipsComponent* animationClips = entityManager.scheduleAddComponent<AnimationClipsComponent>(entity);
 		size_t animationCount = descriptions.size();
-		auto& animations = animationData->getDatasRef();
+		auto& animations = animationClips->getDatasRef();
 		animations.resize(animationCount);
 
 		auto [render] = entityManager.getEntityComponents<RenderComponent>(entity);
@@ -74,7 +77,9 @@ void ResourceStreamingSystem::update()
 			Assert(render->getSpriteIds().size() == spriteDatas.size(), "Sprites and SpriteIds have diverged");
 		}
 
-		entityManager.scheduleRemoveComponent<AnimationCreatorComponent>(entity);
+		entityManager.scheduleAddComponent<AnimationGroupsComponent>(entity);
+
+		entityManager.scheduleRemoveComponent<AnimationClipCreatorComponent>(entity);
 	});
 	world->getEntityManager().executeScheduledActions();
 }

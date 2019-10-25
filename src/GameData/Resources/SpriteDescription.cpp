@@ -2,7 +2,7 @@
 
 #include <nlohmann/json.hpp>
 
-void to_json(nlohmann::json &outJson, const SpriteDescription &spriteDescription)
+void to_json(nlohmann::json& outJson, const SpriteDescription& spriteDescription)
 {
 	outJson = nlohmann::json::object({
 		{"params", spriteDescription.params},
@@ -10,7 +10,7 @@ void to_json(nlohmann::json &outJson, const SpriteDescription &spriteDescription
 	});
 }
 
-void from_json(const nlohmann::json &json, SpriteDescription &outSpriteDescription)
+void from_json(const nlohmann::json& json, SpriteDescription& outSpriteDescription)
 {
 	json.at("params").get_to(outSpriteDescription.params);
 	json.at("path").get_to(outSpriteDescription.path);

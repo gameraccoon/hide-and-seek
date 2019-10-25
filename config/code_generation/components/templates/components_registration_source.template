@@ -4,7 +4,7 @@
 
 namespace ComponentsRegistration
 {{
-	void RegisterComponents(ComponentFactory &componentFactory)
+	void RegisterComponents(ComponentFactory& componentFactory)
 	{{
 		{component_factory_register}
 	}}

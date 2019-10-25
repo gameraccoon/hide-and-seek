@@ -3,7 +3,7 @@
 #include <fstream>
 #include <experimental/filesystem>
 
-void SystemFrameRecords::printToFile(const std::vector<std::string>& systemNames, const std::string &fileName)
+void SystemFrameRecords::printToFile(const std::vector<std::string>& systemNames, const std::string& fileName)
 {
 	namespace fs = std::experimental::filesystem;
 	fs::path outPath(fileName);

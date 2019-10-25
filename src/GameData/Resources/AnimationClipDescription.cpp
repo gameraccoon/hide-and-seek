@@ -1,8 +1,8 @@
-#include "GameData/Resources/AnimationDescription.h"
+#include "GameData/Resources/AnimationClipDescription.h"
 
 #include <nlohmann/json.hpp>
 
-void to_json(nlohmann::json &outJson, const AnimationDescription &animationDescription)
+void to_json(nlohmann::json& outJson, const AnimationClipDescription& animationDescription)
 {
 	outJson = nlohmann::json::object({
 		{"params", animationDescription.params},
@@ -11,7 +11,7 @@ void to_json(nlohmann::json &outJson, const AnimationDescription &animationDescr
 	});
 }
 
-void from_json(const nlohmann::json &json, AnimationDescription &outAnimationDescription)
+void from_json(const nlohmann::json& json, AnimationClipDescription& outAnimationDescription)
 {
 	json.at("params").get_to(outAnimationDescription.params);
 	json.at("spriteParams").get_to(outAnimationDescription.spriteParams);

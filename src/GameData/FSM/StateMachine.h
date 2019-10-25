@@ -58,7 +58,7 @@ namespace FSM
 		{
 			// less verbose emplace function
 			template <template<typename...> typename LinkRuleType, typename... Types, typename... Args>
-			void emplaceLink(StateIDType state, Args... args)
+			void emplaceLink(StateIDType state, Args&&... args)
 			{
 				links.emplace_back(std::forward<StateIDType>(state), std::make_unique<LinkRuleType<BlackboardKeyType, Types...>>(std::forward<Args>(args)...));
 			}
@@ -67,7 +67,7 @@ namespace FSM
 		};
 
 	public:
-		void addState(StateIDType stateID, StateLinkRules stateLinkRules)
+		void addState(StateIDType stateID, StateLinkRules&& stateLinkRules)
 		{
 			bool isEmplaced;
 			std::tie(std::ignore, isEmplaced) = mStates.emplace(std::forward<StateIDType>(stateID), std::forward<StateLinkRules>(stateLinkRules));

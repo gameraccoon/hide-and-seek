@@ -7,7 +7,6 @@
 #include "GameData/Components/CollisionComponent.generated.h"
 #include "GameData/Components/LightComponent.generated.h"
 #include "GameData/Components/RenderModeComponent.generated.h"
-#include "GameData/Components/AnimationComponent.generated.h"
 #include "GameData/World.h"
 
 #include "Utils/Geometry/VisibilityPolygon.h"
@@ -132,7 +131,7 @@ void RenderSystem::drawLights(World* world, const Vector2D& drawShift, const Vec
 
 	// ToDo: we calculate visibility polygon for every light source in the each frame to
 	// be able to work with worst-case scenario as long as possible
-	// optimizations such as dirty flag and spatial hash are on the way to be impelemnted
+	// optimizations such as dirty flag and spatial hash are on the way to be impelemented
 	// draw light
 	world->getEntityManager().forEachComponentSet<LightComponent, TransformComponent>([&collidableComponents, &visibilityPolygonCalculator, maxFov, &drawShift, &lightSprite, &polygon, this](LightComponent* /*light*/, TransformComponent* transform)
 	{

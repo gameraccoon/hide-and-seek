@@ -2,11 +2,15 @@
 
 #include <algorithm>
 
+#include "Debug/Assert.h"
+
 #include "GameData/Components/RenderComponent.generated.h"
-#include "GameData/Components/AnimationDataComponent.generated.h"
+#include "GameData/Components/AnimationClipsComponent.generated.h"
+#include "GameData/Components/AnimationGroupsComponent.generated.h"
+#include "GameData/Components/StateMachineComponent.generated.h"
 #include "GameData/World.h"
 
-AnimationSystem::AnimationSystem(WorldHolder &worldHolder, const TimeData& time)
+AnimationSystem::AnimationSystem(WorldHolder& worldHolder, const TimeData& time)
 	: mWorldHolder(worldHolder)
 	, mTime(time)
 {
@@ -17,9 +21,28 @@ void AnimationSystem::update()
 	World* world = mWorldHolder.world;
 	float dt = mTime.dt;
 
-	world->getEntityManager().forEachComponentSet<AnimationDataComponent, RenderComponent>([dt](AnimationDataComponent* animationData, RenderComponent* render)
+	auto [stateMachines] = world->getWorldComponents().getComponents<StateMachineComponent>();
+
+	// update animation clip from FSM
+	world->getEntityManager().forEachComponentSet<AnimationGroupsComponent, AnimationClipsComponent>([dt, stateMachines](AnimationGroupsComponent* animationGroups, AnimationClipsComponent* animationClips)
 	{
-		std::vector<AnimationData>& animationDatas = animationData->getDatasRef();
+		for (auto data : animationGroups->getDataRef())
+		{
+			auto smIt = stateMachines->getAnimationSMs().find(data.stateMachineId);
+			Assert(smIt != stateMachines->getAnimationSMs().end(), "State machine not found %s", data.stateMachineId.c_str());
+			auto newState = smIt->second.getNextState(animationGroups->getBlackboard(), data.currentState);
+			if (newState != data.currentState)
+			{
+				data.currentState = newState;
+				animationClips->getDatasRef()[data.animationIdx].animation = data.animations[data.currentState];
+			}
+		}
+	});
+
+	// update animation frame
+	world->getEntityManager().forEachComponentSet<AnimationClipsComponent, RenderComponent>([dt](AnimationClipsComponent* animationClips, RenderComponent* render)
+	{
+		std::vector<AnimationClip>& animationDatas = animationClips->getDatasRef();
 		for (auto& data : animationDatas)
 		{
 			data.progress += data.params.speed * dt;

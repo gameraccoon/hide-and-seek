@@ -1,0 +1,15 @@
+{
+	"component": "animationGroupCreator",
+	"description": "Component that creates groups of animation clips",
+	"attributes": [
+		{
+			"name": "deprecated",
+			"type": "std::vector<AnimationClipDescription>",
+			"includes": [
+				"<vector>",
+				"\"GameData/Resources/AnimationClipDescription.h\""
+			],
+			"flags": ["get_by_ref"]
+		}
+	]
+}

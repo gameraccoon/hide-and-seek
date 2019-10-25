@@ -3,13 +3,13 @@
 #include <vector>
 
 #include "GameData/Core/ResourceHandle.h"
-#include "GameData/Resources/AnimationParams.h"
+#include "GameData/Resources/AnimationClipParams.h"
 
-struct AnimationData
+struct AnimationClip
 {
 	std::vector<ResourceHandle> sprites;
-	AnimationParams params;
-	float progress = 0;
+	AnimationClipParams params;
+	float progress = 0.0f;
 	int spriteId;
 	ResourceHandle animation;
 };
