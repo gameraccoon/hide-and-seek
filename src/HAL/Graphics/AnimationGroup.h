@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <vector>
+#include <string>
 #include <map>
 
 #include "HAL/EngineFwd.h"
