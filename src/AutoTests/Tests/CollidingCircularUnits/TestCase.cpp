@@ -20,7 +20,7 @@
 
 void CollidingCircularUnitsTestCase::initTestCase(const ArgumentsParser& /*arguments*/)
 {
-	getResourceManager()->loadAtlasesData("resources/atlas/atlas-list.json");
+	getResourceManager().loadAtlasesData("resources/atlas/atlas-list.json");
 
 	mSystemsManager.registerSystem<TestUnitsCountControlSystem>(mWorldHolder);
 	mSystemsManager.registerSystem<TestCircularUnitsSystem>(mWorldHolder);

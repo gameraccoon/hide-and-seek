@@ -19,38 +19,38 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 
-RenderSystem::RenderSystem(WorldHolder& worldHolder, HAL::Engine* engine, HAL::ResourceManager* resourceManager)
+RenderSystem::RenderSystem(WorldHolder& worldHolder, HAL::Engine& engine, HAL::ResourceManager& resourceManager)
 	: mWorldHolder(worldHolder)
 	, mEngine(engine)
 	, mResourceManager(resourceManager)
 {
-	mLightSpriteHandle = resourceManager->lockSprite("resources/textures/light.png");
+	mLightSpriteHandle = resourceManager.lockSprite("resources/textures/light.png");
 }
 
 void RenderSystem::update()
 {
-	World* world = mWorldHolder.world;
-	Graphics::Renderer* renderer = mEngine->getRenderer();
+	World& world = mWorldHolder.getWorld();
+	Graphics::Renderer& renderer = mEngine.getRenderer();
 
 	static const Vector2D maxFov(500.0f, 500.0f);
 
-	OptionalEntity mainCamera = world->getMainCamera();
+	OptionalEntity mainCamera = world.getMainCamera();
 	if (!mainCamera.isValid())
 	{
 		return;
 	}
 
-	auto [cameraTransformComponent] = world->getEntityManager().getEntityComponents<TransformComponent>(mainCamera.getEntity());
+	auto [cameraTransformComponent] = world.getEntityManager().getEntityComponents<TransformComponent>(mainCamera.getEntity());
 	if (cameraTransformComponent == nullptr)
 	{
 		return;
 	}
 
-	auto [renderMode] = world->getWorldComponents().getComponents<RenderModeComponent>();
+	auto [renderMode] = world.getWorldComponents().getComponents<RenderModeComponent>();
 
 	Vector2D cameraLocation = cameraTransformComponent->getLocation();
-	Vector2D mouseScreenPos(mEngine->getMouseX(), mEngine->getMouseY());
-	Vector2D screenHalfSize = Vector2D(static_cast<float>(mEngine->getWidth()), static_cast<float>(mEngine->getHeight())) * 0.5f;
+	Vector2D mouseScreenPos(mEngine.getMouseX(), mEngine.getMouseY());
+	Vector2D screenHalfSize = Vector2D(static_cast<float>(mEngine.getWidth()), static_cast<float>(mEngine.getHeight())) * 0.5f;
 
 	Vector2D drawShift = screenHalfSize - cameraLocation + (screenHalfSize - mouseScreenPos) * 0.5;
 
@@ -61,14 +61,14 @@ void RenderSystem::update()
 
 	if (!renderMode || renderMode->getIsDrawVisibleEntitiesEnabled())
 	{
-		world->getEntityManager().forEachComponentSet<RenderComponent, TransformComponent>([&drawShift, &resourceManager = mResourceManager, renderer](RenderComponent* render, TransformComponent* transform)
+		world.getEntityManager().forEachComponentSet<RenderComponent, TransformComponent>([&drawShift, &resourceManager = mResourceManager, &renderer](RenderComponent* render, TransformComponent* transform)
 		{
 			auto location = transform->getLocation() + drawShift;
 			float rotation = transform->getRotation().getValue();
 			for (const auto& data : render->getSpriteDatas())
 			{
-				const Graphics::Sprite& spriteData = resourceManager->getResource<Graphics::Sprite>(data.spriteHandle);
-				renderer->render(*spriteData.getTexture(), location, data.params.size, data.params.anchor, rotation, spriteData.getUV(), 1.0f);
+				const Graphics::Sprite& spriteData = resourceManager.getResource<Graphics::Sprite>(data.spriteHandle);
+				renderer.render(*spriteData.getTexture(), location, data.params.size, data.params.anchor, rotation, spriteData.getUV(), 1.0f);
 			}
 		});
 	}
@@ -91,17 +91,17 @@ void RenderSystem::drawVisibilityPolygon(const Graphics::Sprite& lightSprite, co
 
 		glm::mat4 transform(1.0f);
 		transform = glm::translate(transform, glm::vec3(drawShift.x, drawShift.y, 0.0f));
-		mEngine->getRenderer()->renderFan(*lightSprite.getTexture(), drawablePolygon, transform, 0.5f);
+		mEngine.getRenderer().renderFan(*lightSprite.getTexture(), drawablePolygon, transform, 0.5f);
 	}
 }
 
-Vector2D RenderSystem::GetPlayerSightPosition(World* world)
+Vector2D RenderSystem::GetPlayerSightPosition(World& world)
 {
 	Vector2D result(0.0f, 0.0f);
 
-	if (OptionalEntity playerEntity = world->getPlayerControlledEntity(); playerEntity.isValid())
+	if (OptionalEntity playerEntity = world.getPlayerControlledEntity(); playerEntity.isValid())
 	{
-		auto [playerTransform] = world->getEntityManager().getEntityComponents<TransformComponent>(playerEntity.getEntity());
+		auto [playerTransform] = world.getEntityManager().getEntityComponents<TransformComponent>(playerEntity.getEntity());
 
 		if (playerTransform != nullptr)
 		{
@@ -112,15 +112,15 @@ Vector2D RenderSystem::GetPlayerSightPosition(World* world)
 	return result;
 }
 
-void RenderSystem::drawLights(World* world, const Vector2D& drawShift, const Vector2D& maxFov)
+void RenderSystem::drawLights(World& world, const Vector2D& drawShift, const Vector2D& maxFov)
 {
-	const Graphics::Sprite& lightSprite = mResourceManager->getResource<Graphics::Sprite>(mLightSpriteHandle);
+	const Graphics::Sprite& lightSprite = mResourceManager.getResource<Graphics::Sprite>(mLightSpriteHandle);
 	if (!lightSprite.isValid())
 	{
 		return;
 	}
 
-	const auto collidableComponents = world->getEntityManager().getComponents<CollisionComponent, TransformComponent>();
+	const auto collidableComponents = world.getEntityManager().getComponents<CollisionComponent, TransformComponent>();
 	VisibilityPolygonCalculator visibilityPolygonCalculator;
 
 	std::vector<Vector2D> polygon;
@@ -133,7 +133,7 @@ void RenderSystem::drawLights(World* world, const Vector2D& drawShift, const Vec
 	// be able to work with worst-case scenario as long as possible
 	// optimizations such as dirty flag and spatial hash are on the way to be impelemented
 	// draw light
-	world->getEntityManager().forEachComponentSet<LightComponent, TransformComponent>([&collidableComponents, &visibilityPolygonCalculator, maxFov, &drawShift, &lightSprite, &polygon, this](LightComponent* /*light*/, TransformComponent* transform)
+	world.getEntityManager().forEachComponentSet<LightComponent, TransformComponent>([&collidableComponents, &visibilityPolygonCalculator, maxFov, &drawShift, &lightSprite, &polygon, this](LightComponent* /*light*/, TransformComponent* transform)
 	{
 		visibilityPolygonCalculator.calculateVisibilityPolygon(polygon, collidableComponents, transform->getLocation(), maxFov);
 		drawVisibilityPolygon(lightSprite, polygon, maxFov, drawShift + transform->getLocation());

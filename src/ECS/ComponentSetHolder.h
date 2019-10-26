@@ -14,7 +14,13 @@
 class ComponentSetHolder
 {
 public:
+	ComponentSetHolder() = default;
 	~ComponentSetHolder();
+
+	ComponentSetHolder(const ComponentSetHolder&) = delete;
+	ComponentSetHolder& operator=(const ComponentSetHolder&) = delete;
+	ComponentSetHolder(ComponentSetHolder&&) = default;
+	ComponentSetHolder& operator=(ComponentSetHolder&&) = default;
 
 	std::vector<BaseComponent*> getAllComponents();
 

@@ -7,7 +7,6 @@
 
 namespace HAL
 {
-
 	class IGame;
 
 	class Engine
@@ -22,7 +21,7 @@ namespace HAL
 		void start(IGame* game);
 		void quit();
 
-		Graphics::Renderer* getRenderer();
+		Graphics::Renderer& getRenderer();
 
 		int getWidth() const;
 		int getHeight() const;

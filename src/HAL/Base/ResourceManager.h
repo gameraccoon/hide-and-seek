@@ -26,7 +26,14 @@ namespace HAL
 	class ResourceManager
 	{
 	public:
-		explicit ResourceManager(Engine* engine);
+		explicit ResourceManager(Engine& engine);
+
+		~ResourceManager() = default;
+
+		ResourceManager(const ResourceManager&) = delete;
+		ResourceManager& operator=(const ResourceManager&) = delete;
+		ResourceManager(ResourceManager&&) = delete;
+		ResourceManager& operator=(ResourceManager&&) = delete;
 
 		ResourceHandle lockFont(const std::string& path, int fontSize);
 		ResourceHandle lockTexture(const std::string& path);
@@ -74,17 +81,11 @@ namespace HAL
 
 		std::unordered_map<std::string, AtlasFrameData> mAtlasFrames;
 
-		Engine* mEngine;
+		Engine& mEngine;
 
 		std::string mGraphicInfoFileName;
 		std::string mImageFolder;
 
 		int mHandleIdx = 0;
-
-		/*
-		 * Turn off unusable operations
-		 */
-		ResourceManager(const ResourceManager&) = delete;
-		void operator=(const ResourceManager&) = delete;
 	};
 }

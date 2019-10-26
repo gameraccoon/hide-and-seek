@@ -12,7 +12,7 @@
 class TestRaytrace : public ::testing::Test
 {
 public:
-	virtual void SetUp() override
+	void SetUp() override
 	{
 		TestWorld.reset(new World());
 		ActorFactory::Factory().registerActor("TestWall", [](World *world, const Vector2D location, const Vector2D size, const Rotator rotation) {
@@ -21,7 +21,7 @@ public:
 		Actor1 = ActorFactory::Factory().spawnActor("TestWall", TestWorld.get(), Vector2D(50.f, 30.f), Vector2D(1.f, 1.f), Rotator(0.f));
 	}
 
-	virtual void TearDown() override
+	void TearDown() override
 	{
 		ActorFactory::Factory().unregisterActor("TestWall");
 	}

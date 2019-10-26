@@ -18,13 +18,13 @@ AnimationSystem::AnimationSystem(WorldHolder& worldHolder, const TimeData& time)
 
 void AnimationSystem::update()
 {
-	World* world = mWorldHolder.world;
+	World& world = mWorldHolder.getWorld();
 	float dt = mTime.dt;
 
-	auto [stateMachines] = world->getWorldComponents().getComponents<StateMachineComponent>();
+	auto [stateMachines] = world.getWorldComponents().getComponents<StateMachineComponent>();
 
 	// update animation clip from FSM
-	world->getEntityManager().forEachComponentSet<AnimationGroupsComponent, AnimationClipsComponent>([dt, stateMachines](AnimationGroupsComponent* animationGroups, AnimationClipsComponent* animationClips)
+	world.getEntityManager().forEachComponentSet<AnimationGroupsComponent, AnimationClipsComponent>([dt, stateMachines](AnimationGroupsComponent* animationGroups, AnimationClipsComponent* animationClips)
 	{
 		for (auto data : animationGroups->getDataRef())
 		{
@@ -40,7 +40,7 @@ void AnimationSystem::update()
 	});
 
 	// update animation frame
-	world->getEntityManager().forEachComponentSet<AnimationClipsComponent, RenderComponent>([dt](AnimationClipsComponent* animationClips, RenderComponent* render)
+	world.getEntityManager().forEachComponentSet<AnimationClipsComponent, RenderComponent>([dt](AnimationClipsComponent* animationClips, RenderComponent* render)
 	{
 		std::vector<AnimationClip>& animationDatas = animationClips->getDatasRef();
 		for (auto& data : animationDatas)

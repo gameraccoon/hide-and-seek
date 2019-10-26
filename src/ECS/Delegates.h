@@ -5,6 +5,8 @@
 
 #include <nlohmann/json_fwd.hpp>
 
+#include "Debug/Assert.h"
+
 template <typename... Args>
 class SinglecastDelegate
 {
@@ -12,6 +14,27 @@ public:
 	using FunctionType = std::function<void(Args...)>;
 
 public:
+	SinglecastDelegate() = default;
+	~SinglecastDelegate() = default;
+
+	SinglecastDelegate(const SinglecastDelegate&) : SinglecastDelegate() {}
+
+	SinglecastDelegate& operator=(const SinglecastDelegate&)
+	{
+		mFunction.clear();
+	}
+
+	SinglecastDelegate(SinglecastDelegate&& other)
+	{
+		*this = std::move(other);
+	}
+
+	SinglecastDelegate& operator=(SinglecastDelegate&& other)
+	{
+		mFunction = std::move(other.mFunction);
+		other.mFunction.clear();
+	}
+
 	void assign(FunctionType fn)
 	{
 		mFunction = fn;
@@ -69,10 +92,34 @@ public:
 	using FunctionType = std::function<void(Args...)>;
 
 public:
+	MulticastDelegate() = default;
+	~MulticastDelegate() = default;
+
+	MulticastDelegate(const MulticastDelegate&) : MulticastDelegate() {}
+
+	MulticastDelegate& operator=(const MulticastDelegate&)
+	{
+		mFunctions.clear();
+		mNextFunctionId = 0;
+	}
+
+	MulticastDelegate(MulticastDelegate&& other)
+	{
+		*this = std::move(other);
+	}
+
+	MulticastDelegate& operator=(MulticastDelegate&& other)
+	{
+		mFunctions = std::move(other.mFunctions);
+		mNextFunctionId = other.mNextFunctionId;
+		other.clear();
+	}
+
 	Delegates::Handle bind(FunctionType fn)
 	{
 		if (fn)
 		{
+			Assert(mNextFunctionId < 10000, "Too many bindings to one delegate, possibility of overflow in the future");
 			Delegates::Handle newHandle(mNextFunctionId++);
 			mFunctions.emplace_back(newHandle, fn);
 			return newHandle;

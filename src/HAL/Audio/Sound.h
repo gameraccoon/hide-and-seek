@@ -17,7 +17,7 @@ namespace Audio
 
 		Mix_Chunk* getRawSound() const;
 
-		virtual bool isValid() const override;
+		bool isValid() const override;
 
 	private:
 		Mix_Chunk* mSound = nullptr;

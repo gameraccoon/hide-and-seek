@@ -16,7 +16,7 @@
 class ControlSystem : public System
 {
 public:
-	ControlSystem(WorldHolder& worldHolder, HAL::Engine* engine, HAL::KeyStatesMap* keyStates);
+	ControlSystem(WorldHolder& worldHolder, HAL::Engine& engine, HAL::KeyStatesMap& keyStates);
 	~ControlSystem() override = default;
 
 	void update() override;
@@ -24,6 +24,6 @@ public:
 
 private:
 	WorldHolder& mWorldHolder;
-	HAL::Engine* mEngine;
-	HAL::KeyStatesMap* mKeyStates;
+	HAL::Engine& mEngine;
+	HAL::KeyStatesMap& mKeyStates;
 };

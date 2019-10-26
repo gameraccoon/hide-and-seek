@@ -16,7 +16,7 @@ namespace Graphics
 		explicit Texture(const std::string& path, SDL_Renderer* renderer);
 		~Texture() override;
 
-		virtual bool isValid() const override;
+		bool isValid() const override;
 
 		int getHeight() const;
 		int getWidth() const;

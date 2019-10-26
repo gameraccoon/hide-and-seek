@@ -17,8 +17,8 @@ public:
 public:
 	static std::string GetClassName() {{ return "{class_name}"; }}
 
-	virtual void toJson(nlohmann::json& outJson) const override;
-	virtual void fromJson(const nlohmann::json& json) override;
+	void toJson(nlohmann::json& outJson) const override;
+	void fromJson(const nlohmann::json& json) override;
 
 	friend void to_json(nlohmann::json& outJson, const {class_name}& {component_name});
 	friend void from_json(const nlohmann::json& json, {class_name}& out{component_name_capital});

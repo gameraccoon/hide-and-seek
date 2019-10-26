@@ -10,7 +10,7 @@ class QComboBox;
 class ChangeEntityCommand : public EditorCommand
 {
 public:
-	typedef void (World::*SetterFunction)(const OptionalEntity&);
+	using SetterFunction = void (World::*)(const OptionalEntity&);
 
 public:
 	ChangeEntityCommand(SetterFunction setterFunc, OptionalEntity oldEntity, OptionalEntity newEntity, QComboBox* affectedCombobox);

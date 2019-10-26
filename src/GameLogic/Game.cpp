@@ -27,9 +27,6 @@ void Game::start(ArgumentsParser& arguments)
 
 	ComponentsRegistration::RegisterComponents(mComponentFactory);
 
-	mWorldHolder.world = &mWorld;
-	mWorldHolder.gameData = &mGameData;
-
 	GameDataLoader::LoadWorld(mWorld, arguments.getArgumentValue("world", "test"), mComponentFactory);
 	GameDataLoader::LoadGameData(mGameData, arguments.getArgumentValue("gameData", "gameData"), mComponentFactory);
 
@@ -41,7 +38,7 @@ void Game::start(ArgumentsParser& arguments)
 	mSystemProfileOutputPath = arguments.getArgumentValue("profile-systems", mSystemProfileOutputPath);
 
 	// start the main loop
-	getEngine()->start(this);
+	getEngine().start(this);
 
 	onGameShutdown();
 }
@@ -70,7 +67,7 @@ void Game::update(float dt)
 
 void Game::initSystems()
 {
-	mSystemsManager.registerSystem<ControlSystem>(mWorldHolder, getEngine(), &mKeyStates);
+	mSystemsManager.registerSystem<ControlSystem>(mWorldHolder, getEngine(), mKeyStates);
 	mSystemsManager.registerSystem<AiSystem>(mWorldHolder);
 	mSystemsManager.registerSystem<CharacterStateSystem>(mWorldHolder);
 	mSystemsManager.registerSystem<MovementSystem>(mWorldHolder, mTime);
@@ -83,7 +80,7 @@ void Game::initSystems()
 
 void Game::initResources()
 {
-	getResourceManager()->loadAtlasesData("resources/atlas/atlas-list.json");
+	getResourceManager().loadAtlasesData("resources/atlas/atlas-list.json");
 	mSystemsManager.initResources();
 }
 

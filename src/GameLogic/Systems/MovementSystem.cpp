@@ -16,10 +16,10 @@ MovementSystem::MovementSystem(WorldHolder& worldHolder, const TimeData& timeDat
 
 void MovementSystem::update()
 {
-	World* world = mWorldHolder.world;
+	World& world = mWorldHolder.getWorld();
 	const float dt = mTime.dt;
 
-	world->getEntityManager().forEachComponentSet<MovementComponent, TransformComponent>([dt](MovementComponent* movement, TransformComponent* transform) {
+	world.getEntityManager().forEachComponentSet<MovementComponent, TransformComponent>([dt](MovementComponent* movement, TransformComponent* transform) {
 		float speed = movement->getSpeed();
 		if (speed > 0.0f)
 		{

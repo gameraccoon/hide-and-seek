@@ -28,14 +28,14 @@ static bool IsRunning(CharacterState state)
 
 void CharacterStateSystem::update()
 {
-	World* world = mWorldHolder.world;
-	GameData* gameData = mWorldHolder.gameData;
+	World& world = mWorldHolder.getWorld();
+	GameData& gameData = mWorldHolder.getGameData();
 
-	auto [stateMachine] = gameData->getGameComponents().getComponents<StateMachineComponent>();
+	auto [stateMachine] = gameData.getGameComponents().getComponents<StateMachineComponent>();
 
 	if (stateMachine)
 	{
-		world->getEntityManager().forEachComponentSet<CharacterStateComponent, MovementComponent, AnimationGroupsComponent>([stateMachine](CharacterStateComponent* characterState, MovementComponent* movement, AnimationGroupsComponent* animationGroups)
+		world.getEntityManager().forEachComponentSet<CharacterStateComponent, MovementComponent, AnimationGroupsComponent>([stateMachine](CharacterStateComponent* characterState, MovementComponent* movement, AnimationGroupsComponent* animationGroups)
 		{
 			// calculate state
 			CharacterState state = stateMachine->getCharacterSM().getNextState(characterState->getBlackboard(), characterState->getState());

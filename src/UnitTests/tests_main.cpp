@@ -33,8 +33,8 @@ class SGTestingEnvironment : public Environment
 {
 public:
 
-	virtual void SetUp() override;
-	virtual void TearDown() override;
+	void SetUp() override;
+	void TearDown() override;
 };
 
 class TestInfoLogger : public EmptyTestEventListener

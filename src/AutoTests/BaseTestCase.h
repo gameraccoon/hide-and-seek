@@ -27,9 +27,9 @@ protected:
 	virtual void finalizeTestCase();
 
 protected:
-	WorldHolder mWorldHolder;
 	World mWorld;
 	GameData mGameData;
+	WorldHolder mWorldHolder {&mWorld, mGameData};
 	SystemsManager mSystemsManager;
 	TimeData mTime;
 

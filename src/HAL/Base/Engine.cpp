@@ -109,9 +109,9 @@ namespace HAL
 		mPimpl->start();
 	}
 
-	Graphics::Renderer* Engine::getRenderer()
+	Graphics::Renderer& Engine::getRenderer()
 	{
-		return &mPimpl->mRenderer;
+		return mPimpl->mRenderer;
 	}
 
 	int Engine::getWidth() const

@@ -31,9 +31,9 @@ private:
 	void onGameShutdown();
 
 private:
-	WorldHolder mWorldHolder;
 	World mWorld;
 	GameData mGameData;
+	WorldHolder mWorldHolder {&mWorld, mGameData};
 
 	HAL::KeyStatesMap mKeyStates;
 	SystemsManager mSystemsManager;

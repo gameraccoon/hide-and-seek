@@ -21,7 +21,7 @@ namespace HAL
 	static Audio::Sound EMPTY_SOUND = Audio::Sound();
 	static Audio::Music EMPTY_MUSIC = Audio::Music();
 
-	ResourceManager::ResourceManager(Engine* engine)
+	ResourceManager::ResourceManager(Engine& engine)
 		: mEngine(engine)
 	{
 	}
@@ -165,7 +165,7 @@ namespace HAL
 		else
 		{
 			int thisHandle = createResourceLock(path);
-			mResources[thisHandle] = std::make_unique<Graphics::Texture>(path, mEngine->getRenderer()->getRawRenderer());
+			mResources[thisHandle] = std::make_unique<Graphics::Texture>(path, mEngine.getRenderer().getRawRenderer());
 			return ResourceHandle(thisHandle);
 		}
 	}
@@ -181,9 +181,8 @@ namespace HAL
 		}
 		else
 		{
-
 			int thisHandle = createResourceLock(id);
-			mResources[thisHandle] = std::make_unique<Graphics::Font>(path, fontSize, mEngine->getRenderer()->getRawRenderer());
+			mResources[thisHandle] = std::make_unique<Graphics::Font>(path, fontSize, mEngine.getRenderer().getRawRenderer());
 			return ResourceHandle(thisHandle);
 		}
 	}

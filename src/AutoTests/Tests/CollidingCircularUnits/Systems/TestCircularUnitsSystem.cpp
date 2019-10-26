@@ -16,15 +16,15 @@ TestCircularUnitsSystem::TestCircularUnitsSystem(WorldHolder& worldHolder)
 
 void TestCircularUnitsSystem::update()
 {
-	World* world = mWorldHolder.world;
+	World& world = mWorldHolder.getWorld();
 
-	OptionalEntity playerEntity = world->getPlayerControlledEntity();
+	OptionalEntity playerEntity = world.getPlayerControlledEntity();
 	if (!playerEntity.isValid())
 	{
 		return;
 	}
 
-	auto [playerTransform] = world->getEntityManager().getEntityComponents<TransformComponent>(playerEntity.getEntity());
+	auto [playerTransform] = world.getEntityManager().getEntityComponents<TransformComponent>(playerEntity.getEntity());
 	if (playerTransform == nullptr)
 	{
 		return;
@@ -32,7 +32,7 @@ void TestCircularUnitsSystem::update()
 
 	Vector2D targetLocation = playerTransform->getLocation();
 
-	world->getEntityManager().forEachComponentSet<AiControllerComponent, TransformComponent, MovementComponent>([targetLocation](AiControllerComponent* /*aiController*/, TransformComponent* transform, MovementComponent* movement)
+	world.getEntityManager().forEachComponentSet<AiControllerComponent, TransformComponent, MovementComponent>([targetLocation](AiControllerComponent* /*aiController*/, TransformComponent* transform, MovementComponent* movement)
 	{
 		movement->setMoveDirection(targetLocation - transform->getLocation());
 		movement->setSpeed(movement->getOriginalSpeed());

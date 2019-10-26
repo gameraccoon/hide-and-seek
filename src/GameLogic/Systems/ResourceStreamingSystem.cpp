@@ -10,7 +10,7 @@
 #include "GameData/GameData.h"
 
 
-ResourceStreamingSystem::ResourceStreamingSystem(WorldHolder& worldHolder, HAL::ResourceManager* resourceManager)
+ResourceStreamingSystem::ResourceStreamingSystem(WorldHolder& worldHolder, HAL::ResourceManager& resourceManager)
 	: mWorldHolder(worldHolder)
 	, mResourceManager(resourceManager)
 {
@@ -18,11 +18,10 @@ ResourceStreamingSystem::ResourceStreamingSystem(WorldHolder& worldHolder, HAL::
 
 void ResourceStreamingSystem::update()
 {
-	World* world = mWorldHolder.world;
-//	GameData* gameData = mWorldHolder.gameData;
+	World& world = mWorldHolder.getWorld();
 
 	// load sprites
-	world->getEntityManager().forEachComponentSetWithEntity<SpriteCreatorComponent>([&resourceManager = mResourceManager, &entityManager = world->getEntityManager()](Entity entity, SpriteCreatorComponent* spriteCreator)
+	world.getEntityManager().forEachComponentSetWithEntity<SpriteCreatorComponent>([&resourceManager = mResourceManager, &entityManager = world.getEntityManager()](Entity entity, SpriteCreatorComponent* spriteCreator)
 	{
 		const auto& descriptions = spriteCreator->getDescriptions();
 		Assert(!descriptions.empty(), "Sprite descriptions should not be empty");
@@ -33,7 +32,7 @@ void ResourceStreamingSystem::update()
 		spriteDatas.resize(spritesCount);
 		for (size_t i = 0; i < spritesCount; ++i)
 		{
-			spriteDatas[i].spriteHandle = resourceManager->lockSprite(descriptions[i].path);
+			spriteDatas[i].spriteHandle = resourceManager.lockSprite(descriptions[i].path);
 			spriteDatas[i].params = descriptions[i].params;
 			int id = render->getMaxSpriteId();
 			render->getSpriteIdsRef().push_back(id++);
@@ -41,10 +40,10 @@ void ResourceStreamingSystem::update()
 		}
 		entityManager.scheduleRemoveComponent<SpriteCreatorComponent>(entity);
 	});
-	world->getEntityManager().executeScheduledActions();
+	world.getEntityManager().executeScheduledActions();
 
 	// load single animations clips
-	world->getEntityManager().forEachComponentSetWithEntity<AnimationClipCreatorComponent>([&resourceManager = mResourceManager, &entityManager = world->getEntityManager()](Entity entity, AnimationClipCreatorComponent* animationClipCreator)
+	world.getEntityManager().forEachComponentSetWithEntity<AnimationClipCreatorComponent>([&resourceManager = mResourceManager, &entityManager = world.getEntityManager()](Entity entity, AnimationClipCreatorComponent* animationClipCreator)
 	{
 		const auto& descriptions = animationClipCreator->getDescriptionsRef();
 		Assert(!descriptions.empty(), "Animation descriptions should not be empty");
@@ -63,9 +62,9 @@ void ResourceStreamingSystem::update()
 		auto& spriteDatas = render->getSpriteDatasRef();
 		for (size_t i = 0; i < animationCount; ++i)
 		{
-			animations[i].animation = resourceManager->lockSpriteAnimation(descriptions[i].path);
+			animations[i].animation = resourceManager.lockSpriteAnimation(descriptions[i].path);
 			animations[i].params = descriptions[i].params;
-			animations[i].sprites = resourceManager->getResource<Graphics::SpriteAnimation>(animations[i].animation).getSprites();
+			animations[i].sprites = resourceManager.getResource<Graphics::SpriteAnimation>(animations[i].animation).getSprites();
 
 			AssertFatal(!animations[i].sprites.empty(), "Empty SpriteAnimation '%s'", descriptions[i].path.c_str());
 			spriteDatas.emplace_back(descriptions[i].spriteParams, animations[i].sprites.front());
@@ -81,5 +80,5 @@ void ResourceStreamingSystem::update()
 
 		entityManager.scheduleRemoveComponent<AnimationClipCreatorComponent>(entity);
 	});
-	world->getEntityManager().executeScheduledActions();
+	world.getEntityManager().executeScheduledActions();
 }

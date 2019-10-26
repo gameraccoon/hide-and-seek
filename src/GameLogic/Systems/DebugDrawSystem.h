@@ -24,7 +24,7 @@ public:
 	using KeyStatesMap = std::unordered_map<int, bool>;
 
 public:
-	DebugDrawSystem(WorldHolder& worldHolder, const TimeData& timeData, HAL::Engine* engine, HAL::ResourceManager* resourceManager);
+	DebugDrawSystem(WorldHolder& worldHolder, const TimeData& timeData, HAL::Engine& engine, HAL::ResourceManager& resourceManager);
 	~DebugDrawSystem() override = default;
 
 	void update() override;
@@ -39,8 +39,8 @@ private:
 private:
 	WorldHolder& mWorldHolder;
 	const TimeData& mTime;
-	HAL::Engine* mEngine;
-	HAL::ResourceManager* mResourceManager;
+	HAL::Engine& mEngine;
+	HAL::ResourceManager& mResourceManager;
 
 	ResourceHandle mCollisionSpriteHandle;
 	ResourceHandle mNavmeshSpriteHandle;

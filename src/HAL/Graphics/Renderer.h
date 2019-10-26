@@ -35,6 +35,11 @@ namespace Graphics
 		Renderer(HAL::Internal::Window& window);
 		~Renderer();
 
+		Renderer(const Renderer&) = delete;
+		Renderer& operator=(const Renderer&) = delete;
+		Renderer(Renderer&&) = delete;
+		Renderer& operator=(Renderer&&) = delete;
+
 		void clearFrame(Graphics::Color color);
 
 		void render(const Graphics::Texture& texture, Vector2D pos, Vector2D size);

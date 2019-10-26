@@ -20,7 +20,7 @@ namespace Graphics
 		const Graphics::Texture* getTexture() const;
 		QuadUV getUV() const { return mUV; }
 
-		virtual bool isValid() const override;
+		bool isValid() const override;
 
 	private:
 		const Graphics::Texture* mTexture = nullptr;

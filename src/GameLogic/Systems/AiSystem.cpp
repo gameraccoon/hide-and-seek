@@ -350,9 +350,9 @@ AiSystem::AiSystem(WorldHolder& worldHolder)
 
 void AiSystem::update()
 {
-	World* world = mWorldHolder.world;
+	World& world = mWorldHolder.getWorld();
 
-	auto [navMeshComponent] = world->getWorldComponents().getComponents<NavMeshComponent>();
+	auto [navMeshComponent] = world.getWorldComponents().getComponents<NavMeshComponent>();
 
 	if (navMeshComponent == nullptr)
 	{
@@ -362,16 +362,16 @@ void AiSystem::update()
 	// ToDo: we recalculate navmesh every frame to be able to work with worst-case scenario as long as possible
 	// optimizations such as dirty flag and spatial hash are on the way to be impelemented
 	NavMeshGenerator generator;
-	std::vector<std::tuple<CollisionComponent*, TransformComponent*>> collisions = world->getEntityManager().getComponents<CollisionComponent, TransformComponent>();
+	std::vector<std::tuple<CollisionComponent*, TransformComponent*>> collisions = world.getEntityManager().getComponents<CollisionComponent, TransformComponent>();
 	generator.generateNavMesh(navMeshComponent->getNavMeshRef(), collisions);
 
-	OptionalEntity playerEntity = world->getPlayerControlledEntity();
+	OptionalEntity playerEntity = world.getPlayerControlledEntity();
 	if (!playerEntity.isValid())
 	{
 		return;
 	}
 
-	auto [playerTransform] = world->getEntityManager().getEntityComponents<TransformComponent>(playerEntity.getEntity());
+	auto [playerTransform] = world.getEntityManager().getEntityComponents<TransformComponent>(playerEntity.getEntity());
 	if (playerTransform == nullptr)
 	{
 		return;
@@ -385,7 +385,7 @@ void AiSystem::update()
 
 	Vector2D targetLocation = playerTransform->getLocation();
 
-	world->getEntityManager().forEachComponentSet<AiControllerComponent, TransformComponent, MovementComponent, CharacterStateComponent>([targetLocation, navMesh](AiControllerComponent* aiController, TransformComponent* transform, MovementComponent* movement, CharacterStateComponent* characterState)
+	world.getEntityManager().forEachComponentSet<AiControllerComponent, TransformComponent, MovementComponent, CharacterStateComponent>([targetLocation, navMesh](AiControllerComponent* aiController, TransformComponent* transform, MovementComponent* movement, CharacterStateComponent* characterState)
 	{
 		Vector2D startLocation = transform->getLocation();
 

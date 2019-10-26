@@ -10,9 +10,6 @@ void BaseTestCase::start(const ArgumentsParser& arguments)
 {
 	ComponentsRegistration::RegisterComponents(mComponentFactory);
 
-	mWorldHolder.world = &mWorld;
-	mWorldHolder.gameData = &mGameData;
-
 	mOneFrame = arguments.hasArgument("one-frame");
 
 	mProfileSystems = arguments.hasArgument("profile-systems");
@@ -21,7 +18,7 @@ void BaseTestCase::start(const ArgumentsParser& arguments)
 	initTestCase(arguments);
 
 	// start the main loop
-	getEngine()->start(this);
+	getEngine().start(this);
 }
 
 void BaseTestCase::update(float)
@@ -44,7 +41,7 @@ void BaseTestCase::update(float)
 	if (mTicksCount >= mTicksToFinish)
 	{
 		finalizeTestCase();
-		getEngine()->quit();
+		getEngine().quit();
 	}
 }
 

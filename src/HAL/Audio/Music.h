@@ -17,7 +17,7 @@ namespace Audio
 
 		Mix_Music* getRawMusic() const;
 
-		virtual bool isValid() const override;
+		bool isValid() const override;
 
 	private:
 		Mix_Music* mMusic = nullptr;

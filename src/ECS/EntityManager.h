@@ -11,7 +11,13 @@
 class EntityManager
 {
 public:
+	EntityManager() = default;
 	~EntityManager();
+
+	EntityManager(const EntityManager&) = delete;
+	EntityManager& operator=(const EntityManager&) = delete;
+	EntityManager(EntityManager&&) = delete;
+	EntityManager& operator=(EntityManager&&) = delete;
 
 	Entity addEntity();
 	void removeEntity(Entity entity);

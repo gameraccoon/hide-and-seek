@@ -14,8 +14,8 @@ namespace HAL
 		~GameBase();
 
 	protected:
-		Engine* getEngine() { return mEngine.get(); }
-		ResourceManager* getResourceManager() { return mResourceManager.get(); }
+		Engine& getEngine();
+		ResourceManager& getResourceManager();
 
 	private:
 		std::unique_ptr<Engine> mEngine;

@@ -77,11 +77,11 @@ static void spawnUnits(EntityManager& entityManager, int count, Vector2D pos)
 
 void TestUnitsCountControlSystem::update()
 {
-	World* world = mWorldHolder.world;
+	World& world = mWorldHolder.getWorld();
 
 	if (ticksPassed == 5)
 	{
-		spawnUnits(world->getEntityManager(), 500, Vector2D(-400.0f, 0.0f));
+		spawnUnits(world.getEntityManager(), 500, Vector2D(-400.0f, 0.0f));
 	}
 
 	++ticksPassed;
