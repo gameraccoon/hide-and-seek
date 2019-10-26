@@ -98,22 +98,22 @@ namespace StateMachines
 		// Substates of MetaWalk
 		{
 			FSMType::StateLinkRules rules;
-			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, MoveDirection4>("strafeleft", enum_to_string(CharacterStateBlackboardKeys::TryingToMove), MoveDirection4::Left);
-			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, MoveDirection4>("straferight", enum_to_string(CharacterStateBlackboardKeys::TryingToMove), MoveDirection4::Right);
+			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, MoveDirection4>("strafeleft", "moveDir", MoveDirection4::Left);
+			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, MoveDirection4>("straferight", "moveDir", MoveDirection4::Right);
 			sm.addState("walk", std::move(rules));
 			sm.linkStates("walk", "metawalk", true);
 		}
 		{
 			FSMType::StateLinkRules rules;
-			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, MoveDirection4>("walk", enum_to_string(CharacterStateBlackboardKeys::TryingToMove), MoveDirection4::Front);
-			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, MoveDirection4>("walk", enum_to_string(CharacterStateBlackboardKeys::TryingToMove), MoveDirection4::Back);
+			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, MoveDirection4>("walk", "moveDir", MoveDirection4::Front);
+			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, MoveDirection4>("walk", "moveDir", MoveDirection4::Back);
 			sm.addState("strafeleft", std::move(rules));
 			sm.linkStates("strafeleft", "metawalk", false);
 		}
 		{
 			FSMType::StateLinkRules rules;
-			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, MoveDirection4>("walk", enum_to_string(CharacterStateBlackboardKeys::TryingToMove), MoveDirection4::Front);
-			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, MoveDirection4>("walk", enum_to_string(CharacterStateBlackboardKeys::TryingToMove), MoveDirection4::Back);
+			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, MoveDirection4>("walk", "moveDir", MoveDirection4::Front);
+			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, MoveDirection4>("walk", "moveDir", MoveDirection4::Back);
 			sm.addState("straferight", std::move(rules));
 			sm.linkStates("straferight", "metawalk", false);
 		}
@@ -127,7 +127,7 @@ namespace StateMachines
 		}
 
 		RegisterCharacterSM(stateMachine->getCharacterSMRef());
-		RegisterCharacterAnimationSM(stateMachine->getAnimationSMsRef()["pistol"]);
+		RegisterCharacterAnimationSM(stateMachine->getAnimationSMsRef()["handgun"]);
 		RegisterCharacterLegsAnimationSM(stateMachine->getAnimationSMsRef()["feet"]);
 	}
 }

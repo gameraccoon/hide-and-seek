@@ -13,11 +13,10 @@
 
 #include "HAL/Base/Math.h"
 #include "HAL/Base/Engine.h"
-#include "HAL/Internal/SdlSurface.h"
+#include "HAL/Graphics/Sprite.h"
 
 #include <glm/matrix.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-
 
 RenderSystem::RenderSystem(WorldHolder& worldHolder, HAL::Engine& engine, HAL::ResourceManager& resourceManager)
 	: mWorldHolder(worldHolder)

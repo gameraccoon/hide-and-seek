@@ -12,54 +12,19 @@
 #include "HAL/Base/Engine.h"
 #include "HAL/Internal/SdlSurface.h"
 
+#include "HAL/Audio/Music.h"
+#include "HAL/Audio/Sound.h"
+#include "HAL/Graphics/Font.h"
+#include "HAL/Graphics/Texture.h"
+#include "HAL/Graphics/Sprite.h"
+#include "HAL/Graphics/SpriteAnimationClip.h"
+#include "HAL/Graphics/AnimationGroup.h"
+
 namespace HAL
 {
-	static Graphics::Sprite EMPTY_SPRITE = Graphics::Sprite();
-	static Graphics::Texture EMPTY_TEXTURE = Graphics::Texture();
-	static Graphics::Font EMPTY_FONT = Graphics::Font();
-	static Graphics::SpriteAnimation EMPTY_SPRITE_ANIMATION = Graphics::SpriteAnimation();
-	static Audio::Sound EMPTY_SOUND = Audio::Sound();
-	static Audio::Music EMPTY_MUSIC = Audio::Music();
-
 	ResourceManager::ResourceManager(Engine& engine)
 		: mEngine(engine)
 	{
-	}
-
-	template<>
-	const Graphics::Texture& ResourceManager::getEmptyResource<Graphics::Texture>()
-	{
-		return EMPTY_TEXTURE;
-	}
-
-	template<>
-	const Graphics::Sprite& ResourceManager::getEmptyResource<Graphics::Sprite>()
-	{
-		return EMPTY_SPRITE;
-	}
-
-	template<>
-	const Graphics::SpriteAnimation& ResourceManager::getEmptyResource<Graphics::SpriteAnimation>()
-	{
-		return EMPTY_SPRITE_ANIMATION;
-	}
-
-	template<>
-	const Graphics::Font& ResourceManager::getEmptyResource<Graphics::Font>()
-	{
-		return EMPTY_FONT;
-	}
-
-	template<>
-	const Audio::Sound& ResourceManager::getEmptyResource<Audio::Sound>()
-	{
-		return EMPTY_SOUND;
-	}
-
-	template<>
-	const Audio::Music& ResourceManager::getEmptyResource<Audio::Music>()
-	{
-		return EMPTY_MUSIC;
 	}
 
 	int ResourceManager::createResourceLock(const std::string& path)
@@ -118,7 +83,7 @@ namespace HAL
 		}
 	}
 
-	std::vector<std::string> ResourceManager::loadAnimData(const std::string& path)
+	std::vector<std::string> ResourceManager::loadSpriteAnimClipData(const std::string& path)
 	{
 		namespace fs = std::experimental::filesystem;
 		fs::path atlasDescPath(path);
@@ -137,10 +102,6 @@ namespace HAL
 			animJson.at("frames").get_to(framesCount);
 
 		}
-		catch(const nlohmann::detail::exception& e)
-		{
-			LogError("Can't parse animation data '%s': %s", path.c_str(), e.what());
-		}
 		catch(const std::exception& e)
 		{
 			LogError("Can't open animation data '%s': %s", path.c_str(), e.what());
@@ -149,6 +110,32 @@ namespace HAL
 		for (int i = 0; i < framesCount; ++i)
 		{
 			result.emplace_back(pathBase + std::to_string(i) + ".png");
+		}
+
+		return result;
+	}
+
+	ResourceManager::AnimGroupData ResourceManager::loadAnimGroupData(const std::string& path)
+	{
+		namespace fs = std::experimental::filesystem;
+		fs::path atlasDescPath(path);
+
+		AnimGroupData result;
+		std::string pathBase;
+
+		try
+		{
+			std::ifstream animDescriptionFile(atlasDescPath);
+			nlohmann::json animJson;
+			animDescriptionFile >> animJson;
+
+			animJson.at("clips").get_to(result.clips);
+			animJson.at("stateMachineID").get_to(result.stateMachineID);
+			animJson.at("defaultState").get_to(result.defaultState);
+		}
+		catch(const std::exception& e)
+		{
+			LogError("Can't open animation group data '%s': %s", path.c_str(), e.what());
 		}
 
 		return result;
@@ -249,7 +236,7 @@ namespace HAL
 		}
 	}
 
-	ResourceHandle ResourceManager::lockSpriteAnimation(const std::string& path)
+	ResourceHandle ResourceManager::lockSpriteAnimationClip(const std::string& path)
 	{
 		auto it = mPathsMap.find(path);
 		if (it != mPathsMap.end())
@@ -260,7 +247,7 @@ namespace HAL
 		else
 		{
 			int thisHandle = createResourceLock(path);
-			std::vector<std::string> framePaths = loadAnimData(path);
+			std::vector<std::string> framePaths = loadSpriteAnimClipData(path);
 
 			std::vector<ResourceHandle> frames;
 			for (const auto& animFramePath : framePaths)
@@ -268,13 +255,49 @@ namespace HAL
 				auto spriteHandle = lockSprite(animFramePath);
 				frames.push_back(spriteHandle);
 			}
-			mResources[thisHandle] = std::make_unique<Graphics::SpriteAnimation>(std::move(frames));
+			mResources[thisHandle] = std::make_unique<Graphics::SpriteAnimationClip>(std::move(frames));
 
 			mResourceReleaseFns[thisHandle] = [this](Resource* resource)
 			{
-				for (auto& spriteHandle : static_cast<Graphics::SpriteAnimation*>(resource)->getSprites())
+				for (auto& spriteHandle : static_cast<Graphics::SpriteAnimationClip*>(resource)->getSprites())
 				{
 					unlockResource(spriteHandle);
+				}
+			};
+
+			return ResourceHandle(thisHandle);
+		}
+	}
+
+	ResourceHandle ResourceManager::lockAnimationGroup(const std::string& path)
+	{
+		auto it = mPathsMap.find(path);
+		if (it != mPathsMap.end())
+		{
+			++mResourceLocksCount[it->second];
+			return ResourceHandle(it->second);
+		}
+		else
+		{
+			int thisHandle = createResourceLock(path);
+			AnimGroupData animGroupData = loadAnimGroupData(path);
+
+			std::map<std::string, std::vector<ResourceHandle>> animClips;
+			std::vector<ResourceHandle> clipsToRelease;
+			clipsToRelease.reserve(animGroupData.clips.size());
+			for (const auto& animClipPath : animGroupData.clips)
+			{
+				auto clipHandle = lockSpriteAnimationClip(animClipPath.second);
+				animClips.emplace(animClipPath.first, getResource<Graphics::SpriteAnimationClip>(clipHandle).getSprites());
+				clipsToRelease.push_back(clipHandle);
+			}
+			mResources[thisHandle] = std::make_unique<Graphics::AnimationGroup>(std::move(animClips), animGroupData.stateMachineID, animGroupData.defaultState);
+
+			mResourceReleaseFns[thisHandle] = [this, clipsToRelease = std::move(clipsToRelease)](Resource*)
+			{
+				for (auto& animationClip : clipsToRelease)
+				{
+					unlockResource(animationClip);
 				}
 			};
 

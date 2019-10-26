@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <vector>
 #include <string>
 
 #include "GameData/Core/ResourceHandle.h"
@@ -11,7 +12,7 @@ class AnimationGroup
 {
 public:
 	StateIDType currentState;
-	std::map<StateIDType, ResourceHandle> animations;
+	std::map<StateIDType, std::vector<ResourceHandle>> animationClips;
 	std::string stateMachineId;
-	size_t animationIdx;
+	size_t animationClipIdx = 0;
 };

@@ -8,12 +8,11 @@ struct AnimationClipParams
 {
 	float speed = 1.0f;
 	bool isLooped = false;
-	std::string globalAnimId; // a way to find FSM
 };
 
 inline bool operator ==(const AnimationClipParams& a, const AnimationClipParams& b)
 {
-	return a.speed == b.speed && a.isLooped == b.isLooped && a.globalAnimId == b.globalAnimId;
+	return a.speed == b.speed && a.isLooped == b.isLooped;
 }
 
 inline bool operator !=(const AnimationClipParams& a, const AnimationClipParams& b)

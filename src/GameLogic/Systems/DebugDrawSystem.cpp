@@ -16,6 +16,8 @@
 #include "HAL/Base/Engine.h"
 #include "HAL/Base/Math.h"
 #include "HAL/Graphics/Renderer.h"
+#include "HAL/Graphics/Sprite.h"
+#include "HAL/Graphics/Font.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 

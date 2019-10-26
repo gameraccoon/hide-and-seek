@@ -3,11 +3,12 @@
 #include <string>
 
 #include "GameData/Resources/SpriteParams.h"
+#include "GameData/Core/CommonTypes.h"
 
 struct SpriteDescription
 {
 	SpriteParams params;
-	std::string path;
+	ResourcePath path;
 };
 
 inline bool operator ==(const SpriteDescription& a, const SpriteDescription& b)

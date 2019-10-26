@@ -3,11 +3,29 @@
 	"description": "Component that creates groups of animation clips",
 	"attributes": [
 		{
-			"name": "deprecated",
-			"type": "std::vector<AnimationClipDescription>",
+			"name": "animationGroups",
+			"type": "std::vector<ResourcePath>",
 			"includes": [
 				"<vector>",
-				"\"GameData/Resources/AnimationClipDescription.h\""
+				"\"GameData/Core/CommonTypes.h\""
+			],
+			"flags": ["get_by_ref"]
+		},
+		{
+			"name": "clipParams",
+			"type": "std::vector<AnimationClipParams>",
+			"includes": [
+				"<vector>",
+				"\"GameData/Resources/AnimationClipParams.h\""
+			],
+			"flags": ["get_by_ref"]
+		},
+		{
+			"name": "spriteParams",
+			"type": "std::vector<SpriteParams>",
+			"includes": [
+				"<vector>",
+				"\"GameData/Resources/SpriteParams.h\""
 			],
 			"flags": ["get_by_ref"]
 		}

@@ -3,12 +3,14 @@
 #include <algorithm>
 
 #include "Debug/Assert.h"
+#include "Debug/Log.h"
 
 #include "GameData/Components/RenderComponent.generated.h"
 #include "GameData/Components/AnimationClipsComponent.generated.h"
 #include "GameData/Components/AnimationGroupsComponent.generated.h"
 #include "GameData/Components/StateMachineComponent.generated.h"
 #include "GameData/World.h"
+#include "GameData/GameData.h"
 
 AnimationSystem::AnimationSystem(WorldHolder& worldHolder, const TimeData& time)
 	: mWorldHolder(worldHolder)
@@ -19,14 +21,15 @@ AnimationSystem::AnimationSystem(WorldHolder& worldHolder, const TimeData& time)
 void AnimationSystem::update()
 {
 	World& world = mWorldHolder.getWorld();
+	GameData& gameData = mWorldHolder.getGameData();
 	float dt = mTime.dt;
 
-	auto [stateMachines] = world.getWorldComponents().getComponents<StateMachineComponent>();
+	auto [stateMachines] = gameData.getGameComponents().getComponents<StateMachineComponent>();
 
 	// update animation clip from FSM
 	world.getEntityManager().forEachComponentSet<AnimationGroupsComponent, AnimationClipsComponent>([dt, stateMachines](AnimationGroupsComponent* animationGroups, AnimationClipsComponent* animationClips)
 	{
-		for (auto data : animationGroups->getDataRef())
+		for (auto& data : animationGroups->getDataRef())
 		{
 			auto smIt = stateMachines->getAnimationSMs().find(data.stateMachineId);
 			Assert(smIt != stateMachines->getAnimationSMs().end(), "State machine not found %s", data.stateMachineId.c_str());
@@ -34,7 +37,7 @@ void AnimationSystem::update()
 			if (newState != data.currentState)
 			{
 				data.currentState = newState;
-				animationClips->getDatasRef()[data.animationIdx].animation = data.animations[data.currentState];
+				animationClips->getDatasRef()[data.animationClipIdx].sprites = data.animationClips.find(newState)->second;
 			}
 		}
 	});

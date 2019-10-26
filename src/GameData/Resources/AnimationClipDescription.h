@@ -6,12 +6,13 @@
 
 #include "GameData/Resources/AnimationClipParams.h"
 #include "GameData/Resources/SpriteParams.h"
+#include "GameData/Core/CommonTypes.h"
 
 struct AnimationClipDescription
 {
 	AnimationClipParams params;
 	SpriteParams spriteParams;
-	std::string path;
+	ResourcePath path;
 };
 
 inline bool operator ==(const AnimationClipDescription& a, const AnimationClipDescription& b)

@@ -7,6 +7,8 @@
 #include "GameData/Components/MovementComponent.generated.h"
 #include "GameData/Components/AnimationGroupsComponent.generated.h"
 
+#include "GameData/Enums/MoveDirection4.generated.h"
+
 #include "GameData/World.h"
 #include "GameData/GameData.h"
 
@@ -52,23 +54,31 @@ void CharacterStateSystem::update()
 			// update animation blackboard
 			auto& animBlackboard = animationGroups->getBlackboardRef();
 			animBlackboard.setValue<std::string>("charState", enum_to_string(state));
-			float relativeRotation = (movement->getMoveDirection().rotation() - movement->getSightDirection().rotation()).getValue();
 
-			if (relativeRotation < PI * 0.25f && relativeRotation > -PI * 0.25f)
+			animBlackboard.setValue<bool>(enum_to_string(CharacterStateBlackboardKeys::TryingToMove), characterState->getBlackboard().getValue<bool>(CharacterStateBlackboardKeys::TryingToMove, false));
+			animBlackboard.setValue<bool>(enum_to_string(CharacterStateBlackboardKeys::ReadyToRun), characterState->getBlackboard().getValue<bool>(CharacterStateBlackboardKeys::ReadyToRun, false));
+
+			Vector2D moveDirection = movement->getMoveDirection();
+			if (!moveDirection.isZeroLength())
 			{
-				animBlackboard.setValue<std::string>("moveDir", "f");
-			}
-			else if (relativeRotation > PI * 0.75f && relativeRotation < -PI * 0.75f)
-			{
-				animBlackboard.setValue<std::string>("moveDir", "b");
-			}
-			else if (relativeRotation < 0.0f)
-			{
-				animBlackboard.setValue<std::string>("moveDir", "l");
-			}
-			else
-			{
-				animBlackboard.setValue<std::string>("moveDir", "r");
+				float relativeRotation = (moveDirection.rotation() - movement->getSightDirection().rotation()).getValue();
+
+				if (relativeRotation < PI * 0.25f && relativeRotation > -PI * 0.25f)
+				{
+					animBlackboard.setValue<MoveDirection4>("moveDir", MoveDirection4::Front);
+				}
+				else if (relativeRotation > PI * 0.75f || relativeRotation < -PI * 0.75f)
+				{
+					animBlackboard.setValue<MoveDirection4>("moveDir", MoveDirection4::Back);
+				}
+				else if (relativeRotation < 0.0f)
+				{
+					animBlackboard.setValue<MoveDirection4>("moveDir", MoveDirection4::Left);
+				}
+				else
+				{
+					animBlackboard.setValue<MoveDirection4>("moveDir", MoveDirection4::Right);
+				}
 			}
 		});
 	}

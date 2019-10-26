@@ -33,31 +33,17 @@ namespace TypesEditConstructor
 			edit->addChild(editPath);
 		}
 		{
-			Edit<Vector2D>::Ptr editAnchor = FillEdit<Vector2D>::Call(layout, "anchor", initialValue.params.anchor);
-			editAnchor->bindOnChange([editWeakPtr](const Vector2D& /*oldValue*/, const Vector2D& newValue, bool)
+			Edit<SpriteParams>::Ptr editAnchor = FillEdit<SpriteParams>::Call(layout, "anchor", initialValue.params);
+			editAnchor->bindOnChange([editWeakPtr](const SpriteParams& /*oldValue*/, const SpriteParams& newValue, bool)
 			{
 				if (Edit<SpriteDescription>::Ptr edit = editWeakPtr.lock())
 				{
 					SpriteDescription animDescription = edit->getPreviousValue();
-					animDescription.params.anchor = newValue;
+					animDescription.params = newValue;
 					edit->transmitValueChange(animDescription);
 				}
 			});
 			edit->addChild(editAnchor);
-		}
-
-		{
-			Edit<Vector2D>::Ptr editSize = FillEdit<Vector2D>::Call(layout, "size", initialValue.params.size);
-			editSize->bindOnChange([editWeakPtr](const Vector2D& /*oldValue*/, const Vector2D& newValue, bool)
-			{
-				if (Edit<SpriteDescription>::Ptr edit = editWeakPtr.lock())
-				{
-					SpriteDescription animDescription = edit->getPreviousValue();
-					animDescription.params.size = newValue;
-					edit->transmitValueChange(animDescription);
-				}
-			});
-			edit->addChild(editSize);
 		}
 
 		return edit;

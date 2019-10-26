@@ -34,46 +34,19 @@ namespace TypesEditConstructor
 			});
 			edit->addChild(editPath);
 		}
-		{
-			Edit<std::string>::Ptr editAnimId = FillEdit<std::string>::Call(layout, "animId", initialValue.params.globalAnimId);
-			editAnimId->bindOnChange([editWeakPtr](const std::string& /*oldValue*/, const std::string& newValue, bool)
-			{
-				if (EditType::Ptr edit = editWeakPtr.lock())
-				{
-					AnimationClipDescription animDescription = edit->getPreviousValue();
-					animDescription.params.globalAnimId = newValue;
-					edit->transmitValueChange(animDescription);
-				}
-			});
-			edit->addChild(editAnimId);
-		}
 
 		{
-			Edit<bool>::Ptr editIsLooped = FillEdit<bool>::Call(layout, "is looped", initialValue.params.isLooped);
-			editIsLooped->bindOnChange([editWeakPtr](bool /*oldValue*/, bool newValue, bool)
+			Edit<AnimationClipParams>::Ptr editIsLooped = FillEdit<AnimationClipParams>::Call(layout, "clip parameters", initialValue.params);
+			editIsLooped->bindOnChange([editWeakPtr](AnimationClipParams /*oldValue*/, AnimationClipParams newValue, bool)
 			{
 				if (EditType::Ptr edit = editWeakPtr.lock())
 				{
 					AnimationClipDescription animDescription = edit->getPreviousValue();
-					animDescription.params.isLooped = newValue;
+					animDescription.params = newValue;
 					edit->transmitValueChange(animDescription);
 				}
 			});
 			edit->addChild(editIsLooped);
-		}
-
-		{
-			Edit<float>::Ptr editSpeed = FillEdit<float>::Call(layout, "speed", initialValue.params.speed);
-			editSpeed->bindOnChange([editWeakPtr](float /*oldValue*/, float newValue, bool)
-			{
-				if (EditType::Ptr edit = editWeakPtr.lock())
-				{
-					AnimationClipDescription animDescription = edit->getPreviousValue();
-					animDescription.params.speed = newValue;
-					edit->transmitValueChange(animDescription);
-				}
-			});
-			edit->addChild(editSpeed);
 		}
 
 		{

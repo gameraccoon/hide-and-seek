@@ -9,14 +9,9 @@
 
 #include "GameData/Core/ResourceHandle.h"
 
+#include "HAL/Base/Resource.h"
+#include "HAL/Base/Types.h"
 #include "HAL/EngineFwd.h"
-
-#include "HAL/Audio/Music.h"
-#include "HAL/Audio/Sound.h"
-#include "HAL/Graphics/Font.h"
-#include "HAL/Graphics/Texture.h"
-#include "HAL/Graphics/Sprite.h"
-#include "HAL/Graphics/SpriteAnimation.h"
 
 namespace HAL
 {
@@ -38,12 +33,13 @@ namespace HAL
 		ResourceHandle lockFont(const std::string& path, int fontSize);
 		ResourceHandle lockTexture(const std::string& path);
 		ResourceHandle lockSprite(const std::string& path);
-		ResourceHandle lockSpriteAnimation(const std::string& path);
+		ResourceHandle lockSpriteAnimationClip(const std::string& path);
+		ResourceHandle lockAnimationGroup(const std::string& path);
 		ResourceHandle lockSound(const std::string& path);
 		ResourceHandle lockMusic(const std::string& path);
 
 		template<typename T>
-		const T& getResource(ResourceHandle handle)
+		[[nodiscard]] const T& getResource(ResourceHandle handle)
 		{
 			auto it = mResources.find(handle.ResourceIndex);
 			AssertFatal(it != mResources.end(), "Trying to access non loaded resource");
@@ -61,16 +57,21 @@ namespace HAL
 			Graphics::QuadUV quadUV;
 		};
 
+		struct AnimGroupData
+		{
+			std::map<std::string, std::string> clips;
+			std::string stateMachineID;
+			std::string defaultState;
+		};
+
 		using ReleaseFn = std::function<void(Resource*)>;
 
 	private:
-		template<typename T>
-		const T& getEmptyResource();
-
 		int createResourceLock(const std::string& path);
 
 		void loadOneAtlasData(const std::string& path);
-		std::vector<std::string> loadAnimData(const std::string& path);
+		std::vector<std::string> loadSpriteAnimClipData(const std::string& path);
+		AnimGroupData loadAnimGroupData(const std::string& path);
 
 	private:
 		std::unordered_map<ResourceHandle::IndexType, std::unique_ptr<Resource>> mResources;
