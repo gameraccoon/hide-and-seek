@@ -184,3 +184,54 @@ TEST(FSM, HierarchicalStateMachine)
 
 	EXPECT_EQ(TestStates::StateTwo, currentState);
 }
+
+TEST(FSM, HierarchicalFSMStringKeys_BugfixTest)
+{
+	using StateIDType = std::string;
+	using BlackBoardKeyType = std::string;
+	using TestFSM = FSM::StateMachine<StateIDType, BlackBoardKeyType>;
+
+	TestFSM fsm;
+
+	// Top level states
+	{
+		TestFSM::StateLinkRules rules;
+		rules.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>("idle", "TryingToMove", false);
+		rules.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>("run", "ReadyToRun", true);
+		fsm.addState("metawalk", std::move(rules));
+	}
+	{
+		TestFSM::StateLinkRules rules;
+		rules.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>("metawalk", "TryingToMove", true);
+		fsm.addState("idle", std::move(rules));
+	}
+	// Substates of MetaWalk
+	{
+		TestFSM::StateLinkRules rules;
+		rules.emplaceLink<FSM::LinkRules::VariableEqualLink, int>("strafeleft", "Direction", 1);
+		rules.emplaceLink<FSM::LinkRules::VariableEqualLink, int>("straferight", "Direction", 2);
+		fsm.addState("walk", std::move(rules));
+		fsm.linkStates("walk", "metawalk", true);
+	}
+	{
+		TestFSM::StateLinkRules rules;
+		rules.emplaceLink<FSM::LinkRules::VariableEqualLink, int>("walk", "Direction", 3);
+		rules.emplaceLink<FSM::LinkRules::VariableEqualLink, int>("walk", "Direction", 4);
+		fsm.addState("strafeleft", std::move(rules));
+		fsm.linkStates("strafeleft", "metawalk", false);
+	}
+	{
+		TestFSM::StateLinkRules rules;
+		rules.emplaceLink<FSM::LinkRules::VariableEqualLink, int>("walk", "Direction", 3);
+		rules.emplaceLink<FSM::LinkRules::VariableEqualLink, int>("walk", "Direction", 4);
+		fsm.addState("straferight", std::move(rules));
+		fsm.linkStates("straferight", "metawalk", false);
+	}
+
+	FSM::Blackboard<BlackBoardKeyType> blackboard;
+	blackboard.setValue<bool>("ReadyToRun", false);
+	blackboard.setValue<bool>("TryingToMove", true);
+	blackboard.setValue<int>("Direction", 2);
+
+	EXPECT_EQ("straferight", fsm.getNextState(blackboard, "idle"));
+}

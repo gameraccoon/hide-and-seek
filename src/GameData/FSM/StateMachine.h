@@ -76,13 +76,13 @@ namespace FSM
 
 		void linkStates(StateIDType childStateID, StateIDType parentStateID, bool isDefaultState = false)
 		{
-			mChildToParentLinks.emplace(std::forward<StateIDType>(childStateID), std::forward<StateIDType>(parentStateID));
 			if (isDefaultState)
 			{
 				bool isEmplaced;
-				std::tie(std::ignore, isEmplaced) = mParentToChildLinks.emplace(std::forward<StateIDType>(parentStateID), std::forward<StateIDType>(childStateID));
+				std::tie(std::ignore, isEmplaced) = mParentToChildLinks.emplace(parentStateID, childStateID);
 				Assert(isEmplaced, "More than one initial state set for a parent state");
 			}
+			mChildToParentLinks.emplace(std::forward<StateIDType>(childStateID), std::forward<StateIDType>(parentStateID));
 		}
 
 		StateIDType getNextState(const BlackboardType& blackboard, StateIDType previousState) const
