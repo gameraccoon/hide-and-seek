@@ -15,7 +15,7 @@ public:
 	{attribute_accessors_ref_decl}
 
 public:
-	static std::string GetClassName() {{ return "{class_name}"; }}
+	static StringID GetClassName() {{ return "{class_name}"; }}
 
 	void toJson(nlohmann::json& outJson) const override;
 	void fromJson(const nlohmann::json& json) override;
@@ -23,7 +23,7 @@ public:
 	friend void to_json(nlohmann::json& outJson, const {class_name}& {component_name});
 	friend void from_json(const nlohmann::json& json, {class_name}& out{component_name_capital});
 
-	std::string getComponentTypeName() const override {{ return GetClassName(); }}
+	StringID getComponentTypeName() const override {{ return GetClassName(); }}
 
 private:
 	{attribute_fields}

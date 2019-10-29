@@ -2,7 +2,7 @@
 
 #include <QtWidgets/qcombobox.h>
 
-#include "Debug/Assert.h"
+#include "Base/Debug/Assert.h"
 #include "ECS/ComponentFactory.h"
 #include "GameData/World.h"
 

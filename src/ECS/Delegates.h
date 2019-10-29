@@ -5,7 +5,7 @@
 
 #include <nlohmann/json_fwd.hpp>
 
-#include "Debug/Assert.h"
+#include "Base/Debug/Assert.h"
 
 template <typename... Args>
 class SinglecastDelegate

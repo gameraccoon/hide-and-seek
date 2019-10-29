@@ -2,8 +2,8 @@
 
 #include <algorithm>
 
-#include "Debug/Assert.h"
-#include "Debug/Log.h"
+#include "Base/Debug/Assert.h"
+#include "Base/Debug/Log.h"
 
 #include "GameData/Components/RenderComponent.generated.h"
 #include "GameData/Components/AnimationClipsComponent.generated.h"

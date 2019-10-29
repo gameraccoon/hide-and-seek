@@ -26,7 +26,7 @@ public:
 	bool isZeroLength() const;
 
 	/** Normalize vector */
-	Vector2D ort() const;
+	Vector2D unit() const;
 	/** Mirror horisontally */
 	Vector2D mirrorH() const;
 	/** Mirror vertically */
@@ -60,6 +60,7 @@ public:
 	friend Vector2D operator/=(Vector2D& vector, float scalar);
 
 	friend float DotProduct(const Vector2D& left, const Vector2D& right);
+	friend Vector2D HadamardProduct(const Vector2D& left, const Vector2D& right);
 
 	friend void to_json(nlohmann::json& outJson, const Vector2D& vector);
 	friend void from_json(const nlohmann::json& json, Vector2D& outVector);

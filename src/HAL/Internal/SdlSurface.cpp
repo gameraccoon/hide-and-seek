@@ -6,7 +6,7 @@
 #include <sdl/SDL.h>
 #include <sdl/SDL_image.h>
 
-#include "Debug/Assert.h"
+#include "Base/Debug/Assert.h"
 
 namespace HAL
 {

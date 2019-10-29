@@ -6,7 +6,7 @@
 
 namespace Audio
 {
-	Sound::Sound(const std::string& path)
+	Sound::Sound(const ResourcePath& path)
 		: mSound(Mix_LoadWAV(path.c_str()))
 	{
 	}

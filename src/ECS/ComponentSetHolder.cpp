@@ -3,8 +3,8 @@
 #include <nlohmann/json.hpp>
 
 #include "ComponentFactory.h"
-#include "Debug/Assert.h"
-#include "Debug/Log.h"
+#include "Base/Debug/Assert.h"
+#include "Base/Debug/Log.h"
 
 
 ComponentSetHolder::~ComponentSetHolder()
@@ -66,8 +66,9 @@ nlohmann::json ComponentSetHolder::toJson(const ComponentFactory& componentFacto
 void ComponentSetHolder::fromJson(const nlohmann::json& json, const ComponentFactory& componentFactory)
 {
 	const auto& components = json.at("components");
-	for (const auto& [type, componentData] : components.items())
+	for (const auto& [stringType, componentData] : components.items())
 	{
+		StringID type = static_cast<StringID>(stringType);
 		std::optional<std::type_index> typeIndex = componentFactory.getTypeIDFromString(type);
 		ComponentFactory::CreationFn componentCreateFn = componentFactory.getCreationFn(type);
 		if (typeIndex.has_value() && componentCreateFn != nullptr)

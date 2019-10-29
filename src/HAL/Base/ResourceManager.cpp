@@ -3,11 +3,12 @@
 #include <fstream>
 #include <vector>
 #include <experimental/filesystem>
+#include <string>
 
 #include <nlohmann/json.hpp>
 
-#include "Debug/Log.h"
-#include "Debug/Assert.h"
+#include "Base/Debug/Log.h"
+#include "Base/Debug/Assert.h"
 
 #include "HAL/Base/Engine.h"
 #include "HAL/Internal/SdlSurface.h"
@@ -27,7 +28,7 @@ namespace HAL
 	{
 	}
 
-	int ResourceManager::createResourceLock(const std::string& path)
+	int ResourceManager::createResourceLock(const ResourcePath& path)
 	{
 		mPathsMap[path] = mHandleIdx;
 		mPathFindMap[mHandleIdx] = path;
@@ -35,10 +36,10 @@ namespace HAL
 		return mHandleIdx++;
 	}
 
-	void ResourceManager::loadOneAtlasData(const std::string& path)
+	void ResourceManager::loadOneAtlasData(const ResourcePath& path)
 	{
 		namespace fs = std::experimental::filesystem;
-		fs::path atlasDescPath(path);
+		fs::path atlasDescPath(static_cast<std::string>(path));
 
 		try
 		{
@@ -47,7 +48,7 @@ namespace HAL
 			atlasDescriptionFile >> atlasJson;
 
 			auto meta = atlasJson.at("meta");
-			std::string atlasPath = meta.at("image");
+			ResourcePath atlasPath = meta.at("image");
 			auto sizeJson = meta.at("size");
 			Vector2D atlasSize;
 			sizeJson.at("w").get_to(atlasSize.x);
@@ -57,7 +58,7 @@ namespace HAL
 			for (const auto& frameDataJson : frames)
 			{
 				AtlasFrameData frameData;
-				std::string fileName = frameDataJson.at("filename");
+				ResourcePath fileName = frameDataJson.at("filename");
 				auto frame = frameDataJson.at("frame");
 				frameData.atlasPath = atlasPath;
 				float x, y, w, h;
@@ -83,13 +84,13 @@ namespace HAL
 		}
 	}
 
-	std::vector<std::string> ResourceManager::loadSpriteAnimClipData(const std::string& path)
+	std::vector<ResourcePath> ResourceManager::loadSpriteAnimClipData(const ResourcePath& path)
 	{
 		namespace fs = std::experimental::filesystem;
-		fs::path atlasDescPath(path);
+		fs::path atlasDescPath(static_cast<std::string>(path));
 
-		std::vector<std::string> result;
-		std::string pathBase;
+		std::vector<ResourcePath> result;
+		ResourcePath pathBase;
 		int framesCount = 0;
 
 		try
@@ -115,13 +116,13 @@ namespace HAL
 		return result;
 	}
 
-	ResourceManager::AnimGroupData ResourceManager::loadAnimGroupData(const std::string& path)
+	ResourceManager::AnimGroupData ResourceManager::loadAnimGroupData(const ResourcePath& path)
 	{
 		namespace fs = std::experimental::filesystem;
-		fs::path atlasDescPath(path);
+		fs::path atlasDescPath(static_cast<std::string>(path));
 
 		AnimGroupData result;
-		std::string pathBase;
+		ResourcePath pathBase;
 
 		try
 		{
@@ -141,7 +142,7 @@ namespace HAL
 		return result;
 	}
 
-	ResourceHandle ResourceManager::lockTexture(const std::string& path)
+	ResourceHandle ResourceManager::lockTexture(const ResourcePath& path)
 	{
 		auto it = mPathsMap.find(path);
 		if (it != mPathsMap.end())
@@ -157,10 +158,10 @@ namespace HAL
 		}
 	}
 
-	ResourceHandle ResourceManager::lockFont(const std::string& path, int fontSize)
+	ResourceHandle ResourceManager::lockFont(const ResourcePath& path, int fontSize)
 	{
 		std::string id = path + ":" + std::to_string(fontSize);
-		auto it = mPathsMap.find(id);
+		auto it = mPathsMap.find(static_cast<ResourcePath>(id));
 		if (it != mPathsMap.end())
 		{
 			++mResourceLocksCount[it->second];
@@ -168,16 +169,16 @@ namespace HAL
 		}
 		else
 		{
-			int thisHandle = createResourceLock(id);
+			int thisHandle = createResourceLock(static_cast<ResourcePath>(id));
 			mResources[thisHandle] = std::make_unique<Graphics::Font>(path, fontSize, mEngine.getRenderer().getRawRenderer());
 			return ResourceHandle(thisHandle);
 		}
 	}
 
-	ResourceHandle ResourceManager::lockSprite(const std::string& path)
+	ResourceHandle ResourceManager::lockSprite(const ResourcePath& path)
 	{
 		std::string spritePathId = "spr-" + path;
-		auto spritePathIt = mPathsMap.find(spritePathId);
+		auto spritePathIt = mPathsMap.find(static_cast<ResourcePath>(spritePathId));
 		if (spritePathIt != mPathsMap.end())
 		{
 			++mResourceLocksCount[spritePathIt->second];
@@ -185,7 +186,7 @@ namespace HAL
 		}
 		else
 		{
-			int thisHandle = createResourceLock(spritePathId);
+			int thisHandle = createResourceLock(static_cast<ResourcePath>(spritePathId));
 			ResourceHandle originalTextureHandle;
 			auto it = mAtlasFrames.find(path);
 			if (it != mAtlasFrames.end())
@@ -204,7 +205,7 @@ namespace HAL
 		}
 	}
 
-	ResourceHandle ResourceManager::lockSound(const std::string& path)
+	ResourceHandle ResourceManager::lockSound(const ResourcePath& path)
 	{
 		auto it = mPathsMap.find(path);
 		if (it != mPathsMap.end())
@@ -220,7 +221,7 @@ namespace HAL
 		}
 	}
 
-	ResourceHandle ResourceManager::lockMusic(const std::string& path)
+	ResourceHandle ResourceManager::lockMusic(const ResourcePath& path)
 	{
 		auto it = mPathsMap.find(path);
 		if (it != mPathsMap.end())
@@ -236,7 +237,7 @@ namespace HAL
 		}
 	}
 
-	ResourceHandle ResourceManager::lockSpriteAnimationClip(const std::string& path)
+	ResourceHandle ResourceManager::lockSpriteAnimationClip(const ResourcePath& path)
 	{
 		auto it = mPathsMap.find(path);
 		if (it != mPathsMap.end())
@@ -247,7 +248,7 @@ namespace HAL
 		else
 		{
 			int thisHandle = createResourceLock(path);
-			std::vector<std::string> framePaths = loadSpriteAnimClipData(path);
+			std::vector<ResourcePath> framePaths = loadSpriteAnimClipData(path);
 
 			std::vector<ResourceHandle> frames;
 			for (const auto& animFramePath : framePaths)
@@ -269,7 +270,7 @@ namespace HAL
 		}
 	}
 
-	ResourceHandle ResourceManager::lockAnimationGroup(const std::string& path)
+	ResourceHandle ResourceManager::lockAnimationGroup(const ResourcePath& path)
 	{
 		auto it = mPathsMap.find(path);
 		if (it != mPathsMap.end())
@@ -282,7 +283,7 @@ namespace HAL
 			int thisHandle = createResourceLock(path);
 			AnimGroupData animGroupData = loadAnimGroupData(path);
 
-			std::map<std::string, std::vector<ResourceHandle>> animClips;
+			std::map<StringID, std::vector<ResourceHandle>> animClips;
 			std::vector<ResourceHandle> clipsToRelease;
 			clipsToRelease.reserve(animGroupData.clips.size());
 			for (const auto& animClipPath : animGroupData.clips)
@@ -338,10 +339,10 @@ namespace HAL
 		}
 	}
 
-	void ResourceManager::loadAtlasesData(const std::string& listPath)
+	void ResourceManager::loadAtlasesData(const ResourcePath& listPath)
 	{
 		namespace fs = std::experimental::filesystem;
-		fs::path listFsPath(listPath);
+		fs::path listFsPath(static_cast<std::string>(listPath));
 
 		try
 		{

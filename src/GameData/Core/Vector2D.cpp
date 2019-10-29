@@ -39,7 +39,7 @@ bool Vector2D::isZeroLength() const
 	return x == 0.0f && y == 0.0f;
 }
 
-Vector2D Vector2D::ort() const
+Vector2D Vector2D::unit() const
 {
 	if (isZeroLength())
 	{
@@ -198,6 +198,11 @@ Vector2D operator/=(Vector2D& vector, float scalar)
 float DotProduct(const Vector2D& left, const Vector2D& right)
 {
 	return left.x * right.x + left.y * right.y;
+}
+
+Vector2D HadamardProduct(const Vector2D& left, const Vector2D& right)
+{
+	return Vector2D(left.x * right.x, left.y * right.y);
 }
 
 void to_json(nlohmann::json& outJson, const Vector2D& vector)

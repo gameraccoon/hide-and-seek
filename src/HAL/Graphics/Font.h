@@ -1,6 +1,6 @@
 #pragma once
 
-#include <string>
+#include "Base/String/Path.h"
 
 #include "HAL/Base/Resource.h"
 
@@ -14,7 +14,7 @@ namespace Graphics
 	public:
 		Font() = default;
 
-		explicit Font(const std::string& path, int fontSize, SDL_Renderer* renderer);
+		explicit Font(const ResourcePath& path, int fontSize, SDL_Renderer* renderer);
 		~Font() override;
 
 		bool isValid() const override;

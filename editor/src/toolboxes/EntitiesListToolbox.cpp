@@ -11,7 +11,7 @@
 #include <QAction>
 #include <QInputDialog>
 
-#include <Debug/Log.h>
+#include "Base/Debug/Log.h"
 
 #include "src/editorcommands/removeentitycommand.h"
 #include "src/editorcommands/addcomponentcommand.h"

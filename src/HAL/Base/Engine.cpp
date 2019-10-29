@@ -5,7 +5,7 @@
 #include <SDL_ttf.h>
 #include <SDL_mixer.h>
 
-#include "Debug/Assert.h"
+#include "Base/Debug/Assert.h"
 
 #include "HAL/IGame.h"
 #include "HAL/Internal/GlContext.h"

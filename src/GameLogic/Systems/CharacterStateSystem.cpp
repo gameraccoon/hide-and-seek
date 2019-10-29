@@ -1,6 +1,6 @@
 #include "GameLogic/Systems/CharacterStateSystem.h"
 
-#include "Debug/Log.h"
+#include "Base/Debug/Log.h"
 
 #include "GameData/Components/CharacterStateComponent.generated.h"
 #include "GameData/Components/StateMachineComponent.generated.h"
@@ -53,7 +53,7 @@ void CharacterStateSystem::update()
 
 			// update animation blackboard
 			auto& animBlackboard = animationGroups->getBlackboardRef();
-			animBlackboard.setValue<std::string>("charState", enum_to_string(state));
+			animBlackboard.setValue<StringID>("charState", enum_to_string(state));
 
 			animBlackboard.setValue<bool>(enum_to_string(CharacterStateBlackboardKeys::TryingToMove), characterState->getBlackboard().getValue<bool>(CharacterStateBlackboardKeys::TryingToMove, false));
 			animBlackboard.setValue<bool>(enum_to_string(CharacterStateBlackboardKeys::ReadyToRun), characterState->getBlackboard().getValue<bool>(CharacterStateBlackboardKeys::ReadyToRun, false));

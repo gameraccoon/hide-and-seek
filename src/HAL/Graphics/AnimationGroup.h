@@ -2,16 +2,15 @@
 
 #include <memory>
 #include <vector>
-#include <string>
 #include <map>
 
-#include "HAL/EngineFwd.h"
+#include "Base/String/StringID.h"
 
 #include "GameData/Core/ResourceHandle.h"
 
+#include "HAL/EngineFwd.h"
 #include "HAL/Base/Resource.h"
 #include "HAL/Base/Types.h"
-
 #include "HAL/Graphics/Sprite.h"
 
 namespace Graphics
@@ -20,16 +19,16 @@ namespace Graphics
 	{
 	public:
 		AnimationGroup() = default;
-		explicit AnimationGroup(std::map<std::string, std::vector<ResourceHandle>>&& animationClips, const std::string& stateMachineID, const std::string& defaultState);
+		explicit AnimationGroup(std::map<StringID, std::vector<ResourceHandle>>&& animationClips, StringID stateMachineID, StringID defaultState);
 
 		bool isValid() const override;
-		const std::string& getStateMachineID() const { return mStateMachineID; }
-		std::map<std::string, std::vector<ResourceHandle>> getAnimationClips() const { return mAnimationClips; }
-		const std::string& getDefaultState() const { return mDefaultState; }
+		StringID getStateMachineID() const { return mStateMachineID; }
+		std::map<StringID, std::vector<ResourceHandle>> getAnimationClips() const { return mAnimationClips; }
+		StringID getDefaultState() const { return mDefaultState; }
 
 	private:
-		std::map<std::string, std::vector<ResourceHandle>> mAnimationClips;
-		std::string mStateMachineID;
-		std::string mDefaultState;
+		std::map<StringID, std::vector<ResourceHandle>> mAnimationClips;
+		StringID mStateMachineID;
+		StringID mDefaultState;
 	};
 }

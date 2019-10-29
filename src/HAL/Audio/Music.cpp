@@ -7,7 +7,7 @@
 
 namespace Audio
 {
-	Music::Music(const std::string& path)
+	Music::Music(const ResourcePath& path)
 		: mMusic(Mix_LoadMUS(path.c_str()))
 	{
 	}

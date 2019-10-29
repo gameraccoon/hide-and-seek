@@ -1,6 +1,6 @@
 #pragma once
 
-#include <string>
+#include "Base/String/Path.h"
 
 #include "HAL/Base/Resource.h"
 
@@ -13,7 +13,7 @@ namespace Graphics
 	{
 	public:
 		Texture() = default;
-		explicit Texture(const std::string& path, SDL_Renderer* renderer);
+		explicit Texture(const ResourcePath& path, SDL_Renderer* renderer);
 		~Texture() override;
 
 		bool isValid() const override;

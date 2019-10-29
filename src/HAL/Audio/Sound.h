@@ -1,6 +1,6 @@
 #pragma once
 
-#include <string>
+#include "Base/String/Path.h"
 
 #include "HAL/Base/Resource.h"
 
@@ -12,7 +12,7 @@ namespace Audio
 	{
 	public:
 		Sound() = default;
-		explicit Sound(const std::string& path);
+		explicit Sound(const ResourcePath& path);
 		~Sound() override;
 
 		Mix_Chunk* getRawSound() const;

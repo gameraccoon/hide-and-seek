@@ -13,10 +13,11 @@ AddComponentCommand::AddComponentCommand(Entity entity, const QString& typeName,
 
 bool AddComponentCommand::doCommand(World* world)
 {
+	StringID componentTypeNameID = static_cast<StringID>(mComponentTypeName.toStdString());
 	world->getEntityManager().addComponent(
 		mEntity,
-		mComponentFactory->createComponent(mComponentTypeName.toStdString()),
-		mComponentFactory->getTypeIDFromString(mComponentTypeName.toStdString()).value()
+		mComponentFactory->createComponent(componentTypeNameID),
+		mComponentFactory->getTypeIDFromString(componentTypeNameID).value()
 	);
 	return false;
 }
@@ -25,7 +26,7 @@ bool AddComponentCommand::undoCommand(World* world)
 {
 	world->getEntityManager().removeComponent(
 		mEntity,
-		mComponentFactory->getTypeIDFromString(mComponentTypeName.toStdString()).value()
+		mComponentFactory->getTypeIDFromString(static_cast<StringID>(mComponentTypeName.toStdString())).value()
 	);
 	return false;
 }

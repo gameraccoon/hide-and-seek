@@ -1,8 +1,8 @@
 #include "ComponentFactory.h"
 
-#include "Debug/Assert.h"
+#include "Base/Debug/Assert.h"
 
-ComponentFactory::CreationFn ComponentFactory::getCreationFn(const std::string& typeName) const
+ComponentFactory::CreationFn ComponentFactory::getCreationFn(StringID typeName) const
 {
 	const auto& it = mComponentCreators.find(typeName);
 	if (it != mComponentCreators.cend())
@@ -14,7 +14,7 @@ ComponentFactory::CreationFn ComponentFactory::getCreationFn(const std::string& 
 	return nullptr;
 }
 
-std::optional<std::type_index> ComponentFactory::getTypeIDFromString(const std::string& typeName) const
+std::optional<std::type_index> ComponentFactory::getTypeIDFromString(StringID typeName) const
 {
 	const auto& it = mStringToTypeID.find(typeName);
 	if (it != mStringToTypeID.end())
@@ -26,7 +26,7 @@ std::optional<std::type_index> ComponentFactory::getTypeIDFromString(const std::
 	return std::nullopt;
 }
 
-std::string ComponentFactory::getStringFromTypeID(const std::type_index& typeID) const
+StringID ComponentFactory::getStringFromTypeID(const std::type_index& typeID) const
 {
 	const auto& it = mTypeIDToString.find(typeID);
 	if (it != mTypeIDToString.end())
@@ -38,7 +38,7 @@ std::string ComponentFactory::getStringFromTypeID(const std::type_index& typeID)
 	return "";
 }
 
-BaseComponent* ComponentFactory::createComponent(const std::string& typeName) const
+BaseComponent* ComponentFactory::createComponent(StringID typeName) const
 {
 	const auto& it = mComponentCreators.find(typeName);
 	if (it != mComponentCreators.cend() && it->second)
@@ -49,7 +49,7 @@ BaseComponent* ComponentFactory::createComponent(const std::string& typeName) co
 	return nullptr;
 }
 
-void ComponentFactory::forEachComponentType(std::function<void (std::type_index, const std::string&)> fn) const
+void ComponentFactory::forEachComponentType(std::function<void (std::type_index, StringID)> fn) const
 {
 	if (fn)
 	{

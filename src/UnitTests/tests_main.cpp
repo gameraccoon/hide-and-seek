@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "sdl/SDL.h"
-#include "Debug/Assert.h"
+#include "Base/Debug/Assert.h"
 
 using ::testing::EmptyTestEventListener;
 using ::testing::InitGoogleTest;

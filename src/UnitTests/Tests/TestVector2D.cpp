@@ -138,17 +138,17 @@ TEST(Vector2D, Division)
 	EXPECT_FLOAT_EQ(1.0f, testVectorB.size());					// ort size is only 1.0
 }
 
-TEST(Vector2D, Ort)
+TEST(Vector2D, Unit)
 {
 	Vector2D testVectorA(5.2f, -0.39f);
 
-	testVectorA = testVectorA.ort();
-		
+	testVectorA = testVectorA.unit();
+
 	EXPECT_EQ(Vector2D(0.9972f, -0.07476377f), testVectorA);
 	EXPECT_FLOAT_EQ(1.0f, testVectorA.size());				// ort size is only 1.0
 
 	testVectorA = Vector2D(0.0f, 0.0f);
-	EXPECT_EQ(Vector2D(0.0f, 0.0f), testVectorA.ort());
+	EXPECT_EQ(Vector2D(0.0f, 0.0f), testVectorA.unit());
 }
 
 TEST(Vector2D, GetRotation)
@@ -183,7 +183,7 @@ TEST(Vector2D, Project)
 	Vector2D testVectorB(16.9f, 803.27f);
 
 	// Another (slowlest) way to calc projection vector
-	Vector2D projectAB = testVectorA.ort() * testVectorB.size() * cos((testVectorA.rotation() - testVectorB.rotation()).getValue());
+	Vector2D projectAB = testVectorA.unit() * testVectorB.size() * cos((testVectorA.rotation() - testVectorB.rotation()).getValue());
 
 	EXPECT_EQ(Vector2D(5.2f, 0.0f), testVectorA.project(oX));
 	EXPECT_EQ(Vector2D(0.0f, 803.27f), testVectorB.project(oYxFive));

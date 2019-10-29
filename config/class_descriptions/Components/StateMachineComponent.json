@@ -14,11 +14,11 @@
 		},
 		{
 			"name": "animationSMs",
-			"type": "std::map<std::string, FSM::StateMachine<std::string, std::string>>",
+			"type": "std::map<StringID, FSM::StateMachine<StringID, StringID>>",
 			"includes": [
 				"\"GameData/FSM/StateMachine.h\"",
-				"<map>",
-				"<string>"
+				"\"Base/String/StringID.h\"",
+				"<map>"
 			],
 			"flags": ["get_by_ref", "transient"]
 		}

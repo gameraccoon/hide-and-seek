@@ -106,11 +106,11 @@ void ResourceStreamingSystem::update()
 		auto& spriteDatas = render->getSpriteDatasRef();
 
 		size_t i = 0;
-		for (const std::string& groupPath : animationGroupCreator->getAnimationGroups())
+		for (const ResourcePath& groupPath : animationGroupCreator->getAnimationGroups())
 		{
 			ResourceHandle animGroupHandle = resourceManager.lockAnimationGroup(groupPath);
 			const Graphics::AnimationGroup& group = resourceManager.getResource<Graphics::AnimationGroup>(animGroupHandle);
-			AnimationGroup<std::string> animationGroup;
+			AnimationGroup<StringID> animationGroup;
 			animationGroup.currentState = group.getDefaultState();
 			animationGroup.animationClips = group.getAnimationClips();
 			animationGroup.stateMachineId = group.getStateMachineID();

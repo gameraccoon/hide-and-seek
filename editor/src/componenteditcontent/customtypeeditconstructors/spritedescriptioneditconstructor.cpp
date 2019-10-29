@@ -20,8 +20,8 @@ namespace TypesEditConstructor
 		Edit<SpriteDescription>::Ptr edit = std::make_shared<Edit<SpriteDescription>>(initialValue);
 		Edit<SpriteDescription>::WeakPtr editWeakPtr = edit;
 		{
-			Edit<std::string>::Ptr editPath = FillEdit<std::string>::Call(layout, "path", initialValue.path);
-			editPath->bindOnChange([editWeakPtr](const std::string& /*oldValue*/, const std::string& newValue, bool)
+			Edit<ResourcePath>::Ptr editPath = FillEdit<ResourcePath>::Call(layout, "path", initialValue.path);
+			editPath->bindOnChange([editWeakPtr](const ResourcePath& /*oldValue*/, const ResourcePath& newValue, bool)
 			{
 				if (Edit<SpriteDescription>::Ptr edit = editWeakPtr.lock())
 				{

@@ -23,7 +23,7 @@ void MovementSystem::update()
 		float speed = movement->getSpeed();
 		if (speed > 0.0f)
 		{
-			transform->setLocation(transform->getLocation() + movement->getMoveDirection().ort() * speed * dt);
+			transform->setLocation(transform->getLocation() + movement->getMoveDirection().unit() * speed * dt);
 			transform->setRotation(movement->getSightDirection().rotation());
 		}
 	});

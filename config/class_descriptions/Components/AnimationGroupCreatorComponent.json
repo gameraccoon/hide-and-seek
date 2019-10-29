@@ -7,7 +7,7 @@
 			"type": "std::vector<ResourcePath>",
 			"includes": [
 				"<vector>",
-				"\"GameData/Core/CommonTypes.h\""
+				"\"Base/String/Path.h\""
 			],
 			"flags": ["get_by_ref"]
 		},

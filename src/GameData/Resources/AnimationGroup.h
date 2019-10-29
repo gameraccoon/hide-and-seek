@@ -4,6 +4,8 @@
 #include <vector>
 #include <string>
 
+#include "Base/String/StringID.h"
+
 #include "GameData/Core/ResourceHandle.h"
 #include "GameData/FSM/Blackboard.h"
 
@@ -13,6 +15,6 @@ class AnimationGroup
 public:
 	StateIDType currentState;
 	std::map<StateIDType, std::vector<ResourceHandle>> animationClips;
-	std::string stateMachineId;
+	StringID stateMachineId;
 	size_t animationClipIdx = 0;
 };

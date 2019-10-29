@@ -1,13 +1,13 @@
 #include "HAL/Graphics/Texture.h"
 
-#include "Debug/Assert.h"
+#include "Base/Debug/Assert.h"
 
 #include "SDL.h"
 #include "HAL/Internal/SdlSurface.h"
 
 namespace Graphics
 {
-	Texture::Texture(const std::string& path, SDL_Renderer* renderer)
+	Texture::Texture(const ResourcePath& path, SDL_Renderer* renderer)
 	{
 		HAL::Internal::Surface tempSurface(path.c_str());
 		mTexture = SDL_CreateTextureFromSurface(renderer, tempSurface.getRawSurface());

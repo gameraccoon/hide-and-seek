@@ -1,0 +1,13 @@
+#include "Base/String/Path.h"
+
+#include <nlohmann/json.hpp>
+
+void to_json(nlohmann::json& outJson, const ResourcePath& path)
+{
+	outJson = nlohmann::json::object({path.c_str()});
+}
+
+void from_json(const nlohmann::json& json, ResourcePath& path)
+{
+	path = static_cast<ResourcePath>(json.get<std::string>());
+}

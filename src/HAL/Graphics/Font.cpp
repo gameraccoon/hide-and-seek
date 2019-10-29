@@ -6,7 +6,7 @@
 
 namespace Graphics
 {
-	Font::Font(const std::string& path, int fontSize, SDL_Renderer* renderer)
+	Font::Font(const ResourcePath& path, int fontSize, SDL_Renderer* renderer)
 	{
 		mFont = FC_CreateFont();
 		FC_LoadFont(mFont, renderer, path.c_str(), fontSize, FC_MakeColor(0, 0, 0, 255), TTF_STYLE_NORMAL);

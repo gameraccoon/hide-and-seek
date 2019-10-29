@@ -3,6 +3,8 @@
 #include <limits>
 #include <string>
 
+#include "Base/String/Path.h"
+
 #include <QLabel>
 #include <QLineEdit>
 #include <QDoubleValidator>
@@ -90,6 +92,29 @@ namespace TypesEditConstructor
 			if (Edit<std::string>::Ptr edit = editWeakPtr.lock())
 			{
 				edit->transmitValueChange(newValue.toStdString());
+			}
+		});
+
+		layout->addWidget(stringEdit);
+		return edit;
+	}
+
+	template<>
+	Edit<ResourcePath>::Ptr FillEdit<ResourcePath>::Call(QLayout* layout, const QString& label, const ResourcePath& initialValue)
+	{
+		FillLabel(layout, label);
+
+		QLineEdit* stringEdit = new QLineEdit();
+		stringEdit->setText(QString::fromStdString(initialValue));
+
+		Edit<ResourcePath>::Ptr edit = std::make_shared<Edit<ResourcePath>>(initialValue.c_str());
+		Edit<ResourcePath>::WeakPtr editWeakPtr = edit;
+
+		QObject::connect(stringEdit, &QLineEdit::textChanged, edit->getOwner(), [editWeakPtr](const QString& newValue)
+		{
+			if (Edit<ResourcePath>::Ptr edit = editWeakPtr.lock())
+			{
+				edit->transmitValueChange(static_cast<ResourcePath>(newValue.toStdString()));
 			}
 		});
 

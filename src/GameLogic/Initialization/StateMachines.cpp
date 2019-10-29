@@ -1,5 +1,7 @@
 #include "GameLogic/Initialization/StateMachines.h"
 
+#include "Base/String/StringID.h"
+
 #include "GameData/Enums/MoveDirection4.generated.h"
 
 namespace StateMachines
@@ -41,24 +43,24 @@ namespace StateMachines
 		}
 	}
 
-	static void RegisterCharacterAnimationSM(FSM::StateMachine<std::string, std::string>& sm)
+	static void RegisterCharacterAnimationSM(FSM::StateMachine<StringID, StringID>& sm)
 	{
-		using FSMType = FSM::StateMachine<std::string, std::string>;
+		using FSMType = FSM::StateMachine<StringID, StringID>;
 
 		{
 			FSMType::StateLinkRules rules;
-			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, std::string>("move", "charState", enum_to_string(CharacterState::Walk));
-			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, std::string>("move", "charState", enum_to_string(CharacterState::Run));
-			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, std::string>("shoot", "charState", enum_to_string(CharacterState::Shoot));
-			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, std::string>("shoot", "charState", enum_to_string(CharacterState::WalkAndShoot));
-			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, std::string>("reload", "charState", enum_to_string(CharacterState::Reload));
+			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, StringID>("move", "charState", enum_to_string(CharacterState::Walk));
+			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, StringID>("move", "charState", enum_to_string(CharacterState::Run));
+			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, StringID>("shoot", "charState", enum_to_string(CharacterState::Shoot));
+			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, StringID>("shoot", "charState", enum_to_string(CharacterState::WalkAndShoot));
+			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, StringID>("reload", "charState", enum_to_string(CharacterState::Reload));
 			sm.addState("idle", std::move(rules));
 		}
 		{
 			FSMType::StateLinkRules rules;
-			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, std::string>("idle", "charState", enum_to_string(CharacterState::Idle));
-			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, std::string>("reload", "charState", enum_to_string(CharacterState::Reload));
-			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, std::string>("shoot", "charState", enum_to_string(CharacterState::Shoot));
+			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, StringID>("idle", "charState", enum_to_string(CharacterState::Idle));
+			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, StringID>("reload", "charState", enum_to_string(CharacterState::Reload));
+			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, StringID>("shoot", "charState", enum_to_string(CharacterState::Shoot));
 			sm.addState("move", std::move(rules));
 		}
 		{
@@ -73,9 +75,9 @@ namespace StateMachines
 		}
 	}
 
-	static void RegisterCharacterLegsAnimationSM(FSM::StateMachine<std::string, std::string>& sm)
+	static void RegisterCharacterLegsAnimationSM(FSM::StateMachine<StringID, StringID>& sm)
 	{
-		using FSMType = FSM::StateMachine<std::string, std::string>;
+		using FSMType = FSM::StateMachine<StringID, StringID>;
 
 		// Top level states
 		{

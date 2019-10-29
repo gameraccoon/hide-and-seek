@@ -5,7 +5,7 @@
 
 namespace Graphics
 {
-	AnimationGroup::AnimationGroup(std::map<std::string, std::vector<ResourceHandle>>&& animationClips, const std::string& stateMachineID, const std::string& defaultState)
+	AnimationGroup::AnimationGroup(std::map<StringID, std::vector<ResourceHandle>>&& animationClips, StringID stateMachineID, StringID defaultState)
 		: mAnimationClips(animationClips)
 		, mStateMachineID(stateMachineID)
 		, mDefaultState(defaultState)

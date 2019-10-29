@@ -2,7 +2,7 @@
 
 #include <nlohmann/json.hpp>
 
-#include "Debug/Assert.h"
+#include "Base/Debug/Assert.h"
 
 void to_json(nlohmann::json& outJson, Entity entity)
 {

@@ -6,8 +6,8 @@
 #include <nlohmann/json.hpp>
 
 #include "ComponentFactory.h"
-#include "Debug/Assert.h"
-#include "Debug/Log.h"
+#include "Base/Debug/Assert.h"
+#include "Base/Debug/Log.h"
 
 static const int EntityInsertionTrialsLimit = 10;
 
@@ -196,7 +196,7 @@ void EntityManager::getPrefabFromEntity(nlohmann::json& json, Entity entity)
 	for (BaseComponent* component : components)
 	{
 		auto componenObj = nlohmann::json{};
-		std::string componentTypeName = component->getComponentTypeName();
+		StringID componentTypeName = component->getComponentTypeName();
 		component->toJson(componenObj);
 		json[componentTypeName] = componenObj;
 	}
@@ -211,8 +211,9 @@ Entity EntityManager::createPrefabInstance(const nlohmann::json& json, const Com
 
 void EntityManager::applyPrefabToExistentEntity(const nlohmann::json& json, Entity entity, const ComponentFactory& componentFactory)
 {
-	for (const auto& [componentTypeName, componentObj] : json.items())
+	for (const auto& [componentTypeNameStr, componentObj] : json.items())
 	{
+		StringID componentTypeName = static_cast<StringID>(componentTypeNameStr);
 		BaseComponent* component = componentFactory.createComponent(componentTypeName);
 
 		component->fromJson(componentObj);
@@ -272,8 +273,9 @@ void EntityManager::fromJson(const nlohmann::json& json, const ComponentFactory&
 	}
 
 	const auto& components = json.at("components");
-	for (const auto& [type, vector] : components.items())
+	for (const auto& [typeStr, vector] : components.items())
 	{
+		StringID type = static_cast<StringID>(typeStr);
 		std::optional<std::type_index> typeIndex = componentFactory.getTypeIDFromString(type);
 		ComponentFactory::CreationFn componentCreateFn = componentFactory.getCreationFn(type);
 		if (typeIndex.has_value() && componentCreateFn != nullptr)

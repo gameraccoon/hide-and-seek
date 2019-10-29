@@ -2,8 +2,9 @@
 
 #include <string>
 
+#include "Base/String/Path.h"
+
 #include "GameData/Resources/SpriteParams.h"
-#include "GameData/Core/CommonTypes.h"
 
 struct SpriteDescription
 {

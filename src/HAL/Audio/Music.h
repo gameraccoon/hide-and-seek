@@ -1,6 +1,7 @@
 #pragma once
 
-#include <string>
+#include "Base/String/Path.h"
+
 #include "HAL/Base/Resource.h"
 
 struct _Mix_Music;
@@ -12,7 +13,7 @@ namespace Audio
 	{
 	public:
 		Music() = default;
-		explicit Music(const std::string& path);
+		explicit Music(const ResourcePath& path);
 		~Music() override;
 
 		Mix_Music* getRawMusic() const;

@@ -2,7 +2,7 @@
 
 #include <QtWidgets/qcombobox.h>
 
-#include "Debug/Assert.h"
+#include "Base/Debug/Assert.h"
 #include "ECS/ComponentFactory.h"
 #include "GameData/World.h"
 
@@ -15,7 +15,7 @@ RemoveComponentCommand::RemoveComponentCommand(Entity entity, const QString& typ
 
 bool RemoveComponentCommand::doCommand(World* world)
 {
-	std::string typeName = mComponentTypeName.toStdString();
+	StringID typeName = static_cast<StringID>(mComponentTypeName.toStdString());
 
 	if (mSerializedComponent.empty())
 	{
@@ -43,14 +43,15 @@ bool RemoveComponentCommand::doCommand(World* world)
 
 bool RemoveComponentCommand::undoCommand(World* world)
 {
-	BaseComponent* component = mComponentFactory->createComponent(mComponentTypeName.toStdString());
+	StringID componentTypenameID = static_cast<StringID>(mComponentTypeName.toStdString());
+	BaseComponent* component = mComponentFactory->createComponent(componentTypenameID);
 
 	component->fromJson(mSerializedComponent);
 
 	world->getEntityManager().addComponent(
 		mEntity,
 		component,
-		mComponentFactory->getTypeIDFromString(mComponentTypeName.toStdString()).value()
+		mComponentFactory->getTypeIDFromString(componentTypenameID).value()
 	);
 	return false;
 }

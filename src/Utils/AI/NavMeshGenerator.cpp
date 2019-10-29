@@ -7,7 +7,7 @@
 #include <DetourNavMesh.h>
 #include <DetourNavMeshBuilder.h>
 
-#include "Debug/Log.h"
+#include "Base/Debug/Log.h"
 
 #include "GameData/Components/CollisionComponent.generated.h"
 #include "GameData/Components/TransformComponent.generated.h"

@@ -1,11 +1,12 @@
 #pragma once
 
-#include <string>
 #include <map>
 #include <unordered_map>
 #include <functional>
 
-#include "Debug/Assert.h"
+#include "Base/Debug/Assert.h"
+#include "Base/String/StringID.h"
+#include "Base/String/Path.h"
 
 #include "GameData/Core/ResourceHandle.h"
 
@@ -16,7 +17,7 @@
 namespace HAL
 {
 	/**
-	 * Class that manage static resources such as textures
+	 * Class that manages resources such as textures
 	 */
 	class ResourceManager
 	{
@@ -30,13 +31,13 @@ namespace HAL
 		ResourceManager(ResourceManager&&) = delete;
 		ResourceManager& operator=(ResourceManager&&) = delete;
 
-		ResourceHandle lockFont(const std::string& path, int fontSize);
-		ResourceHandle lockTexture(const std::string& path);
-		ResourceHandle lockSprite(const std::string& path);
-		ResourceHandle lockSpriteAnimationClip(const std::string& path);
-		ResourceHandle lockAnimationGroup(const std::string& path);
-		ResourceHandle lockSound(const std::string& path);
-		ResourceHandle lockMusic(const std::string& path);
+		ResourceHandle lockFont(const ResourcePath& path, int fontSize);
+		ResourceHandle lockTexture(const ResourcePath& path);
+		ResourceHandle lockSprite(const ResourcePath& path);
+		ResourceHandle lockSpriteAnimationClip(const ResourcePath& path);
+		ResourceHandle lockAnimationGroup(const ResourcePath& path);
+		ResourceHandle lockSound(const ResourcePath& path);
+		ResourceHandle lockMusic(const ResourcePath& path);
 
 		template<typename T>
 		[[nodiscard]] const T& getResource(ResourceHandle handle)
@@ -48,44 +49,41 @@ namespace HAL
 
 		void unlockResource(ResourceHandle handle);
 
-		void loadAtlasesData(const std::string& listPath);
+		void loadAtlasesData(const ResourcePath& listPath);
 
 	private:
 		struct AtlasFrameData
 		{
-			std::string atlasPath;
+			ResourcePath atlasPath;
 			Graphics::QuadUV quadUV;
 		};
 
 		struct AnimGroupData
 		{
-			std::map<std::string, std::string> clips;
-			std::string stateMachineID;
-			std::string defaultState;
+			std::map<StringID, ResourcePath> clips;
+			StringID stateMachineID;
+			StringID defaultState;
 		};
 
 		using ReleaseFn = std::function<void(Resource*)>;
 
 	private:
-		int createResourceLock(const std::string& path);
+		int createResourceLock(const ResourcePath& path);
 
-		void loadOneAtlasData(const std::string& path);
-		std::vector<std::string> loadSpriteAnimClipData(const std::string& path);
-		AnimGroupData loadAnimGroupData(const std::string& path);
+		void loadOneAtlasData(const ResourcePath& path);
+		std::vector<ResourcePath> loadSpriteAnimClipData(const ResourcePath& path);
+		AnimGroupData loadAnimGroupData(const ResourcePath& path);
 
 	private:
 		std::unordered_map<ResourceHandle::IndexType, std::unique_ptr<Resource>> mResources;
 		std::unordered_map<ResourceHandle::IndexType, int> mResourceLocksCount;
 		std::unordered_map<ResourceHandle::IndexType, ReleaseFn> mResourceReleaseFns;
-		std::unordered_map<std::string, ResourceHandle::IndexType> mPathsMap;
-		std::map<ResourceHandle::IndexType, std::string> mPathFindMap;
+		std::unordered_map<ResourcePath, ResourceHandle::IndexType> mPathsMap;
+		std::map<ResourceHandle::IndexType, ResourcePath> mPathFindMap;
 
-		std::unordered_map<std::string, AtlasFrameData> mAtlasFrames;
+		std::unordered_map<ResourcePath, AtlasFrameData> mAtlasFrames;
 
 		Engine& mEngine;
-
-		std::string mGraphicInfoFileName;
-		std::string mImageFolder;
 
 		int mHandleIdx = 0;
 	};

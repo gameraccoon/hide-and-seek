@@ -2,7 +2,7 @@
 
 #include "IGame.h"
 
-#include "Base/ResourceManager.h"
+#include "HAL/Base/ResourceManager.h"
 #include "HAL/EngineFwd.h"
 
 namespace HAL
