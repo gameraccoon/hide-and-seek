@@ -94,5 +94,5 @@ namespace std
 	};
 }
 
-void to_json(nlohmann::json& outJson, const StringID& path);
-void from_json(const nlohmann::json& json, StringID& path);
+void to_json(nlohmann::json& outJson, const StringID& stringID);
+void from_json(const nlohmann::json& json, StringID& stringID);

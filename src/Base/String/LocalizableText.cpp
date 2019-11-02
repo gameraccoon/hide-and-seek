@@ -2,12 +2,12 @@
 
 #include <nlohmann/json.hpp>
 
-void to_json(nlohmann::json& outJson, const TextString& path)
+void to_json(nlohmann::json& outJson, const TextString& text)
 {
-	outJson = nlohmann::json::object({path.c_str()});
+	outJson = nlohmann::json(static_cast<std::string>(text));
 }
 
-void from_json(const nlohmann::json& json, TextString& path)
+void from_json(const nlohmann::json& json, TextString& text)
 {
-	path = static_cast<TextString>(json.get<std::string>());
+	text = static_cast<TextString>(json.get<std::string>());
 }

@@ -4,7 +4,7 @@
 
 void to_json(nlohmann::json& outJson, const ResourcePath& path)
 {
-	outJson = nlohmann::json::object({path.c_str()});
+	outJson = nlohmann::json(static_cast<std::string>(path));
 }
 
 void from_json(const nlohmann::json& json, ResourcePath& path)

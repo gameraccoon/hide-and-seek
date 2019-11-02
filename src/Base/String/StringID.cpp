@@ -5,14 +5,14 @@
 #include "Base/Debug/Assert.h"
 #include "Base/String/GatheredStringIDs.generated.h"
 
-void to_json(nlohmann::json& outJson, const StringID& path)
+void to_json(nlohmann::json& outJson, const StringID& stringID)
 {
-	outJson = ID_TO_STR(path);
+	outJson = nlohmann::json(ID_TO_STR(stringID));
 }
 
-void from_json(const nlohmann::json& json, StringID& path)
+void from_json(const nlohmann::json& json, StringID& stringID)
 {
-	path = static_cast<StringID>(STR_TO_ID(json.get<std::string>()));
+	stringID = STR_TO_ID(json.get<std::string>());
 }
 
 StringIDManager::StringIDManager()

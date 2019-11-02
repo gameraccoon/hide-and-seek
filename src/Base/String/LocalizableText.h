@@ -26,5 +26,5 @@ namespace std
 	};
 }
 
-void to_json(nlohmann::json& outJson, const TextString& path);
-void from_json(const nlohmann::json& json, TextString& path);
+void to_json(nlohmann::json& outJson, const TextString& text);
+void from_json(const nlohmann::json& json, TextString& text);
