@@ -198,7 +198,7 @@ void EntityManager::getPrefabFromEntity(nlohmann::json& json, Entity entity)
 		auto componenObj = nlohmann::json{};
 		StringID componentTypeName = component->getComponentTypeName();
 		component->toJson(componenObj);
-		json[componentTypeName] = componenObj;
+		json[ID_TO_STR(componentTypeName)] = componenObj;
 	}
 }
 
@@ -213,7 +213,7 @@ void EntityManager::applyPrefabToExistentEntity(const nlohmann::json& json, Enti
 {
 	for (const auto& [componentTypeNameStr, componentObj] : json.items())
 	{
-		StringID componentTypeName = static_cast<StringID>(componentTypeNameStr);
+		StringID componentTypeName = STR_TO_ID(componentTypeNameStr);
 		BaseComponent* component = componentFactory.createComponent(componentTypeName);
 
 		component->fromJson(componentObj);
@@ -246,7 +246,7 @@ nlohmann::json EntityManager::toJson(const ComponentFactory& componentFactory) c
 			}
 			componentArrayObject.push_back(componenObj);
 		}
-		components[componentFactory.getStringFromTypeID(componentArray.first)] = componentArrayObject;
+		components[ID_TO_STR(componentFactory.getStringFromTypeID(componentArray.first))] = componentArrayObject;
 	}
 	outJson["components"] = components;
 
@@ -275,7 +275,7 @@ void EntityManager::fromJson(const nlohmann::json& json, const ComponentFactory&
 	const auto& components = json.at("components");
 	for (const auto& [typeStr, vector] : components.items())
 	{
-		StringID type = static_cast<StringID>(typeStr);
+		StringID type = STR_TO_ID(typeStr);
 		std::optional<std::type_index> typeIndex = componentFactory.getTypeIDFromString(type);
 		ComponentFactory::CreationFn componentCreateFn = componentFactory.getCreationFn(type);
 		if (typeIndex.has_value() && componentCreateFn != nullptr)

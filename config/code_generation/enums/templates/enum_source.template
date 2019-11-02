@@ -3,7 +3,7 @@
 template <>
 StringID get_enum_name<{enum_name}>()
 {{
-	return "{enum_name}";
+	return STR_TO_ID("{enum_name}");
 }}
 
 template <>
@@ -13,7 +13,7 @@ StringID enum_to_string({enum_name} value)
 	{{
 		{enum_to_string_case}
 	}}
-	return "";
+	return StringID();
 }}
 
 template <>

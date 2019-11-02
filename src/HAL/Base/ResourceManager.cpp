@@ -309,7 +309,12 @@ namespace HAL
 	void ResourceManager::unlockResource(ResourceHandle handle)
 	{
 		auto locksCntIt = mResourceLocksCount.find(handle.ResourceIndex);
-		AssertRetVoid(locksCntIt != mResourceLocksCount.end(), "Unlocking non-locked resource");
+		if ALMOST_NEVER(locksCntIt == mResourceLocksCount.end())
+		{
+			ReportError("Unlocking non-locked resource");
+			return;
+		}
+
 		if (locksCntIt->second > 1)
 		{
 			--(locksCntIt->second);

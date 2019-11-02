@@ -14,6 +14,6 @@ namespace Graphics
 
 	bool AnimationGroup::isValid() const
 	{
-		return !mStateMachineID.empty();
+		return mStateMachineID.isValid();
 	}
 }

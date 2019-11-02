@@ -98,7 +98,11 @@ namespace FSM
 				{
 					replaceToChildState(currentState);
 					needToProcess = true;
-					AssertRet(currentState != previousState, currentState, "FSM cycle detected");
+					if ALMOST_NEVER(currentState == previousState)
+					{
+						ReportError("FSM cycle detected");
+						return currentState;
+					}
 					continue;
 				}
 
@@ -117,7 +121,11 @@ namespace FSM
 						replaceToChildState(currentState);
 						needToProcess = true;
 
-						AssertRet(currentState != previousState, currentState, "FSM cycle detected");
+						if ALMOST_NEVER(currentState == previousState)
+						{
+							ReportError("FSM cycle detected");
+							return currentState;
+						}
 						break;
 					}
 				}

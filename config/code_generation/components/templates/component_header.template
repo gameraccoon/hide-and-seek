@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Base/String/StringID.h"
+
 #include "ECS/Component.h"
 
 {attribute_includes}
@@ -15,7 +17,7 @@ public:
 	{attribute_accessors_ref_decl}
 
 public:
-	static StringID GetClassName() {{ return "{class_name}"; }}
+	static StringID GetClassName() {{ return STR_TO_ID("{class_name}"); }}
 
 	void toJson(nlohmann::json& outJson) const override;
 	void fromJson(const nlohmann::json& json) override;

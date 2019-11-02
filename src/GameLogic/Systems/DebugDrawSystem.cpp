@@ -188,7 +188,7 @@ void DebugDrawSystem::update()
 		const Graphics::Font& font = mResourceManager.getResource<Graphics::Font>(mFontHandle);
 		world.getEntityManager().forEachComponentSet<CharacterStateComponent, TransformComponent>([&renderer, &font, drawShift](CharacterStateComponent* characterState, TransformComponent* transform)
 		{
-			renderer.renderText(font, transform->getLocation() + drawShift, {255, 255, 255, 255}, enum_to_string(characterState->getState()).c_str());
+			renderer.renderText(font, transform->getLocation() + drawShift, {255, 255, 255, 255}, ID_TO_STR(enum_to_string(characterState->getState())).c_str());
 		});
 	}
 }

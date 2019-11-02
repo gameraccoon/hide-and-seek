@@ -32,7 +32,7 @@ void AnimationSystem::update()
 		for (auto& data : animationGroups->getDataRef())
 		{
 			auto smIt = stateMachines->getAnimationSMs().find(data.stateMachineId);
-			Assert(smIt != stateMachines->getAnimationSMs().end(), "State machine not found %s", data.stateMachineId.c_str());
+			Assert(smIt != stateMachines->getAnimationSMs().end(), "State machine not found %s", ID_TO_STR(data.stateMachineId).c_str());
 			auto newState = smIt->second.getNextState(animationGroups->getBlackboard(), data.currentState);
 			if (newState != data.currentState)
 			{

@@ -3,6 +3,8 @@
 #include "sdl/SDL.h"
 #include "Base/Debug/Assert.h"
 
+#include "UnitTests/TestAssertHelper.h"
+
 using ::testing::EmptyTestEventListener;
 using ::testing::InitGoogleTest;
 using ::testing::Test;
@@ -49,6 +51,7 @@ class TestInfoLogger : public EmptyTestEventListener
 
 void SGTestingEnvironment::SetUp()
 {
+	EnableFailOnAssert();
 }
 
 void SGTestingEnvironment::TearDown()
@@ -56,9 +59,9 @@ void SGTestingEnvironment::TearDown()
 }
 
 // Called before a test starts.
-void TestInfoLogger::OnTestStart(const TestInfo& test_info)
+void TestInfoLogger::OnTestStart(const TestInfo& /*test_info*/)
 {
-	LogInfo("======= Test %s.%s starting.", test_info.test_case_name(), test_info.name());
+//	LogInfo("======= Test %s.%s starting.", test_info.test_case_name(), test_info.name());
 }
 
 // Called after a failed assertion or a SUCCEED() invocation.
@@ -73,7 +76,8 @@ void TestInfoLogger::OnTestPartResult(const TestPartResult& test_part_result)
 // Called after a test ends.
 void TestInfoLogger::OnTestEnd(const TestInfo& /*test_info*/)
 {
-	//LogInfo("======= Test %s.%s ending.", test_info.test_case_name(), test_info.name());
+//	LogInfo("======= Test %s.%s ending.", test_info.test_case_name(), test_info.name());
+	EnableFailOnAssert();
 }
 
 int main(int argc, char* argv[])

@@ -1,5 +1,6 @@
 #pragma once
 
+// ALMOST_ALWAYS/ALMOST_NEVER (likely/unlikely early support)
 #ifdef __has_cpp_attribute
 	#if __has_cpp_attribute(likely)
 		#define ALMOST_ALWAYS(expr) [[likely]] (expr)
@@ -23,6 +24,7 @@
 	#endif
 #endif
 
+// MAYBE_UNUSED (for suppressing 'variable unused' warning)
 #ifdef __has_cpp_attribute
 	#if __has_cpp_attribute(maybe_unused)
 		#define MAYBE_UNUSED [[maybe_unused]]
@@ -35,3 +37,6 @@
 	    #define MAYBE_UNUSED __attribute__((unused))
 	#endif
 #endif
+
+// CONSTEXPR_ASSERT (to fail compilation when the condition is not passed in a constexpr function)
+#define CONSTEXPR_ASSERT(cond, msg) ((cond) ? void() : std::abort())

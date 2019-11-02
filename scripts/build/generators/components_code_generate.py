@@ -43,7 +43,7 @@ def get_attribute_data_dictionary(attribute):
     attribute_data_dictionary["attribute_include_full"] = attribute_data_dictionary["attribute_include_full"].rstrip("\n")
 
 
-# fill missing fields from defaults
+    # fill missing fields from defaults
     for field_name, field_value in attribute_optional_fields.items():
         if ("attribute_" + field_name) not in attribute_data_dictionary:
             attribute_data_dictionary["attribute_" + field_name] = field_value
@@ -83,7 +83,7 @@ def append_attributes_data_dictionary(data_dictionary, data_description):
 
         # generate content
         for replace_content_dict in replacement_content_elements:
-            # skip delimiters for the last attribute
+            # skip delimiters for the last item
             if replace_content_dict is replacement_content_elements[len(replacement_content_elements) - 1]:
                 delimiter_dict = empty_delimiter_dictionary
             else:
@@ -183,7 +183,7 @@ def generate_component_list_descriptions(components):
         template = read_template(component_template["name"], templates_dir)
         filled_template = ""
         for component in components:
-            # skip delimiters for the last attribute
+            # skip delimiters for the last item
             if component is components[len(components) - 1]:
                 delimiter_dict = empty_delimiter_dictionary
             else:

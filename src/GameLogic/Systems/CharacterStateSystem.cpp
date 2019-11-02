@@ -53,7 +53,7 @@ void CharacterStateSystem::update()
 
 			// update animation blackboard
 			auto& animBlackboard = animationGroups->getBlackboardRef();
-			animBlackboard.setValue<StringID>("charState", enum_to_string(state));
+			animBlackboard.setValue<StringID>(STR_TO_ID("charState"), enum_to_string(state));
 
 			animBlackboard.setValue<bool>(enum_to_string(CharacterStateBlackboardKeys::TryingToMove), characterState->getBlackboard().getValue<bool>(CharacterStateBlackboardKeys::TryingToMove, false));
 			animBlackboard.setValue<bool>(enum_to_string(CharacterStateBlackboardKeys::ReadyToRun), characterState->getBlackboard().getValue<bool>(CharacterStateBlackboardKeys::ReadyToRun, false));
@@ -65,19 +65,19 @@ void CharacterStateSystem::update()
 
 				if (relativeRotation < PI * 0.25f && relativeRotation > -PI * 0.25f)
 				{
-					animBlackboard.setValue<MoveDirection4>("moveDir", MoveDirection4::Front);
+					animBlackboard.setValue<MoveDirection4>(STR_TO_ID("moveDir"), MoveDirection4::Front);
 				}
 				else if (relativeRotation > PI * 0.75f || relativeRotation < -PI * 0.75f)
 				{
-					animBlackboard.setValue<MoveDirection4>("moveDir", MoveDirection4::Back);
+					animBlackboard.setValue<MoveDirection4>(STR_TO_ID("moveDir"), MoveDirection4::Back);
 				}
 				else if (relativeRotation < 0.0f)
 				{
-					animBlackboard.setValue<MoveDirection4>("moveDir", MoveDirection4::Left);
+					animBlackboard.setValue<MoveDirection4>(STR_TO_ID("moveDir"), MoveDirection4::Left);
 				}
 				else
 				{
-					animBlackboard.setValue<MoveDirection4>("moveDir", MoveDirection4::Right);
+					animBlackboard.setValue<MoveDirection4>(STR_TO_ID("moveDir"), MoveDirection4::Right);
 				}
 			}
 		});

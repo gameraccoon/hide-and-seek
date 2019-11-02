@@ -56,7 +56,7 @@ nlohmann::json ComponentSetHolder::toJson(const ComponentFactory& componentFacto
 	{
 		auto componenObj = nlohmann::json{};
 		component.second->toJson(componenObj);
-		components[componentFactory.getStringFromTypeID(component.first)] = componenObj;
+		components[ID_TO_STR(componentFactory.getStringFromTypeID(component.first))] = componenObj;
 	}
 	outJson["components"] = components;
 
@@ -68,7 +68,7 @@ void ComponentSetHolder::fromJson(const nlohmann::json& json, const ComponentFac
 	const auto& components = json.at("components");
 	for (const auto& [stringType, componentData] : components.items())
 	{
-		StringID type = static_cast<StringID>(stringType);
+		StringID type = STR_TO_ID(stringType);
 		std::optional<std::type_index> typeIndex = componentFactory.getTypeIDFromString(type);
 		ComponentFactory::CreationFn componentCreateFn = componentFactory.getCreationFn(type);
 		if (typeIndex.has_value() && componentCreateFn != nullptr)
