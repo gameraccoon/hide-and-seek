@@ -6,7 +6,7 @@
 #include "ECS/ComponentFactory.h"
 #include "GameData/World.h"
 
-RemoveComponentCommand::RemoveComponentCommand(Entity entity, const QString& typeName, ComponentFactory* factory)
+RemoveComponentCommand::RemoveComponentCommand(Entity entity, StringID typeName, ComponentFactory* factory)
 	: mEntity(entity)
 	, mComponentTypeName(typeName)
 	, mComponentFactory(factory)
@@ -15,13 +15,11 @@ RemoveComponentCommand::RemoveComponentCommand(Entity entity, const QString& typ
 
 bool RemoveComponentCommand::doCommand(World* world)
 {
-	StringID typeName = static_cast<StringID>(mComponentTypeName.toStdString());
-
 	if (mSerializedComponent.empty())
 	{
 		std::vector<BaseComponent*> components = world->getEntityManager().getAllEntityComponents(mEntity);
 
-		auto it = std::find_if(components.begin(), components.end(), [&typeName](BaseComponent* component)
+		auto it = std::find_if(components.begin(), components.end(), [typeName = mComponentTypeName](BaseComponent* component)
 		{
 			return component->getComponentTypeName() == typeName;
 		});
@@ -36,22 +34,21 @@ bool RemoveComponentCommand::doCommand(World* world)
 
 	world->getEntityManager().removeComponent(
 		mEntity,
-		mComponentFactory->getTypeIDFromString(typeName).value()
+		mComponentFactory->getTypeIDFromString(mComponentTypeName).value()
 	);
 	return false;
 }
 
 bool RemoveComponentCommand::undoCommand(World* world)
 {
-	StringID componentTypenameID = static_cast<StringID>(mComponentTypeName.toStdString());
-	BaseComponent* component = mComponentFactory->createComponent(componentTypenameID);
+	BaseComponent* component = mComponentFactory->createComponent(mComponentTypeName);
 
 	component->fromJson(mSerializedComponent);
 
 	world->getEntityManager().addComponent(
 		mEntity,
 		component,
-		mComponentFactory->getTypeIDFromString(componentTypenameID).value()
+		mComponentFactory->getTypeIDFromString(mComponentTypeName).value()
 	);
 	return false;
 }

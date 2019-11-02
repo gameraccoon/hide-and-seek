@@ -47,9 +47,9 @@ namespace TypesEditConstructor
 			QComboBox* stringList = new QComboBox();
 			for (StringID value : get_all_enum_value_names<T>())
 			{
-				stringList->addItem(QString::fromStdString(static_cast<std::string>(value)));
+				stringList->addItem(QString::fromStdString(ID_TO_STR(value)));
 			}
-			stringList->setCurrentText(QString::fromStdString(enum_to_string(initialValue)));
+			stringList->setCurrentText(QString::fromStdString(ID_TO_STR(enum_to_string(initialValue))));
 
 			typename Edit<T>::Ptr edit = std::make_shared<Edit<T>>(initialValue);
 			typename Edit<T>::WeakPtr editWeakPtr = edit;
@@ -58,7 +58,7 @@ namespace TypesEditConstructor
 			{
 				if (typename Edit<T>::Ptr edit = editWeakPtr.lock())
 				{
-					edit->transmitValueChange(string_to_enum<T>(static_cast<StringID>(newValue.toStdString())));
+					edit->transmitValueChange(string_to_enum<T>(STR_TO_ID(newValue.toStdString())));
 				}
 			});
 

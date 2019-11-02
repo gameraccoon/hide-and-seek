@@ -92,7 +92,7 @@ void ComponentsListToolbox::onSelectedEntityChanged(OptionalEntity newEntity)
 		std::vector<BaseComponent*> components = currentWorld->getEntityManager().getAllEntityComponents(Entity(entityUid));
 		for (auto& component : components)
 		{
-			componentsList->addItem(QString::fromStdString(component->getComponentTypeName()));
+			componentsList->addItem(QString::fromStdString(ID_TO_STR(component->getComponentTypeName())));
 		}
 	}
 
@@ -149,7 +149,7 @@ void ComponentsListToolbox::removeSelectedComponent()
 	mMainWindow->getCommandStack().executeNewCommand<RemoveComponentCommand>(
 		currentWorld,
 		mLastSelectedEntity.getEntity(),
-		currentItem->text(),
+		STR_TO_ID(currentItem->text().toStdString()),
 		&mMainWindow->getComponentFactory()
 	);
 }

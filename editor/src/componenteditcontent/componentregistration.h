@@ -11,7 +11,7 @@ class ComponentFactory;
 
 namespace ComponentRegistration
 {
-	void RegisterToEditFactory(std::map<std::string, std::unique_ptr<AbstractEditFactory>>& factories);
+	void RegisterToEditFactory(std::map<StringID, std::unique_ptr<AbstractEditFactory>>& factories);
 	void RegisterComponentFactory(ComponentFactory& factory);
 }
 

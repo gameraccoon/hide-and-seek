@@ -5,14 +5,12 @@
 #include "ECS/Entity.h"
 #include "ECS/ComponentFactory.h"
 
-#include <QString>
-
 class World;
 
 class AddComponentCommand : public EditorCommand
 {
 public:
-	AddComponentCommand(Entity mEntity, const QString& typeName, ComponentFactory* factory);
+	AddComponentCommand(Entity mEntity, StringID typeName, ComponentFactory* factory);
 
 	bool doCommand(World* world) override;
 	bool undoCommand(World* world) override;
@@ -20,6 +18,6 @@ public:
 
 private:
 	Entity mEntity;
-	QString mComponentTypeName;
+	StringID mComponentTypeName;
 	ComponentFactory* mComponentFactory;
 };

@@ -6,15 +6,13 @@
 
 #include <nlohmann/json.hpp>
 
-#include <QString>
-
 class World;
 class ComponentFactory;
 
 class RemoveComponentCommand : public EditorCommand
 {
 public:
-	RemoveComponentCommand(Entity mEntity, const QString& typeName, ComponentFactory* factory);
+	RemoveComponentCommand(Entity mEntity, StringID typeName, ComponentFactory* factory);
 
 	bool doCommand(World* world) override;
 	bool undoCommand(World* world) override;
@@ -22,7 +20,7 @@ public:
 
 private:
 	Entity mEntity;
-	QString mComponentTypeName;
+	StringID mComponentTypeName;
 	ComponentFactory* mComponentFactory;
 	nlohmann::json mSerializedComponent;
 };

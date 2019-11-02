@@ -242,9 +242,9 @@ void EntitiesListToolbox::onAddComponentToEntityRequested()
 	dialog->setCancelButtonText("Cancel");
 	dialog->setComboBoxEditable(false);
 	QStringList items;
-	mMainWindow->getComponentFactory().forEachComponentType([&items](std::type_index, const std::string& name)
+	mMainWindow->getComponentFactory().forEachComponentType([&items](std::type_index, StringID name)
 	{
-		items.append(QString::fromStdString(name));
+		items.append(QString::fromStdString(ID_TO_STR(name)));
 	});
 	dialog->setComboBoxItems(items);
 	connect(dialog, &QInputDialog::textValueSelected, this, &EntitiesListToolbox::addComponentToEntity);
@@ -274,7 +274,7 @@ void EntitiesListToolbox::addComponentToEntity(const QString& typeName)
 	mMainWindow->getCommandStack().executeNewCommand<AddComponentCommand>(
 		currentWorld,
 		Entity(currentItem->text().toUInt()),
-		typeName,
+		STR_TO_ID(typeName.toStdString()),
 		&mMainWindow->getComponentFactory()
 	);
 }

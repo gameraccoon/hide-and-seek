@@ -93,6 +93,7 @@ add_folder_as_library(${GAME_SRC_DIR}/Utils Utils)
 
 include_directories(
 	${EXTERNALS_DIR}/include
+	${EXTERNALS_DIR}/sources
 	${GAME_SRC_DIR}
 )
 

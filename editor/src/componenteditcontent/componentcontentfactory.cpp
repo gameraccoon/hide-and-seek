@@ -29,7 +29,7 @@ void ComponentContentFactory::replaceEditContent(QLayout* layout, Entity entity,
 	else
 	{
 		mCurrentEdit = nullptr;
-		ReportError("ComponentEditFactory not registered for component type '%s'", component->getComponentTypeName().c_str());
+		ReportError("ComponentEditFactory not registered for component type '%s'", ID_TO_STR(component->getComponentTypeName()).c_str());
 	}
 
 	if (newContent != nullptr && mContentWidget == nullptr)
