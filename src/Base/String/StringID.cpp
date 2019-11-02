@@ -7,7 +7,7 @@
 
 void to_json(nlohmann::json& outJson, const StringID& path)
 {
-	outJson = nlohmann::json::object({ID_TO_STR(path).c_str()});
+	outJson = ID_TO_STR(path);
 }
 
 void from_json(const nlohmann::json& json, StringID& path)
