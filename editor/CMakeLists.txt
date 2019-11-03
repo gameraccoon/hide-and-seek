@@ -151,3 +151,11 @@ set_target_properties(${APP_NAME} PROPERTIES
 	LIBRARY_OUTPUT_DIRECTORY "${INTERMEDIATES_DIR}/${ads_PlatformDir}/lib"
 	RUNTIME_OUTPUT_DIRECTORY "${GAME_BIN_DIR}"
 )
+
+# pre-compile additional code generation
+add_custom_target(
+	AdditionalCodeGeneration
+	COMMAND ${PYTHON_EXECUTABLE} ${GAME_BASE_DIR}/scripts/build/precompile_code_generate.py ${GAME_BASE_DIR}
+	COMMENT "C++ pre-compile additional code generation"
+)
+add_dependencies(Base AdditionalCodeGeneration)

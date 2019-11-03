@@ -61,6 +61,7 @@ execute_process(
 	COMMAND ${PYTHON_EXECUTABLE} ${GAME_BASE_DIR}/scripts/build/code_generate.py ${GAME_BASE_DIR}
 )
 
+find_package(PythonInterp 3.5 REQUIRED)
 if (NOT WIN32)
     find_package(SDL2 REQUIRED)
     find_package(SDL2_image REQUIRED)
@@ -194,3 +195,11 @@ if (WIN32)
 	)
 	file(COPY ${WIN32_DLLS} DESTINATION ${GAME_BIN_DIR})
 endif()
+
+# pre-compile additional code generation
+add_custom_target(
+	AdditionalCodeGeneration
+	COMMAND ${PYTHON_EXECUTABLE} ${GAME_BASE_DIR}/scripts/build/precompile_code_generate.py ${GAME_BASE_DIR}
+	COMMENT "C++ pre-compile additional code generation"
+)
+add_dependencies(Base AdditionalCodeGeneration)

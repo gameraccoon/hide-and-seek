@@ -89,6 +89,19 @@ def fnv64a(str):
     return hval
 
 
+class HashCollisionError(Exception):
+    def __init__(self, message):
+        self.message = message
+
+
+def detect_duplicates(string_data):
+    string_data.sort(key=lambda x: x["string_hash"])
+
+    for i in range (len (string_data) -1):
+        if string_data[i]["string_hash"] == string_data[i+1]["string_hash"]:
+            raise HashCollisionError("Hash collision between %s and %s: %u" % (string_data[i]["string_text"], string_data[i+1]["string_text"], string_data[i]["string_hash"]))
+
+
 def gather_string_data():
     string_literals = []
 
@@ -103,6 +116,8 @@ def gather_string_data():
     result = []
     for string_literal in string_literals:
         result.append({"string_text": string_literal, "string_hash": fnv64a(string_literal)})
+
+    detect_duplicates(result)
 
     return result
 
