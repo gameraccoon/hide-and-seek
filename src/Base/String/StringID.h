@@ -76,7 +76,7 @@ public:
 	std::string getStringFromID(StringID id);
 
 private:
-	std::unordered_map<StringID::KeyType, std::string> stringIDsToStringsMap;
+	std::unordered_map<StringID::KeyType, std::string> mStringIDsToStringsMap;
 };
 
 #define STR_TO_ID(strLiteral) StringIDManager::StringToID(strLiteral)

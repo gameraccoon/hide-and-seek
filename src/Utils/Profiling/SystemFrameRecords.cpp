@@ -1,14 +1,11 @@
 #include "Utils/Profiling/SystemFrameRecords.h"
 
 #include <fstream>
-#include <experimental/filesystem>
 
 void SystemFrameRecords::printToFile(const std::vector<std::string>& systemNames, const std::string& fileName)
 {
-	namespace fs = std::experimental::filesystem;
-	fs::path outPath(fileName);
-	std::ofstream outFile(fileName);
-	print(std::move(systemNames), outFile);
+	std::ofstream outStream(fileName);
+	print(std::move(systemNames), outStream);
 }
 
 void SystemFrameRecords::print(const std::vector<std::string>& systemNames, std::ostream& outStream)

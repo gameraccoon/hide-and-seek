@@ -16,7 +16,7 @@ void from_json(const nlohmann::json& json, StringID& stringID)
 }
 
 StringIDManager::StringIDManager()
-	: stringIDsToStringsMap(getGatheredStringIDs())
+	: mStringIDsToStringsMap(getGatheredStringIDs())
 {
 }
 
@@ -30,15 +30,15 @@ StringID StringIDManager::stringToID(const std::string& stringValue)
 {
 	const StringID::KeyType hash = hash_64_fnv1a_const(stringValue.c_str());
 	AssertFatal(hash != 0UL, "String hashing result should not be 0: '%s'", stringValue.c_str());
-	auto [it, hasInserted] = stringIDsToStringsMap.emplace(hash, stringValue);
+	auto [it, hasInserted] = mStringIDsToStringsMap.emplace(hash, stringValue);
 	AssertFatal(hasInserted || it->second == stringValue, "Hash collision for '%s' and '%s'", stringValue.c_str(), it->second.c_str());
 	return StringID(hash);
 }
 
 std::string StringIDManager::getStringFromID(StringID id)
 {
-	auto it = stringIDsToStringsMap.find(id.hash);
-	if (it != stringIDsToStringsMap.end())
+	auto it = mStringIDsToStringsMap.find(id.hash);
+	if (it != mStringIDsToStringsMap.end())
 	{
 		return it->second;
 	}
