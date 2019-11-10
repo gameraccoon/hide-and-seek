@@ -8,6 +8,7 @@
 
 #include "Utils/Application/ArgumentsParser.h"
 #include "Utils/Profiling/SystemFrameRecords.h"
+#include "Utils/Jobs/WorkerManager.h"
 
 #include "HAL/GameBase.h"
 
@@ -31,6 +32,7 @@ protected:
 	GameData mGameData;
 	WorldHolder mWorldHolder {&mWorld, mGameData};
 	SystemsManager mSystemsManager;
+	Jobs::WorkerManager mWorkerManager{1};
 	TimeData mTime;
 
 private:

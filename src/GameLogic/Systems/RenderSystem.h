@@ -5,6 +5,8 @@
 
 #include "ECS/System.h"
 
+#include "Utils/Jobs/WorkerManager.h"
+
 #include "HAL/Base/ResourceManager.h"
 #include "HAL/EngineFwd.h"
 
@@ -21,7 +23,7 @@ public:
 	using KeyStatesMap = std::unordered_map<int, bool>;
 
 public:
-	RenderSystem(WorldHolder& worldHolder, HAL::Engine& engine, HAL::ResourceManager& resourceManager);
+	RenderSystem(WorldHolder& worldHolder, HAL::Engine& engine, HAL::ResourceManager& resourceManager, Jobs::WorkerManager& jobsWorkerManager);
 	~RenderSystem() override = default;
 
 	void update() override;
@@ -36,5 +38,6 @@ private:
 	WorldHolder& mWorldHolder;
 	HAL::Engine& mEngine;
 	HAL::ResourceManager& mResourceManager;
+	Jobs::WorkerManager& mJobsWorkerManager;
 	ResourceHandle mLightSpriteHandle;
 };

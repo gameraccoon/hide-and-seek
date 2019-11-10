@@ -8,6 +8,7 @@
 
 #include "Utils/Application/ArgumentsParser.h"
 #include "Utils/Profiling/SystemFrameRecords.h"
+#include "Utils/Jobs/WorkerManager.h"
 
 #include "HAL/GameBase.h"
 #include "HAL/KeyStatesMap.h"
@@ -38,6 +39,7 @@ private:
 	HAL::KeyStatesMap mKeyStates;
 	SystemsManager mSystemsManager;
 	ComponentFactory mComponentFactory;
+	Jobs::WorkerManager mJobsWorkerManager{Jobs::GetAvailableThreadsCount()};
 	TimeData mTime;
 
 	bool mProfileSystems = false;

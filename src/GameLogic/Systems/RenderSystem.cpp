@@ -18,10 +18,11 @@
 #include <glm/matrix.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-RenderSystem::RenderSystem(WorldHolder& worldHolder, HAL::Engine& engine, HAL::ResourceManager& resourceManager)
+RenderSystem::RenderSystem(WorldHolder& worldHolder, HAL::Engine& engine, HAL::ResourceManager& resourceManager, Jobs::WorkerManager& jobsWorkerManager)
 	: mWorldHolder(worldHolder)
 	, mEngine(engine)
 	, mResourceManager(resourceManager)
+	, mJobsWorkerManager(jobsWorkerManager)
 {
 	mLightSpriteHandle = resourceManager.lockSprite("resources/textures/light.png");
 }
@@ -111,6 +112,69 @@ Vector2D RenderSystem::GetPlayerSightPosition(World& world)
 	return result;
 }
 
+class VisibilityPolygonCalculationJob : public Jobs::BaseJob
+{
+public:
+	struct Result
+	{
+		std::vector<Vector2D> polygon;
+		Vector2D location;
+	};
+
+	using FinalizeFn = std::function<void(const std::vector<Result>&, Vector2D)>;
+	using CollidableComponents = std::vector<std::tuple<CollisionComponent*, TransformComponent*>>;
+
+public:
+	VisibilityPolygonCalculationJob(Vector2D maxFov, const CollidableComponents& collidableComponents, FinalizeFn finalizeFn)
+		: mMaxFov(maxFov)
+		, mCollidableComponents(collidableComponents)
+		, mFinalizeFn(std::move(finalizeFn))
+	{
+		Assert(mFinalizeFn, "finalizeFn should be set");
+	}
+
+	void process() override
+	{
+		VisibilityPolygonCalculator visibilityPolygonCalculator;
+		mCalculationResults.reserve(componentsToProcess.size());
+		TransformComponent* transform;
+		for (auto components : componentsToProcess)
+		{
+			std::tie(std::ignore, transform) = components;
+			mCalculationResults.emplace_back();
+			visibilityPolygonCalculator.calculateVisibilityPolygon(mCalculationResults.back().polygon, mCollidableComponents, transform->getLocation(), mMaxFov);
+			mCalculationResults.back().location = transform->getLocation();
+		}
+	}
+
+	void finalize() override
+	{
+		if (mFinalizeFn)
+		{
+			mFinalizeFn(mCalculationResults, mMaxFov);
+		}
+	}
+
+public:
+	std::vector<std::tuple<LightComponent*, TransformComponent*>> componentsToProcess;
+
+private:
+	Vector2D mMaxFov;
+	const CollidableComponents& mCollidableComponents;
+	FinalizeFn mFinalizeFn;
+
+	std::vector<Result> mCalculationResults;
+};
+
+static size_t GetJobDivisor(size_t maxThreadsCount)
+{
+	// this alghorithm is subject to change
+	// we need to divide work into chunks to pass to different threads
+	// take to consideration that the count of free threads most likely
+	// smaller that threadsCount and can fluctuate over time
+	return maxThreadsCount * 3 - 1;
+}
+
 void RenderSystem::drawLights(World& world, const Vector2D& drawShift, const Vector2D& maxFov)
 {
 	const Graphics::Sprite& lightSprite = mResourceManager.getResource<Graphics::Sprite>(mLightSpriteHandle);
@@ -120,21 +184,55 @@ void RenderSystem::drawLights(World& world, const Vector2D& drawShift, const Vec
 	}
 
 	const auto collidableComponents = world.getEntityManager().getComponents<CollisionComponent, TransformComponent>();
-	VisibilityPolygonCalculator visibilityPolygonCalculator;
 
-	std::vector<Vector2D> polygon;
-	// draw player visibility polygon
-	Vector2D playerSightPosition = GetPlayerSightPosition(world);
-	visibilityPolygonCalculator.calculateVisibilityPolygon(polygon, collidableComponents, playerSightPosition, maxFov);
-	drawVisibilityPolygon(lightSprite, polygon, maxFov, drawShift + playerSightPosition);
+	const std::vector<std::tuple<LightComponent*, TransformComponent*>> componentSets = world.getEntityManager().getComponents<LightComponent, TransformComponent>();
 
-	// ToDo: we calculate visibility polygon for every light source in the each frame to
-	// be able to work with worst-case scenario as long as possible
-	// optimizations such as dirty flag and spatial hash are on the way to be impelemented
-	// draw light
-	world.getEntityManager().forEachComponentSet<LightComponent, TransformComponent>([&collidableComponents, &visibilityPolygonCalculator, maxFov, &drawShift, &lightSprite, &polygon, this](LightComponent* /*light*/, TransformComponent* transform)
+	if (!componentSets.empty())
 	{
-		visibilityPolygonCalculator.calculateVisibilityPolygon(polygon, collidableComponents, transform->getLocation(), maxFov);
-		drawVisibilityPolygon(lightSprite, polygon, maxFov, drawShift + transform->getLocation());
-	});
+		size_t threadsCount = mJobsWorkerManager.getThreadsCount();
+		AssertFatal(threadsCount != 0, "Jobs Worker Manager threads count can't be zero");
+
+
+		size_t chunksCount = GetJobDivisor(threadsCount + 1);
+		size_t chunkSize = std::max((componentSets.size() / chunksCount) + (componentSets.size() % chunksCount > 0 ? 1 : 0), 1ul);
+
+		std::vector<Jobs::BaseJob::UniquePtr> jobs;
+		size_t chunkItemIndex = 0;
+
+		VisibilityPolygonCalculationJob::FinalizeFn finalizeFn = [this, drawShift, &lightSprite](const std::vector<VisibilityPolygonCalculationJob::Result>& results, Vector2D maxFov)
+		{
+			for (auto& calcResult : results)
+			{
+				this->drawVisibilityPolygon(lightSprite, calcResult.polygon, maxFov, drawShift + calcResult.location);
+			}
+		};
+
+		for (auto& set : componentSets)
+		{
+			if (chunkItemIndex == 0)
+			{
+				jobs.emplace_back(new VisibilityPolygonCalculationJob(maxFov, collidableComponents, finalizeFn));
+			}
+
+			VisibilityPolygonCalculationJob* jobData = static_cast<VisibilityPolygonCalculationJob*>(jobs.rbegin()->get());
+
+			jobData->componentsToProcess.emplace_back(set);
+
+			++chunkItemIndex;
+			if (chunkItemIndex >= chunkSize)
+			{
+				chunkItemIndex = 0;
+			}
+		}
+
+		mJobsWorkerManager.runJobs(std::move(jobs));
+
+		VisibilityPolygonCalculator visibilityPolygonCalculator;
+
+		std::vector<Vector2D> polygon;
+		// draw player visibility polygon
+		Vector2D playerSightPosition = GetPlayerSightPosition(world);
+		visibilityPolygonCalculator.calculateVisibilityPolygon(polygon, collidableComponents, playerSightPosition, maxFov);
+		drawVisibilityPolygon(lightSprite, polygon, maxFov, drawShift + playerSightPosition);
+	}
 }

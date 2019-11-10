@@ -74,7 +74,7 @@ void Game::initSystems()
 	mSystemsManager.registerSystem<CollisionSystem>(mWorldHolder);
 	mSystemsManager.registerSystem<ResourceStreamingSystem>(mWorldHolder, getResourceManager());
 	mSystemsManager.registerSystem<AnimationSystem>(mWorldHolder, mTime);
-	mSystemsManager.registerSystem<RenderSystem>(mWorldHolder, getEngine(), getResourceManager());
+	mSystemsManager.registerSystem<RenderSystem>(mWorldHolder, getEngine(), getResourceManager(), mJobsWorkerManager);
 	mSystemsManager.registerSystem<DebugDrawSystem>(mWorldHolder, mTime, getEngine(), getResourceManager());
 }
 
