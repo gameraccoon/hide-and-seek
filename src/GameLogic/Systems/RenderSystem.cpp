@@ -56,7 +56,7 @@ void RenderSystem::update()
 
 	if (!renderMode || renderMode->getIsDrawLightsEnabled())
 	{
-		drawLights(world, drawShift, maxFov);
+		drawLights(world, drawShift, maxFov, screenHalfSize);
 	}
 
 	if (!renderMode || renderMode->getIsDrawVisibleEntitiesEnabled())
@@ -175,7 +175,7 @@ static size_t GetJobDivisor(size_t maxThreadsCount)
 	return maxThreadsCount * 3 - 1;
 }
 
-void RenderSystem::drawLights(World& world, const Vector2D& drawShift, const Vector2D& maxFov)
+void RenderSystem::drawLights(World& world, const Vector2D& drawShift, const Vector2D& maxFov, const Vector2D& screenHalfSize)
 {
 	const Graphics::Sprite& lightSprite = mResourceManager.getResource<Graphics::Sprite>(mLightSpriteHandle);
 	if (!lightSprite.isValid())
@@ -183,15 +183,31 @@ void RenderSystem::drawLights(World& world, const Vector2D& drawShift, const Vec
 		return;
 	}
 
+	Vector2D playerSightPosition = GetPlayerSightPosition(world);
+
 	const auto collidableComponents = world.getEntityManager().getComponents<CollisionComponent, TransformComponent>();
 
-	const std::vector<std::tuple<LightComponent*, TransformComponent*>> componentSets = world.getEntityManager().getComponents<LightComponent, TransformComponent>();
+	std::vector<std::tuple<LightComponent*, TransformComponent*>> componentSets = world.getEntityManager().getComponents<LightComponent, TransformComponent>();
+
+	Vector2D emitterPositionBordersLT = playerSightPosition - screenHalfSize - maxFov*0.5;
+	Vector2D emitterPositionBordersRB = playerSightPosition + screenHalfSize + maxFov*0.5;
+
+	componentSets.erase(
+		std::remove_if(
+			std::begin(componentSets),
+			std::end(componentSets),
+			[emitterPositionBordersLT, emitterPositionBordersRB](auto& componentSet)
+			{
+				return !std::get<1>(componentSet)->getLocation().isInside(emitterPositionBordersLT, emitterPositionBordersRB);
+			}
+		),
+		std::end(componentSets)
+	);
 
 	if (!componentSets.empty())
 	{
 		size_t threadsCount = mJobsWorkerManager.getThreadsCount();
 		AssertFatal(threadsCount != 0, "Jobs Worker Manager threads count can't be zero");
-
 
 		size_t chunksCount = GetJobDivisor(threadsCount + 1);
 		size_t chunkSize = std::max((componentSets.size() / chunksCount) + (componentSets.size() % chunksCount > 0 ? 1 : 0), 1ul);
@@ -231,7 +247,6 @@ void RenderSystem::drawLights(World& world, const Vector2D& drawShift, const Vec
 
 		std::vector<Vector2D> polygon;
 		// draw player visibility polygon
-		Vector2D playerSightPosition = GetPlayerSightPosition(world);
 		visibilityPolygonCalculator.calculateVisibilityPolygon(polygon, collidableComponents, playerSightPosition, maxFov);
 		drawVisibilityPolygon(lightSprite, polygon, maxFov, drawShift + playerSightPosition);
 	}

@@ -32,7 +32,7 @@ public:
 private:
 	void drawVisibilityPolygon(const Graphics::Sprite& lightSprite, const std::vector<Vector2D>& polygon, const Vector2D& fowSize, const Vector2D& drawShift);
 	static Vector2D GetPlayerSightPosition(World& world);
-	void drawLights(World& world, const Vector2D& drawShift, const Vector2D& maxFov);
+	void drawLights(World& world, const Vector2D& drawShift, const Vector2D& maxFov, const Vector2D& screenHalfSize);
 
 private:
 	WorldHolder& mWorldHolder;

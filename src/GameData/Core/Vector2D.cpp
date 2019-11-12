@@ -69,7 +69,7 @@ Vector2D Vector2D::normal() const
 	return Vector2D(rotation() - Rotator(PI * 0.5f));
 }
 
-Vector2D Vector2D::project(Vector2D base) const
+Vector2D Vector2D::project(const Vector2D& base) const
 {
 	float qSize = base.qSize();
 	Vector2D result(ZERO_VECTOR);
@@ -81,6 +81,11 @@ Vector2D Vector2D::project(Vector2D base) const
 	}
 
 	return result;
+}
+
+bool Vector2D::isInside(const Vector2D& lt, const Vector2D& rb)
+{
+	return x >= lt.x && x <= rb.x && y >= lt.y && y <= rb.y;
 }
 
 Vector2D operator-(const Vector2D& vector)

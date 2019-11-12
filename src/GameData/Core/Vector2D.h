@@ -35,7 +35,10 @@ public:
 	Vector2D normal() const;
 
 	/** Project this vector to line that parallel with the vector "base" */
-	Vector2D project(Vector2D base) const;
+	Vector2D project(const Vector2D& base) const;
+
+	/** Check that current point is inside an AABB rect with the given top-left and bottom-right points */
+	bool isInside(const Vector2D& lt, const Vector2D& rb);
 
 	/** Get angle between vector and OX axis */
 	Rotator rotation() const;
