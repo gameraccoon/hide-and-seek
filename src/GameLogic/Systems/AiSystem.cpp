@@ -343,14 +343,16 @@ static void RecalcNavmesh(dtNavMesh* m_navMesh, dtNavMeshQuery* m_navQuery, floa
 }
 
 
-AiSystem::AiSystem(WorldHolder& worldHolder)
+AiSystem::AiSystem(WorldHolder& worldHolder, const TimeData& timeData)
 	: mWorldHolder(worldHolder)
+	, mTime(timeData)
 {
 }
 
 void AiSystem::update()
 {
 	World& world = mWorldHolder.getWorld();
+	const GameplayTimestamp timestampNow = mTime.currentTimestamp;
 
 	auto [navMeshComponent] = world.getWorldComponents().getComponents<NavMeshComponent>();
 
@@ -359,11 +361,20 @@ void AiSystem::update()
 		return;
 	}
 
-	// ToDo: we recalculate navmesh every frame to be able to work with worst-case scenario as long as possible
-	// optimizations such as dirty flag and spatial hash are on the way to be impelemented
-	NavMeshGenerator generator;
 	std::vector<std::tuple<CollisionComponent*, TransformComponent*>> collisions = world.getEntityManager().getComponents<CollisionComponent, TransformComponent>();
-	generator.generateNavMesh(navMeshComponent->getNavMeshRef(), collisions);
+
+	auto it = std::find_if(std::begin(collisions), std::end(collisions), [lastUpdateTimestamp = navMeshComponent->getUpdateTimestamp()](const std::tuple<CollisionComponent*, TransformComponent*>& set)
+	{
+		GameplayTimestamp lightUpdateTimestamp = std::get<1>(set)->getUpdateTimestamp();
+		return lightUpdateTimestamp > lastUpdateTimestamp && std::get<0>(set)->getGeometry().type == HullType::Angular;
+	});
+
+	if (it != collisions.end())
+	{
+		NavMeshGenerator generator;
+		generator.generateNavMesh(navMeshComponent->getNavMeshRef(), collisions);
+		navMeshComponent->setUpdateTimestamp(timestampNow);
+	}
 
 	OptionalEntity playerEntity = world.getPlayerControlledEntity();
 	if (!playerEntity.isValid())

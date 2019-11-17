@@ -68,7 +68,7 @@ void Game::update(float dt)
 void Game::initSystems()
 {
 	mSystemsManager.registerSystem<ControlSystem>(mWorldHolder, getEngine(), mKeyStates);
-	mSystemsManager.registerSystem<AiSystem>(mWorldHolder);
+	mSystemsManager.registerSystem<AiSystem>(mWorldHolder, mTime);
 	mSystemsManager.registerSystem<CharacterStateSystem>(mWorldHolder);
 	mSystemsManager.registerSystem<MovementSystem>(mWorldHolder, mTime);
 	mSystemsManager.registerSystem<CollisionSystem>(mWorldHolder, mTime);
