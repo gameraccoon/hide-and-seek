@@ -18,8 +18,13 @@
 #include <glm/matrix.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-RenderSystem::RenderSystem(WorldHolder& worldHolder, HAL::Engine& engine, HAL::ResourceManager& resourceManager, Jobs::WorkerManager& jobsWorkerManager)
+RenderSystem::RenderSystem(WorldHolder& worldHolder,
+   const TimeData& timeData,
+   HAL::Engine& engine,
+   HAL::ResourceManager& resourceManager,
+   Jobs::WorkerManager& jobsWorkerManager)
 	: mWorldHolder(worldHolder)
+	, mTime(timeData)
 	, mEngine(engine)
 	, mResourceManager(resourceManager)
 	, mJobsWorkerManager(jobsWorkerManager)
@@ -125,9 +130,10 @@ public:
 	using CollidableComponents = std::vector<std::tuple<CollisionComponent*, TransformComponent*>>;
 
 public:
-	VisibilityPolygonCalculationJob(Vector2D maxFov, const CollidableComponents& collidableComponents, FinalizeFn finalizeFn)
+	VisibilityPolygonCalculationJob(Vector2D maxFov, const CollidableComponents& collidableComponents, GameplayTimestamp timestamp, FinalizeFn finalizeFn)
 		: mMaxFov(maxFov)
 		, mCollidableComponents(collidableComponents)
+		, mTimestamp(timestamp)
 		, mFinalizeFn(std::move(finalizeFn))
 	{
 		Assert(mFinalizeFn, "finalizeFn should be set");
@@ -136,14 +142,33 @@ public:
 	void process() override
 	{
 		VisibilityPolygonCalculator visibilityPolygonCalculator;
-		mCalculationResults.reserve(componentsToProcess.size());
-		TransformComponent* transform;
-		for (auto components : componentsToProcess)
+		mCalculationResults.resize(componentsToProcess.size());
+		for (size_t i = 0; i < componentsToProcess.size(); ++i)
 		{
-			std::tie(std::ignore, transform) = components;
-			mCalculationResults.emplace_back();
-			visibilityPolygonCalculator.calculateVisibilityPolygon(mCalculationResults.back().polygon, mCollidableComponents, transform->getLocation(), mMaxFov);
-			mCalculationResults.back().location = transform->getLocation();
+			auto [light, transform] = componentsToProcess[i];
+
+			// find some object that got changed since we calculated them last time
+			auto it = std::find_if(std::begin(mCollidableComponents), std::end(mCollidableComponents), [lastUpdateTimestamp = light->getUpdateTimestamp()](const std::tuple<CollisionComponent*, TransformComponent*>& set)
+			{
+				GameplayTimestamp lightUpdateTimestamp = std::get<1>(set)->getUpdateTimestamp();
+				return lightUpdateTimestamp > lastUpdateTimestamp && std::get<0>(set)->getGeometry().type == HullType::Angular;
+			});
+
+			if (it != mCollidableComponents.end())
+			{
+				visibilityPolygonCalculator.calculateVisibilityPolygon(light->getCachedVisibilityPolygonRef(), mCollidableComponents, transform->getLocation(), mMaxFov);
+				light->setUpdateTimestamp(mTimestamp);
+			}
+
+			const std::vector<Vector2D>& visibilityPolygon = light->getCachedVisibilityPolygon();
+
+			mCalculationResults[i].polygon.resize(visibilityPolygon.size());
+			std::copy(
+				std::begin(visibilityPolygon),
+				std::end(visibilityPolygon),
+				std::begin(mCalculationResults[i].polygon)
+			);
+			mCalculationResults[i].location = transform->getLocation();
 		}
 	}
 
@@ -161,6 +186,7 @@ public:
 private:
 	Vector2D mMaxFov;
 	const CollidableComponents& mCollidableComponents;
+	const GameplayTimestamp mTimestamp;
 	FinalizeFn mFinalizeFn;
 
 	std::vector<Result> mCalculationResults;
@@ -177,6 +203,8 @@ static size_t GetJobDivisor(size_t maxThreadsCount)
 
 void RenderSystem::drawLights(World& world, const Vector2D& drawShift, const Vector2D& maxFov, const Vector2D& screenHalfSize)
 {
+	const GameplayTimestamp timestampNow = mTime.currentTimestamp;
+
 	const Graphics::Sprite& lightSprite = mResourceManager.getResource<Graphics::Sprite>(mLightSpriteHandle);
 	if (!lightSprite.isValid())
 	{
@@ -192,6 +220,7 @@ void RenderSystem::drawLights(World& world, const Vector2D& drawShift, const Vec
 	Vector2D emitterPositionBordersLT = playerSightPosition - screenHalfSize - maxFov*0.5;
 	Vector2D emitterPositionBordersRB = playerSightPosition + screenHalfSize + maxFov*0.5;
 
+	// exclude lights that are too far to be visible
 	componentSets.erase(
 		std::remove_if(
 			std::begin(componentSets),
@@ -227,7 +256,7 @@ void RenderSystem::drawLights(World& world, const Vector2D& drawShift, const Vec
 		{
 			if (chunkItemIndex == 0)
 			{
-				jobs.emplace_back(new VisibilityPolygonCalculationJob(maxFov, collidableComponents, finalizeFn));
+				jobs.emplace_back(new VisibilityPolygonCalculationJob(maxFov, collidableComponents, timestampNow, finalizeFn));
 			}
 
 			VisibilityPolygonCalculationJob* jobData = static_cast<VisibilityPolygonCalculationJob*>(jobs.rbegin()->get());
@@ -242,12 +271,11 @@ void RenderSystem::drawLights(World& world, const Vector2D& drawShift, const Vec
 		}
 
 		mJobsWorkerManager.runJobs(std::move(jobs));
-
-		VisibilityPolygonCalculator visibilityPolygonCalculator;
-
-		std::vector<Vector2D> polygon;
-		// draw player visibility polygon
-		visibilityPolygonCalculator.calculateVisibilityPolygon(polygon, collidableComponents, playerSightPosition, maxFov);
-		drawVisibilityPolygon(lightSprite, polygon, maxFov, drawShift + playerSightPosition);
 	}
+
+	// draw player visibility polygon
+	VisibilityPolygonCalculator visibilityPolygonCalculator;
+	std::vector<Vector2D> polygon;
+	visibilityPolygonCalculator.calculateVisibilityPolygon(polygon, collidableComponents, playerSightPosition, maxFov);
+	drawVisibilityPolygon(lightSprite, polygon, maxFov, drawShift + playerSightPosition);
 }

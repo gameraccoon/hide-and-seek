@@ -5,6 +5,7 @@
 #include "ECS/System.h"
 
 #include "GameLogic/SharedManagers/WorldHolder.h"
+#include "GameLogic/SharedManagers/TimeData.h"
 
 /**
  * System that resolve object collisions
@@ -15,7 +16,7 @@ public:
 	using KeyStatesMap = std::unordered_map<int, bool>;
 
 public:
-	CollisionSystem(WorldHolder& worldHolder);
+	CollisionSystem(WorldHolder& worldHolder, const TimeData& timeData);
 	~CollisionSystem() override = default;
 
 	void update() override;
@@ -23,4 +24,5 @@ public:
 
 private:
 	WorldHolder& mWorldHolder;
+	const TimeData& mTime;
 };

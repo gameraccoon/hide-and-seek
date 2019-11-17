@@ -26,9 +26,9 @@ void CollidingCircularUnitsTestCase::initTestCase(const ArgumentsParser& /*argum
 	mSystemsManager.registerSystem<TestCircularUnitsSystem>(mWorldHolder);
 	mSystemsManager.registerSystem<CharacterStateSystem>(mWorldHolder);
 	mSystemsManager.registerSystem<MovementSystem>(mWorldHolder, mTime);
-	mSystemsManager.registerSystem<CollisionSystem>(mWorldHolder);
+	mSystemsManager.registerSystem<CollisionSystem>(mWorldHolder, mTime);
 	mSystemsManager.registerSystem<ResourceStreamingSystem>(mWorldHolder, getResourceManager());
-	mSystemsManager.registerSystem<RenderSystem>(mWorldHolder, getEngine(), getResourceManager(), mWorkerManager);
+	mSystemsManager.registerSystem<RenderSystem>(mWorldHolder, mTime, getEngine(), getResourceManager(), mWorkerManager);
 
 	Entity playerEntity = mWorld.getEntityManager().addEntity();
 	{

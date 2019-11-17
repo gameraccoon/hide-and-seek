@@ -11,6 +11,7 @@
 #include "HAL/EngineFwd.h"
 
 #include "GameLogic/SharedManagers/WorldHolder.h"
+#include "GameLogic/SharedManagers/TimeData.h"
 
 class Vector2D;
 
@@ -23,7 +24,12 @@ public:
 	using KeyStatesMap = std::unordered_map<int, bool>;
 
 public:
-	RenderSystem(WorldHolder& worldHolder, HAL::Engine& engine, HAL::ResourceManager& resourceManager, Jobs::WorkerManager& jobsWorkerManager);
+	RenderSystem(WorldHolder& worldHolder,
+				 const TimeData& timeData,
+				 HAL::Engine& engine,
+				 HAL::ResourceManager& resourceManager,
+				 Jobs::WorkerManager& jobsWorkerManager);
+
 	~RenderSystem() override = default;
 
 	void update() override;
@@ -36,6 +42,7 @@ private:
 
 private:
 	WorldHolder& mWorldHolder;
+	const TimeData& mTime;
 	HAL::Engine& mEngine;
 	HAL::ResourceManager& mResourceManager;
 	Jobs::WorkerManager& mJobsWorkerManager;

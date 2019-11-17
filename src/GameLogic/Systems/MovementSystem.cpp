@@ -18,13 +18,15 @@ void MovementSystem::update()
 {
 	World& world = mWorldHolder.getWorld();
 	const float dt = mTime.dt;
+	const GameplayTimestamp timestampNow = mTime.currentTimestamp;
 
-	world.getEntityManager().forEachComponentSet<MovementComponent, TransformComponent>([dt](MovementComponent* movement, TransformComponent* transform) {
+	world.getEntityManager().forEachComponentSet<MovementComponent, TransformComponent>([dt, timestampNow](MovementComponent* movement, TransformComponent* transform) {
 		float speed = movement->getSpeed();
 		if (speed > 0.0f)
 		{
 			transform->setLocation(transform->getLocation() + movement->getMoveDirection().unit() * speed * dt);
 			transform->setRotation(movement->getSightDirection().rotation());
+			transform->setUpdateTimestamp(timestampNow);
 		}
 	});
 }

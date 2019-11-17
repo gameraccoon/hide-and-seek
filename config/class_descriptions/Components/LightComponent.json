@@ -6,6 +6,18 @@
 			"name": "brightness",
 			"type": "float",
 			"default": " = 1.0f"
+		},
+		{
+			"name": "updateTimestamp",
+			"type": "GameplayTimestamp",
+			"includes": ["\"GameData/Time/GameplayTimestamp.h\""],
+			"flags": ["transient"]
+		},
+		{
+			"name": "cachedVisibilityPolygon",
+			"type": "std::vector<Vector2D>",
+			"includes": ["<vector>", "\"GameData/Core/Vector2D.h\""],
+			"flags": ["transient", "get_by_ref"]
 		}
 	]
 }

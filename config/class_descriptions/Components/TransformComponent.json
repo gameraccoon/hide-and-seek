@@ -13,6 +13,13 @@
 			"type": "Rotator",
 			"default": " = Rotator(0.0f)",
 			"includes": ["\"GameData/Core/Rotator.h\""]
+		},
+		{
+			"name": "updateTimestamp",
+			"type": "GameplayTimestamp",
+			"default": "{1}",
+			"includes": ["\"GameData/Time/GameplayTimestamp.h\""],
+			"flags": ["transient"]
 		}
 	]
 }

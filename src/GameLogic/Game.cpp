@@ -71,10 +71,10 @@ void Game::initSystems()
 	mSystemsManager.registerSystem<AiSystem>(mWorldHolder);
 	mSystemsManager.registerSystem<CharacterStateSystem>(mWorldHolder);
 	mSystemsManager.registerSystem<MovementSystem>(mWorldHolder, mTime);
-	mSystemsManager.registerSystem<CollisionSystem>(mWorldHolder);
+	mSystemsManager.registerSystem<CollisionSystem>(mWorldHolder, mTime);
 	mSystemsManager.registerSystem<ResourceStreamingSystem>(mWorldHolder, getResourceManager());
 	mSystemsManager.registerSystem<AnimationSystem>(mWorldHolder, mTime);
-	mSystemsManager.registerSystem<RenderSystem>(mWorldHolder, getEngine(), getResourceManager(), mJobsWorkerManager);
+	mSystemsManager.registerSystem<RenderSystem>(mWorldHolder, mTime, getEngine(), getResourceManager(), mJobsWorkerManager);
 	mSystemsManager.registerSystem<DebugDrawSystem>(mWorldHolder, mTime, getEngine(), getResourceManager());
 }
 

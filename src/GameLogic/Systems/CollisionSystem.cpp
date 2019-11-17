@@ -8,14 +8,16 @@
 #include "Utils/Geometry/Collide.h"
 
 
-CollisionSystem::CollisionSystem(WorldHolder& worldHolder)
+CollisionSystem::CollisionSystem(WorldHolder& worldHolder, const TimeData& timeData)
 	: mWorldHolder(worldHolder)
+	, mTime(timeData)
 {
 }
 
 void CollisionSystem::update()
 {
 	World& world = mWorldHolder.getWorld();
+	const GameplayTimestamp timestampNow = mTime.currentTimestamp;
 
 	auto components = world.getEntityManager().getComponents<CollisionComponent, TransformComponent>();
 
@@ -29,7 +31,7 @@ void CollisionSystem::update()
 		collision->setBoundingBox(collision->getOriginalBoundingBox() + transform->getLocation());
 	}
 
-	world.getEntityManager().forEachComponentSet<CollisionComponent, TransformComponent, MovementComponent>([&components](CollisionComponent* collisionComponent, TransformComponent* transformComponent, MovementComponent* /*movementComponent*/)
+	world.getEntityManager().forEachComponentSet<CollisionComponent, TransformComponent, MovementComponent>([&components, timestampNow](CollisionComponent* collisionComponent, TransformComponent* transformComponent, MovementComponent* /*movementComponent*/)
 	{
 		Vector2D resist = ZERO_VECTOR;
 		for (auto& [collision, transform] : components)
@@ -43,11 +45,13 @@ void CollisionSystem::update()
 					if (collision->getGeometry().type == HullType::Angular)
 					{
 						transformComponent->setLocation(transformComponent->getLocation() + resist);
+						transformComponent->setUpdateTimestamp(timestampNow);
 					}
 					else
 					{
 						transformComponent->setLocation(transformComponent->getLocation() + resist*0.5f);
 						transform->setLocation(transform->getLocation() - resist*0.5f);
+						transform->setUpdateTimestamp(timestampNow);
 					}
 				}
 			}
