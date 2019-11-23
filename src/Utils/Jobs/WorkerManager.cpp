@@ -108,10 +108,10 @@ namespace Jobs
 				std::unique_lock<std::mutex> l(mMutex);
 
 				// find and group finalization tasks
-				auto newEnd = std::remove_if(
+				auto newEnd = std::partition(
 					std::begin(mFinishedJobs),
 					std::end(mFinishedJobs),
-					[thisJobGroupId](auto& job){ return job->getJobGroupID() == thisJobGroupId; }
+					[thisJobGroupId](auto& job){ return job->getJobGroupID() != thisJobGroupId; }
 				);
 
 				// move away to process without locking
