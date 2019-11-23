@@ -239,7 +239,7 @@ void RenderSystem::drawLights(World& world, const Vector2D& drawShift, const Vec
 		AssertFatal(threadsCount != 0, "Jobs Worker Manager threads count can't be zero");
 
 		size_t chunksCount = GetJobDivisor(threadsCount + 1);
-		size_t chunkSize = std::max((componentSets.size() / chunksCount) + (componentSets.size() % chunksCount > 1 ? 1ul : 0ul), 1ul);
+		size_t chunkSize = std::max((componentSets.size() / chunksCount) + (componentSets.size() % chunksCount > 1 ? 1 : 0), static_cast<size_t>(1));
 
 		std::vector<Jobs::BaseJob::UniquePtr> jobs;
 		size_t chunkItemIndex = 0;

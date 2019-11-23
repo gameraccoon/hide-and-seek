@@ -4,7 +4,7 @@
 #include <map>
 #include <iomanip>
 
-#include <experimental/filesystem>
+#include <filesystem>
 #include <nlohmann/json.hpp>
 
 #include "Base/Debug/Log.h"
@@ -14,12 +14,12 @@
 
 namespace GameDataLoader
 {
-	static const std::experimental::filesystem::path MAPS_PATH = "./resources/maps";
-	static const std::experimental::filesystem::path GAME_DATA_PATH = "./resources/game";
+	static const std::filesystem::path MAPS_PATH = "./resources/maps";
+	static const std::filesystem::path GAME_DATA_PATH = "./resources/game";
 
 	void SaveWorld(const World& world, const std::string& levelName, const ComponentFactory& componentFactory)
 	{
-		namespace fs = std::experimental::filesystem;
+		namespace fs = std::filesystem;
 		fs::path levelPath(levelName);
 
 		// if it's name, we save to maps folder
@@ -47,7 +47,7 @@ namespace GameDataLoader
 
 	void LoadWorld(World& world, const std::string& levelName, const ComponentFactory& componentFactory)
 	{
-		namespace fs = std::experimental::filesystem;
+		namespace fs = std::filesystem;
 		fs::path levelPath(levelName);
 
 		// if it's name, we search the map in maps folder
@@ -80,7 +80,7 @@ namespace GameDataLoader
 
 	void SaveGameData(const GameData& gameData, const std::string& gameDataName, const ComponentFactory& componentFactory)
 	{
-		namespace fs = std::experimental::filesystem;
+		namespace fs = std::filesystem;
 		fs::path gameDataPath(gameDataName);
 
 		// if it's name, we save to maps folder
@@ -108,7 +108,7 @@ namespace GameDataLoader
 
 	void LoadGameData(GameData& gameData, const std::string& gameDataName, const ComponentFactory& componentFactory)
 	{
-		namespace fs = std::experimental::filesystem;
+		namespace fs = std::filesystem;
 		fs::path gameDataPath(gameDataName);
 
 		// if it's name, we search the map in maps folder
