@@ -69,7 +69,6 @@
     <property name="title">
      <string>Window</string>
     </property>
-    <addaction name="actionWorld_Settings"/>
     <addaction name="actionEntities_List"/>
     <addaction name="actionComponents_List"/>
     <addaction name="actionComponent_Properties"/>
@@ -173,11 +172,6 @@
   <action name="actionComponent_Properties">
    <property name="text">
     <string>Component Attributes</string>
-   </property>
-  </action>
-  <action name="actionWorld_Settings">
-   <property name="text">
-    <string>World Properties</string>
    </property>
   </action>
   <action name="actionLoad_Prefab_Library">

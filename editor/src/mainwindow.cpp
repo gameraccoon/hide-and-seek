@@ -16,7 +16,6 @@
 #include "toolboxes/ComponentAttributesToolbox.h"
 #include "toolboxes/ComponentsListToolbox.h"
 #include "toolboxes/EntitiesListToolbox.h"
-#include "toolboxes/WorldPropertiesToolbox.h"
 #include "toolboxes/PrefabListToolbox.h"
 #include "toolboxes/TransformEditorToolbox.h"
 
@@ -68,7 +67,6 @@ void MainWindow::initToolboxes()
 	mEntitiesListToolbox = std::make_unique<EntitiesListToolbox>(this, mDockManager.get());
 	mComponentAttributesToolbox = std::make_unique<ComponentAttributesToolbox>(this, mDockManager.get());
 	mComponentsListToolbox = std::make_unique<ComponentsListToolbox>(this, mDockManager.get());
-	mWorldPropertiesToolbox = std::make_unique<WorldPropertiesToolbox>(this, mDockManager.get());
 	mPrefabListToolbox = std::make_unique<PrefabListToolbox>(this, mDockManager.get());
 	mTransformEditorToolbox = std::make_unique<TransformEditorToolbox>(this, mDockManager.get());
 }
@@ -246,11 +244,6 @@ void MainWindow::on_actionComponents_List_triggered()
 void MainWindow::on_actionComponent_Properties_triggered()
 {
 	mComponentAttributesToolbox->show();
-}
-
-void MainWindow::on_actionWorld_Settings_triggered()
-{
-	mWorldPropertiesToolbox->show();
 }
 
 void MainWindow::on_actionTransform_Editor_triggered()

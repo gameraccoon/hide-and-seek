@@ -13,7 +13,6 @@ public:
 		Entities,
 		Components,
 		ComponentAttributes,
-		WorldProperties,
 		CommandsStack
 	};
 
