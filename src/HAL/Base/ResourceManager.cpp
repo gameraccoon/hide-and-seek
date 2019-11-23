@@ -2,7 +2,7 @@
 
 #include <fstream>
 #include <vector>
-#include <experimental/filesystem>
+#include <filesystem>
 #include <string>
 
 #include <nlohmann/json.hpp>
@@ -38,7 +38,7 @@ namespace HAL
 
 	void ResourceManager::loadOneAtlasData(const ResourcePath& path)
 	{
-		namespace fs = std::experimental::filesystem;
+		namespace fs = std::filesystem;
 		fs::path atlasDescPath(static_cast<std::string>(path));
 
 		try
@@ -86,7 +86,7 @@ namespace HAL
 
 	std::vector<ResourcePath> ResourceManager::loadSpriteAnimClipData(const ResourcePath& path)
 	{
-		namespace fs = std::experimental::filesystem;
+		namespace fs = std::filesystem;
 		fs::path atlasDescPath(static_cast<std::string>(path));
 
 		std::vector<ResourcePath> result;
@@ -118,7 +118,7 @@ namespace HAL
 
 	ResourceManager::AnimGroupData ResourceManager::loadAnimGroupData(const ResourcePath& path)
 	{
-		namespace fs = std::experimental::filesystem;
+		namespace fs = std::filesystem;
 		fs::path atlasDescPath(static_cast<std::string>(path));
 
 		AnimGroupData result;
@@ -346,7 +346,7 @@ namespace HAL
 
 	void ResourceManager::loadAtlasesData(const ResourcePath& listPath)
 	{
-		namespace fs = std::experimental::filesystem;
+		namespace fs = std::filesystem;
 		fs::path listFsPath(static_cast<std::string>(listPath));
 
 		try
