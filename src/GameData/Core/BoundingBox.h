@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Core/Vector2D.h"
+#include "GameData/Core/Vector2D.h"
 /**
  * Axis-aligned bounding box (AABB)
  */

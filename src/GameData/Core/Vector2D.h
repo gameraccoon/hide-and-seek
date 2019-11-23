@@ -6,16 +6,15 @@
 
 #include <nlohmann/json_fwd.hpp>
 
-class Vector2D
+struct Vector2D
 {
-public:
+	float x;
+	float y;
+
 	// leaves inner data uninitialized
 	Vector2D() = default;
 	Vector2D(float x, float y);
 	explicit Vector2D(const Rotator& rotator);
-
-	float x;
-	float y;
 
 	/** Get vector length in units */
 	float size() const;

@@ -1,0 +1,16 @@
+{
+	"component": "trackedSpatialEntities",
+	"description": "Component that stores inormation about spatial entities that we should be able to find regardless their movement around cells",
+	"attributes": [
+		{
+			"name": "entities",
+			"type": "std::map<StringID, SpatialEntityID>",
+			"includes": [
+				"<map>",
+				"\"GameData/Spatial/SpatialEntityID.h\"",
+				"\"Base/String/StringID.h\""
+			],
+			"flags": ["transient", "get_by_ref"]
+		}
+	]
+}

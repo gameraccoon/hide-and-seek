@@ -13,7 +13,7 @@
 
 class TransformComponent;
 class CollisionComponent;
-class Vector2D;
+struct Vector2D;
 
 /**
  * System that handles rendering of world objects

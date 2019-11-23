@@ -40,13 +40,13 @@ void DebugDrawSystem::update()
 
 	static const Vector2D maxFov(500.0f, 500.0f);
 
-	OptionalEntity mainCamera = world.getMainCamera();
-	if (!mainCamera.isValid())
+	auto [mainCamera, mainCameraEntityManager] = world.getSpatialEntity(STR_TO_ID("CameraEntity"));
+	if (!mainCamera.isValid() || mainCameraEntityManager == nullptr)
 	{
 		return;
 	}
 
-	auto [cameraTransformComponent] = world.getEntityManager().getEntityComponents<TransformComponent>(mainCamera.getEntity());
+	auto [cameraTransformComponent] = mainCameraEntityManager->getEntityComponents<TransformComponent>(mainCamera.getEntity());
 	if (cameraTransformComponent == nullptr)
 	{
 		return;

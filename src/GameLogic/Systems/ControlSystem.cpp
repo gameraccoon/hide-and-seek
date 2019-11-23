@@ -55,39 +55,40 @@ void ControlSystem::update()
 		movementDirection += DOWN_DIRECTION;
 	}
 
-	OptionalEntity controlledEntity = world.getPlayerControlledEntity();
-	if (controlledEntity.isValid())
+	auto [controlledEntity, controlledEntityManager] = world.getSpatialEntity(STR_TO_ID("ControlledEntity"));
+
+	if (controlledEntity.isValid() && controlledEntityManager != nullptr)
 	{
-		if (auto [characterState] = world.getEntityManager().getEntityComponents<CharacterStateComponent>(controlledEntity.getEntity()); characterState != nullptr)
+		if (auto [characterState] = controlledEntityManager->getEntityComponents<CharacterStateComponent>(controlledEntity.getEntity()); characterState != nullptr)
 		{
 			characterState->getBlackboardRef().setValue<bool>(CharacterStateBlackboardKeys::TryingToMove, !movementDirection.isZeroLength());
 			characterState->getBlackboardRef().setValue<bool>(CharacterStateBlackboardKeys::ReadyToRun, isRunPressed);
 		}
-	}
 
-	OptionalEntity mainCamera = world.getMainCamera();
-	if (mainCamera.isValid())
-	{
-		auto [cameraTransform] = world.getEntityManager().getEntityComponents<TransformComponent>(mainCamera.getEntity());
-		if (cameraTransform == nullptr)
+		auto [mainCamera, mainCameraEntityManager] = world.getSpatialEntity(STR_TO_ID("CameraEntity"));
+
+		if (mainCamera.isValid() && mainCameraEntityManager != nullptr)
 		{
-			return;
-		}
+			auto [cameraTransform] = mainCameraEntityManager->getEntityComponents<TransformComponent>(mainCamera.getEntity());
+			if (cameraTransform == nullptr)
+			{
+				return;
+			}
 
-		Vector2D screenHalfSize = Vector2D(static_cast<float>(mEngine.getWidth()), static_cast<float>(mEngine.getHeight())) * 0.5f;
-		Vector2D mouseScreenPos(mEngine.getMouseX(), mEngine.getMouseY());
+			Vector2D screenHalfSize = Vector2D(static_cast<float>(mEngine.getWidth()), static_cast<float>(mEngine.getHeight())) * 0.5f;
+			Vector2D mouseScreenPos(mEngine.getMouseX(), mEngine.getMouseY());
 
-		Vector2D drawShift = screenHalfSize - cameraTransform->getLocation();
+			Vector2D drawShift = screenHalfSize - cameraTransform->getLocation();
 
-		if (controlledEntity.isValid())
-		{
-			auto [transform, movement] = world.getEntityManager().getEntityComponents<TransformComponent, MovementComponent>(controlledEntity.getEntity());
+			if (controlledEntity.isValid())
+			{
+				auto [transform, movement] = controlledEntityManager->getEntityComponents<TransformComponent, MovementComponent>(controlledEntity.getEntity());
 
-			movement->setMoveDirection(movementDirection);
-			movement->setSightDirection(mouseScreenPos - transform->getLocation() - drawShift);
+				movement->setMoveDirection(movementDirection);
+				movement->setSightDirection(mouseScreenPos - transform->getLocation() - drawShift);
+			}
 		}
 	}
-
 
 	auto [renderMode] = gameData.getGameComponents().getComponents<RenderModeComponent>();
 	if (renderMode)

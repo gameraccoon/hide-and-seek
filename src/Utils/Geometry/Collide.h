@@ -1,7 +1,7 @@
 #pragma once
 
 class CollisionComponent;
-class Vector2D;
+struct Vector2D;
 
 namespace Collide
 {

@@ -86,10 +86,10 @@ namespace std
 {
 	template<> struct hash<StringID>
 	{
-		std::size_t operator()(StringID const& stringID) const noexcept
+		size_t operator()(const StringID& stringID) const noexcept
 		{
 			// it's already a unique hash
-			return static_cast<std::size_t>(stringID.hash);
+			return static_cast<size_t>(stringID.hash);
 		}
 	};
 }

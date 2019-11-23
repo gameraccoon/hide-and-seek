@@ -39,13 +39,13 @@ void RenderSystem::update()
 
 	static const Vector2D maxFov(500.0f, 500.0f);
 
-	OptionalEntity mainCamera = world.getMainCamera();
-	if (!mainCamera.isValid())
+	auto [mainCamera, mainCameraEntityManager] = world.getSpatialEntity(STR_TO_ID("CameraEntity"));
+	if (!mainCamera.isValid() || mainCameraEntityManager == nullptr)
 	{
 		return;
 	}
 
-	auto [cameraTransformComponent] = world.getEntityManager().getEntityComponents<TransformComponent>(mainCamera.getEntity());
+	auto [cameraTransformComponent] = mainCameraEntityManager->getEntityComponents<TransformComponent>(mainCamera.getEntity());
 	if (cameraTransformComponent == nullptr)
 	{
 		return;
@@ -104,9 +104,10 @@ Vector2D RenderSystem::GetPlayerSightPosition(World& world)
 {
 	Vector2D result(0.0f, 0.0f);
 
-	if (OptionalEntity playerEntity = world.getPlayerControlledEntity(); playerEntity.isValid())
+	auto [playerEntity, controlledEntityManager] = world.getSpatialEntity(STR_TO_ID("ControlledEntity"));
+	if (playerEntity.isValid() && controlledEntityManager != nullptr)
 	{
-		auto [playerTransform] = world.getEntityManager().getEntityComponents<TransformComponent>(playerEntity.getEntity());
+		auto [playerTransform] = controlledEntityManager->getEntityComponents<TransformComponent>(playerEntity.getEntity());
 
 		if (playerTransform != nullptr)
 		{

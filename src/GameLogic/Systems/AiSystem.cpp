@@ -6,6 +6,7 @@
 #include "GameData/Components/TransformComponent.generated.h"
 #include "GameData/Components/MovementComponent.generated.h"
 #include "GameData/Components/CharacterStateComponent.generated.h"
+#include "GameData/Components/TrackedSpatialEntitiesComponent.generated.h"
 #include "GameData/World.h"
 
 #include "Utils/AI/NavMeshGenerator.h"
@@ -376,8 +377,9 @@ void AiSystem::update()
 		navMeshComponent->setUpdateTimestamp(timestampNow);
 	}
 
-	OptionalEntity playerEntity = world.getPlayerControlledEntity();
-	if (!playerEntity.isValid())
+	auto [playerEntity, playerCellEntityManager] = world.getSpatialEntity(STR_TO_ID("ControlledEntity"));
+
+	if (!playerEntity.isValid() || playerCellEntityManager == nullptr)
 	{
 		return;
 	}

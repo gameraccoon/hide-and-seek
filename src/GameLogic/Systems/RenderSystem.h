@@ -13,7 +13,7 @@
 #include "GameLogic/SharedManagers/WorldHolder.h"
 #include "GameLogic/SharedManagers/TimeData.h"
 
-class Vector2D;
+struct Vector2D;
 
 /**
  * System that handles rendering of world objects

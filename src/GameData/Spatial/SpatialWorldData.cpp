@@ -1,0 +1,50 @@
+#include "GameData/World.h"
+
+#include <nlohmann/json.hpp>
+
+nlohmann::json SpatialWorldData::toJson(const ComponentFactory& /*componentFactory*/) const
+{
+	return nlohmann::json{
+//		{"entity_manager", mEntityManager.toJson(componentFactory)},
+	};
+}
+
+void SpatialWorldData::fromJson(const nlohmann::json& /*json*/, const ComponentFactory& /*componentFactory*/)
+{
+//	mEntityManager.fromJson(json.at("entity_manager"), componentFactory);
+}
+
+std::vector<WorldCell*> SpatialWorldData::getCellsAround(CellPos baseCell, const Vector2D& centerPosition, const Vector2D rect)
+{
+	std::vector<WorldCell*> result;
+	size_t maxCellRadius = static_cast<size_t>(std::max(rect.x, rect.y) / WorldCell::CellSize);
+	result.reserve((1+maxCellRadius*2) * (1+maxCellRadius*2));
+
+	CellPos ltCell = CellPos(
+		static_cast<int>(baseCell.x + (centerPosition.x - rect.x * 0.5f) / WorldCell::CellSize),
+		static_cast<int>(baseCell.y + (centerPosition.y - rect.y * 0.5f) / WorldCell::CellSize));
+
+	CellPos rbCell = CellPos(
+		static_cast<int>(baseCell.x + (centerPosition.x + rect.x * 0.5f) / WorldCell::CellSize),
+		static_cast<int>(baseCell.y + (centerPosition.y + rect.y * 0.5f) / WorldCell::CellSize));
+
+	for (int i = ltCell.x; i <= rbCell.x; ++i)
+	{
+		for (int j = ltCell.y; j <= rbCell.y; ++j)
+		{
+			auto it = mCells.find(CellPos(i, j));
+			if (it != mCells.end())
+			{
+				result.push_back(it->second.get());
+			}
+		}
+	}
+
+	return result;
+}
+
+WorldCell* SpatialWorldData::getCell(const CellPos& pos)
+{
+	auto it = mCells.find(pos);
+	return (it != mCells.end()) ? it->second.get() : nullptr;
+}
