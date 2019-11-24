@@ -6,7 +6,6 @@
 class WorldCell
 {
 public:
-	using UniquePtr = std::unique_ptr<WorldCell>;
 	static const unsigned int CellSize = 1000.0f;
 
 public:

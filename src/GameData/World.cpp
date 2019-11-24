@@ -20,11 +20,8 @@ void World::fromJson(const nlohmann::json& json, const ComponentFactory& compone
 	mSpatialData.fromJson(json.at("spatial_data"), componentFactory);
 }
 
-std::pair<OptionalEntity, EntityManager*> World::getSpatialEntity(StringID entityStringID)
+std::optional<EntityView> World::getTrackedSpatialEntity(StringID entityStringID)
 {
-	EntityManager* playerCellEntityManager = nullptr;
-	OptionalEntity playerEntity;
-
 	auto [trackedSpatialEntities] = getWorldComponents().getComponents<TrackedSpatialEntitiesComponent>();
 
 	if (trackedSpatialEntities)
@@ -34,11 +31,28 @@ std::pair<OptionalEntity, EntityManager*> World::getSpatialEntity(StringID entit
 		{
 			if (WorldCell* cell = getSpatialData().getCell(it->second.cell))
 			{
-				playerCellEntityManager = &cell->getEntityManager();
-				playerEntity = it->second.entity;
+				return EntityView(it->second.entity, cell->getEntityManager());
 			}
 		}
 	}
 
-	return std::make_pair(playerEntity, playerCellEntityManager);
+	return std::nullopt;
+}
+
+EntityView World::createTrackedSpatialEntity(StringID entityStringID, CellPos pos)
+{
+	auto result = createSpatialEntity(pos);
+	auto [trackedSpatialEntities] = getWorldComponents().getComponents<TrackedSpatialEntitiesComponent>();
+	if (trackedSpatialEntities == nullptr)
+	{
+		trackedSpatialEntities = getWorldComponents().addComponent<TrackedSpatialEntitiesComponent>();
+	}
+	trackedSpatialEntities->getEntitiesRef().insert_or_assign(entityStringID, SpatialEntityID(result.getEntity(), pos));
+	return result;
+}
+
+EntityView World::createSpatialEntity(CellPos pos)
+{
+	WorldCell& cell = getSpatialData().getOrCreateCell(pos);
+	return EntityView(cell.getEntityManager().addEntity(), cell.getEntityManager());
 }

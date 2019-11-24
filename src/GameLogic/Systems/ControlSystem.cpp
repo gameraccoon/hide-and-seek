@@ -55,21 +55,21 @@ void ControlSystem::update()
 		movementDirection += DOWN_DIRECTION;
 	}
 
-	auto [controlledEntity, controlledEntityManager] = world.getSpatialEntity(STR_TO_ID("ControlledEntity"));
+	std::optional<EntityView> controlledEntity = world.getTrackedSpatialEntity(STR_TO_ID("ControlledEntity"));
 
-	if (controlledEntity.isValid() && controlledEntityManager != nullptr)
+	if (controlledEntity.has_value())
 	{
-		if (auto [characterState] = controlledEntityManager->getEntityComponents<CharacterStateComponent>(controlledEntity.getEntity()); characterState != nullptr)
+		if (auto [characterState] = controlledEntity->getComponents<CharacterStateComponent>(); characterState != nullptr)
 		{
 			characterState->getBlackboardRef().setValue<bool>(CharacterStateBlackboardKeys::TryingToMove, !movementDirection.isZeroLength());
 			characterState->getBlackboardRef().setValue<bool>(CharacterStateBlackboardKeys::ReadyToRun, isRunPressed);
 		}
 
-		auto [mainCamera, mainCameraEntityManager] = world.getSpatialEntity(STR_TO_ID("CameraEntity"));
+		std::optional<EntityView> mainCamera = world.getTrackedSpatialEntity(STR_TO_ID("CameraEntity"));
 
-		if (mainCamera.isValid() && mainCameraEntityManager != nullptr)
+		if (mainCamera.has_value())
 		{
-			auto [cameraTransform] = mainCameraEntityManager->getEntityComponents<TransformComponent>(mainCamera.getEntity());
+			auto [cameraTransform] = mainCamera->getComponents<TransformComponent>();
 			if (cameraTransform == nullptr)
 			{
 				return;
@@ -80,13 +80,10 @@ void ControlSystem::update()
 
 			Vector2D drawShift = screenHalfSize - cameraTransform->getLocation();
 
-			if (controlledEntity.isValid())
-			{
-				auto [transform, movement] = controlledEntityManager->getEntityComponents<TransformComponent, MovementComponent>(controlledEntity.getEntity());
+			auto [transform, movement] = controlledEntity->getComponents<TransformComponent, MovementComponent>();
 
-				movement->setMoveDirection(movementDirection);
-				movement->setSightDirection(mouseScreenPos - transform->getLocation() - drawShift);
-			}
+			movement->setMoveDirection(movementDirection);
+			movement->setSightDirection(mouseScreenPos - transform->getLocation() - drawShift);
 		}
 	}
 

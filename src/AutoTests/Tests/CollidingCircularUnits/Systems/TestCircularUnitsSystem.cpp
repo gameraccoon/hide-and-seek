@@ -18,13 +18,13 @@ void TestCircularUnitsSystem::update()
 {
 	World& world = mWorldHolder.getWorld();
 
-	OptionalEntity playerEntity = world.getPlayerControlledEntity();
-	if (!playerEntity.isValid())
+	std::optional<EntityView> playerEntity = world.getTrackedSpatialEntity(STR_TO_ID("ControlledEntity"));
+	if (!playerEntity.has_value())
 	{
 		return;
 	}
 
-	auto [playerTransform] = world.getEntityManager().getEntityComponents<TransformComponent>(playerEntity.getEntity());
+	auto [playerTransform] = playerEntity->getComponents<TransformComponent>();
 	if (playerTransform == nullptr)
 	{
 		return;

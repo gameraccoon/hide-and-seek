@@ -43,8 +43,8 @@ public:
 		return entityIdxItr->second < componentVector.size() && componentVector[entityIdxItr->second] != nullptr;
 	}
 
-	template<typename T>
-	T* addComponent(Entity entity)
+	template<typename ComponentType>
+	ComponentType* addComponent(Entity entity)
 	{
 		auto entityIdxItr = mEntityIndexMap.find(std::forward<Entity>(entity).getID());
 		if (entityIdxItr == mEntityIndexMap.end())
@@ -52,37 +52,37 @@ public:
 			return nullptr;
 		}
 
-		T* component = new T();
+		ComponentType* component = new ComponentType();
 
-		addComponentToEntity(entityIdxItr->second, component, typeid(T));
+		addComponentToEntity(entityIdxItr->second, component, typeid(ComponentType));
 
 		return component;
 	}
 
 	void addComponent(Entity entity, BaseComponent* component, std::type_index typeID);
 
-	template<typename T>
+	template<typename ComponentType>
 	void removeComponent(Entity entity)
 	{
-		removeComponent(std::forward<Entity>(entity), typeid(T));
+		removeComponent(std::forward<Entity>(entity), typeid(ComponentType));
 	}
 
 	void removeComponent(Entity entity, std::type_index typeID);
 
-	template<typename T>
-	T* scheduleAddComponent(Entity entity)
+	template<typename ComponentType>
+	ComponentType* scheduleAddComponent(Entity entity)
 	{
-		T* component = new T();
-		scheduleAddComponentToEntity(entity, component, typeid(T));
+		ComponentType* component = new ComponentType();
+		scheduleAddComponentToEntity(entity, component, typeid(ComponentType));
 		return component;
 	}
 
 	void scheduleAddComponentToEntity(Entity entity, BaseComponent* component, std::type_index typeID);
 
-	template<typename T>
+	template<typename ComponentType>
 	void scheduleRemoveComponent(Entity entity)
 	{
-		scheduleRemoveComponent(std::forward<Entity>(entity), typeid(T));
+		scheduleRemoveComponent(std::forward<Entity>(entity), typeid(ComponentType));
 	}
 
 	void scheduleRemoveComponent(Entity entity, std::type_index typeID);

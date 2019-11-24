@@ -8,4 +8,6 @@ struct SpatialEntityID
 {
 	Entity entity;
 	CellPos cell;
+
+	SpatialEntityID(Entity entity, CellPos cellPos);
 };

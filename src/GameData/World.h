@@ -1,7 +1,10 @@
 #pragma once
 
+#include <optional>
+
 #include "ECS/EntityManager.h"
 #include "ECS/ComponentSetHolder.h"
+#include "ECS/EntityView.h"
 
 #include "GameData/Spatial/SpatialWorldData.h"
 
@@ -15,7 +18,9 @@ public:
 	nlohmann::json toJson(const ComponentFactory& componentFactory) const;
 	void fromJson(const nlohmann::json& json, const ComponentFactory& componentFactory);
 
-	std::pair<OptionalEntity, EntityManager*> getSpatialEntity(StringID entityStringID);
+	std::optional<EntityView> getTrackedSpatialEntity(StringID entityStringID);
+	EntityView createTrackedSpatialEntity(StringID entityStringID, CellPos pos);
+	EntityView createSpatialEntity(CellPos pos);
 
 private:
 	EntityManager mEntityManager;

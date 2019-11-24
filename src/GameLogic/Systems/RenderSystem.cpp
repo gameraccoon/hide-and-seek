@@ -39,13 +39,13 @@ void RenderSystem::update()
 
 	static const Vector2D maxFov(500.0f, 500.0f);
 
-	auto [mainCamera, mainCameraEntityManager] = world.getSpatialEntity(STR_TO_ID("CameraEntity"));
-	if (!mainCamera.isValid() || mainCameraEntityManager == nullptr)
+	std::optional<EntityView> mainCamera = world.getTrackedSpatialEntity(STR_TO_ID("CameraEntity"));
+	if (!mainCamera.has_value())
 	{
 		return;
 	}
 
-	auto [cameraTransformComponent] = mainCameraEntityManager->getEntityComponents<TransformComponent>(mainCamera.getEntity());
+	auto [cameraTransformComponent] = mainCamera->getComponents<TransformComponent>();
 	if (cameraTransformComponent == nullptr)
 	{
 		return;
@@ -104,10 +104,10 @@ Vector2D RenderSystem::GetPlayerSightPosition(World& world)
 {
 	Vector2D result(0.0f, 0.0f);
 
-	auto [playerEntity, controlledEntityManager] = world.getSpatialEntity(STR_TO_ID("ControlledEntity"));
-	if (playerEntity.isValid() && controlledEntityManager != nullptr)
+	std::optional<EntityView> controlledEntity = world.getTrackedSpatialEntity(STR_TO_ID("ControlledEntity"));
+	if (controlledEntity.has_value())
 	{
-		auto [playerTransform] = controlledEntityManager->getEntityComponents<TransformComponent>(playerEntity.getEntity());
+		auto [playerTransform] = controlledEntity->getComponents<TransformComponent>();
 
 		if (playerTransform != nullptr)
 		{

@@ -117,7 +117,7 @@ static int fixupCorridor(dtPolyRef* path, const int npath, const int maxPath,
 		size = maxPath-req;
 	}
 	if (size) {
-		memmove(path+req, path+orig, size*sizeof(dtPolyRef));
+		memmove(path+req, path+orig, static_cast<size_t>(size)*sizeof(dtPolyRef));
 	}
 
 	// Store visited
@@ -219,7 +219,7 @@ static void RecalcNavmesh(dtNavMesh* m_navMesh, dtNavMeshQuery* m_navQuery, floa
 		{
 			// Iterate over the path to find smooth path on the detail mesh surface.
 			dtPolyRef polys[MAX_POLYS];
-			memcpy(polys, m_polys, sizeof(dtPolyRef)*m_npolys);
+			memcpy(polys, m_polys, sizeof(dtPolyRef)*static_cast<size_t>(m_npolys));
 			int npolys = m_npolys;
 
 			float iterPos[3], targetPos[3];
@@ -377,14 +377,14 @@ void AiSystem::update()
 		navMeshComponent->setUpdateTimestamp(timestampNow);
 	}
 
-	auto [playerEntity, playerCellEntityManager] = world.getSpatialEntity(STR_TO_ID("ControlledEntity"));
+	std::optional<EntityView> playerEntity = world.getTrackedSpatialEntity(STR_TO_ID("ControlledEntity"));
 
-	if (!playerEntity.isValid() || playerCellEntityManager == nullptr)
+	if (!playerEntity.has_value())
 	{
 		return;
 	}
 
-	auto [playerTransform] = world.getEntityManager().getEntityComponents<TransformComponent>(playerEntity.getEntity());
+	auto [playerTransform] = playerEntity->getComponents<TransformComponent>();
 	if (playerTransform == nullptr)
 	{
 		return;

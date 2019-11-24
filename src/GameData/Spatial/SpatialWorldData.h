@@ -20,10 +20,13 @@ public:
 	 */
 	std::vector<WorldCell*> getCellsAround(CellPos baseCell, const Vector2D& centerPosition, const Vector2D rect);
 	WorldCell* getCell(const CellPos& pos);
+	WorldCell& getOrCreateCell(const CellPos& pos);
+
+	static CellPos CellPosFromVector2D(const Vector2D& pos);
 
 	nlohmann::json toJson(const ComponentFactory& componentFactory) const;
 	void fromJson(const nlohmann::json& json, const ComponentFactory& componentFactory);
 
 private:
-	std::unordered_map<CellPos, WorldCell::UniquePtr> mCells;
+	std::unordered_map<CellPos, WorldCell> mCells;
 };

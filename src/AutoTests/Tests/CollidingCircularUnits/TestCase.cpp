@@ -30,27 +30,26 @@ void CollidingCircularUnitsTestCase::initTestCase(const ArgumentsParser& /*argum
 	mSystemsManager.registerSystem<ResourceStreamingSystem>(mWorldHolder, getResourceManager());
 	mSystemsManager.registerSystem<RenderSystem>(mWorldHolder, mTime, getEngine(), getResourceManager(), mWorkerManager);
 
-	Entity playerEntity = mWorld.getEntityManager().addEntity();
+	EntityView playerEntity = mWorld.createTrackedSpatialEntity(STR_TO_ID("ControlledEntity"), CellPos(0, 0));
 	{
-		TransformComponent* transform = mWorld.getEntityManager().addComponent<TransformComponent>(playerEntity);
+		TransformComponent* transform = playerEntity.addComponent<TransformComponent>();
 		transform->setLocation(Vector2D(0.0f, 0.0f));
 	}
 	{
-		SpriteCreatorComponent* sprite = mWorld.getEntityManager().addComponent<SpriteCreatorComponent>(playerEntity);
+		SpriteCreatorComponent* sprite = playerEntity.addComponent<SpriteCreatorComponent>();
 		SpriteDescription spriteDesc;
 		spriteDesc.params.size = Vector2D(30.0f, 30.0f);
 		spriteDesc.path = "resources/textures/hero.png";
 		sprite->getDescriptionsRef().emplace_back(std::move(spriteDesc));
 	}
 	{
-		CollisionComponent* collision = mWorld.getEntityManager().addComponent<CollisionComponent>(playerEntity);
+		CollisionComponent* collision = playerEntity.addComponent<CollisionComponent>();
 		Hull& hull = collision->getGeometryRef();
 		hull.type = HullType::Circular;
 		hull.setRadius(15.0f);
 	}
 
-	mWorld.setPlayerControlledEntity(playerEntity);
-	mWorld.setMainCamera(playerEntity);
+	mWorld.createTrackedSpatialEntity(STR_TO_ID("CameraEntity"), CellPos(0, 0));
 
 	mWorld.getWorldComponents().addComponent<StateMachineComponent>();
 }

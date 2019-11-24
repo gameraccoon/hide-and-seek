@@ -1,12 +1,7 @@
-#include "GameData/Spatial/CellPos.h"
+#include "GameData/Spatial/SpatialEntityID.h"
 
-CellPos::CellPos(int x, int y)
-	: x(x)
-	, y(y)
+SpatialEntityID::SpatialEntityID(Entity entity, CellPos cellPos)
+	: entity(entity)
+	, cell(cellPos)
 {
-}
-
-bool CellPos::operator==(const CellPos& other) const
-{
-	return x == other.x && y == other.y;
 }
