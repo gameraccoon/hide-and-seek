@@ -2,11 +2,11 @@
 
 // ALMOST_ALWAYS/ALMOST_NEVER (likely/unlikely early support)
 #ifdef __has_cpp_attribute
-	#if __has_cpp_attribute(likely)
-		#define ALMOST_ALWAYS(expr) [[likely]] (expr)
+	#if __has_cpp_attribute(likely) && !(defined(__GNUC__) && __GNUC__ >= 9 && __GNUC__ < 10)
+		#define ALMOST_ALWAYS(expr) (expr) [[likely]]
 	#endif
-	#if __has_cpp_attribute(unlikely)
-		#define ALMOST_NEVER(expr) [[unlikely]] (expr)
+	#if __has_cpp_attribute(unlikely) && !(defined(__GNUC__) && __GNUC__ >= 9 && __GNUC__ < 10)
+		#define ALMOST_NEVER(expr) (expr) [[unlikely]]
 	#endif
 #endif
 #ifndef ALMOST_ALWAYS

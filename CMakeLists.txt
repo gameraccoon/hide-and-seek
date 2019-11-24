@@ -44,14 +44,18 @@ add_definitions(-DGLM_FORCE_RADIANS)
 # compiler parameters
 if (MSVC)
 	if (CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
-		string(REGEX REPLACE "/W[0-4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17")
-	else()
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /std:c++17")
+		string(REGEX REPLACE "/W[0-4]" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 	endif()
+	set(PROJECT_CXX_FLAGS /W4 /std:c++17)
+	set(EXTERNALS_CXX_FLAGS /W0 /std:c++17)
+	set(EXTERNALS_C_FLAGS /W0)
+
 	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_RELEASE} /MDd")
 else()
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -Werror -std=c++17")
+	set(PROJECT_CXX_FLAGS -std=c++17 -Wall -Wextra -pedantic -Werror)
+	set(EXTERNALS_CXX_FLAGS -std=c++17)
+	set(EXTERNALS_C_FLAGS "")
+
 	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_DEBUG} -g")
 	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_RELEASE} -O2")
 endif()
@@ -63,9 +67,9 @@ execute_process(
 
 find_package(PythonInterp 3.5 REQUIRED)
 if (NOT WIN32)
-    find_package(SDL2 REQUIRED)
-    find_package(SDL2_image REQUIRED)
-    include_directories(${SDL2_INCLUDE_DIR})
+	find_package(SDL2 REQUIRED)
+	find_package(SDL2_image REQUIRED)
+	include_directories(${SDL2_INCLUDE_DIR})
 endif()
 
 include_directories(include)
@@ -85,6 +89,7 @@ link_directories(
 function(add_folder_as_library folder_path name)
 	file(GLOB_RECURSE TEMP_SRC RELATIVE "" FOLLOW_SYMLINKS "${folder_path}/*")
 	add_library(${name} ${TEMP_SRC})
+	target_compile_options(${name} PRIVATE ${PROJECT_CXX_FLAGS})
 endfunction()
 
 add_folder_as_library(${GAME_SRC_DIR}/Base Base)
@@ -95,9 +100,11 @@ add_folder_as_library(${GAME_SRC_DIR}/Utils Utils)
 add_folder_as_library(${GAME_SRC_DIR}/HAL Hal)
 
 add_library(SDL_FontCache ${EXTERNALS_DIR}/sources/SDL_FontCache/SDL_FontCache.c)
+target_compile_options(SDL_FontCache PRIVATE ${EXTERNALS_C_FLAGS})
 
 file(GLOB_RECURSE APP_SRC RELATIVE "" FOLLOW_SYMLINKS "${GAME_SRC_DIR}/GameMain/*")
 add_executable(${APP_NAME} "${APP_SRC}")
+target_compile_options(${APP_NAME} PRIVATE ${PROJECT_CXX_FLAGS})
 
 # Detour
 option(RECASTNAVIGATION_STATIC "Build static libraries for detour" ON)
@@ -107,21 +114,24 @@ add_subdirectory(${EXTERNALS_DIR}/sources/recastnavigation/Detour
 link_directories(${INTERMEDIATES_DIR}/external/Detour)
 add_dependencies(${APP_NAME} Detour)
 include_directories(${EXTERNALS_DIR}/sources/recastnavigation/Detour/Include)
+target_compile_options(Detour PRIVATE ${EXTERNALS_CXX_FLAGS})
 
 # Polypartition
 add_library(Polypartition EXCLUDE_FROM_ALL ${EXTERNALS_DIR}/sources/polypartition/src/polypartition.cpp)
 add_dependencies(${APP_NAME} Polypartition)
 include_directories(${EXTERNALS_DIR}/sources/polypartition/include)
+target_compile_options(Polypartition PRIVATE ${EXTERNALS_CXX_FLAGS})
 
 set(GENERAL_PROJECT_LIBS
 #	liblua52
 
-    GameLogic
+	GameLogic
 	Hal
 	Utils
 	GameData
 	Ecs
 	Base
+
 	Detour
 	Polypartition
 
@@ -173,6 +183,7 @@ set(UNITTESTS_SRC
 )
 include_directories(${EXTERNALS_DIR}/sources/googletest)
 add_executable(${UNITTESTS_NAME} ${UNITTESTS_SRC})
+target_compile_options(${UNITTESTS_NAME} PRIVATE ${PROJECT_CXX_FLAGS})
 target_link_libraries(${UNITTESTS_NAME}
 	${GENERAL_PROJECT_LIBS}
 )
@@ -181,6 +192,7 @@ target_link_libraries(${UNITTESTS_NAME}
 set(AUTOTESTS_NAME AutoTests)
 file(GLOB_RECURSE AUTOTESTS_SRC RELATIVE "" FOLLOW_SYMLINKS "${GAME_SRC_DIR}/AutoTests/*")
 add_executable(${AUTOTESTS_NAME} ${AUTOTESTS_SRC})
+target_compile_options(${AUTOTESTS_NAME} PRIVATE ${PROJECT_CXX_FLAGS})
 target_link_libraries(${AUTOTESTS_NAME}
 	${GENERAL_PROJECT_LIBS}
 )

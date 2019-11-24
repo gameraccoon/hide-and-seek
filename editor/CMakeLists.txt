@@ -40,14 +40,18 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # compiler parameters
 if (MSVC)
 	if (CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
-		string(REGEX REPLACE "/W[0-4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17")
-	else()
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /std:c++17")
+		string(REGEX REPLACE "/W[0-4]" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 	endif()
+	set(PROJECT_CXX_FLAGS /W4 /std:c++17)
+	set(EXTERNALS_CXX_FLAGS /std:c++17)
+	set(EXTERNALS_C_FLAGS "")
+
 	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_RELEASE} /MDd")
 else()
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -Werror -std=c++17 -lstdc++fs")
+	set(PROJECT_CXX_FLAGS -std=c++17 -Wall -Wextra -pedantic -Werror)
+	set(EXTERNALS_CXX_FLAGS -std=c++17)
+	set(EXTERNALS_C_FLAGS "")
+
 	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_DEBUG} -g")
 	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_RELEASE} -O2")
 endif()
@@ -77,6 +81,7 @@ aux_source_directory(src/editorsystems APP_SRCS)
 add_subdirectory(Qt-Advanced-Docking-System EXCLUDE_FROM_ALL)
 
 add_executable(${APP_NAME} WIN32 ${APP_SRCS})
+target_compile_options(${APP_NAME} PRIVATE ${PROJECT_CXX_FLAGS})
 if(BUILD_STATIC)
 	set(APP_DEFINE ${APP_DEFINE} ADS_STATIC)
 endif()
@@ -84,6 +89,7 @@ endif()
 function(add_folder_as_library folder_path name)
 	file(GLOB_RECURSE TEMP_SRC RELATIVE "" FOLLOW_SYMLINKS "${folder_path}/*")
 	add_library(${name} ${TEMP_SRC})
+	target_compile_options(${name} PRIVATE ${PROJECT_CXX_FLAGS})
 endfunction()
 
 add_folder_as_library(${GAME_SRC_DIR}/Base Base)
@@ -112,11 +118,13 @@ add_subdirectory(${EXTERNALS_DIR}/sources/recastnavigation/Detour
 link_directories(${INTERMEDIATES_DIR}/external/Detour)
 add_dependencies(${APP_NAME} Detour)
 include_directories(${EXTERNALS_DIR}/sources/recastnavigation/Detour/Include)
+target_compile_options(Detour PRIVATE ${EXTERNALS_CXX_FLAGS})
 
 # Polypartition
 add_library(Polypartition ${EXTERNALS_DIR}/sources/polypartition/src/polypartition.cpp)
 add_dependencies(${APP_NAME} Polypartition)
 include_directories(${EXTERNALS_DIR}/sources/polypartition/include)
+target_compile_options(Polypartition PRIVATE ${EXTERNALS_CXX_FLAGS})
 
 set(APP_LIBS
 	${APP_LIBS}
@@ -124,6 +132,7 @@ set(APP_LIBS
 	GameData
 	Ecs
 	Base
+
 	Detour
 	Polypartition
 )

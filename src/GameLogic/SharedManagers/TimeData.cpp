@@ -5,7 +5,7 @@
 static float myRoundFunc(float toRound)
 {
 	using namespace std; // to compile on both msvc and clang/gcc
-	return round(toRound - 0.5);
+	return static_cast<float>(floor(toRound - 0.5));
 }
 
 void TimeData::update(float deltaTime)
