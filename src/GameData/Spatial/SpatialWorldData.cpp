@@ -31,6 +31,18 @@ std::vector<WorldCell*> SpatialWorldData::getCellsAround(CellPos baseCell, const
 	return result;
 }
 
+EntityManagerGroup SpatialWorldData::getCellManagersAround(CellPos baseCell, const Vector2D& centerPosition, const Vector2D rect)
+{
+	std::vector<WorldCell*> cells = getCellsAround(baseCell, centerPosition, rect);
+	std::vector<EntityManager*> entityManagers;
+	entityManagers.reserve(cells.size());
+	for (WorldCell* cell : cells)
+	{
+		entityManagers.push_back(&cell->getEntityManager());
+	}
+	return EntityManagerGroup(entityManagers);
+}
+
 WorldCell* SpatialWorldData::getCell(const CellPos& pos)
 {
 	auto it = mCells.find(pos);

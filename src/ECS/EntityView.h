@@ -35,6 +35,18 @@ public:
 		return mManager.getEntityComponents<Components...>(mEntity);
 	}
 
+	template<typename ComponentType>
+	ComponentType* scheduleAddComponent()
+	{
+		return mManager.scheduleAddComponent<ComponentType>(mEntity);
+	}
+
+	template<typename ComponentType>
+	void scheduleRemoveComponent()
+	{
+		mManager.scheduleRemoveComponent<ComponentType>(mEntity);
+	}
+
 	Entity getEntity() const;
 
 private:

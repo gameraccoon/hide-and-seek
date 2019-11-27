@@ -104,12 +104,9 @@ public:
 	}
 
 	template<typename FirstComponent, typename... Components>
-	std::vector<std::tuple<FirstComponent*, Components*...>> getComponents()
+	void getComponents(std::vector<std::tuple<FirstComponent*, Components*...>>& inOutComponents)
 	{
 		auto& firstComponentVector = mComponents[typeid(FirstComponent)];
-
-		std::vector<std::tuple<FirstComponent*, Components*...>> result;
-		result.reserve(firstComponentVector.size());
 
 		auto componentVectors = std::make_tuple(firstComponentVector, mComponents[typeid(Components)]...);
 
@@ -127,11 +124,9 @@ public:
 
 			if (std::get<componentsSize>(components) != nullptr)
 			{
-				result.push_back(components);
+				inOutComponents.push_back(components);
 			}
 		}
-
-		return result;
 	}
 
 	template<typename FirstComponent, typename... Components, typename FunctionType>

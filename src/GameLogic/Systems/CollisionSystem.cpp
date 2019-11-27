@@ -19,7 +19,8 @@ void CollisionSystem::update()
 	World& world = mWorldHolder.getWorld();
 	const GameplayTimestamp timestampNow = mTime.currentTimestamp;
 
-	auto components = world.getEntityManager().getComponents<CollisionComponent, TransformComponent>();
+	std::vector<std::tuple<CollisionComponent*, TransformComponent*>> components;
+	world.getEntityManager().getComponents<CollisionComponent, TransformComponent>(components);
 
 	for (auto& [collision, transform] : components)
 	{

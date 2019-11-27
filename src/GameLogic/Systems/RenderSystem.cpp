@@ -214,9 +214,11 @@ void RenderSystem::drawLights(World& world, const Vector2D& drawShift, const Vec
 
 	Vector2D playerSightPosition = GetPlayerSightPosition(world);
 
-	const auto collidableComponents = world.getEntityManager().getComponents<CollisionComponent, TransformComponent>();
+	std::vector<std::tuple<CollisionComponent*, TransformComponent*>> collidableComponents;
+	world.getEntityManager().getComponents<CollisionComponent, TransformComponent>(collidableComponents);
 
-	std::vector<std::tuple<LightComponent*, TransformComponent*>> componentSets = world.getEntityManager().getComponents<LightComponent, TransformComponent>();
+	std::vector<std::tuple<LightComponent*, TransformComponent*>> componentSets;
+	world.getEntityManager().getComponents<LightComponent, TransformComponent>(componentSets);
 
 	Vector2D emitterPositionBordersLT = playerSightPosition - screenHalfSize - maxFov*0.5;
 	Vector2D emitterPositionBordersRB = playerSightPosition + screenHalfSize + maxFov*0.5;

@@ -2,6 +2,7 @@
 
 #include "ECS/EntityManager.h"
 #include "ECS/ComponentSetHolder.h"
+#include "ECS/EntityManagerGroup.h"
 
 #include "GameData/Spatial/WorldCell.h"
 #include "GameData/Spatial/CellPos.h"
@@ -19,8 +20,11 @@ public:
 	 * @return pointers to loaded cells meeting the criteria
 	 */
 	std::vector<WorldCell*> getCellsAround(CellPos baseCell, const Vector2D& centerPosition, const Vector2D rect);
+	EntityManagerGroup getCellManagersAround(CellPos baseCell, const Vector2D& centerPosition, const Vector2D rect);
 	WorldCell* getCell(const CellPos& pos);
 	WorldCell& getOrCreateCell(const CellPos& pos);
+
+	std::unordered_map<CellPos, WorldCell>& getCells() { return mCells; }
 
 	static CellPos CellPosFromVector2D(const Vector2D& pos);
 
