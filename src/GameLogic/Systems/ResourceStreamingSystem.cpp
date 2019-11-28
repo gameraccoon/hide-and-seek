@@ -6,6 +6,7 @@
 #include "GameData/Components/AnimationClipCreatorComponent.generated.h"
 #include "GameData/Components/AnimationGroupsComponent.generated.h"
 #include "GameData/Components/AnimationGroupCreatorComponent.generated.h"
+#include "GameData/Components/WorldCachedDataComponent.generated.h"
 
 #include "GameData/World.h"
 #include "GameData/GameData.h"
@@ -24,13 +25,22 @@ void ResourceStreamingSystem::update()
 {
 	World& world = mWorldHolder.getWorld();
 
+	auto [worldCachedData] = world.getWorldComponents().getComponents<WorldCachedDataComponent>();
+	if (worldCachedData == nullptr)
+	{
+		world.getWorldComponents().addComponent<WorldCachedDataComponent>();
+		std::tie(worldCachedData) = world.getWorldComponents().getComponents<WorldCachedDataComponent>();
+	}
+	Vector2D workingRect = worldCachedData->getScreenSize();
+
 	// load sprites
-	world.getEntityManager().forEachComponentSetWithEntity<SpriteCreatorComponent>([&resourceManager = mResourceManager, &entityManager = world.getEntityManager()](Entity entity, SpriteCreatorComponent* spriteCreator)
+	EntityManagerGroup cellManagers = world.getSpatialData().getCellManagersAround(worldCachedData->getCameraCellPos(), worldCachedData->getCameraPos(), workingRect);
+	cellManagers.forEachComponentSetWithEntity<SpriteCreatorComponent>([&resourceManager = mResourceManager](EntityView entity, SpriteCreatorComponent* spriteCreator)
 	{
 		const auto& descriptions = spriteCreator->getDescriptions();
 		Assert(!descriptions.empty(), "Sprite descriptions should not be empty");
 
-		RenderComponent* render = entityManager.scheduleAddComponent<RenderComponent>(entity);
+		RenderComponent* render = entity.scheduleAddComponent<RenderComponent>();
 		size_t spritesCount = descriptions.size();
 		auto& spriteDatas = render->getSpriteDatasRef();
 		spriteDatas.resize(spritesCount);
@@ -42,25 +52,25 @@ void ResourceStreamingSystem::update()
 			render->getSpriteIdsRef().push_back(id++);
 			render->setMaxSpriteId(id);
 		}
-		entityManager.scheduleRemoveComponent<SpriteCreatorComponent>(entity);
+		entity.scheduleRemoveComponent<SpriteCreatorComponent>();
 	});
-	world.getEntityManager().executeScheduledActions();
+	cellManagers.executeScheduledActions();
 
 	// load single animations clips
-	world.getEntityManager().forEachComponentSetWithEntity<AnimationClipCreatorComponent>([&resourceManager = mResourceManager, &entityManager = world.getEntityManager()](Entity entity, AnimationClipCreatorComponent* animationClipCreator)
+	cellManagers.forEachComponentSetWithEntity<AnimationClipCreatorComponent>([&resourceManager = mResourceManager](EntityView entity, AnimationClipCreatorComponent* animationClipCreator)
 	{
 		const auto& descriptions = animationClipCreator->getDescriptionsRef();
 		Assert(!descriptions.empty(), "Animation descriptions should not be empty");
 
-		AnimationClipsComponent* animationClips = entityManager.scheduleAddComponent<AnimationClipsComponent>(entity);
+		AnimationClipsComponent* animationClips = entity.scheduleAddComponent<AnimationClipsComponent>();
 		size_t animationCount = descriptions.size();
 		auto& animations = animationClips->getDatasRef();
 		animations.resize(animationCount);
 
-		auto [render] = entityManager.getEntityComponents<RenderComponent>(entity);
+		auto [render] = entity.getComponents<RenderComponent>();
 		if (render == nullptr)
 		{
-			render = entityManager.scheduleAddComponent<RenderComponent>(entity);
+			render = entity.scheduleAddComponent<RenderComponent>();
 		}
 
 		auto& spriteDatas = render->getSpriteDatasRef();
@@ -80,28 +90,28 @@ void ResourceStreamingSystem::update()
 			Assert(render->getSpriteIds().size() == spriteDatas.size(), "Sprites and SpriteIds have diverged");
 		}
 
-		entityManager.scheduleAddComponent<AnimationGroupsComponent>(entity);
+		entity.scheduleAddComponent<AnimationGroupsComponent>();
 
-		entityManager.scheduleRemoveComponent<AnimationClipCreatorComponent>(entity);
+		entity.scheduleRemoveComponent<AnimationClipCreatorComponent>();
 	});
-	world.getEntityManager().executeScheduledActions();
+	cellManagers.executeScheduledActions();
 
 	// load animation groups
-	world.getEntityManager().forEachComponentSetWithEntity<AnimationGroupCreatorComponent>([&resourceManager = mResourceManager, &entityManager = world.getEntityManager()](Entity entity, AnimationGroupCreatorComponent* animationGroupCreator)
+	cellManagers.forEachComponentSetWithEntity<AnimationGroupCreatorComponent>([&resourceManager = mResourceManager](EntityView entity, AnimationGroupCreatorComponent* animationGroupCreator)
 	{
-		AnimationGroupsComponent* animationGroups = entityManager.scheduleAddComponent<AnimationGroupsComponent>(entity);
+		AnimationGroupsComponent* animationGroups = entity.scheduleAddComponent<AnimationGroupsComponent>();
 
-		auto [animationClips] = entityManager.getEntityComponents<AnimationClipsComponent>(entity);
+		auto [animationClips] = entity.getComponents<AnimationClipsComponent>();
 		if (animationClips == nullptr)
 		{
-			animationClips = entityManager.scheduleAddComponent<AnimationClipsComponent>(entity);
+			animationClips = entity.scheduleAddComponent<AnimationClipsComponent>();
 		}
 		auto& clipDatas = animationClips->getDatasRef();
 
-		auto [render] = entityManager.getEntityComponents<RenderComponent>(entity);
+		auto [render] = entity.getComponents<RenderComponent>();
 		if (render == nullptr)
 		{
-			render = entityManager.scheduleAddComponent<RenderComponent>(entity);
+			render = entity.scheduleAddComponent<RenderComponent>();
 		}
 		auto& spriteDatas = render->getSpriteDatasRef();
 
@@ -134,7 +144,7 @@ void ResourceStreamingSystem::update()
 			++i;
 		}
 
-		entityManager.scheduleRemoveComponent<AnimationGroupCreatorComponent>(entity);
+		entity.scheduleRemoveComponent<AnimationGroupCreatorComponent>();
 	});
-	world.getEntityManager().executeScheduledActions();
+	cellManagers.executeScheduledActions();
 }

@@ -6,6 +6,7 @@
 #include "GameData/Components/MovementComponent.generated.h"
 #include "GameData/Components/RenderModeComponent.generated.h"
 #include "GameData/Components/CharacterStateComponent.generated.h"
+#include "GameData/Components/WorldCachedDataComponent.generated.h"
 
 #include "GameData/World.h"
 #include "GameData/GameData.h"
@@ -75,7 +76,8 @@ void ControlSystem::update()
 				return;
 			}
 
-			Vector2D screenHalfSize = Vector2D(static_cast<float>(mEngine.getWidth()), static_cast<float>(mEngine.getHeight())) * 0.5f;
+			Vector2D screenSize = Vector2D(static_cast<float>(mEngine.getWidth()), static_cast<float>(mEngine.getHeight()));
+			Vector2D screenHalfSize = screenSize * 0.5f;
 			Vector2D mouseScreenPos(mEngine.getMouseX(), mEngine.getMouseY());
 
 			Vector2D drawShift = screenHalfSize - cameraTransform->getLocation();
@@ -84,6 +86,16 @@ void ControlSystem::update()
 
 			movement->setMoveDirection(movementDirection);
 			movement->setSightDirection(mouseScreenPos - transform->getLocation() - drawShift);
+
+			auto [worldCachedData] = world.getWorldComponents().getComponents<WorldCachedDataComponent>();
+			if (worldCachedData == nullptr)
+			{
+				world.getWorldComponents().addComponent<WorldCachedDataComponent>();
+				std::tie(worldCachedData) = world.getWorldComponents().getComponents<WorldCachedDataComponent>();
+			}
+			worldCachedData->setCameraPos(cameraTransform->getLocation());
+			worldCachedData->setCameraCellPos(CellPos(0, 0));
+			worldCachedData->setScreenSize(screenSize);
 		}
 	}
 

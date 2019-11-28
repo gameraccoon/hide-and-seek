@@ -81,7 +81,7 @@ void TestUnitsCountControlSystem::update()
 
 	if (ticksPassed == 5)
 	{
-		spawnUnits(world.getEntityManager(), 500, Vector2D(-400.0f, 0.0f));
+		spawnUnits(world.getSpatialData().getCell(CellPos(0, 0))->getEntityManager(), 500, Vector2D(-400.0f, 0.0f));
 	}
 
 	++ticksPassed;
