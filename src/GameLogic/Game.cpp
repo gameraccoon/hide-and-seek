@@ -17,6 +17,7 @@
 #include "GameLogic/Systems/DebugDrawSystem.h"
 #include "GameLogic/Systems/MovementSystem.h"
 #include "GameLogic/Systems/AnimationSystem.h"
+#include "GameLogic/Systems/CameraSystem.h"
 
 #include "GameLogic/ComponentsRegistration.h"
 #include "GameLogic/Initialization/StateMachines.h"
@@ -69,9 +70,10 @@ void Game::initSystems()
 {
 	mSystemsManager.registerSystem<ControlSystem>(mWorldHolder, getEngine(), mKeyStates);
 	mSystemsManager.registerSystem<AiSystem>(mWorldHolder, mTime);
-	mSystemsManager.registerSystem<CharacterStateSystem>(mWorldHolder);
 	mSystemsManager.registerSystem<MovementSystem>(mWorldHolder, mTime);
 	mSystemsManager.registerSystem<CollisionSystem>(mWorldHolder, mTime);
+	mSystemsManager.registerSystem<CameraSystem>(mWorldHolder, getEngine());
+	mSystemsManager.registerSystem<CharacterStateSystem>(mWorldHolder);
 	mSystemsManager.registerSystem<ResourceStreamingSystem>(mWorldHolder, getResourceManager());
 	mSystemsManager.registerSystem<AnimationSystem>(mWorldHolder, mTime);
 	mSystemsManager.registerSystem<RenderSystem>(mWorldHolder, mTime, getEngine(), getResourceManager(), mJobsWorkerManager);

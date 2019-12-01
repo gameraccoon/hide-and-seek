@@ -20,7 +20,7 @@ void CollisionSystem::update()
 	const GameplayTimestamp timestampNow = mTime.currentTimestamp;
 
 	std::vector<std::tuple<CollisionComponent*, TransformComponent*>> components;
-	world.getEntityManager().getComponents<CollisionComponent, TransformComponent>(components);
+	world.getSpatialData().getAllCellManagers().getComponents<CollisionComponent, TransformComponent>(components);
 
 	for (auto& [collision, transform] : components)
 	{
@@ -32,7 +32,7 @@ void CollisionSystem::update()
 		collision->setBoundingBox(collision->getOriginalBoundingBox() + transform->getLocation());
 	}
 
-	world.getEntityManager().forEachComponentSet<CollisionComponent, TransformComponent, MovementComponent>([&components, timestampNow](CollisionComponent* collisionComponent, TransformComponent* transformComponent, MovementComponent* /*movementComponent*/)
+	world.getSpatialData().getAllCellManagers().forEachComponentSet<CollisionComponent, TransformComponent, MovementComponent>([&components, timestampNow](CollisionComponent* collisionComponent, TransformComponent* transformComponent, MovementComponent* /*movementComponent*/)
 	{
 		Vector2D resist = ZERO_VECTOR;
 		for (auto& [collision, transform] : components)

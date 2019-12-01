@@ -32,7 +32,8 @@ void TestCircularUnitsSystem::update()
 
 	Vector2D targetLocation = playerTransform->getLocation();
 
-	world.getEntityManager().forEachComponentSet<AiControllerComponent, TransformComponent, MovementComponent>([targetLocation](AiControllerComponent* /*aiController*/, TransformComponent* transform, MovementComponent* movement)
+	EntityManagerGroup managers = world.getSpatialData().getCellManagersAround(CellPos(0, 0), Vector2D(0.0f, 0.0f), Vector2D(10000.0f, 10000.0f));
+	managers.forEachComponentSet<AiControllerComponent, TransformComponent, MovementComponent>([targetLocation](AiControllerComponent* /*aiController*/, TransformComponent* transform, MovementComponent* movement)
 	{
 		movement->setMoveDirection(targetLocation - transform->getLocation());
 		movement->setSpeed(movement->getOriginalSpeed());

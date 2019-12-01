@@ -24,12 +24,22 @@ public:
 	WorldCell* getCell(const CellPos& pos);
 	WorldCell& getOrCreateCell(const CellPos& pos);
 
-	std::unordered_map<CellPos, WorldCell>& getCells() { return mCells; }
+	std::unordered_map<CellPos, WorldCell>& getAllCells() { return mCells; }
+	EntityManagerGroup getAllCellManagers();
 
+	// returns true if cell changed
+	static bool TransformCellPos(CellPos& cellPos, Vector2D& pos);
+	static std::pair<CellPos, Vector2D> GetTransformedCellPos(CellPos oldCellPos, Vector2D oldPos);
+
+	// to convert old data
 	static CellPos CellPosFromVector2D(const Vector2D& pos);
 
 	nlohmann::json toJson(const ComponentFactory& componentFactory) const;
 	void fromJson(const nlohmann::json& json, const ComponentFactory& componentFactory);
+
+public:
+	static constexpr float CellSize = 1000.0f;
+	static constexpr Vector2D CellSizeVector{CellSize, CellSize};
 
 private:
 	std::unordered_map<CellPos, WorldCell> mCells;

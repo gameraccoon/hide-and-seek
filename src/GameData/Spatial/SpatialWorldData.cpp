@@ -1,20 +1,22 @@
 #include "GameData/World.h"
 
+#include <cmath>
+
 #include <nlohmann/json.hpp>
 
 std::vector<WorldCell*> SpatialWorldData::getCellsAround(CellPos baseCell, const Vector2D& centerPosition, const Vector2D rect)
 {
 	std::vector<WorldCell*> result;
-	size_t maxCellRadius = static_cast<size_t>(std::max(rect.x, rect.y) / WorldCell::CellSize);
+	size_t maxCellRadius = static_cast<size_t>(std::max(rect.x, rect.y) / CellSize);
 	result.reserve((1+maxCellRadius*2) * (1+maxCellRadius*2));
 
 	CellPos ltCell = CellPos(
-		static_cast<int>(baseCell.x + (centerPosition.x - rect.x * 0.5f) / WorldCell::CellSize),
-		static_cast<int>(baseCell.y + (centerPosition.y - rect.y * 0.5f) / WorldCell::CellSize));
+		static_cast<int>(baseCell.x + (centerPosition.x - rect.x * 0.5f) / CellSize),
+		static_cast<int>(baseCell.y + (centerPosition.y - rect.y * 0.5f) / CellSize));
 
 	CellPos rbCell = CellPos(
-		static_cast<int>(baseCell.x + (centerPosition.x + rect.x * 0.5f) / WorldCell::CellSize),
-		static_cast<int>(baseCell.y + (centerPosition.y + rect.y * 0.5f) / WorldCell::CellSize));
+		static_cast<int>(baseCell.x + (centerPosition.x + rect.x * 0.5f) / CellSize),
+		static_cast<int>(baseCell.y + (centerPosition.y + rect.y * 0.5f) / CellSize));
 
 	for (int i = ltCell.x; i <= rbCell.x; ++i)
 	{
@@ -54,9 +56,46 @@ WorldCell& SpatialWorldData::getOrCreateCell(const CellPos& pos)
 	return mCells[pos];
 }
 
+EntityManagerGroup SpatialWorldData::getAllCellManagers()
+{
+	std::vector<EntityManager*> entityManagers;
+	entityManagers.reserve(mCells.size());
+	for (std::pair<const CellPos, WorldCell>& cell : mCells)
+	{
+		entityManagers.push_back(&cell.second.getEntityManager());
+	}
+	return EntityManagerGroup(entityManagers);
+}
+
+bool SpatialWorldData::TransformCellPos(CellPos& cellPos, Vector2D& pos)
+{
+	if (pos.isInside(ZERO_VECTOR, CellSizeVector))
+	{
+		return false;
+	}
+
+	int posXDiff = static_cast<int>(std::floor(pos.x / CellSize));
+	int posYDiff = static_cast<int>(std::floor(pos.y / CellSize));
+
+	pos.x -= posXDiff * CellSize;
+	pos.y -= posYDiff * CellSize;
+
+	cellPos.x += posXDiff;
+	cellPos.y += posYDiff;
+
+	return true;
+}
+
+std::pair<CellPos, Vector2D> SpatialWorldData::GetTransformedCellPos(CellPos oldCellPos, Vector2D oldPos)
+{
+	auto result = std::make_pair(oldCellPos, oldPos);
+	TransformCellPos(result.first, result.second);
+	return result;
+}
+
 CellPos SpatialWorldData::CellPosFromVector2D(const Vector2D& pos)
 {
-	return CellPos(static_cast<int>(pos.x / WorldCell::CellSize), static_cast<int>(pos.y / WorldCell::CellSize));
+	return CellPos(static_cast<int>(pos.x / CellSize), static_cast<int>(pos.y / CellSize));
 }
 
 nlohmann::json SpatialWorldData::toJson(const ComponentFactory& /*componentFactory*/) const

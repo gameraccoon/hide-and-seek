@@ -3,11 +3,10 @@
 #include "ECS/EntityManager.h"
 #include "ECS/ComponentSetHolder.h"
 
+#include "GameData/Core/Vector2D.h"
+
 class WorldCell
 {
-public:
-	static const unsigned int CellSize = 1000.0f;
-
 public:
 	EntityManager& getEntityManager() { return mEntityManager; }
 	ComponentSetHolder& getCellComponents() { return mCellComponents; }

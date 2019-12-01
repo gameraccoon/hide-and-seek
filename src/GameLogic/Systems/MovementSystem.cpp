@@ -20,7 +20,7 @@ void MovementSystem::update()
 	const float dt = mTime.dt;
 	const GameplayTimestamp timestampNow = mTime.currentTimestamp;
 
-	world.getEntityManager().forEachComponentSet<MovementComponent, TransformComponent>([dt, timestampNow](MovementComponent* movement, TransformComponent* transform) {
+	world.getSpatialData().getAllCellManagers().forEachComponentSet<MovementComponent, TransformComponent>([dt, timestampNow](MovementComponent* movement, TransformComponent* transform) {
 		float speed = movement->getSpeed();
 		if (speed > 0.0f)
 		{

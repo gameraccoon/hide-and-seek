@@ -13,7 +13,7 @@ struct Vector2D
 
 	// leaves inner data uninitialized
 	Vector2D() = default;
-	Vector2D(float x, float y);
+	constexpr Vector2D(float x, float y) : x(x), y(y) {}
 	explicit Vector2D(const Rotator& rotator);
 
 	/** Get vector length in units */
