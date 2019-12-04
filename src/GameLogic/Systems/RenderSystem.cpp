@@ -41,6 +41,7 @@ void RenderSystem::update()
 	auto [worldCachedData] = world.getWorldComponents().getComponents<WorldCachedDataComponent>();
 	Vector2D workingRect = worldCachedData->getScreenSize();
 	Vector2D cameraLocation = worldCachedData->getCameraPos();
+	CellPos cameraCell = worldCachedData->getCameraCellPos();
 
 	static const Vector2D maxFov(500.0f, 500.0f);
 
@@ -51,18 +52,18 @@ void RenderSystem::update()
 
 	Vector2D drawShift = screenHalfSize - cameraLocation + (screenHalfSize - mouseScreenPos) * 0.5;
 
-	EntityManagerGroup cellManagers = world.getSpatialData().getCellManagersAround(worldCachedData->getCameraCellPos(), cameraLocation, workingRect);
+	SpatialEntityManager spatialManager = world.getSpatialData().getCellManagersAround(worldCachedData->getCameraCellPos(), cameraLocation, workingRect);
 
 	if (!renderMode || renderMode->getIsDrawLightsEnabled())
 	{
-		drawLights(cellManagers, cameraLocation, drawShift, maxFov, screenHalfSize);
+		drawLights(spatialManager, cameraLocation, drawShift, maxFov, screenHalfSize);
 	}
 
 	if (!renderMode || renderMode->getIsDrawVisibleEntitiesEnabled())
 	{
-		cellManagers.forEachComponentSet<RenderComponent, TransformComponent>([&drawShift, &resourceManager = mResourceManager, &renderer](RenderComponent* render, TransformComponent* transform)
+		spatialManager.forEachSpatialComponentSet<RenderComponent, TransformComponent>([&drawShift, &resourceManager = mResourceManager, &renderer, cameraCell](WorldCell* cell, RenderComponent* render, TransformComponent* transform)
 		{
-			auto location = transform->getLocation() + drawShift;
+			auto location = SpatialWorldData::GetRelativeLocation(cameraCell, cell->getPos(), transform->getLocation() + drawShift);
 			float rotation = transform->getRotation().getValue();
 			for (const auto& data : render->getSpriteDatas())
 			{
@@ -134,6 +135,8 @@ public:
 		Assert(mFinalizeFn, "finalizeFn should be set");
 	}
 
+	~VisibilityPolygonCalculationJob() override;
+
 	void process() override
 	{
 		VisibilityPolygonCalculator visibilityPolygonCalculator;
@@ -187,6 +190,9 @@ private:
 	std::vector<Result> mCalculationResults;
 };
 
+// just to suppress weak vtables warning
+VisibilityPolygonCalculationJob::~VisibilityPolygonCalculationJob() {}
+
 static size_t GetJobDivisor(size_t maxThreadsCount)
 {
 	// this alghorithm is subject to change
@@ -196,7 +202,7 @@ static size_t GetJobDivisor(size_t maxThreadsCount)
 	return maxThreadsCount * 3 - 1;
 }
 
-void RenderSystem::drawLights(EntityManagerGroup& managerGroup, const Vector2D& playerSightPosition, const Vector2D& drawShift, const Vector2D& maxFov, const Vector2D& screenHalfSize)
+void RenderSystem::drawLights(SpatialEntityManager& managerGroup, const Vector2D& playerSightPosition, const Vector2D& drawShift, const Vector2D& maxFov, const Vector2D& screenHalfSize)
 {
 	const GameplayTimestamp timestampNow = mTime.currentTimestamp;
 

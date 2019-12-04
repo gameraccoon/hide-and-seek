@@ -2,8 +2,8 @@
 
 #include "ECS/EntityManager.h"
 #include "ECS/ComponentSetHolder.h"
-#include "ECS/EntityManagerGroup.h"
 
+#include "GameData/Spatial/SpatialEntityManager.h"
 #include "GameData/Spatial/WorldCell.h"
 #include "GameData/Spatial/CellPos.h"
 #include "GameData/Core/Vector2D.h"
@@ -19,17 +19,19 @@ public:
 	 * @param rect sizes of the rectangle
 	 * @return pointers to loaded cells meeting the criteria
 	 */
-	std::vector<WorldCell*> getCellsAround(CellPos baseCell, const Vector2D& centerPosition, const Vector2D rect);
-	EntityManagerGroup getCellManagersAround(CellPos baseCell, const Vector2D& centerPosition, const Vector2D rect);
+	std::vector<WorldCell*> getCellsAround(const CellPos& baseCell, const Vector2D& centerPosition, const Vector2D& rect);
+	SpatialEntityManager getCellManagersAround(const CellPos& baseCell, const Vector2D& centerPosition, const Vector2D& rect);
 	WorldCell* getCell(const CellPos& pos);
 	WorldCell& getOrCreateCell(const CellPos& pos);
 
 	std::unordered_map<CellPos, WorldCell>& getAllCells() { return mCells; }
-	EntityManagerGroup getAllCellManagers();
+	SpatialEntityManager getAllCellManagers();
 
 	// returns true if cell changed
-	static bool TransformCellPos(CellPos& cellPos, Vector2D& pos);
-	static std::pair<CellPos, Vector2D> GetTransformedCellPos(CellPos oldCellPos, Vector2D oldPos);
+	static bool TransformCellPos(CellPos& inOutCellPos, Vector2D& inOutPos);
+	static std::pair<CellPos, Vector2D> GetTransformedCellPos(const CellPos& oldCellPos, const Vector2D& oldPos);
+
+	static Vector2D GetRelativeLocation(const CellPos& baseCell, const CellPos& targetCell, const Vector2D& targetPos);
 
 	// to convert old data
 	static CellPos CellPosFromVector2D(const Vector2D& pos);

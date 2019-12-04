@@ -8,6 +8,11 @@ CellPos::CellPos(int x, int y)
 {
 }
 
+CellPos CellPos::operator-(const CellPos& other) const
+{
+	return CellPos(x - other.x, y - other.y);
+}
+
 bool CellPos::operator==(const CellPos& other) const
 {
 	return x == other.x && y == other.y;

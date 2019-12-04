@@ -4,7 +4,7 @@
 
 #include <nlohmann/json.hpp>
 
-std::vector<WorldCell*> SpatialWorldData::getCellsAround(CellPos baseCell, const Vector2D& centerPosition, const Vector2D rect)
+std::vector<WorldCell*> SpatialWorldData::getCellsAround(const CellPos& baseCell, const Vector2D& centerPosition, const Vector2D& rect)
 {
 	CellPos ltCell = CellPos(
 		static_cast<int>(baseCell.x + (centerPosition.x - rect.x * 0.5f - MaxObjectSize) / CellSize),
@@ -34,16 +34,9 @@ std::vector<WorldCell*> SpatialWorldData::getCellsAround(CellPos baseCell, const
 	return result;
 }
 
-EntityManagerGroup SpatialWorldData::getCellManagersAround(CellPos baseCell, const Vector2D& centerPosition, const Vector2D rect)
+SpatialEntityManager SpatialWorldData::getCellManagersAround(const CellPos& baseCell, const Vector2D& centerPosition, const Vector2D& rect)
 {
-	std::vector<WorldCell*> cells = getCellsAround(baseCell, centerPosition, rect);
-	std::vector<EntityManager*> entityManagers;
-	entityManagers.reserve(cells.size());
-	for (WorldCell* cell : cells)
-	{
-		entityManagers.push_back(&cell->getEntityManager());
-	}
-	return EntityManagerGroup(entityManagers);
+	return SpatialEntityManager(getCellsAround(baseCell, centerPosition, rect));
 }
 
 WorldCell* SpatialWorldData::getCell(const CellPos& pos)
@@ -54,40 +47,52 @@ WorldCell* SpatialWorldData::getCell(const CellPos& pos)
 
 WorldCell& SpatialWorldData::getOrCreateCell(const CellPos& pos)
 {
-	return mCells[pos];
+	if (auto it = mCells.find(pos); it != mCells.end())
+	{
+		return it->second;
+	}
+
+	auto pair = mCells.emplace(pos, pos);
+	return pair.first->second;
 }
 
-EntityManagerGroup SpatialWorldData::getAllCellManagers()
+SpatialEntityManager SpatialWorldData::getAllCellManagers()
 {
-	std::vector<EntityManager*> entityManagers;
-	entityManagers.reserve(mCells.size());
+	std::vector<WorldCell*> cells;
+	cells.reserve(mCells.size());
 	for (std::pair<const CellPos, WorldCell>& cell : mCells)
 	{
-		entityManagers.push_back(&cell.second.getEntityManager());
+		cells.push_back(&cell.second);
 	}
-	return EntityManagerGroup(entityManagers);
+	return SpatialEntityManager(cells);
 }
 
-bool SpatialWorldData::TransformCellPos(CellPos& cellPos, Vector2D& pos)
+Vector2D SpatialWorldData::GetRelativeLocation(const CellPos& baseCell, const CellPos& targetCell, const Vector2D& targetPos)
 {
-	if (pos.isInside(ZERO_VECTOR, CellSizeVector))
+	CellPos cellPosDiff = targetCell - baseCell;
+	return Vector2D(cellPosDiff.x * CellSize + targetPos.x, cellPosDiff.y * CellSize + targetPos.y);
+}
+
+bool SpatialWorldData::TransformCellPos(CellPos& inOutCellPos, Vector2D& inOutPos)
+{
+	if (inOutPos.isInside(ZERO_VECTOR, CellSizeVector))
 	{
 		return false;
 	}
 
-	int posXDiff = static_cast<int>(std::floor(pos.x / CellSize));
-	int posYDiff = static_cast<int>(std::floor(pos.y / CellSize));
+	int posXDiff = static_cast<int>(std::floor(inOutPos.x / CellSize));
+	int posYDiff = static_cast<int>(std::floor(inOutPos.y / CellSize));
 
-	pos.x -= posXDiff * CellSize;
-	pos.y -= posYDiff * CellSize;
+	inOutPos.x -= posXDiff * CellSize;
+	inOutPos.y -= posYDiff * CellSize;
 
-	cellPos.x += posXDiff;
-	cellPos.y += posYDiff;
+	inOutCellPos.x += posXDiff;
+	inOutCellPos.y += posYDiff;
 
 	return true;
 }
 
-std::pair<CellPos, Vector2D> SpatialWorldData::GetTransformedCellPos(CellPos oldCellPos, Vector2D oldPos)
+std::pair<CellPos, Vector2D> SpatialWorldData::GetTransformedCellPos(const CellPos& oldCellPos, const Vector2D& oldPos)
 {
 	auto result = std::make_pair(oldCellPos, oldPos);
 	TransformCellPos(result.first, result.second);

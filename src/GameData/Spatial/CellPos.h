@@ -11,6 +11,7 @@ struct CellPos
 
 	CellPos() = default;
 	CellPos(int x, int y);
+	CellPos operator-(const CellPos& other) const;
 	bool operator==(const CellPos& other) const;
 	bool operator!=(const CellPos& other) const;
 

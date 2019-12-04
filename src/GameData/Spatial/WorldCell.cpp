@@ -2,6 +2,11 @@
 
 #include <nlohmann/json.hpp>
 
+WorldCell::WorldCell(const CellPos& pos)
+	: mPos(pos)
+{
+}
+
 nlohmann::json WorldCell::toJson(const ComponentFactory& componentFactory) const
 {
 	return nlohmann::json{

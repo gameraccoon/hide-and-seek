@@ -37,7 +37,7 @@ struct Vector2D
 	Vector2D project(const Vector2D& base) const;
 
 	/** Check that current point is inside an AABB rect with the given top-left and bottom-right points */
-	bool isInside(const Vector2D& lt, const Vector2D& rb);
+	bool isInside(const Vector2D& lt, const Vector2D& rb) const;
 
 	/** Get angle between vector and OX axis */
 	Rotator rotation() const;

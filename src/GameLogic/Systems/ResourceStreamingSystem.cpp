@@ -34,8 +34,8 @@ void ResourceStreamingSystem::update()
 	Vector2D workingRect = worldCachedData->getScreenSize();
 
 	// load sprites
-	EntityManagerGroup cellManagers = world.getSpatialData().getCellManagersAround(worldCachedData->getCameraCellPos(), worldCachedData->getCameraPos(), workingRect);
-	cellManagers.forEachComponentSetWithEntity<SpriteCreatorComponent>([&resourceManager = mResourceManager](EntityView entity, SpriteCreatorComponent* spriteCreator)
+	SpatialEntityManager spatialManager = world.getSpatialData().getCellManagersAround(worldCachedData->getCameraCellPos(), worldCachedData->getCameraPos(), workingRect);
+	spatialManager.forEachComponentSetWithEntity<SpriteCreatorComponent>([&resourceManager = mResourceManager](EntityView entity, SpriteCreatorComponent* spriteCreator)
 	{
 		const auto& descriptions = spriteCreator->getDescriptions();
 		Assert(!descriptions.empty(), "Sprite descriptions should not be empty");
@@ -54,10 +54,10 @@ void ResourceStreamingSystem::update()
 		}
 		entity.scheduleRemoveComponent<SpriteCreatorComponent>();
 	});
-	cellManagers.executeScheduledActions();
+	spatialManager.executeScheduledActions();
 
 	// load single animations clips
-	cellManagers.forEachComponentSetWithEntity<AnimationClipCreatorComponent>([&resourceManager = mResourceManager](EntityView entity, AnimationClipCreatorComponent* animationClipCreator)
+	spatialManager.forEachComponentSetWithEntity<AnimationClipCreatorComponent>([&resourceManager = mResourceManager](EntityView entity, AnimationClipCreatorComponent* animationClipCreator)
 	{
 		const auto& descriptions = animationClipCreator->getDescriptionsRef();
 		Assert(!descriptions.empty(), "Animation descriptions should not be empty");
@@ -94,10 +94,10 @@ void ResourceStreamingSystem::update()
 
 		entity.scheduleRemoveComponent<AnimationClipCreatorComponent>();
 	});
-	cellManagers.executeScheduledActions();
+	spatialManager.executeScheduledActions();
 
 	// load animation groups
-	cellManagers.forEachComponentSetWithEntity<AnimationGroupCreatorComponent>([&resourceManager = mResourceManager](EntityView entity, AnimationGroupCreatorComponent* animationGroupCreator)
+	spatialManager.forEachComponentSetWithEntity<AnimationGroupCreatorComponent>([&resourceManager = mResourceManager](EntityView entity, AnimationGroupCreatorComponent* animationGroupCreator)
 	{
 		AnimationGroupsComponent* animationGroups = entity.scheduleAddComponent<AnimationGroupsComponent>();
 
@@ -146,5 +146,5 @@ void ResourceStreamingSystem::update()
 
 		entity.scheduleRemoveComponent<AnimationGroupCreatorComponent>();
 	});
-	cellManagers.executeScheduledActions();
+	spatialManager.executeScheduledActions();
 }

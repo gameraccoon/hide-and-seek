@@ -78,7 +78,7 @@ Vector2D Vector2D::project(const Vector2D& base) const
 	return result;
 }
 
-bool Vector2D::isInside(const Vector2D& lt, const Vector2D& rb)
+bool Vector2D::isInside(const Vector2D& lt, const Vector2D& rb) const
 {
 	return x >= lt.x && x <= rb.x && y >= lt.y && y <= rb.y;
 }
