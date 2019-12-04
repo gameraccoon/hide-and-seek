@@ -8,6 +8,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QDoubleValidator>
+#include <QIntValidator>
 #include <QCheckBox>
 #include <QHBoxLayout>
 
@@ -50,6 +51,67 @@ namespace TypesEditConstructor
 		});
 
 		layout->addWidget(floatEdit);
+		return edit;
+	}
+
+	template<>
+	Edit<int>::Ptr FillEdit<int>::Call(QLayout* layout, const QString& label, const int& initialValue)
+	{
+		FillLabel(layout, label);
+
+		QLineEdit* intEdit = new QLineEdit();
+
+		auto iv = new QIntValidator(std::numeric_limits<int>::lowest(), std::numeric_limits<int>::max());
+		intEdit->setValidator(iv);
+
+		intEdit->setText(QString::number(initialValue));
+
+		Edit<int>::Ptr edit = std::make_shared<Edit<int>>(initialValue);
+		Edit<int>::WeakPtr editWeakPtr = edit;
+
+		QObject::connect(intEdit, &QLineEdit::textChanged, edit->getOwner(), [editWeakPtr](const QString& newValueStr)
+		{
+			if (Edit<int>::Ptr edit = editWeakPtr.lock())
+			{
+				bool ok;
+				int newValue = newValueStr.toInt(&ok);
+				if (ok)
+				{
+					edit->transmitValueChange(newValue);
+				}
+			}
+		});
+
+		layout->addWidget(intEdit);
+		return edit;
+	}
+
+	template<>
+	Edit<unsigned int>::Ptr FillEdit<unsigned int>::Call(QLayout* layout, const QString& label, const unsigned int& initialValue)
+	{
+		FillLabel(layout, label);
+
+		QLineEdit* intEdit = new QLineEdit();
+
+		intEdit->setText(QString::number(initialValue));
+
+		Edit<unsigned int>::Ptr edit = std::make_shared<Edit<unsigned int>>(initialValue);
+		Edit<unsigned int>::WeakPtr editWeakPtr = edit;
+
+		QObject::connect(intEdit, &QLineEdit::textChanged, edit->getOwner(), [editWeakPtr](const QString& newValueStr)
+		{
+			if (Edit<unsigned int>::Ptr edit = editWeakPtr.lock())
+			{
+				bool ok;
+				unsigned int newValue = newValueStr.toUInt(&ok);
+				if (ok)
+				{
+					edit->transmitValueChange(newValue);
+				}
+			}
+		});
+
+		layout->addWidget(intEdit);
 		return edit;
 	}
 
