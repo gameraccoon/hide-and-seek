@@ -20671,8 +20671,37 @@
         },
         "world_components": {
             "components": {
-                "NavMeshComponent": {}
+                "NavMeshComponent": {},
+                "TrackedSpatialEntitiesComponent": {
+                    "entities" : [
+                         [
+                              "ControlledEntity", {
+                                   "cell" : {
+                                        "x": 0,
+                                        "y": 0
+                                   },
+                                   "entity": {
+                                        "id": 509098326,
+                                        "valid": true
+                                   }
+                              }
+                         ],
+                         [
+                              "CameraEntity", {
+                                   "cell" : {
+                                        "x": 0,
+                                        "y": 0
+                                   },
+                                   "entity": {
+                                        "id": 509098326,
+                                        "valid": true
+                                   }
+                              }
+                         ]
+                    ]
+               }
             }
-        }
+        },
+        "spatial_data": {}
     }
 }

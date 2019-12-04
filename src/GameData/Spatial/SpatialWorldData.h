@@ -38,8 +38,9 @@ public:
 	void fromJson(const nlohmann::json& json, const ComponentFactory& componentFactory);
 
 public:
-	static constexpr float CellSize = 1000.0f;
+	static constexpr float CellSize = 100.0f;
 	static constexpr Vector2D CellSizeVector{CellSize, CellSize};
+	static constexpr float MaxObjectSize = CellSize * 0.5f;
 
 private:
 	std::unordered_map<CellPos, WorldCell> mCells;

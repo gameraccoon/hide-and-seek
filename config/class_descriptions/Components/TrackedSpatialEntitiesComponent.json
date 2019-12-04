@@ -10,7 +10,7 @@
 				"\"GameData/Spatial/SpatialEntityID.h\"",
 				"\"Base/String/StringID.h\""
 			],
-			"flags": ["transient", "get_by_ref"]
+			"flags": ["get_by_ref"]
 		}
 	]
 }

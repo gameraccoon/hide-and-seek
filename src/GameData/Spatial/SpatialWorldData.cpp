@@ -6,17 +6,18 @@
 
 std::vector<WorldCell*> SpatialWorldData::getCellsAround(CellPos baseCell, const Vector2D& centerPosition, const Vector2D rect)
 {
-	std::vector<WorldCell*> result;
-	size_t maxCellRadius = static_cast<size_t>(std::max(rect.x, rect.y) / CellSize);
-	result.reserve((1+maxCellRadius*2) * (1+maxCellRadius*2));
-
 	CellPos ltCell = CellPos(
-		static_cast<int>(baseCell.x + (centerPosition.x - rect.x * 0.5f) / CellSize),
-		static_cast<int>(baseCell.y + (centerPosition.y - rect.y * 0.5f) / CellSize));
+		static_cast<int>(baseCell.x + (centerPosition.x - rect.x * 0.5f - MaxObjectSize) / CellSize),
+		static_cast<int>(baseCell.y + (centerPosition.y - rect.y * 0.5f - MaxObjectSize) / CellSize)
+	);
 
 	CellPos rbCell = CellPos(
-		static_cast<int>(baseCell.x + (centerPosition.x + rect.x * 0.5f) / CellSize),
-		static_cast<int>(baseCell.y + (centerPosition.y + rect.y * 0.5f) / CellSize));
+		static_cast<int>(baseCell.x + (centerPosition.x + rect.x * 0.5f + MaxObjectSize) / CellSize),
+		static_cast<int>(baseCell.y + (centerPosition.y + rect.y * 0.5f + MaxObjectSize) / CellSize)
+	);
+
+	std::vector<WorldCell*> result;
+	result.reserve(static_cast<size_t>((rbCell.x - ltCell.x) * (rbCell.y - ltCell.y)));
 
 	for (int i = ltCell.x; i <= rbCell.x; ++i)
 	{

@@ -2,13 +2,20 @@
 
 #include <functional>
 
+#include <nlohmann/json_fwd.hpp>
+
 struct CellPos
 {
 	int x;
 	int y;
 
+	CellPos() = default;
 	CellPos(int x, int y);
 	bool operator==(const CellPos& other) const;
+	bool operator!=(const CellPos& other) const;
+
+	friend void to_json(nlohmann::json& outJson, const CellPos& pos);
+	friend void from_json(const nlohmann::json& json, CellPos& outPos);
 };
 
 namespace std
@@ -17,7 +24,6 @@ namespace std
 	{
 		size_t operator()(const CellPos& cellPos) const noexcept
 		{
-			// it's already a unique hash
 			return hash<int>()(cellPos.x) ^ (hash<int>()(cellPos.y) << 1);
 		}
 	};

@@ -190,9 +190,47 @@ public:
 		}
 	}
 
+	template<typename FirstComponent, typename... Components>
+	std::vector<Entity> getEntitiesHavingComponents()
+	{
+		std::vector<Entity> result;
+		auto& firstComponentVector = mComponents[typeid(FirstComponent)];
+		result.reserve(firstComponentVector.size());
+
+		auto componentVectors = std::make_tuple(firstComponentVector, mComponents[typeid(Components)]...);
+
+		constexpr unsigned componentsSize = sizeof...(Components);
+
+		for (auto& [entityID, entityIndex] : mEntityIndexMap)
+		{
+			if (entityIndex >= firstComponentVector.size())
+			{
+				continue;
+			}
+
+			auto& firstComponent = firstComponentVector[entityIndex];
+			if (firstComponent == nullptr)
+			{
+				continue;
+			}
+
+			auto components = getEntityComponentSet<FirstComponent, Components...>(entityIndex, componentVectors);
+
+			if (std::get<componentsSize>(components) == nullptr)
+			{
+				continue;
+			}
+
+			result.emplace_back(entityID);
+		}
+		return result;
+	}
+
 	void getPrefabFromEntity(nlohmann::json& json, Entity entity);
 	Entity createPrefabInstance(const nlohmann::json& json, const class ComponentFactory& componentFactory);
 	void applyPrefabToExistentEntity(const nlohmann::json& json, Entity entity, const ComponentFactory& componentFactory);
+
+	void transferEntityTo(EntityManager& otherManager, Entity entity);
 
 	nlohmann::json toJson(const class ComponentFactory& componentFactory) const;
 	void fromJson(const nlohmann::json& json, const class ComponentFactory& componentFactory);

@@ -3,9 +3,12 @@
 #include <nlohmann/json.hpp>
 
 #include "GameData/Components/TrackedSpatialEntitiesComponent.generated.h"
+#include "GameData/Components/TransformComponent.generated.h"
 
 nlohmann::json World::toJson(const ComponentFactory& componentFactory) const
 {
+	ReportError("This function not fully mirrors 'fromJson', it's not safe to use it right now");
+
 	return nlohmann::json{
 		{"entity_manager", mEntityManager.toJson(componentFactory)},
 		{"world_components", mWorldComponents.toJson(componentFactory)},
@@ -18,6 +21,18 @@ void World::fromJson(const nlohmann::json& json, const ComponentFactory& compone
 	mEntityManager.fromJson(json.at("entity_manager"), componentFactory);
 	mWorldComponents.fromJson(json.at("world_components"), componentFactory);
 	mSpatialData.fromJson(json.at("spatial_data"), componentFactory);
+
+	std::vector<Entity> spatialEntities = mEntityManager.getEntitiesHavingComponents<TransformComponent>();
+	for (Entity entity : spatialEntities)
+	{
+		auto [transform] = mEntityManager.getEntityComponents<TransformComponent>(entity);
+		Vector2D pos = transform->getLocation();
+		CellPos cellPos(0, 0);
+		SpatialWorldData::TransformCellPos(cellPos, pos);
+		transform->setLocation(pos);
+		WorldCell& cell = mSpatialData.getOrCreateCell(cellPos);
+		mEntityManager.transferEntityTo(cell.getEntityManager(), entity);
+	}
 }
 
 std::optional<EntityView> World::getTrackedSpatialEntity(StringID entityStringID)
@@ -31,7 +46,7 @@ std::optional<EntityView> World::getTrackedSpatialEntity(StringID entityStringID
 		{
 			if (WorldCell* cell = getSpatialData().getCell(it->second.cell))
 			{
-				return EntityView(it->second.entity, cell->getEntityManager());
+				return EntityView(it->second.entity.getEntity(), cell->getEntityManager());
 			}
 		}
 	}
