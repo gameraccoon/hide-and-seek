@@ -56,21 +56,24 @@ void ControlSystem::update()
 		movementDirection += DOWN_DIRECTION;
 	}
 
-	std::optional<EntityView> controlledEntity = world.getTrackedSpatialEntity(STR_TO_ID("ControlledEntity"));
+	std::optional<std::pair<EntityView, CellPos>> controlledEntity = world.getTrackedSpatialEntity(STR_TO_ID("ControlledEntity"));
 
 	if (controlledEntity.has_value())
 	{
-		if (auto [characterState] = controlledEntity->getComponents<CharacterStateComponent>(); characterState != nullptr)
+		if (auto [characterState] = controlledEntity->first.getComponents<CharacterStateComponent>(); characterState != nullptr)
 		{
 			characterState->getBlackboardRef().setValue<bool>(CharacterStateBlackboardKeys::TryingToMove, !movementDirection.isZeroLength());
 			characterState->getBlackboardRef().setValue<bool>(CharacterStateBlackboardKeys::ReadyToRun, isRunPressed);
 		}
 
-		std::optional<EntityView> mainCamera = world.getTrackedSpatialEntity(STR_TO_ID("CameraEntity"));
+		auto [transform, movement] = controlledEntity->first.getComponents<TransformComponent, MovementComponent>();
+		movement->setMoveDirection(movementDirection);
+
+		std::optional<std::pair<EntityView, CellPos>> mainCamera = world.getTrackedSpatialEntity(STR_TO_ID("CameraEntity"));
 
 		if (mainCamera.has_value())
 		{
-			auto [cameraTransform] = mainCamera->getComponents<TransformComponent>();
+			auto [cameraTransform] = mainCamera->first.getComponents<TransformComponent>();
 			if (cameraTransform == nullptr)
 			{
 				return;
@@ -82,20 +85,7 @@ void ControlSystem::update()
 
 			Vector2D drawShift = screenHalfSize - cameraTransform->getLocation();
 
-			auto [transform, movement] = controlledEntity->getComponents<TransformComponent, MovementComponent>();
-
-			movement->setMoveDirection(movementDirection);
 			movement->setSightDirection(mouseScreenPos - transform->getLocation() - drawShift);
-
-			auto [worldCachedData] = world.getWorldComponents().getComponents<WorldCachedDataComponent>();
-			if (worldCachedData == nullptr)
-			{
-				world.getWorldComponents().addComponent<WorldCachedDataComponent>();
-				std::tie(worldCachedData) = world.getWorldComponents().getComponents<WorldCachedDataComponent>();
-			}
-			worldCachedData->setCameraPos(cameraTransform->getLocation());
-			worldCachedData->setCameraCellPos(CellPos(0, 0));
-			worldCachedData->setScreenSize(screenSize);
 		}
 	}
 

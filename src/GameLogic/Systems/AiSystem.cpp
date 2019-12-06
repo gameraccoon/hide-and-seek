@@ -378,14 +378,14 @@ void AiSystem::update()
 		navMeshComponent->setUpdateTimestamp(timestampNow);
 	}
 
-	std::optional<EntityView> playerEntity = world.getTrackedSpatialEntity(STR_TO_ID("ControlledEntity"));
+	std::optional<std::pair<EntityView, CellPos>> playerEntity = world.getTrackedSpatialEntity(STR_TO_ID("ControlledEntity"));
 
 	if (!playerEntity.has_value())
 	{
 		return;
 	}
 
-	auto [playerTransform] = playerEntity->getComponents<TransformComponent>();
+	auto [playerTransform] = playerEntity->first.getComponents<TransformComponent>();
 	if (playerTransform == nullptr)
 	{
 		return;

@@ -17,15 +17,15 @@ void CameraSystem::update()
 {
 	World& world = mWorldHolder.getWorld();
 
-	std::optional<EntityView> controlledEntity = world.getTrackedSpatialEntity(STR_TO_ID("ControlledEntity"));
+	std::optional<std::pair<EntityView, CellPos>> controlledEntity = world.getTrackedSpatialEntity(STR_TO_ID("ControlledEntity"));
 
 	if (controlledEntity.has_value())
 	{
-		std::optional<EntityView> mainCamera = world.getTrackedSpatialEntity(STR_TO_ID("CameraEntity"));
+		std::optional<std::pair<EntityView, CellPos>> mainCamera = world.getTrackedSpatialEntity(STR_TO_ID("CameraEntity"));
 
 		if (mainCamera.has_value())
 		{
-			auto [cameraTransform] = mainCamera->getComponents<TransformComponent>();
+			auto [cameraTransform] = mainCamera->first.getComponents<TransformComponent>();
 			if (cameraTransform == nullptr)
 			{
 				return;
@@ -35,8 +35,12 @@ void CameraSystem::update()
 			Vector2D screenHalfSize = screenSize * 0.5f;
 			Vector2D mouseScreenPos(mEngine.getMouseX(), mEngine.getMouseY());
 
-			auto [controledEntityTransform] = controlledEntity->getComponents<TransformComponent>();
-			cameraTransform->setLocation(controledEntityTransform->getLocation() + mouseScreenPos - screenHalfSize);
+			auto [controledEntityTransform] = controlledEntity->first.getComponents<TransformComponent>();
+
+			Vector2D cameraOldPos = controledEntityTransform->getLocation() + mouseScreenPos - screenHalfSize;
+
+			std::pair<CellPos, Vector2D> pos = SpatialWorldData::GetTransformedCellPos(controlledEntity->second, cameraOldPos);
+			cameraTransform->setLocation(pos.second);
 
 			auto [worldCachedData] = world.getWorldComponents().getComponents<WorldCachedDataComponent>();
 			if (worldCachedData == nullptr)
@@ -45,7 +49,7 @@ void CameraSystem::update()
 				std::tie(worldCachedData) = world.getWorldComponents().getComponents<WorldCachedDataComponent>();
 			}
 			worldCachedData->setCameraPos(cameraTransform->getLocation());
-			worldCachedData->setCameraCellPos(CellPos(0, 0));
+			worldCachedData->setCameraCellPos(pos.first);
 			worldCachedData->setScreenSize(screenSize);
 		}
 	}

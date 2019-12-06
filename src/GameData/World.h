@@ -18,7 +18,7 @@ public:
 	nlohmann::json toJson(const ComponentFactory& componentFactory) const;
 	void fromJson(const nlohmann::json& json, const ComponentFactory& componentFactory);
 
-	std::optional<EntityView> getTrackedSpatialEntity(StringID entityStringID);
+	std::optional<std::pair<EntityView, CellPos>> getTrackedSpatialEntity(StringID entityStringID);
 	EntityView createTrackedSpatialEntity(StringID entityStringID, CellPos pos);
 	EntityView createSpatialEntity(CellPos pos);
 

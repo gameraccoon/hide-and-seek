@@ -48,6 +48,7 @@ public:
 	}
 
 	Entity getEntity() const;
+	EntityManager& getManager() { return mManager; }
 
 private:
 	Entity mEntity;

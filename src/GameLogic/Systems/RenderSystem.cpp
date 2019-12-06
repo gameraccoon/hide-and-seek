@@ -50,7 +50,7 @@ void RenderSystem::update()
 	Vector2D mouseScreenPos(mEngine.getMouseX(), mEngine.getMouseY());
 	Vector2D screenHalfSize = Vector2D(static_cast<float>(mEngine.getWidth()), static_cast<float>(mEngine.getHeight())) * 0.5f;
 
-	Vector2D drawShift = screenHalfSize - cameraLocation + (screenHalfSize - mouseScreenPos) * 0.5;
+	Vector2D drawShift = screenHalfSize - cameraLocation;
 
 	SpatialEntityManager spatialManager = world.getSpatialData().getCellManagersAround(worldCachedData->getCameraCellPos(), cameraLocation, workingRect);
 
@@ -99,10 +99,10 @@ Vector2D RenderSystem::GetPlayerSightPosition(World& world)
 {
 	Vector2D result(0.0f, 0.0f);
 
-	std::optional<EntityView> controlledEntity = world.getTrackedSpatialEntity(STR_TO_ID("ControlledEntity"));
+	std::optional<std::pair<EntityView, CellPos>> controlledEntity = world.getTrackedSpatialEntity(STR_TO_ID("ControlledEntity"));
 	if (controlledEntity.has_value())
 	{
-		auto [playerTransform] = controlledEntity->getComponents<TransformComponent>();
+		auto [playerTransform] = controlledEntity->first.getComponents<TransformComponent>();
 
 		if (playerTransform != nullptr)
 		{

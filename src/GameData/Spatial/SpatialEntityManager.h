@@ -35,7 +35,7 @@ public:
 	{
 		for (WorldCell* cell : mCells)
 		{
-			cell->getEntityManager().forEachComponentSet<FirstComponent, Components...>([&processor, cell](FirstComponent* first, Components*... components)
+			cell->getEntityManager().forEachComponentSet<FirstComponent, Components...>([cell, &processor](FirstComponent* first, Components*... components)
 			{
 				processor(cell, first, components...);
 			});
@@ -50,6 +50,18 @@ public:
 			cell->getEntityManager().forEachComponentSetWithEntity<FirstComponent, Components...>([cell, &processor](Entity entity, FirstComponent* first, Components*... components)
 			{
 				processor(EntityView(entity, cell->getEntityManager()), first, components...);
+			});
+		}
+	}
+
+	template<typename FirstComponent, typename... Components, typename FunctionType>
+	void forEachSpatialComponentSetWithEntity(FunctionType processor)
+	{
+		for (WorldCell* cell : mCells)
+		{
+			cell->getEntityManager().forEachComponentSetWithEntity<FirstComponent, Components...>([cell, &processor](Entity entity, FirstComponent* first, Components*... components)
+			{
+				processor(cell, EntityView(entity, cell->getEntityManager()), first, components...);
 			});
 		}
 	}

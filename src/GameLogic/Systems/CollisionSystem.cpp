@@ -16,43 +16,42 @@ CollisionSystem::CollisionSystem(WorldHolder& worldHolder, const TimeData& timeD
 
 void CollisionSystem::update()
 {
-	World& world = mWorldHolder.getWorld();
-	const GameplayTimestamp timestampNow = mTime.currentTimestamp;
-
-	std::vector<std::tuple<CollisionComponent*, TransformComponent*>> components;
-	world.getSpatialData().getAllCellManagers().getComponents<CollisionComponent, TransformComponent>(components);
-
-	for (auto& [collision, transform] : components)
+	struct SpatialComponents
 	{
-		if (collision->getIsBoundingBoxDirty())
-		{
-			Collide::UpdateOriginalBoundingBox(collision);
-		}
+		WorldCell* cell;
+		std::vector<std::tuple<CollisionComponent*, TransformComponent*>> components;
+	};
 
-		collision->setBoundingBox(collision->getOriginalBoundingBox() + transform->getLocation());
+	World& world = mWorldHolder.getWorld();
+//	const GameplayTimestamp timestampNow = mTime.currentTimestamp;
+	float dt = mTime.dt;
+
+	auto& allCellsMap = world.getSpatialData().getAllCells();
+	std::vector<SpatialComponents> components(allCellsMap.size());
+	size_t i = 0;
+	for (auto& pair : allCellsMap)
+	{
+		pair.second.getEntityManager().getComponents<CollisionComponent, TransformComponent>(components[i].components);
+		components[i].cell = &pair.second;
 	}
 
-	world.getSpatialData().getAllCellManagers().forEachComponentSet<CollisionComponent, TransformComponent, MovementComponent>([&components, timestampNow](CollisionComponent* collisionComponent, TransformComponent* transformComponent, MovementComponent* /*movementComponent*/)
+	world.getSpatialData().getAllCellManagers().forEachSpatialComponentSet<CollisionComponent, TransformComponent, MovementComponent>([&components, dt](WorldCell* cell, CollisionComponent* collisionComponent, TransformComponent* transformComponent, MovementComponent* movementComponent)
 	{
+		CellPos cellPos = cell->getPos();
 		Vector2D resist = ZERO_VECTOR;
-		for (auto& [collision, transform] : components)
+		for (auto& pair : components)
 		{
-			if (collision != collisionComponent)
+			for (auto [collision, transform] : pair.components)
 			{
-				bool doCollide = Collide::DoCollide(collisionComponent, transformComponent->getLocation(), collision, transform->getLocation(), resist);
-
-				if (doCollide)
+				CellPos cellDiff = pair.cell->getPos() - cellPos;
+				Vector2D cellPosDiff(cellDiff.x * SpatialWorldData::CellSize, cellDiff.y * SpatialWorldData::CellSize);
+				if (collision != collisionComponent)
 				{
-					if (collision->getGeometry().type == HullType::Angular)
+					bool doCollide = Collide::DoCollide(collisionComponent, transformComponent->getLocation() + movementComponent->getNextStep(), collision, transform->getLocation() - cellPosDiff, resist);
+
+					if (doCollide)
 					{
-						transformComponent->setLocation(transformComponent->getLocation() + resist);
-						transformComponent->setUpdateTimestamp(timestampNow);
-					}
-					else
-					{
-						transformComponent->setLocation(transformComponent->getLocation() + resist*0.5f);
-						transform->setLocation(transform->getLocation() - resist*0.5f);
-						transform->setUpdateTimestamp(timestampNow);
+						movementComponent->setMoveDirection((movementComponent->getNextStep() - resist) * dt);
 					}
 				}
 			}

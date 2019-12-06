@@ -4,7 +4,7 @@
 /**
  * Axis-aligned bounding box (AABB)
  */
-class BoundingBox
+class  BoundingBox
 {
 public:
 	BoundingBox(float minX, float minY, float maxX, float maxY);

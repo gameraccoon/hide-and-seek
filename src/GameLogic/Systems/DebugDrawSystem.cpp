@@ -8,6 +8,7 @@
 #include "GameData/Components/RenderModeComponent.generated.h"
 #include "GameData/Components/AiControllerComponent.generated.h"
 #include "GameData/Components/CharacterStateComponent.generated.h"
+#include "GameData/Components/WorldCachedDataComponent.generated.h"
 #include "GameData/World.h"
 #include "GameData/GameData.h"
 
@@ -38,25 +39,17 @@ void DebugDrawSystem::update()
 	GameData& gameData = mWorldHolder.getGameData();
 	Graphics::Renderer& renderer = mEngine.getRenderer();
 
-	static const Vector2D maxFov(500.0f, 500.0f);
+	auto [worldCachedData] = world.getWorldComponents().getComponents<WorldCachedDataComponent>();
+	Vector2D workingRect = worldCachedData->getScreenSize();
+	Vector2D cameraLocation = worldCachedData->getCameraPos();
+	//CellPos cameraCell = worldCachedData->getCameraCellPos();
 
-	std::optional<EntityView> mainCamera = world.getTrackedSpatialEntity(STR_TO_ID("CameraEntity"));
-	if (!mainCamera.has_value())
-	{
-		return;
-	}
-
-	auto [cameraTransformComponent] = mainCamera->getComponents<TransformComponent>();
-	if (cameraTransformComponent == nullptr)
-	{
-		return;
-	}
-
-	Vector2D cameraLocation = cameraTransformComponent->getLocation();
 	Vector2D mouseScreenPos(mEngine.getMouseX(), mEngine.getMouseY());
 	Vector2D screenHalfSize = Vector2D(static_cast<float>(mEngine.getWidth()), static_cast<float>(mEngine.getHeight())) * 0.5f;
 
-	Vector2D drawShift = screenHalfSize - cameraLocation + (screenHalfSize - mouseScreenPos) * 0.5;
+	Vector2D drawShift = screenHalfSize - cameraLocation;
+
+	SpatialEntityManager spatialManager = world.getSpatialData().getCellManagersAround(worldCachedData->getCameraCellPos(), cameraLocation, workingRect);
 
 	auto [renderMode] = gameData.getGameComponents().getComponents<RenderModeComponent>();
 	if (renderMode && renderMode->getIsDrawDebugCollisionsEnabled())

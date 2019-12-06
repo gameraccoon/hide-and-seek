@@ -13,9 +13,6 @@
 class MovementSystem : public System
 {
 public:
-	using KeyStatesMap = std::unordered_map<int, bool>;
-
-public:
 	MovementSystem(WorldHolder& worldHolder, const TimeData& timeData);
 	~MovementSystem() override = default;
 
