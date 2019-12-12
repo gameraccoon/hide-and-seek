@@ -10,14 +10,14 @@ TEST(SpatialPartitioning, CellPostionTransform)
 
 	EXPECT_EQ(21, cell.x);
 	EXPECT_EQ(-3, cell.y);
-	EXPECT_FLOAT_EQ(SpatialWorldData::CellSize * 0.3f, pos.x);
-	EXPECT_FLOAT_EQ(SpatialWorldData::CellSize * 0.2f, pos.y);
+	EXPECT_NEAR(SpatialWorldData::CellSize * 0.3f, pos.x, 0.0001f);
+	EXPECT_NEAR(SpatialWorldData::CellSize * 0.2f, pos.y, 0.0001f);
 
 	pos = Vector2D (SpatialWorldData::CellSize * -8.4f, SpatialWorldData::CellSize * 1.1f);
 	SpatialWorldData::TransformCellPos(cell, pos);
 
 	EXPECT_EQ(12, cell.x);
 	EXPECT_EQ(-2, cell.y);
-	EXPECT_FLOAT_EQ(SpatialWorldData::CellSize * 0.6f, pos.x);
-	EXPECT_FLOAT_EQ(SpatialWorldData::CellSize * 0.1f, pos.y);
+	EXPECT_NEAR(SpatialWorldData::CellSize * 0.6f, pos.x, 0.0001f);
+	EXPECT_NEAR(SpatialWorldData::CellSize * 0.1f, pos.y, 0.0001f);
 }

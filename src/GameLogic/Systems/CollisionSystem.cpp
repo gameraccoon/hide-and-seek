@@ -33,6 +33,15 @@ void CollisionSystem::update()
 	{
 		pair.second.getEntityManager().getComponents<CollisionComponent, TransformComponent>(components[i].components);
 		components[i].cell = &pair.second;
+		++i;
+	}
+
+	for (auto& pair : components)
+	{
+		for (auto [collision, transform] : pair.components)
+		{
+			Collide::UpdateBoundingBox(collision);
+		}
 	}
 
 	world.getSpatialData().getAllCellManagers().forEachSpatialComponentSet<CollisionComponent, TransformComponent, MovementComponent>([&components, dt](WorldCell* cell, CollisionComponent* collisionComponent, TransformComponent* transformComponent, MovementComponent* movementComponent)
@@ -41,17 +50,17 @@ void CollisionSystem::update()
 		Vector2D resist = ZERO_VECTOR;
 		for (auto& pair : components)
 		{
+			CellPos cellDiff = pair.cell->getPos() - cellPos;
 			for (auto [collision, transform] : pair.components)
 			{
-				CellPos cellDiff = pair.cell->getPos() - cellPos;
 				Vector2D cellPosDiff(cellDiff.x * SpatialWorldData::CellSize, cellDiff.y * SpatialWorldData::CellSize);
 				if (collision != collisionComponent)
 				{
-					bool doCollide = Collide::DoCollide(collisionComponent, transformComponent->getLocation() + movementComponent->getNextStep(), collision, transform->getLocation() - cellPosDiff, resist);
+					bool doCollide = Collide::DoCollide(collisionComponent, transformComponent->getLocation() - cellPosDiff + movementComponent->getNextStep(), collision, transform->getLocation(), resist);
 
 					if (doCollide)
 					{
-						movementComponent->setMoveDirection((movementComponent->getNextStep() - resist) * dt);
+						movementComponent->setNextStep(movementComponent->getNextStep() + resist);
 					}
 				}
 			}

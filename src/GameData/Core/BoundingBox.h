@@ -7,8 +7,22 @@
 class  BoundingBox
 {
 public:
-	BoundingBox(float minX, float minY, float maxX, float maxY);
-	BoundingBox(Vector2D minPoint, Vector2D maxPoint);
+	constexpr BoundingBox(float minX, float minY, float maxX, float maxY)
+		: minX(minX)
+		, minY(minY)
+		, maxX(maxX)
+		, maxY(maxY)
+	{
+	}
+
+	constexpr BoundingBox(Vector2D minPoint, Vector2D maxPoint)
+		: minX(minPoint.x)
+		, minY(minPoint.y)
+		, maxX(maxPoint.x)
+		, maxY(maxPoint.y)
+	{
+	}
+
 	/** Left-top point */
 	Vector2D getFirst();
 	/** Right-top point */

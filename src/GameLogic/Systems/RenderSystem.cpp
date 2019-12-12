@@ -63,7 +63,7 @@ void RenderSystem::update()
 	{
 		spatialManager.forEachSpatialComponentSet<RenderComponent, TransformComponent>([&drawShift, &resourceManager = mResourceManager, &renderer, cameraCell](WorldCell* cell, RenderComponent* render, TransformComponent* transform)
 		{
-			auto location = SpatialWorldData::GetRelativeLocation(cameraCell, cell->getPos(), transform->getLocation() + drawShift);
+			Vector2D location = SpatialWorldData::GetRelativeLocation(cameraCell, cell->getPos(), transform->getLocation() + drawShift);
 			float rotation = transform->getRotation().getValue();
 			for (const auto& data : render->getSpriteDatas())
 			{

@@ -7,20 +7,19 @@
 
 #include "GameData/Components/CollisionComponent.generated.h"
 
-static CollisionComponent* prepareCollision(World& world, const Vector2D& location, const Hull& hull)
+static CollisionComponent* prepareCollision(World& world, const Hull& hull)
 {
 	auto entity = world.getEntityManager().addEntity();
 	auto collision = world.getEntityManager().addComponent<CollisionComponent>(entity);
 	collision->setGeometry(hull);
-	Collide::UpdateOriginalBoundingBox(collision);
-	collision->setBoundingBox(collision->getOriginalBoundingBox() + location);
+	Collide::UpdateBoundingBox(collision);
 	return collision;
 }
 
 static bool getCollisionResult(World& world, const Vector2D& location1, const Hull& hull1, const Vector2D& location2, const Hull& hull2, Vector2D& outResist)
 {
-	auto collision1 = prepareCollision(world, location1, hull1);
-	auto collision2 = prepareCollision(world, location2, hull2);
+	auto collision1 = prepareCollision(world, hull1);
+	auto collision2 = prepareCollision(world, hull2);
 
 	return Collide::DoCollide(collision1, location1, collision2, location2, outResist);
 }

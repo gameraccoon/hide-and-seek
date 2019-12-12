@@ -42,7 +42,7 @@ void DebugDrawSystem::update()
 	auto [worldCachedData] = world.getWorldComponents().getComponents<WorldCachedDataComponent>();
 	Vector2D workingRect = worldCachedData->getScreenSize();
 	Vector2D cameraLocation = worldCachedData->getCameraPos();
-	//CellPos cameraCell = worldCachedData->getCameraCellPos();
+	CellPos cameraCell = worldCachedData->getCameraCellPos();
 
 	Vector2D mouseScreenPos(mEngine.getMouseX(), mEngine.getMouseY());
 	Vector2D screenHalfSize = Vector2D(static_cast<float>(mEngine.getWidth()), static_cast<float>(mEngine.getHeight())) * 0.5f;
@@ -56,12 +56,13 @@ void DebugDrawSystem::update()
 	{
 		const Graphics::Sprite& collisionSprite = mResourceManager.getResource<Graphics::Sprite>(mCollisionSpriteHandle);
 		Graphics::QuadUV quadUV = collisionSprite.getUV();
-		world.getEntityManager().forEachComponentSet<CollisionComponent>([&collisionSprite, &quadUV, drawShift, &renderer](CollisionComponent* collisionComponent)
+		spatialManager.forEachSpatialComponentSet<CollisionComponent, TransformComponent>([&collisionSprite, &quadUV, drawShift, &renderer, cameraCell](WorldCell* cell, CollisionComponent* collision, TransformComponent* transform)
 		{
+			Vector2D location = SpatialWorldData::GetRelativeLocation(cameraCell, cell->getPos(), transform->getLocation() + drawShift);
 			renderer.render(*collisionSprite.getTexture(),
-				Vector2D(collisionComponent->getBoundingBox().minX + drawShift.x, collisionComponent->getBoundingBox().minY + drawShift.y),
-				Vector2D(collisionComponent->getBoundingBox().maxX-collisionComponent->getBoundingBox().minX,
-						 collisionComponent->getBoundingBox().maxY-collisionComponent->getBoundingBox().minY),
+				Vector2D(collision->getBoundingBox().minX + location.x, collision->getBoundingBox().minY + location.y),
+				Vector2D(collision->getBoundingBox().maxX-collision->getBoundingBox().minX,
+						 collision->getBoundingBox().maxY-collision->getBoundingBox().minY),
 				ZERO_VECTOR,
 				0.0f,
 				quadUV);
@@ -108,7 +109,7 @@ void DebugDrawSystem::update()
 			}
 		}
 
-		world.getEntityManager().forEachComponentSet<AiControllerComponent>([drawShift, &quadUV, &navMeshSprite, &renderer](AiControllerComponent* aiController)
+		spatialManager.forEachComponentSet<AiControllerComponent>([drawShift, &quadUV, &navMeshSprite, &renderer](AiControllerComponent* aiController)
 		{
 			std::vector<Vector2D>& path = aiController->getPathRef().getSmoothPathRef();
 			if (path.size() > 1)
@@ -179,9 +180,10 @@ void DebugDrawSystem::update()
 	if (renderMode && renderMode->getIsDrawDebugCharacterInfoEnabled())
 	{
 		const Graphics::Font& font = mResourceManager.getResource<Graphics::Font>(mFontHandle);
-		world.getEntityManager().forEachComponentSet<CharacterStateComponent, TransformComponent>([&renderer, &font, drawShift](CharacterStateComponent* characterState, TransformComponent* transform)
+		spatialManager.forEachSpatialComponentSet<CharacterStateComponent, TransformComponent>([&renderer, &font, drawShift, cameraCell](WorldCell* cell, CharacterStateComponent* characterState, TransformComponent* transform)
 		{
-			renderer.renderText(font, transform->getLocation() + drawShift, {255, 255, 255, 255}, ID_TO_STR(enum_to_string(characterState->getState())).c_str());
+			Vector2D location = SpatialWorldData::GetRelativeLocation(cameraCell, cell->getPos(), transform->getLocation() + drawShift);
+			renderer.renderText(font, location, {255, 255, 255, 255}, ID_TO_STR(enum_to_string(characterState->getState())).c_str());
 		});
 	}
 }

@@ -163,8 +163,8 @@ namespace Collide
 				   const CollisionComponent* collisionB, const Vector2D& locationB, Vector2D& outResist)
 	{
 		// get AABB of the actors
-		const BoundingBox box = collisionA->getOriginalBoundingBox() + locationA;
-		const BoundingBox ourBox = collisionB->getOriginalBoundingBox() + locationB;
+		const BoundingBox box = collisionA->getBoundingBox() + locationA;
+		const BoundingBox ourBox = collisionB->getBoundingBox() + locationB;
 		// if the actor's AABB intersects with the Man's AABB (in new Man location)
 		if ((box.minX < ourBox.maxX
 			&& ourBox.minX < box.maxX)
@@ -177,14 +177,14 @@ namespace Collide
 		return false;
 	}
 
-	void UpdateOriginalBoundingBox(CollisionComponent* collision)
+	void UpdateBoundingBox(CollisionComponent* collision)
 	{
 		const Hull& geometry = collision->getGeometry();
 
 		if (geometry.type == HullType::Circular)
 		{
 			float radius = geometry.getRadius();
-			collision->setOriginalBoundingBox(BoundingBox(Vector2D(-radius, -radius), Vector2D(radius, radius)));
+			collision->setBoundingBox(BoundingBox(Vector2D(-radius, -radius), Vector2D(radius, radius)));
 		}
 		else
 		{
@@ -216,8 +216,7 @@ namespace Collide
 				}
 			}
 
-			collision->setOriginalBoundingBox(BoundingBox(Vector2D(minX, minY), Vector2D(maxX, maxY)));
+			collision->setBoundingBox(BoundingBox(Vector2D(minX, minY), Vector2D(maxX, maxY)));
 		}
 	}
-
 }
