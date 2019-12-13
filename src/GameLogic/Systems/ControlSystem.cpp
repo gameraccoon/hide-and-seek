@@ -79,11 +79,13 @@ void ControlSystem::update()
 				return;
 			}
 
+			CellPosDiff cellDiff = controlledEntity->second - mainCamera->second;
+
 			Vector2D screenSize = Vector2D(static_cast<float>(mEngine.getWidth()), static_cast<float>(mEngine.getHeight()));
 			Vector2D screenHalfSize = screenSize * 0.5f;
 			Vector2D mouseScreenPos(mEngine.getMouseX(), mEngine.getMouseY());
 
-			Vector2D drawShift = screenHalfSize - cameraTransform->getLocation();
+			Vector2D drawShift = screenHalfSize - cameraTransform->getLocation() + SpatialWorldData::GetCellRealDistance(cellDiff);
 
 			movement->setSightDirection(mouseScreenPos - transform->getLocation() - drawShift);
 		}

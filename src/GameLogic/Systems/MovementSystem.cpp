@@ -26,7 +26,7 @@ void MovementSystem::update()
 		CellPos cellTo;
 		EntityView entityView;
 
-		CellScheduledTransfers(CellPos to, EntityView entity)
+		MAYBE_UNUSED CellScheduledTransfers(CellPos to, EntityView entity)
 			: cellTo(to)
 			, entityView(entity)
 		{
@@ -57,6 +57,11 @@ void MovementSystem::update()
 				transfers.emplace_back(cellPos, entitiyView);
 			}
 			transform->setLocation(pos);
+			transform->setUpdateTimestamp(timestampNow);
+		}
+
+		if (transform->getRotation() != movement->getSightDirection().rotation())
+		{
 			transform->setRotation(movement->getSightDirection().rotation());
 			transform->setUpdateTimestamp(timestampNow);
 		}

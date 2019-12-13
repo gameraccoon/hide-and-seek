@@ -36,6 +36,8 @@ public:
 	// to convert old data
 	static CellPos CellPosFromVector2D(const Vector2D& pos);
 
+	static Vector2D GetCellRealDistance(const CellPosDiff& cellDiff);
+
 	nlohmann::json toJson(const ComponentFactory& componentFactory) const;
 	void fromJson(const nlohmann::json& json, const ComponentFactory& componentFactory);
 

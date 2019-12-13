@@ -35,9 +35,11 @@ void CameraSystem::update()
 			Vector2D screenHalfSize = screenSize * 0.5f;
 			Vector2D mouseScreenPos(mEngine.getMouseX(), mEngine.getMouseY());
 
+			const float cameraMobilityRate = 0.7f;
+
 			auto [controledEntityTransform] = controlledEntity->first.getComponents<TransformComponent>();
 
-			Vector2D cameraOldPos = controledEntityTransform->getLocation() + mouseScreenPos - screenHalfSize;
+			Vector2D cameraOldPos = controledEntityTransform->getLocation() + (mouseScreenPos - screenHalfSize) * cameraMobilityRate;
 
 			std::pair<CellPos, Vector2D> pos = SpatialWorldData::GetTransformedCellPos(controlledEntity->second, cameraOldPos);
 			cameraTransform->setLocation(pos.second);

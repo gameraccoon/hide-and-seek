@@ -4,6 +4,14 @@
 
 #include <nlohmann/json_fwd.hpp>
 
+struct CellPosDiff
+{
+	int x;
+	int y;
+
+	CellPosDiff(int x, int y);
+};
+
 struct CellPos
 {
 	int x;
@@ -11,7 +19,8 @@ struct CellPos
 
 	CellPos() = default;
 	CellPos(int x, int y);
-	CellPos operator-(const CellPos& other) const;
+	CellPosDiff operator-(const CellPos& other) const;
+	CellPos operator+(const CellPosDiff& diff) const;
 	bool operator==(const CellPos& other) const;
 	bool operator!=(const CellPos& other) const;
 

@@ -69,8 +69,7 @@ SpatialEntityManager SpatialWorldData::getAllCellManagers()
 
 Vector2D SpatialWorldData::GetRelativeLocation(const CellPos& baseCell, const CellPos& targetCell, const Vector2D& targetPos)
 {
-	CellPos cellPosDiff = targetCell - baseCell;
-	return Vector2D(cellPosDiff.x * CellSize + targetPos.x, cellPosDiff.y * CellSize + targetPos.y);
+	return GetCellRealDistance(targetCell - baseCell) + targetPos;
 }
 
 bool SpatialWorldData::TransformCellPos(CellPos& inOutCellPos, Vector2D& inOutPos)
@@ -102,6 +101,11 @@ std::pair<CellPos, Vector2D> SpatialWorldData::GetTransformedCellPos(const CellP
 CellPos SpatialWorldData::CellPosFromVector2D(const Vector2D& pos)
 {
 	return CellPos(static_cast<int>(pos.x / CellSize), static_cast<int>(pos.y / CellSize));
+}
+
+Vector2D SpatialWorldData::GetCellRealDistance(const CellPosDiff& cellDiff)
+{
+	return Vector2D(cellDiff.x * CellSize, cellDiff.y * CellSize);
 }
 
 nlohmann::json SpatialWorldData::toJson(const ComponentFactory& /*componentFactory*/) const

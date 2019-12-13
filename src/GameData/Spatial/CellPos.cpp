@@ -2,15 +2,26 @@
 
 #include <nlohmann/json.hpp>
 
+CellPosDiff::CellPosDiff(int x, int y)
+	: x(x)
+	, y(y)
+{
+}
+
 CellPos::CellPos(int x, int y)
 	: x(x)
 	, y(y)
 {
 }
 
-CellPos CellPos::operator-(const CellPos& other) const
+CellPosDiff CellPos::operator-(const CellPos& other) const
 {
-	return CellPos(x - other.x, y - other.y);
+	return CellPosDiff(x - other.x, y - other.y);
+}
+
+CellPos CellPos::operator+(const CellPosDiff& diff) const
+{
+	return CellPos(x + diff.x, y + diff.y);
 }
 
 bool CellPos::operator==(const CellPos& other) const
