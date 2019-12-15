@@ -7,6 +7,7 @@
 #include "GameData/Components/RenderModeComponent.generated.h"
 #include "GameData/Components/CharacterStateComponent.generated.h"
 #include "GameData/Components/WorldCachedDataComponent.generated.h"
+#include "GameData/Components/DebugDrawComponent.generated.h"
 
 #include "GameData/World.h"
 #include "GameData/GameData.h"
@@ -85,9 +86,9 @@ void ControlSystem::update()
 			Vector2D screenHalfSize = screenSize * 0.5f;
 			Vector2D mouseScreenPos(mEngine.getMouseX(), mEngine.getMouseY());
 
-			Vector2D drawShift = screenHalfSize - cameraTransform->getLocation() + SpatialWorldData::GetCellRealDistance(cellDiff);
+			Vector2D mouseHeroPos = -mouseScreenPos + screenHalfSize + cameraTransform->getLocation() - SpatialWorldData::GetCellRealDistance(cellDiff);
 
-			movement->setSightDirection(mouseScreenPos - transform->getLocation() - drawShift);
+			movement->setSightDirection(transform->getLocation() - mouseHeroPos);
 		}
 	}
 
@@ -100,5 +101,6 @@ void ControlSystem::update()
 		UpdateRenderStateOnPressed(mKeyStates, renderMode, SDLK_F4, &RenderModeComponent::getIsDrawLightsEnabled, &RenderModeComponent::setIsDrawLightsEnabled);
 		UpdateRenderStateOnPressed(mKeyStates, renderMode, SDLK_F5, &RenderModeComponent::getIsDrawVisibleEntitiesEnabled, &RenderModeComponent::setIsDrawVisibleEntitiesEnabled);
 		UpdateRenderStateOnPressed(mKeyStates, renderMode, SDLK_F6, &RenderModeComponent::getIsDrawDebugCharacterInfoEnabled, &RenderModeComponent::setIsDrawDebugCharacterInfoEnabled);
+		UpdateRenderStateOnPressed(mKeyStates, renderMode, SDLK_F7, &RenderModeComponent::getIsDrawDebugPrimitivesEnabled, &RenderModeComponent::setIsDrawDebugPrimitivesEnabled);
 	}
 }

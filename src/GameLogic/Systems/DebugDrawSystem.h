@@ -45,4 +45,5 @@ private:
 	ResourceHandle mCollisionSpriteHandle;
 	ResourceHandle mNavmeshSpriteHandle;
 	ResourceHandle mFontHandle;
+	ResourceHandle mPointTextureHandle;
 };

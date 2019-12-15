@@ -9156,7 +9156,13 @@
                             "y": 0.0
                         }
                     },
-                    null,
+                    {
+                        "originalSpeed": 30.0,
+                        "previousStep": {
+                            "x": 0.0,
+                            "y": 0.0
+                        }
+                    },
                     null,
                     null,
                     null,
@@ -20668,14 +20674,6 @@
                     380
                 ]
             ]
-        },
-        "main_camera": {
-            "id": 509098326,
-            "valid": true
-        },
-        "player_controlled_entity": {
-            "id": 509098326,
-            "valid": true
         },
         "world_components": {
             "components": {

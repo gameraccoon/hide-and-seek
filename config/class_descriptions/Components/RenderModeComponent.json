@@ -37,7 +37,12 @@
 			"type": "bool",
 			"default": " = false",
 			"flags": ["transient"]
+		},
+		{
+			"name": "isDrawDebugPrimitivesEnabled",
+			"type": "bool",
+			"default": " = false",
+			"flags": ["transient"]
 		}
 	]
 }
-

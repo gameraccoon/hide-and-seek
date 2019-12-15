@@ -9,6 +9,7 @@
 #include "GameData/Components/AiControllerComponent.generated.h"
 #include "GameData/Components/CharacterStateComponent.generated.h"
 #include "GameData/Components/WorldCachedDataComponent.generated.h"
+#include "GameData/Components/DebugDrawComponent.generated.h"
 #include "GameData/World.h"
 #include "GameData/GameData.h"
 
@@ -149,6 +150,36 @@ void DebugDrawSystem::update()
 		});
 	}
 
+	if (renderMode && renderMode->getIsDrawDebugPrimitivesEnabled())
+	{
+		const Graphics::Sprite& pointSprite = mResourceManager.getResource<Graphics::Sprite>(mPointTextureHandle);
+		Vector2D pointSize(6, 6);
+		auto [debugDraw] = gameData.getGameComponents().getComponents<DebugDrawComponent>();
+		if (debugDraw != nullptr)
+		{
+
+			const Graphics::Font& font = mResourceManager.getResource<Graphics::Font>(mFontHandle);
+			for (auto& screenPoint : debugDraw->getFrameScreenPoints())
+			{
+				renderer.render(*pointSprite.getTexture(), screenPoint.screenPos, pointSize);
+				if (!screenPoint.name.empty())
+				{
+					renderer.renderText(font, screenPoint.screenPos, {255, 255, 255, 255}, screenPoint.name.c_str());
+				}
+			}
+
+			for (auto& worldPoint : debugDraw->getFrameWorldPoints())
+			{
+				Vector2D screenPos = worldPoint.pos + SpatialWorldData::GetCellRealDistance(worldPoint.cellPos - cameraCell) - cameraLocation + screenHalfSize;
+				renderer.render(*pointSprite.getTexture(), screenPos, pointSize);
+				if (!worldPoint.name.empty())
+				{
+					renderer.renderText(font, screenPos, {255, 255, 255, 255}, worldPoint.name.c_str());
+				}
+			}
+		}
+	}
+
 	if (renderMode && renderMode->getIsDrawDebugFpsEnabled())
 	{
 		const Graphics::Font& font = mResourceManager.getResource<Graphics::Font>(mFontHandle);
@@ -186,11 +217,19 @@ void DebugDrawSystem::update()
 			renderer.renderText(font, location, {255, 255, 255, 255}, ID_TO_STR(enum_to_string(characterState->getState())).c_str());
 		});
 	}
+
+	auto [debugDraw] = gameData.getGameComponents().getComponents<DebugDrawComponent>();
+	if (debugDraw != nullptr)
+	{
+		debugDraw->getFrameWorldPointsRef().clear();
+		debugDraw->getFrameScreenPointsRef().clear();
+	}
 }
 
 void DebugDrawSystem::initResources()
 {
 	mCollisionSpriteHandle = mResourceManager.lockSprite("resources/textures/collision.png");
 	mNavmeshSpriteHandle = mResourceManager.lockSprite("resources/textures/testTexture.png");
+	mPointTextureHandle = mResourceManager.lockSprite("resources/textures/collision.png");
 	mFontHandle = mResourceManager.lockFont("resources/fonts/prstart.ttf", 16);
 }

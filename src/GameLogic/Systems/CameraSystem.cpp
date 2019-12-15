@@ -2,7 +2,7 @@
 
 #include "GameData/Components/TransformComponent.generated.h"
 #include "GameData/Components/WorldCachedDataComponent.generated.h"
-
+#include "GameData/Components/MovementComponent.generated.h"
 #include "GameData/World.h"
 #include "GameData/GameData.h"
 
@@ -25,7 +25,7 @@ void CameraSystem::update()
 
 		if (mainCamera.has_value())
 		{
-			auto [cameraTransform] = mainCamera->first.getComponents<TransformComponent>();
+			auto [cameraTransform, cameraMovement] = mainCamera->first.getComponents<TransformComponent, MovementComponent>();
 			if (cameraTransform == nullptr)
 			{
 				return;
@@ -39,10 +39,12 @@ void CameraSystem::update()
 
 			auto [controledEntityTransform] = controlledEntity->first.getComponents<TransformComponent>();
 
-			Vector2D cameraOldPos = controledEntityTransform->getLocation() + (mouseScreenPos - screenHalfSize) * cameraMobilityRate;
+			Vector2D cameraCellShift = SpatialWorldData::GetCellRealDistance(controlledEntity->second - mainCamera->second);
 
-			std::pair<CellPos, Vector2D> pos = SpatialWorldData::GetTransformedCellPos(controlledEntity->second, cameraOldPos);
-			cameraTransform->setLocation(pos.second);
+			Vector2D cameraNewPos = controledEntityTransform->getLocation() + cameraCellShift + (mouseScreenPos - screenHalfSize) * cameraMobilityRate;
+			Vector2D cameraMove = cameraNewPos - cameraTransform->getLocation();
+
+			cameraMovement->setNextStep(cameraMove);
 
 			auto [worldCachedData] = world.getWorldComponents().getComponents<WorldCachedDataComponent>();
 			if (worldCachedData == nullptr)
@@ -50,8 +52,8 @@ void CameraSystem::update()
 				world.getWorldComponents().addComponent<WorldCachedDataComponent>();
 				std::tie(worldCachedData) = world.getWorldComponents().getComponents<WorldCachedDataComponent>();
 			}
-			worldCachedData->setCameraPos(cameraTransform->getLocation());
-			worldCachedData->setCameraCellPos(pos.first);
+			worldCachedData->setCameraPos(cameraNewPos);
+			worldCachedData->setCameraCellPos(mainCamera->second);
 			worldCachedData->setScreenSize(screenSize);
 		}
 	}
