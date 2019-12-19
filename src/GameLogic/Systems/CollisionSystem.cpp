@@ -18,7 +18,7 @@ void CollisionSystem::update()
 	struct SpatialComponents
 	{
 		WorldCell* cell;
-		std::vector<std::tuple<CollisionComponent*, TransformComponent*>> components;
+		std::vector<std::tuple<Entity, CollisionComponent*, TransformComponent*>> components;
 	};
 
 	World& world = mWorldHolder.getWorld();
@@ -28,14 +28,14 @@ void CollisionSystem::update()
 	size_t i = 0;
 	for (auto& pair : allCellsMap)
 	{
-		pair.second.getEntityManager().getComponents<CollisionComponent, TransformComponent>(components[i].components);
+		pair.second.getEntityManager().getComponentsWithEntities<CollisionComponent, TransformComponent>(components[i].components);
 		components[i].cell = &pair.second;
 		++i;
 	}
 
 	for (auto& pair : components)
 	{
-		for (auto [collision, transform] : pair.components)
+		for (auto [entity, collision, transform] : pair.components)
 		{
 			Collide::UpdateBoundingBox(collision);
 		}
@@ -49,7 +49,7 @@ void CollisionSystem::update()
 		{
 			Vector2D cellPosDiff = SpatialWorldData::GetCellRealDistance(pair.cell->getPos() - cellPos);
 
-			for (auto [collision, transform] : pair.components)
+			for (auto [entity, collision, transform] : pair.components)
 			{
 				if (collision != collisionComponent)
 				{
@@ -57,7 +57,16 @@ void CollisionSystem::update()
 
 					if (doCollide)
 					{
-						movementComponent->setNextStep(movementComponent->getNextStep() + resist);
+						auto [movement] = cell->getEntityManager().getEntityComponents<MovementComponent>(entity);
+						if (movement)
+						{
+							movementComponent->setNextStep(movementComponent->getNextStep() + resist/2);
+							movement->setNextStep(movement->getNextStep() - resist/2);
+						}
+						else
+						{
+							movementComponent->setNextStep(movementComponent->getNextStep() + resist);
+						}
 					}
 				}
 			}

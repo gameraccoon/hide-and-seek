@@ -17,45 +17,56 @@ nlohmann::json World::toJson(const ComponentFactory& componentFactory) const
 	};
 }
 
+static void InitSpatialTracked(SpatialTrackComponent* spatialTracked, const CellPos& cellPos, ComponentSetHolder& worldComponents)
+{
+	StringID spatialTrackID = spatialTracked->getId();
+	auto [trackedComponents] = worldComponents.getComponents<TrackedSpatialEntitiesComponent>();
+	auto it = trackedComponents->getEntitiesRef().find(spatialTrackID);
+	if (it != trackedComponents->getEntitiesRef().end())
+	{
+		it->second.cell = cellPos;
+	}
+}
+
+static void DistributeSpatialEntitiesBetweenCells(EntityManager& entityManager, ComponentSetHolder& worldComponents, SpatialWorldData& spatialData)
+{
+	auto [trackedSpatialEntities] = worldComponents.getComponents<TrackedSpatialEntitiesComponent>();
+	for (auto entityPair : trackedSpatialEntities->getEntitiesRef())
+	{
+		SpatialTrackComponent* spatialTrack = entityManager.addComponent<SpatialTrackComponent>(entityPair.second.entity.getEntity());
+		spatialTrack->setId(entityPair.first);
+	}
+
+	std::vector<Entity> spatialEntities = entityManager.getEntitiesHavingComponents<TransformComponent>();
+	for (Entity entity : spatialEntities)
+	{
+		auto [transform] = entityManager.getEntityComponents<TransformComponent>(entity);
+		Vector2D pos = transform->getLocation();
+		CellPos cellPos(0, 0);
+		SpatialWorldData::TransformCellPos(cellPos, pos);
+		transform->setLocation(pos);
+		WorldCell& cell = spatialData.getOrCreateCell(cellPos);
+		entityManager.transferEntityTo(cell.getEntityManager(), entity);
+
+		if (auto [spatialTracked] = cell.getEntityManager().getEntityComponents<SpatialTrackComponent>(entity); spatialTracked != nullptr)
+		{
+			InitSpatialTracked(spatialTracked, cellPos, worldComponents);
+		}
+	}
+}
+
 void World::fromJson(const nlohmann::json& json, const ComponentFactory& componentFactory)
 {
 	mEntityManager.fromJson(json.at("entity_manager"), componentFactory);
 	mWorldComponents.fromJson(json.at("world_components"), componentFactory);
 	mSpatialData.fromJson(json.at("spatial_data"), componentFactory);
 
-	auto [trackedSpatialEntities] = getWorldComponents().getComponents<TrackedSpatialEntitiesComponent>();
-	for (auto entityPair : trackedSpatialEntities->getEntitiesRef())
-	{
-		SpatialTrackComponent* spatialTrack = mEntityManager.addComponent<SpatialTrackComponent>(entityPair.second.entity.getEntity());
-		spatialTrack->setId(entityPair.first);
-	}
-
-	std::vector<Entity> spatialEntities = mEntityManager.getEntitiesHavingComponents<TransformComponent>();
-	for (Entity entity : spatialEntities)
-	{
-		auto [transform] = mEntityManager.getEntityComponents<TransformComponent>(entity);
-		Vector2D pos = transform->getLocation();
-		CellPos cellPos(0, 0);
-		SpatialWorldData::TransformCellPos(cellPos, pos);
-		transform->setLocation(pos);
-		WorldCell& cell = mSpatialData.getOrCreateCell(cellPos);
-		mEntityManager.transferEntityTo(cell.getEntityManager(), entity);
-
-		if (auto [spatialTracked] = cell.getEntityManager().getEntityComponents<SpatialTrackComponent>(entity); spatialTracked != nullptr)
-		{
-			StringID spatialTrackID = spatialTracked->getId();
-			auto [trackedComponents] = getWorldComponents().getComponents<TrackedSpatialEntitiesComponent>();
-			auto it = trackedComponents->getEntitiesRef().find(spatialTrackID);
-			if (it != trackedComponents->getEntitiesRef().end())
-			{
-				it->second.cell = cellPos;
-			}
-		}
-	}
+	DistributeSpatialEntitiesBetweenCells(mEntityManager, mWorldComponents, mSpatialData);
 }
 
 std::optional<std::pair<EntityView, CellPos>> World::getTrackedSpatialEntity(StringID entityStringID)
 {
+	std::optional<std::pair<EntityView, CellPos>> result;
 	auto [trackedSpatialEntities] = getWorldComponents().getComponents<TrackedSpatialEntitiesComponent>();
 
 	if (trackedSpatialEntities)
@@ -65,12 +76,12 @@ std::optional<std::pair<EntityView, CellPos>> World::getTrackedSpatialEntity(Str
 		{
 			if (WorldCell* cell = getSpatialData().getCell(it->second.cell))
 			{
-				return std::make_pair(EntityView(it->second.entity.getEntity(), cell->getEntityManager()), cell->getPos());
+				result.emplace(EntityView(it->second.entity.getEntity(), cell->getEntityManager()), cell->getPos());
 			}
 		}
 	}
 
-	return std::nullopt;
+	return result;
 }
 
 EntityView World::createTrackedSpatialEntity(StringID entityStringID, CellPos pos)
@@ -82,6 +93,8 @@ EntityView World::createTrackedSpatialEntity(StringID entityStringID, CellPos po
 		trackedSpatialEntities = getWorldComponents().addComponent<TrackedSpatialEntitiesComponent>();
 	}
 	trackedSpatialEntities->getEntitiesRef().insert_or_assign(entityStringID, SpatialEntityID(result.getEntity(), pos));
+	SpatialTrackComponent* trackComponent = result.addComponent<SpatialTrackComponent>();
+	trackComponent->setId(entityStringID);
 	return result;
 }
 

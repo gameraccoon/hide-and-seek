@@ -8,12 +8,6 @@ CellPosDiff::CellPosDiff(int x, int y)
 {
 }
 
-CellPos::CellPos(int x, int y)
-	: x(x)
-	, y(y)
-{
-}
-
 CellPosDiff CellPos::operator-(const CellPos& other) const
 {
 	return CellPosDiff(x - other.x, y - other.y);

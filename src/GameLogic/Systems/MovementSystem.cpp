@@ -58,6 +58,7 @@ void MovementSystem::update()
 			}
 			transform->setLocation(pos);
 			transform->setUpdateTimestamp(timestampNow);
+			movement->setNextStep(ZERO_VECTOR);
 		}
 
 		if (transform->getRotation() != movement->getSightDirection().rotation())

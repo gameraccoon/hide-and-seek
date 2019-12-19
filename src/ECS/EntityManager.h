@@ -129,6 +129,37 @@ public:
 		}
 	}
 
+	template<typename FirstComponent, typename... Components>
+	void getComponentsWithEntities(std::vector<std::tuple<Entity, FirstComponent*, Components*...>>& inOutComponents)
+	{
+		auto& firstComponentVector = mComponents[typeid(FirstComponent)];
+
+		auto componentVectors = std::make_tuple(firstComponentVector, mComponents[typeid(Components)]...);
+
+		constexpr unsigned componentsSize = sizeof...(Components);
+
+		for (auto& [entityID, entityIndex] : mEntityIndexMap)
+		{
+			if (entityIndex >= firstComponentVector.size())
+			{
+				continue;
+			}
+
+			auto& firstComponent = firstComponentVector[entityIndex];
+			if (firstComponent == nullptr)
+			{
+				continue;
+			}
+
+			auto components = std::tuple_cat(std::make_tuple(Entity(entityID)), getEntityComponentSet<FirstComponent, Components...>(entityIndex, componentVectors));
+
+			if (std::get<componentsSize>(components) != nullptr)
+			{
+				inOutComponents.push_back(components);
+			}
+		}
+	}
+
 	template<typename FirstComponent, typename... Components, typename FunctionType>
 	void forEachComponentSet(FunctionType processor)
 	{

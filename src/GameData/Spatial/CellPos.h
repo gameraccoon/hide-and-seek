@@ -18,7 +18,12 @@ struct CellPos
 	int y;
 
 	CellPos() = default;
-	CellPos(int x, int y);
+	constexpr CellPos(int x, int y)
+		: x(x)
+		, y(y)
+	{
+	}
+
 	CellPosDiff operator-(const CellPos& other) const;
 	CellPos operator+(const CellPosDiff& diff) const;
 	bool operator==(const CellPos& other) const;

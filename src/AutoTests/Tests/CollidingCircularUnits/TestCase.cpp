@@ -8,12 +8,14 @@
 #include "GameData/Components/CollisionComponent.generated.h"
 #include "GameData/Components/TransformComponent.generated.h"
 #include "GameData/Components/StateMachineComponent.generated.h"
+#include "GameData/Components/MovementComponent.generated.h"
 
 #include "GameLogic/Systems/RenderSystem.h"
 #include "GameLogic/Systems/CollisionSystem.h"
 #include "GameLogic/Systems/ResourceStreamingSystem.h"
 #include "GameLogic/Systems/MovementSystem.h"
 #include "GameLogic/Systems/CharacterStateSystem.h"
+#include "GameLogic/Systems/CameraSystem.h"
 
 #include "AutoTests/Tests/CollidingCircularUnits/Systems/TestCircularUnitsSystem.h"
 #include "AutoTests/Tests/CollidingCircularUnits/Systems/TestUnitsCountControlSystem.h"
@@ -23,9 +25,10 @@ void CollidingCircularUnitsTestCase::initTestCase(const ArgumentsParser& /*argum
 	getResourceManager().loadAtlasesData("resources/atlas/atlas-list.json");
 
 	mSystemsManager.registerSystem<TestUnitsCountControlSystem>(mWorldHolder);
-	mSystemsManager.registerSystem<TestCircularUnitsSystem>(mWorldHolder);
-	mSystemsManager.registerSystem<MovementSystem>(mWorldHolder, mTime);
+	mSystemsManager.registerSystem<TestCircularUnitsSystem>(mWorldHolder, mTime);
 	mSystemsManager.registerSystem<CollisionSystem>(mWorldHolder);
+	mSystemsManager.registerSystem<CameraSystem>(mWorldHolder, getEngine());
+	mSystemsManager.registerSystem<MovementSystem>(mWorldHolder, mTime);
 	mSystemsManager.registerSystem<CharacterStateSystem>(mWorldHolder, mTime);
 	mSystemsManager.registerSystem<ResourceStreamingSystem>(mWorldHolder, getResourceManager());
 	mSystemsManager.registerSystem<RenderSystem>(mWorldHolder, mTime, getEngine(), getResourceManager(), mWorkerManager);
@@ -48,8 +51,11 @@ void CollidingCircularUnitsTestCase::initTestCase(const ArgumentsParser& /*argum
 		hull.type = HullType::Circular;
 		hull.setRadius(15.0f);
 	}
+	playerEntity.addComponent<MovementComponent>();
 
-	mWorld.createTrackedSpatialEntity(STR_TO_ID("CameraEntity"), CellPos(0, 0));
+	EntityView camera = mWorld.createTrackedSpatialEntity(STR_TO_ID("CameraEntity"), CellPos(0, 0));
+	camera.addComponent<TransformComponent>();
+	camera.addComponent<MovementComponent>();
 
 	mWorld.getWorldComponents().addComponent<StateMachineComponent>();
 }
