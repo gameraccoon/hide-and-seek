@@ -108,14 +108,29 @@ Vector2D SpatialWorldData::GetCellRealDistance(const CellPosDiff& cellDiff)
 	return Vector2D(cellDiff.x * CellSize, cellDiff.y * CellSize);
 }
 
-nlohmann::json SpatialWorldData::toJson(const ComponentFactory& /*componentFactory*/) const
+nlohmann::json SpatialWorldData::toJson(const ComponentFactory& componentFactory) const
 {
+	nlohmann::json cellsJson;
+	for (auto& cell : mCells)
+	{
+		cellsJson.push_back({
+			{"pos", cell.first},
+			{"cell", cell.second.toJson(componentFactory)}
+		});
+	}
+
 	return nlohmann::json{
-//		{"entity_manager", mEntityManager.toJson(componentFactory)},
+		{"cells", cellsJson},
 	};
 }
 
-void SpatialWorldData::fromJson(const nlohmann::json& /*json*/, const ComponentFactory& /*componentFactory*/)
+void SpatialWorldData::fromJson(const nlohmann::json& json, const ComponentFactory& componentFactory)
 {
-//	mEntityManager.fromJson(json.at("entity_manager"), componentFactory);
+	const auto& cellsJson = json.at("cells");
+	for (const auto& cellJson : cellsJson)
+	{
+		CellPos pos = cellJson.at("pos");
+		auto res = mCells.emplace(pos, pos);
+		res.first->second.fromJson(cellJson.at("cell"), componentFactory);
+	}
 }
