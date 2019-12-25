@@ -42,7 +42,7 @@ public:
 	void fromJson(const nlohmann::json& json, const ComponentFactory& componentFactory);
 
 public:
-	static constexpr float CellSize = 100.0f;
+	static constexpr float CellSize = 200.0f;
 	static constexpr Vector2D CellSizeVector{CellSize, CellSize};
 	static constexpr float MaxObjectSize = CellSize * 0.5f;
 
