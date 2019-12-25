@@ -53,6 +53,26 @@ void DebugDrawSystem::update()
 	SpatialEntityManager spatialManager = world.getSpatialData().getCellManagersAround(worldCachedData->getCameraCellPos(), cameraLocation, workingRect);
 
 	auto [renderMode] = gameData.getGameComponents().getComponents<RenderModeComponent>();
+
+	if (renderMode && renderMode->getIsDrawDebugCellInfoEnabled())
+	{
+		const Graphics::Sprite& collisionSprite = mResourceManager.getResource<Graphics::Sprite>(mCollisionSpriteHandle);
+		Graphics::QuadUV quadUV = collisionSprite.getUV();
+
+		std::vector<WorldCell*> cellsAround = world.getSpatialData().getCellsAround(cameraCell, cameraLocation, screenHalfSize*2.0f);
+
+		for (WorldCell* cell : cellsAround)
+		{
+			Vector2D location = SpatialWorldData::GetRelativeLocation(cameraCell, cell->getPos(), drawShift);
+			renderer.render(*collisionSprite.getTexture(),
+				location,
+				SpatialWorldData::CellSizeVector,
+				ZERO_VECTOR,
+				0.0f,
+				quadUV);
+		}
+	}
+
 	if (renderMode && renderMode->getIsDrawDebugCollisionsEnabled())
 	{
 		const Graphics::Sprite& collisionSprite = mResourceManager.getResource<Graphics::Sprite>(mCollisionSpriteHandle);

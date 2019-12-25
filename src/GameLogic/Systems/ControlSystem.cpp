@@ -102,5 +102,6 @@ void ControlSystem::update()
 		UpdateRenderStateOnPressed(mKeyStates, renderMode, SDLK_F5, &RenderModeComponent::getIsDrawVisibleEntitiesEnabled, &RenderModeComponent::setIsDrawVisibleEntitiesEnabled);
 		UpdateRenderStateOnPressed(mKeyStates, renderMode, SDLK_F6, &RenderModeComponent::getIsDrawDebugCharacterInfoEnabled, &RenderModeComponent::setIsDrawDebugCharacterInfoEnabled);
 		UpdateRenderStateOnPressed(mKeyStates, renderMode, SDLK_F7, &RenderModeComponent::getIsDrawDebugPrimitivesEnabled, &RenderModeComponent::setIsDrawDebugPrimitivesEnabled);
+		UpdateRenderStateOnPressed(mKeyStates, renderMode, SDLK_F8, &RenderModeComponent::getIsDrawDebugCellInfoEnabled, &RenderModeComponent::setIsDrawDebugCellInfoEnabled);
 	}
 }

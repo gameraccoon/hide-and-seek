@@ -57,7 +57,7 @@ void CollisionSystem::update()
 
 					if (doCollide)
 					{
-						auto [movement] = cell->getEntityManager().getEntityComponents<MovementComponent>(entity);
+						auto [movement] = pair.cell->getEntityManager().getEntityComponents<MovementComponent>(entity);
 						if (movement)
 						{
 							movementComponent->setNextStep(movementComponent->getNextStep() + resist/2);
