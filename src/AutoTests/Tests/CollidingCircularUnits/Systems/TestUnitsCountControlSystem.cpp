@@ -32,7 +32,7 @@ static void spawnUnit(EntityManager& entityManager, Vector2D pos)
 	}
 	{
 		MovementComponent* movement = entityManager.addComponent<MovementComponent>(entity);
-		movement->setOriginalSpeed(1.0f);
+		movement->setOriginalSpeed(2.0f);
 	}
 	{
 		SpriteCreatorComponent* sprite = entityManager.addComponent<SpriteCreatorComponent>(entity);

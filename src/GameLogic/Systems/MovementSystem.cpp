@@ -35,7 +35,7 @@ void MovementSystem::update()
 
 	std::vector<CellScheduledTransfers> transfers;
 
-	world.getSpatialData().getAllCellManagers().forEachSpatialComponentSetWithEntity<MovementComponent, TransformComponent>([timestampNow, &world, &transfers](WorldCell* cell, EntityView entitiyView, MovementComponent* movement, TransformComponent* transform)
+	world.getSpatialData().getAllCellManagers().forEachSpatialComponentSetWithEntity<MovementComponent, TransformComponent>([timestampNow, &transfers](WorldCell* cell, EntityView entitiyView, MovementComponent* movement, TransformComponent* transform)
 	{
 		if (!movement->getNextStep().isZeroLength())
 		{
@@ -44,16 +44,6 @@ void MovementSystem::update()
 			bool isCellChanged = SpatialWorldData::TransformCellPos(cellPos, pos);
 			if (isCellChanged)
 			{
-				if (auto [spatialTracked] = entitiyView.getComponents<SpatialTrackComponent>(); spatialTracked != nullptr)
-				{
-					StringID spatialTrackID = spatialTracked->getId();
-					auto [trackedComponents] = world.getWorldComponents().getComponents<TrackedSpatialEntitiesComponent>();
-					auto it = trackedComponents->getEntitiesRef().find(spatialTrackID);
-					if (it != trackedComponents->getEntitiesRef().end())
-					{
-						it->second.cell = cellPos;
-					}
-				}
 				transfers.emplace_back(cellPos, entitiyView);
 			}
 			transform->setLocation(pos);
@@ -70,6 +60,16 @@ void MovementSystem::update()
 
 	for (auto& transfer : transfers)
 	{
+		if (auto [spatialTracked] = transfer.entityView.getComponents<SpatialTrackComponent>(); spatialTracked != nullptr)
+		{
+			StringID spatialTrackID = spatialTracked->getId();
+			auto [trackedComponents] = world.getWorldComponents().getComponents<TrackedSpatialEntitiesComponent>();
+			auto it = trackedComponents->getEntitiesRef().find(spatialTrackID);
+			if (it != trackedComponents->getEntitiesRef().end())
+			{
+				it->second.cell = transfer.cellTo;
+			}
+		}
 		transfer.entityView.getManager().transferEntityTo(world.getSpatialData().getOrCreateCell(transfer.cellTo).getEntityManager(), transfer.entityView.getEntity());
 	}
 }

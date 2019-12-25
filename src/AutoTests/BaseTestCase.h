@@ -11,6 +11,7 @@
 #include "Utils/Jobs/WorkerManager.h"
 
 #include "HAL/GameBase.h"
+#include "HAL/KeyStatesMap.h"
 
 #include "GameLogic/SharedManagers/TimeData.h"
 #include "GameLogic/SharedManagers/WorldHolder.h"
@@ -22,6 +23,9 @@ public:
 
 	void start(const ArgumentsParser& arguments);
 	void update(float dt) final;
+	void initResources() override;
+	void setKeyboardKeyState(int, bool) override {}
+	void setMouseKeyState(int, bool) override {}
 
 protected:
 	virtual void initTestCase(const ArgumentsParser& arguments) = 0;
@@ -34,6 +38,7 @@ protected:
 	SystemsManager mSystemsManager;
 	Jobs::WorkerManager mWorkerManager{1};
 	TimeData mTime;
+	HAL::KeyStatesMap mKeyStates;
 
 private:
 	static const int mTicksToFinish = 100;
