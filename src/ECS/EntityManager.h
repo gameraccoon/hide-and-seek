@@ -153,7 +153,7 @@ public:
 
 			auto components = std::tuple_cat(std::make_tuple(Entity(entityID)), getEntityComponentSet<FirstComponent, Components...>(entityIndex, componentVectors));
 
-			if (std::get<componentsSize>(components) != nullptr)
+			if (std::get<componentsSize+1>(components) != nullptr)
 			{
 				inOutComponents.push_back(components);
 			}

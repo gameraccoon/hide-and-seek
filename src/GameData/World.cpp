@@ -3,13 +3,10 @@
 #include <nlohmann/json.hpp>
 
 #include "GameData/Components/TrackedSpatialEntitiesComponent.generated.h"
-#include "GameData/Components/TransformComponent.generated.h"
 #include "GameData/Components/SpatialTrackComponent.generated.h"
 
 nlohmann::json World::toJson(const ComponentFactory& componentFactory) const
 {
-	ReportError("This function not fully mirrors 'fromJson', it's not safe to use it right now");
-
 	return nlohmann::json{
 		{"entity_manager", mEntityManager.toJson(componentFactory)},
 		{"world_components", mWorldComponents.toJson(componentFactory)},
@@ -17,40 +14,21 @@ nlohmann::json World::toJson(const ComponentFactory& componentFactory) const
 	};
 }
 
-static void InitSpatialTracked(SpatialTrackComponent* spatialTracked, const CellPos& cellPos, ComponentSetHolder& worldComponents)
-{
-	StringID spatialTrackID = spatialTracked->getId();
-	auto [trackedComponents] = worldComponents.getComponents<TrackedSpatialEntitiesComponent>();
-	auto it = trackedComponents->getEntitiesRef().find(spatialTrackID);
-	if (it != trackedComponents->getEntitiesRef().end())
-	{
-		it->second.cell = cellPos;
-	}
-}
-
-static void DistributeSpatialEntitiesBetweenCells(EntityManager& entityManager, ComponentSetHolder& worldComponents, SpatialWorldData& spatialData)
+static void InitSpatialTrackedEntities(SpatialWorldData& spatialData, ComponentSetHolder& worldComponents)
 {
 	auto [trackedSpatialEntities] = worldComponents.getComponents<TrackedSpatialEntitiesComponent>();
-	for (auto entityPair : trackedSpatialEntities->getEntitiesRef())
-	{
-		SpatialTrackComponent* spatialTrack = entityManager.addComponent<SpatialTrackComponent>(entityPair.second.entity.getEntity());
-		spatialTrack->setId(entityPair.first);
-	}
 
-	std::vector<Entity> spatialEntities = entityManager.getEntitiesHavingComponents<TransformComponent>();
-	for (Entity entity : spatialEntities)
+	for (auto& cell : spatialData.getAllCells())
 	{
-		auto [transform] = entityManager.getEntityComponents<TransformComponent>(entity);
-		Vector2D pos = transform->getLocation();
-		CellPos cellPos(0, 0);
-		SpatialWorldData::TransformCellPos(cellPos, pos);
-		transform->setLocation(pos);
-		WorldCell& cell = spatialData.getOrCreateCell(cellPos);
-		entityManager.transferEntityTo(cell.getEntityManager(), entity);
-
-		if (auto [spatialTracked] = cell.getEntityManager().getEntityComponents<SpatialTrackComponent>(entity); spatialTracked != nullptr)
+		CellPos cellPos = cell.first;
+		for (auto& entityPair : trackedSpatialEntities->getEntitiesRef())
 		{
-			InitSpatialTracked(spatialTracked, cellPos, worldComponents);
+			SpatialTrackComponent* spatialTrack = cell.second.getEntityManager().addComponent<SpatialTrackComponent>(entityPair.second.entity.getEntity());
+			if (spatialTrack)
+			{
+				spatialTrack->setId(entityPair.first);
+				entityPair.second.cell = cellPos;
+			}
 		}
 	}
 }
@@ -61,7 +39,7 @@ void World::fromJson(const nlohmann::json& json, const ComponentFactory& compone
 	mWorldComponents.fromJson(json.at("world_components"), componentFactory);
 	mSpatialData.fromJson(json.at("spatial_data"), componentFactory);
 
-	DistributeSpatialEntitiesBetweenCells(mEntityManager, mWorldComponents, mSpatialData);
+	InitSpatialTrackedEntities(mSpatialData, mWorldComponents);
 }
 
 std::optional<std::pair<EntityView, CellPos>> World::getTrackedSpatialEntity(StringID entityStringID)

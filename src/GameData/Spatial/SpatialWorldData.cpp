@@ -4,6 +4,8 @@
 
 #include <nlohmann/json.hpp>
 
+#include "GameData/Components/TransformComponent.generated.h"
+
 std::vector<WorldCell*> SpatialWorldData::getCellsAround(const CellPos& baseCell, const Vector2D& centerPosition, const Vector2D& rect)
 {
 	CellPos ltCell = CellPos(
@@ -98,9 +100,11 @@ std::pair<CellPos, Vector2D> SpatialWorldData::GetTransformedCellPos(const CellP
 	return result;
 }
 
-CellPos SpatialWorldData::CellPosFromVector2D(const Vector2D& pos)
+std::pair<CellPos, Vector2D> SpatialWorldData::TransformCellFromOldSize(const Vector2D& pos, const CellPos& oldPos, const Vector2D& oldSize)
 {
-	return CellPos(static_cast<int>(pos.x / CellSize), static_cast<int>(pos.y / CellSize));
+	auto result = std::make_pair(CellPos(0, 0), pos + Vector2D(oldPos.x * oldSize.x, oldPos.y * oldSize.y));
+	TransformCellPos(result.first, result.second);
+	return result;
 }
 
 Vector2D SpatialWorldData::GetCellRealDistance(const CellPosDiff& cellDiff)
@@ -121,7 +125,45 @@ nlohmann::json SpatialWorldData::toJson(const ComponentFactory& componentFactory
 
 	return nlohmann::json{
 		{"cells", cellsJson},
+		{"cell_size", CellSizeInt}
 	};
+}
+
+static void RedistributeSpatialEntitiesBetweenCells(SpatialWorldData& spatialData, float oldCellSize)
+{
+	struct CellEntities
+	{
+		std::vector<std::tuple<Entity, TransformComponent*>> entities;
+		WorldCell& cell;
+
+		explicit CellEntities(WorldCell& cell) : cell(cell) {}
+	};
+
+	std::vector<CellEntities> entitiesToMove;
+
+	// collect snapshot of entity locations
+	for (auto& cellPair : spatialData.getAllCells())
+	{
+		CellEntities& newGroup = entitiesToMove.emplace_back(cellPair.second);
+		cellPair.second.getEntityManager().getComponentsWithEntities<TransformComponent>(newGroup.entities);
+	}
+
+	Vector2D oldSize(oldCellSize, oldCellSize);
+
+	// move entities to new cells
+	for (auto& cellData : entitiesToMove)
+	{
+		for (auto [entity, transform] : cellData.entities)
+		{
+			std::pair<CellPos, Vector2D> newPos = SpatialWorldData::TransformCellFromOldSize(transform->getLocation(), cellData.cell.getPos(), oldSize);
+			transform->setLocation(newPos.second);
+			WorldCell& newCell = spatialData.getOrCreateCell(newPos.first);
+			if (cellData.cell.getPos() != newPos.first)
+			{
+				cellData.cell.getEntityManager().transferEntityTo(newCell.getEntityManager(), entity);
+			}
+		}
+	}
 }
 
 void SpatialWorldData::fromJson(const nlohmann::json& json, const ComponentFactory& componentFactory)
@@ -132,5 +174,11 @@ void SpatialWorldData::fromJson(const nlohmann::json& json, const ComponentFacto
 		CellPos pos = cellJson.at("pos");
 		auto res = mCells.emplace(pos, pos);
 		res.first->second.fromJson(cellJson.at("cell"), componentFactory);
+	}
+
+	int cellSize = json.at("cell_size");
+	if (cellSize != CellSizeInt)
+	{
+		RedistributeSpatialEntitiesBetweenCells(*this, cellSize);
 	}
 }

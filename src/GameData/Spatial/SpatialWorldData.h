@@ -34,7 +34,7 @@ public:
 	static Vector2D GetRelativeLocation(const CellPos& baseCell, const CellPos& targetCell, const Vector2D& targetPos);
 
 	// to convert old data
-	static CellPos CellPosFromVector2D(const Vector2D& pos);
+	static std::pair<CellPos, Vector2D> TransformCellFromOldSize(const Vector2D& pos, const CellPos& oldPos, const Vector2D& oldSize);
 
 	static Vector2D GetCellRealDistance(const CellPosDiff& cellDiff);
 
@@ -42,7 +42,8 @@ public:
 	void fromJson(const nlohmann::json& json, const ComponentFactory& componentFactory);
 
 public:
-	static constexpr float CellSize = 200.0f;
+	static constexpr int CellSizeInt = 200;
+	static constexpr float CellSize = static_cast<float>(CellSizeInt);
 	static constexpr Vector2D CellSizeVector{CellSize, CellSize};
 	static constexpr float MaxObjectSize = CellSize * 0.5f;
 
