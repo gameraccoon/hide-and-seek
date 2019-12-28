@@ -56,6 +56,7 @@ void DebugDrawSystem::update()
 
 	if (renderMode && renderMode->getIsDrawDebugCellInfoEnabled())
 	{
+		const Graphics::Font& font = mResourceManager.getResource<Graphics::Font>(mFontHandle);
 		const Graphics::Sprite& collisionSprite = mResourceManager.getResource<Graphics::Sprite>(mCollisionSpriteHandle);
 		Graphics::QuadUV quadUV = collisionSprite.getUV();
 
@@ -63,13 +64,19 @@ void DebugDrawSystem::update()
 
 		for (WorldCell* cell : cellsAround)
 		{
-			Vector2D location = SpatialWorldData::GetRelativeLocation(cameraCell, cell->getPos(), drawShift);
+			CellPos cellPos = cell->getPos();
+			Vector2D location = SpatialWorldData::GetRelativeLocation(cameraCell, cellPos, drawShift);
 			renderer.render(*collisionSprite.getTexture(),
 				location,
 				SpatialWorldData::CellSizeVector,
 				ZERO_VECTOR,
 				0.0f,
 				quadUV);
+
+			std::string text = FormatString("(%d, %d)", cellPos.x, cellPos.y);
+			std::array<int, 2> textSize = renderer.getTextSize(font, text.c_str());
+			Vector2D screenPos = SpatialWorldData::CellSizeVector*0.5 + SpatialWorldData::GetCellRealDistance(cellPos - cameraCell) - cameraLocation + screenHalfSize - Vector2D(textSize[0] * 0.5f, textSize[1] * 0.5f);
+			renderer.renderText(font, screenPos, {255, 255, 255, 255}, text.c_str());
 		}
 	}
 
@@ -172,12 +179,11 @@ void DebugDrawSystem::update()
 
 	if (renderMode && renderMode->getIsDrawDebugPrimitivesEnabled())
 	{
-		const Graphics::Sprite& pointSprite = mResourceManager.getResource<Graphics::Sprite>(mPointTextureHandle);
-		Vector2D pointSize(6, 6);
 		auto [debugDraw] = gameData.getGameComponents().getComponents<DebugDrawComponent>();
 		if (debugDraw != nullptr)
 		{
-
+			Vector2D pointSize(6, 6);
+			const Graphics::Sprite& pointSprite = mResourceManager.getResource<Graphics::Sprite>(mPointTextureHandle);
 			const Graphics::Font& font = mResourceManager.getResource<Graphics::Font>(mFontHandle);
 			for (auto& screenPoint : debugDraw->getFrameScreenPoints())
 			{

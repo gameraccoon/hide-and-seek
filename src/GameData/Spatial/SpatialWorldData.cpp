@@ -9,13 +9,13 @@
 std::vector<WorldCell*> SpatialWorldData::getCellsAround(const CellPos& baseCell, const Vector2D& centerPosition, const Vector2D& rect)
 {
 	CellPos ltCell = CellPos(
-		static_cast<int>(baseCell.x + (centerPosition.x - rect.x * 0.5f - MaxObjectSize) / CellSize),
-		static_cast<int>(baseCell.y + (centerPosition.y - rect.y * 0.5f - MaxObjectSize) / CellSize)
+		baseCell.x + static_cast<int>((centerPosition.x - rect.x * 0.5f - MaxObjectSize) / CellSize - 1),
+		baseCell.y + static_cast<int>((centerPosition.y - rect.y * 0.5f - MaxObjectSize) / CellSize - 1)
 	);
 
 	CellPos rbCell = CellPos(
-		static_cast<int>(baseCell.x + (centerPosition.x + rect.x * 0.5f + MaxObjectSize) / CellSize),
-		static_cast<int>(baseCell.y + (centerPosition.y + rect.y * 0.5f + MaxObjectSize) / CellSize)
+		baseCell.x + static_cast<int>((centerPosition.x + rect.x * 0.5f + MaxObjectSize) / CellSize),
+		baseCell.y + static_cast<int>((centerPosition.y + rect.y * 0.5f + MaxObjectSize) / CellSize)
 	);
 
 	std::vector<WorldCell*> result;
