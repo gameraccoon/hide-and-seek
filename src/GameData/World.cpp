@@ -70,7 +70,7 @@ EntityView World::createTrackedSpatialEntity(StringID entityStringID, CellPos po
 	{
 		trackedSpatialEntities = getWorldComponents().addComponent<TrackedSpatialEntitiesComponent>();
 	}
-	trackedSpatialEntities->getEntitiesRef().insert_or_assign(entityStringID, SpatialEntityID(result.getEntity(), pos));
+	trackedSpatialEntities->getEntitiesRef().insert_or_assign(entityStringID, SpatialEntity(result.getEntity(), pos));
 	SpatialTrackComponent* trackComponent = result.addComponent<SpatialTrackComponent>();
 	trackComponent->setId(entityStringID);
 	return result;

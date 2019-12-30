@@ -4,10 +4,10 @@
 	"attributes": [
 		{
 			"name": "entities",
-			"type": "std::map<StringID, SpatialEntityID>",
+			"type": "std::map<StringID, SpatialEntity>",
 			"includes": [
 				"<map>",
-				"\"GameData/Spatial/SpatialEntityID.h\"",
+				"\"GameData/Spatial/SpatialEntity.h\"",
 				"\"Base/String/StringID.h\""
 			],
 			"flags": ["get_by_ref"]

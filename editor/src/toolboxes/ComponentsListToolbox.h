@@ -6,6 +6,8 @@
 #include "ECS/Delegates.h"
 #include "ECS/Entity.h"
 
+#include "src/editorutils/entityreference.h"
+
 class MainWindow;
 
 namespace ads
@@ -31,7 +33,7 @@ public:
 private:
 	void updateContent();
 	void onCurrentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
-	void onSelectedEntityChanged(OptionalEntity newEntity);
+	void onSelectedEntityChanged(const std::optional<EntityReference>& newEntity);
 	void showContextMenu(const QPoint& pos);
 	void removeSelectedComponent();
 
@@ -41,7 +43,7 @@ private:
 private:
 	MainWindow* mMainWindow;
 	ads::CDockManager* mDockManager;
-	OptionalEntity mLastSelectedEntity;
+	std::optional<EntityReference> mLastSelectedEntity;
 
 	Delegates::Handle mOnComponentAddedHandle;
 	Delegates::Handle mOnComponentRemovedHandle;

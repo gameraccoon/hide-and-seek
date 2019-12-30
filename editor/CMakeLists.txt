@@ -77,6 +77,7 @@ aux_source_directory(src/componenteditcontent/customtypeeditconstructors APP_SRC
 aux_source_directory(src/componenteditcontent/generated APP_SRCS)
 aux_source_directory(src/toolboxes APP_SRCS)
 aux_source_directory(src/editorsystems APP_SRCS)
+aux_source_directory(src/editorutils APP_SRCS)
 
 add_subdirectory(Qt-Advanced-Docking-System EXCLUDE_FROM_ALL)
 

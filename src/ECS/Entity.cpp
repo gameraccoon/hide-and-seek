@@ -19,6 +19,12 @@ Entity OptionalEntity::getEntity() const {
 	return Entity(mId);
 }
 
+Entity::EntityID OptionalEntity::getID() const
+{
+	Assert(mIsValid, "Getting uninitialized entity ID");
+	return mId;
+}
+
 void to_json(nlohmann::json& outJson, const OptionalEntity& entity)
 {
 	outJson = nlohmann::json{

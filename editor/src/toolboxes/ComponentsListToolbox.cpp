@@ -23,7 +23,7 @@ ComponentsListToolbox::ComponentsListToolbox(MainWindow* mainWindow, ads::CDockM
 	, mDockManager(dockManager)
 {
 	mOnWorldChangedHandle = mMainWindow->OnWorldChanged.bind([this]{bindEvents(); updateContent();});
-	mOnEntityChangedHandle = mMainWindow->OnSelectedEntityChanged.bind([this](OptionalEntity val){onSelectedEntityChanged(val);});
+	mOnEntityChangedHandle = mMainWindow->OnSelectedEntityChanged.bind([this](const auto& val){onSelectedEntityChanged(val);});
 }
 
 ComponentsListToolbox::~ComponentsListToolbox()
@@ -74,7 +74,7 @@ void ComponentsListToolbox::updateContent()
 	onSelectedEntityChanged(mLastSelectedEntity);
 }
 
-void ComponentsListToolbox::onSelectedEntityChanged(OptionalEntity newEntity)
+void ComponentsListToolbox::onSelectedEntityChanged(const std::optional<EntityReference>& newEntity)
 {
 	QListWidget* componentsList = mDockManager->findChild<QListWidget*>(ListName);
 	if (componentsList == nullptr)
@@ -86,9 +86,9 @@ void ComponentsListToolbox::onSelectedEntityChanged(OptionalEntity newEntity)
 
 	World* currentWorld = mMainWindow->getCurrentWorld();
 
-	if (currentWorld && newEntity.isValid())
+	if (currentWorld && newEntity.has_value())
 	{
-		unsigned int entityUid = newEntity.getEntity().getID();
+		Entity::EntityID entityUid = newEntity->entity.getID();
 		std::vector<BaseComponent*> components = currentWorld->getEntityManager().getAllEntityComponents(Entity(entityUid));
 		for (auto& component : components)
 		{
@@ -141,14 +141,14 @@ void ComponentsListToolbox::removeSelectedComponent()
 		return;
 	}
 
-	if (!mLastSelectedEntity.isValid())
+	if (!mLastSelectedEntity.has_value())
 	{
 		return;
 	}
 
 	mMainWindow->getCommandStack().executeNewCommand<RemoveComponentCommand>(
 		currentWorld,
-		mLastSelectedEntity.getEntity(),
+		mLastSelectedEntity->entity,
 		STR_TO_ID(currentItem->text().toStdString()),
 		&mMainWindow->getComponentFactory()
 	);
@@ -156,13 +156,18 @@ void ComponentsListToolbox::removeSelectedComponent()
 
 void ComponentsListToolbox::onCurrentItemChanged(QListWidgetItem* current, QListWidgetItem* /*previous*/)
 {
-	if (current)
+	if (current && mLastSelectedEntity.has_value())
 	{
-		mMainWindow->OnSelectedComponentChanged.broadcast(current->text());
+		ComponentReference reference;
+		reference.isWorld = true;
+		reference.entity = mLastSelectedEntity->entity;
+		reference.cellPos = mLastSelectedEntity->cellPos;
+		reference.componentTypeName = STR_TO_ID(current->text().toStdString());
+		mMainWindow->OnSelectedComponentChanged.broadcast(reference);
 	}
 	else
 	{
-		mMainWindow->OnSelectedComponentChanged.broadcast("");
+		mMainWindow->OnSelectedComponentChanged.broadcast(std::nullopt);
 	}
 }
 

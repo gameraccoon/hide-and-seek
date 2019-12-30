@@ -17,7 +17,7 @@ ComponentAttributesToolbox::ComponentAttributesToolbox(MainWindow* mainWindow, a
 	: mMainWindow(mainWindow)
 	, mDockManager(dockManager)
 {
-	mOnComponentChangedHandle = mMainWindow->OnSelectedComponentChanged.bind([this](const QString& val){onSelectedComponentChange(val);});
+	mOnComponentChangedHandle = mMainWindow->OnSelectedComponentChanged.bind([this](const auto& val){onSelectedComponentChange(val);});
 	mOnCommandEffectHandle = mMainWindow->OnCommandEffectApplied.bind([this](EditorCommand::EffectType effect, bool originalCall, bool forceUpdateLayout){updateContent(effect, originalCall, forceUpdateLayout);});
 }
 
@@ -60,7 +60,7 @@ void ComponentAttributesToolbox::updateContent(EditorCommand::EffectType effect,
 {
 	if (forceUpdateLayout || (!originalCall && effect == EditorCommand::EffectType::ComponentAttributes))
 	{
-		onSelectedComponentChange(mLastSelectedComlonent);
+		onSelectedComponentChange(mLastSelectedComponent);
 	}
 }
 
@@ -74,7 +74,7 @@ void ComponentAttributesToolbox::clearContent()
 	mMainWindow->getComponentContentFactory().removeEditContent(componentAttributesContainerWidget->layout());
 }
 
-void ComponentAttributesToolbox::onSelectedComponentChange(const QString& componentTypeName)
+void ComponentAttributesToolbox::onSelectedComponentChange(const std::optional<ComponentReference>& componentReference)
 {
 	QListWidget* entitiesList = mDockManager->findChild<QListWidget*>("EntityList");
 	if (entitiesList == nullptr)
@@ -105,11 +105,11 @@ void ComponentAttributesToolbox::onSelectedComponentChange(const QString& compon
 
 	bool ok;
 	int index = currentItem->text().toInt(&ok);
-	if (ok && index != 0)
+	if (ok && index != 0 && componentReference.has_value())
 	{
 		Entity entity = Entity(static_cast<Entity::EntityID>(index));
 		std::vector<BaseComponent*> entityComponents = currentWorld->getEntityManager().getAllEntityComponents(entity);
-		auto it = std::find_if(entityComponents.begin(), entityComponents.end(), [componentTypeName = STR_TO_ID(componentTypeName.toStdString())](BaseComponent* component)
+		auto it = std::find_if(entityComponents.begin(), entityComponents.end(), [componentTypeName = componentReference->componentTypeName](BaseComponent* component)
 		{
 			return component->getComponentTypeName() == componentTypeName;
 		});
@@ -118,7 +118,7 @@ void ComponentAttributesToolbox::onSelectedComponentChange(const QString& compon
 		{
 			mMainWindow->getComponentContentFactory().replaceEditContent(componentAttributesContainerWidget->layout(), entity, *it, mMainWindow->getCommandStack(), currentWorld);
 			validComponentIsSelected = true;
-			mLastSelectedComlonent = componentTypeName;
+			mLastSelectedComponent = componentReference;
 		}
 	}
 

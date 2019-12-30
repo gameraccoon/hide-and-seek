@@ -8,26 +8,26 @@
 #include <QCheckBox>
 #include <QHBoxLayout>
 
-#include "GameData/Spatial/SpatialEntityID.h"
+#include "GameData/Spatial/SpatialEntity.h"
 
 namespace TypesEditConstructor
 {
 	template<>
-	Edit<SpatialEntityID>::Ptr FillEdit<SpatialEntityID>::Call(QLayout* layout, const QString& label, const SpatialEntityID& initialValue)
+	Edit<SpatialEntity>::Ptr FillEdit<SpatialEntity>::Call(QLayout* layout, const QString& label, const SpatialEntity& initialValue)
 	{
 		FillLabel(layout, label);
 
 		QHBoxLayout *innerLayout = new QHBoxLayout;
 
-		Edit<SpatialEntityID>::Ptr edit = std::make_shared<Edit<SpatialEntityID>>(initialValue);
-		Edit<SpatialEntityID>::WeakPtr editWeakPtr = edit;
+		Edit<SpatialEntity>::Ptr edit = std::make_shared<Edit<SpatialEntity>>(initialValue);
+		Edit<SpatialEntity>::WeakPtr editWeakPtr = edit;
 
 		Edit<Entity>::Ptr editX = FillEdit<Entity>::Call(innerLayout, "entity", initialValue.entity.getEntity());
 		editX->bindOnChange([editWeakPtr](Entity /*oldValue*/, Entity newValue, bool)
 		{
-			if (Edit<SpatialEntityID>::Ptr edit = editWeakPtr.lock())
+			if (Edit<SpatialEntity>::Ptr edit = editWeakPtr.lock())
 			{
-				edit->transmitValueChange(SpatialEntityID(newValue, edit->getPreviousValue().cell));
+				edit->transmitValueChange(SpatialEntity(newValue, edit->getPreviousValue().cell));
 			}
 		});
 		edit->addChild(editX);
@@ -35,9 +35,9 @@ namespace TypesEditConstructor
 		Edit<CellPos>::Ptr editY = FillEdit<CellPos>::Call(innerLayout, "cell", initialValue.cell);
 		editY->bindOnChange([editWeakPtr](CellPos /*oldValue*/, CellPos newValue, bool)
 		{
-			if (Edit<SpatialEntityID>::Ptr edit = editWeakPtr.lock())
+			if (Edit<SpatialEntity>::Ptr edit = editWeakPtr.lock())
 			{
-				edit->transmitValueChange(SpatialEntityID(edit->getPreviousValue().entity.getEntity(), newValue));
+				edit->transmitValueChange(SpatialEntity(edit->getPreviousValue().entity.getEntity(), newValue));
 			}
 		});
 		edit->addChild(editY);

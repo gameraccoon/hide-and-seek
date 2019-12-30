@@ -5,7 +5,11 @@
 // 3.1415...
 extern const float PI;
 
-/** Hiding details of implementation of rotation angle (if in the future we will want to change float to class) */
+/**
+ * Hiding details of implementation of rotation angle
+ *
+ * Interval (-pi,pi]
+*/
 class Rotator
 {
 public:
@@ -34,7 +38,8 @@ public:
 	friend void from_json(const nlohmann::json& json, Rotator& outRotator);
 
 private:
+	void normalize();
+
+private:
 	float mValue;
-	mutable float calculatedValue;
-	void reset();
 };

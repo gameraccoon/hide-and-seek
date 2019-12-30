@@ -12,6 +12,11 @@
 #include "ECS/Delegates.h"
 #include "ECS/ComponentFactory.h"
 
+#include "GameData/Spatial/SpatialEntity.h"
+
+#include "editorutils/componentreference.h"
+#include "editorutils/entityreference.h"
+
 namespace ads
 {
 	class CDockManager;
@@ -44,8 +49,8 @@ public:
 
 public:
 	MulticastDelegate<> OnWorldChanged;
-	MulticastDelegate<OptionalEntity> OnSelectedEntityChanged;
-	MulticastDelegate<const QString&> OnSelectedComponentChanged;
+	MulticastDelegate<const std::optional<EntityReference>&> OnSelectedEntityChanged;
+	MulticastDelegate<const std::optional<ComponentReference>&> OnSelectedComponentChanged;
 	MulticastDelegate<EditorCommand::EffectType, bool, bool> OnCommandEffectApplied;
 
 private slots:

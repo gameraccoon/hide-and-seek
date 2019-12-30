@@ -1,10 +1,14 @@
 #pragma once
 
+#include <optional>
+
 #include <QString>
 #include <QWidget>
 
 #include "ECS/Delegates.h"
+
 #include "src/editorcommands/editorcommand.h"
+#include "src/editorutils/componentreference.h"
 
 class MainWindow;
 
@@ -28,12 +32,12 @@ public:
 private:
 	void updateContent(EditorCommand::EffectType effect, bool originalCall, bool forceUpdateLayout);
 	void clearContent();
-	void onSelectedComponentChange(const QString& componentTypeName);
+	void onSelectedComponentChange(const std::optional<ComponentReference>& componentReference);
 
 private:
 	MainWindow* mMainWindow;
 	ads::CDockManager* mDockManager;
-	QString mLastSelectedComlonent;
+	std::optional<ComponentReference> mLastSelectedComponent;
 
 	Delegates::Handle mOnComponentChangedHandle;
 	Delegates::Handle mOnCommandEffectHandle;
