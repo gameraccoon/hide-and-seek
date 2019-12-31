@@ -5,6 +5,7 @@
 #include "src/componenteditcontent/componentregistration.h"
 
 #include "src/editorcommands/addentitycommand.h"
+#include "src/editorcommands/addspatialentitycommand.h"
 
 #include "DockManager.h"
 #include "DockWidget.h"
@@ -170,6 +171,7 @@ void MainWindow::on_actionNew_World_triggered()
 	mOpenedWorldPath.clear();
 	ui->actionSave_World->setEnabled(false);
 	ui->actionCreate->setEnabled(true);
+	ui->actionCreate_Spatial->setEnabled(true);
 
 	OnWorldChanged.broadcast();
 }
@@ -189,6 +191,7 @@ void MainWindow::on_actionOpen_World_triggered()
 	mOpenedWorldPath = fileName;
 	ui->actionSave_World->setEnabled(true);
 	ui->actionCreate->setEnabled(true);
+	ui->actionCreate_Spatial->setEnabled(true);
 
 	OnWorldChanged.broadcast();
 }
@@ -271,4 +274,25 @@ void MainWindow::on_actionComponent_Properties_triggered()
 void MainWindow::on_actionTransform_Editor_triggered()
 {
 	mTransformEditorToolbox->show();
+}
+
+void MainWindow::on_actionEdit_Components_triggered()
+{
+	ComponentSourceReference source;
+	source.isWorld = true;
+	OnSelectedComponentSourceChanged.broadcast(source);
+}
+
+void MainWindow::on_actionCreate_Spatial_triggered()
+{
+	if (mCurrentWorld)
+	{
+		SpatialEntity entity{mCurrentWorld->getEntityManager().getNonExistentEntity(), CellPos(0, 0)};
+		Vector2D location{ZERO_VECTOR};
+		if (mTransformEditorToolbox->isShown())
+		{
+			 std::tie(entity.cell, location) = mTransformEditorToolbox->getWidgetCenterWorldPosition();
+		}
+		mCommandStack.executeNewCommand<AddSpatialEntityCommand>(mCurrentWorld.get(), entity, location);
+	}
 }

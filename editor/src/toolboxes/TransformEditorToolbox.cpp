@@ -80,6 +80,18 @@ void TransformEditorToolbox::show()
 	mContent->OnEntitiesMoved.assign([this](std::vector<SpatialEntity> entities, const Vector2D& shift){onEntitiesMoved(entities, shift);});
 }
 
+bool TransformEditorToolbox::isShown() const
+{
+	if (ads::CDockWidget* dockWidget = mDockManager->findDockWidget(ToolboxName))
+	{
+		return dockWidget->isVisible();
+	}
+	else
+	{
+		return false;
+	}
+}
+
 void TransformEditorToolbox::updateWorld()
 {
 	if (mContent == nullptr)
@@ -220,10 +232,15 @@ void TransformEditorToolbox::onPasteCommand()
 	mContent->repaint();
 }
 
-QVector2D TransformEditorToolbox::getWidgetCenter()
+QVector2D TransformEditorToolbox::getWidgetCenter() const
 {
 	QSize size = mContent->size() / 2;
 	return QVector2D(size.width(), size.height());
+}
+
+std::pair<CellPos, Vector2D> TransformEditorToolbox::getWidgetCenterWorldPosition() const
+{
+	return mContent->deproject(getWidgetCenter());
 }
 
 TransformEditorWidget::TransformEditorWidget(MainWindow *mainWindow)

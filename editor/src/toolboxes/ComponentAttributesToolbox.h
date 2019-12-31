@@ -23,6 +23,7 @@ public:
 	ComponentAttributesToolbox(MainWindow* mainWindow, ads::CDockManager* dockManager);
 	~ComponentAttributesToolbox();
 	void show();
+	bool isShown() const;
 
 	static const QString WidgetName;
 	static const QString ToolboxName;

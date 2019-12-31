@@ -27,7 +27,7 @@
      <x>0</x>
      <y>0</y>
      <width>799</width>
-     <height>22</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -58,6 +58,7 @@
     <property name="title">
      <string>Entity</string>
     </property>
+    <addaction name="actionCreate_Spatial"/>
     <addaction name="actionCreate"/>
     <addaction name="separator"/>
     <addaction name="actionNew_Prefab_Library"/>
@@ -75,9 +76,16 @@
     <addaction name="actionPrefabs"/>
     <addaction name="actionTransform_Editor"/>
    </widget>
+   <widget class="QMenu" name="menuWorld">
+    <property name="title">
+     <string>Components</string>
+    </property>
+    <addaction name="actionEdit_Components"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuEntity"/>
+   <addaction name="menuWorld"/>
    <addaction name="menuWindow"/>
    <addaction name="menuRun"/>
   </widget>
@@ -156,7 +164,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Create</string>
+    <string>Create Bound To World</string>
    </property>
   </action>
   <action name="actionEntities_List">
@@ -202,6 +210,19 @@
   <action name="actionTransform_Editor">
    <property name="text">
     <string>Transform Editor</string>
+   </property>
+  </action>
+  <action name="actionCreate_Spatial">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Create Spatial</string>
+   </property>
+  </action>
+  <action name="actionEdit_Components">
+   <property name="text">
+    <string>Edit World Components</string>
    </property>
   </action>
  </widget>

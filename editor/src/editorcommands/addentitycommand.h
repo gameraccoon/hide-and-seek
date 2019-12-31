@@ -8,7 +8,7 @@ class World;
 class AddEntityCommand : public EditorCommand
 {
 public:
-	AddEntityCommand(Entity mEntity);
+	AddEntityCommand(Entity entity);
 
 	bool doCommand(World* world) override;
 	bool undoCommand(World* world) override;

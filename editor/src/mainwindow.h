@@ -87,6 +87,10 @@ private slots:
 	void on_actionComponents_List_triggered();
 	void on_actionComponent_Properties_triggered();
 
+	void on_actionEdit_Components_triggered();
+
+	void on_actionCreate_Spatial_triggered();
+
 private:
 	// need to be a raw pointer in order to Qt Designer to work normally with this class
 	Ui::mainwindow* ui;

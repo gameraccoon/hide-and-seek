@@ -73,6 +73,9 @@ public:
 	TransformEditorToolbox(MainWindow* mainWindow, ads::CDockManager* dockManager);
 	~TransformEditorToolbox();
 	void show();
+	bool isShown() const;
+
+	std::pair<CellPos, Vector2D> getWidgetCenterWorldPosition() const;
 
 	static const QString WidgetName;
 	static const QString ToolboxName;
@@ -86,7 +89,7 @@ private:
 	void showContextMenu(const QPoint& pos);
 	void onCopyCommand();
 	void onPasteCommand();
-	QVector2D getWidgetCenter();
+	QVector2D getWidgetCenter() const;
 
 private:
 	MainWindow* mMainWindow;

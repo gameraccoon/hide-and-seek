@@ -58,6 +58,18 @@ void ComponentAttributesToolbox::show()
 	containerWidget->setLayout(layout);
 }
 
+bool ComponentAttributesToolbox::isShown() const
+{
+	if (ads::CDockWidget* dockWidget = mDockManager->findDockWidget(ToolboxName))
+	{
+		return dockWidget->isVisible();
+	}
+	else
+	{
+		return false;
+	}
+}
+
 void ComponentAttributesToolbox::updateContent(EditorCommand::EffectType effect, bool originalCall, bool forceUpdateLayout)
 {
 	if (forceUpdateLayout || (!originalCall && effect == EditorCommand::EffectType::ComponentAttributes))
