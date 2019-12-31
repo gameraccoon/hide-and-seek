@@ -50,6 +50,7 @@ public:
 public:
 	MulticastDelegate<> OnWorldChanged;
 	MulticastDelegate<const std::optional<EntityReference>&> OnSelectedEntityChanged;
+	MulticastDelegate<const std::optional<ComponentSourceReference>&> OnSelectedComponentSourceChanged;
 	MulticastDelegate<const std::optional<ComponentReference>&> OnSelectedComponentChanged;
 	MulticastDelegate<EditorCommand::EffectType, bool, bool> OnCommandEffectApplied;
 
@@ -65,6 +66,7 @@ private:
 	void updateSelectedComponentData(QListWidgetItem* selectedItem);
 	void updateUndoRedo();
 	void initActions();
+	void bindEvents();
 
 	void actionPrefabsTriggered();
 	void actionNewPrefabLibraryTriggered();

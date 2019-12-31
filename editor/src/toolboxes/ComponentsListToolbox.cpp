@@ -11,6 +11,7 @@
 #include <QAction>
 
 #include "src/editorcommands/removecomponentcommand.h"
+#include "src/editorutils/componentreferenceutils.h"
 
 const QString ComponentsListToolbox::WidgetName = "ComponentsList";
 const QString ComponentsListToolbox::ToolboxName = ComponentsListToolbox::WidgetName + "Toolbox";
@@ -23,13 +24,13 @@ ComponentsListToolbox::ComponentsListToolbox(MainWindow* mainWindow, ads::CDockM
 	, mDockManager(dockManager)
 {
 	mOnWorldChangedHandle = mMainWindow->OnWorldChanged.bind([this]{bindEvents(); updateContent();});
-	mOnEntityChangedHandle = mMainWindow->OnSelectedEntityChanged.bind([this](const auto& val){onSelectedEntityChanged(val);});
+	mOnComponentSourceChangedHandle = mMainWindow->OnSelectedComponentSourceChanged.bind([this](const auto& val){onSelectedComponentSourceChanged(val);});
 }
 
 ComponentsListToolbox::~ComponentsListToolbox()
 {
 	mMainWindow->OnWorldChanged.unbind(mOnWorldChangedHandle);
-	mMainWindow->OnSelectedEntityChanged.unbind(mOnEntityChangedHandle);
+	mMainWindow->OnSelectedComponentSourceChanged.unbind(mOnComponentSourceChangedHandle);
 	unbindEvents();
 }
 
@@ -71,10 +72,10 @@ void ComponentsListToolbox::show()
 
 void ComponentsListToolbox::updateContent()
 {
-	onSelectedEntityChanged(mLastSelectedEntity);
+	onSelectedComponentSourceChanged(mLastSelectedComponentSource);
 }
 
-void ComponentsListToolbox::onSelectedEntityChanged(const std::optional<EntityReference>& newEntity)
+void ComponentsListToolbox::onSelectedComponentSourceChanged(const std::optional<ComponentSourceReference>& newSource)
 {
 	QListWidget* componentsList = mDockManager->findChild<QListWidget*>(ListName);
 	if (componentsList == nullptr)
@@ -86,17 +87,16 @@ void ComponentsListToolbox::onSelectedEntityChanged(const std::optional<EntityRe
 
 	World* currentWorld = mMainWindow->getCurrentWorld();
 
-	if (currentWorld && newEntity.has_value())
+	if (currentWorld && newSource.has_value())
 	{
-		Entity::EntityID entityUid = newEntity->entity.getID();
-		std::vector<BaseComponent*> components = currentWorld->getEntityManager().getAllEntityComponents(Entity(entityUid));
-		for (auto& component : components)
+		const std::vector<BaseComponent*> components = Utils::GetComponents(*newSource, currentWorld);
+		for (const auto& component : components)
 		{
 			componentsList->addItem(QString::fromStdString(ID_TO_STR(component->getComponentTypeName())));
 		}
 	}
 
-	mLastSelectedEntity = newEntity;
+	mLastSelectedComponentSource = newSource;
 }
 
 void ComponentsListToolbox::showContextMenu(const QPoint& pos)
@@ -141,14 +141,14 @@ void ComponentsListToolbox::removeSelectedComponent()
 		return;
 	}
 
-	if (!mLastSelectedEntity.has_value())
+	if (!mLastSelectedComponentSource.has_value())
 	{
 		return;
 	}
 
 	mMainWindow->getCommandStack().executeNewCommand<RemoveComponentCommand>(
 		currentWorld,
-		mLastSelectedEntity->entity,
+		*mLastSelectedComponentSource->entity, // FixMe: need to fix the command to accept a ComponentReference
 		STR_TO_ID(currentItem->text().toStdString()),
 		&mMainWindow->getComponentFactory()
 	);
@@ -156,12 +156,10 @@ void ComponentsListToolbox::removeSelectedComponent()
 
 void ComponentsListToolbox::onCurrentItemChanged(QListWidgetItem* current, QListWidgetItem* /*previous*/)
 {
-	if (current && mLastSelectedEntity.has_value())
+	if (current && mLastSelectedComponentSource.has_value())
 	{
 		ComponentReference reference;
-		reference.isWorld = true;
-		reference.entity = mLastSelectedEntity->entity;
-		reference.cellPos = mLastSelectedEntity->cellPos;
+		reference.source = *mLastSelectedComponentSource;
 		reference.componentTypeName = STR_TO_ID(current->text().toStdString());
 		mMainWindow->OnSelectedComponentChanged.broadcast(reference);
 	}

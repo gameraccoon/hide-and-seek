@@ -8,6 +8,8 @@
 
 #include "GameData/Spatial/SpatialWorldData.h"
 
+class ComponentFactory;
+
 class World
 {
 public:

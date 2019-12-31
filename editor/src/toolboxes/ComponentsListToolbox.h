@@ -7,6 +7,7 @@
 #include "ECS/Entity.h"
 
 #include "src/editorutils/entityreference.h"
+#include "src/editorutils/componentreference.h"
 
 class MainWindow;
 
@@ -33,7 +34,7 @@ public:
 private:
 	void updateContent();
 	void onCurrentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
-	void onSelectedEntityChanged(const std::optional<EntityReference>& newEntity);
+	void onSelectedComponentSourceChanged(const std::optional<ComponentSourceReference>& newSource);
 	void showContextMenu(const QPoint& pos);
 	void removeSelectedComponent();
 
@@ -43,10 +44,10 @@ private:
 private:
 	MainWindow* mMainWindow;
 	ads::CDockManager* mDockManager;
-	std::optional<EntityReference> mLastSelectedEntity;
+	std::optional<ComponentSourceReference> mLastSelectedComponentSource;
 
 	Delegates::Handle mOnComponentAddedHandle;
 	Delegates::Handle mOnComponentRemovedHandle;
 	Delegates::Handle mOnWorldChangedHandle;
-	Delegates::Handle mOnEntityChangedHandle;
+	Delegates::Handle mOnComponentSourceChangedHandle;
 };

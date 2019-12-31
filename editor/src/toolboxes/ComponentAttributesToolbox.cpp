@@ -8,6 +8,8 @@
 
 #include <QVBoxLayout>
 
+#include "src/editorutils/componentreferenceutils.h"
+
 const QString ComponentAttributesToolbox::WidgetName = "ComponentAttributes";
 const QString ComponentAttributesToolbox::ToolboxName = ComponentAttributesToolbox::WidgetName + "Toolbox";
 const QString ComponentAttributesToolbox::ContainerName = ComponentAttributesToolbox::WidgetName + "Container";
@@ -88,13 +90,6 @@ void ComponentAttributesToolbox::onSelectedComponentChange(const std::optional<C
 		return;
 	}
 
-	QListWidgetItem* currentItem = entitiesList->currentItem();
-	if (currentItem == nullptr)
-	{
-		clearContent();
-		return;
-	}
-
 	World* currentWorld = mMainWindow->getCurrentWorld();
 	if (currentWorld == nullptr)
 	{
@@ -103,20 +98,11 @@ void ComponentAttributesToolbox::onSelectedComponentChange(const std::optional<C
 
 	bool validComponentIsSelected = false;
 
-	bool ok;
-	int index = currentItem->text().toInt(&ok);
-	if (ok && index != 0 && componentReference.has_value())
+	if (componentReference.has_value())
 	{
-		Entity entity = Entity(static_cast<Entity::EntityID>(index));
-		std::vector<BaseComponent*> entityComponents = currentWorld->getEntityManager().getAllEntityComponents(entity);
-		auto it = std::find_if(entityComponents.begin(), entityComponents.end(), [componentTypeName = componentReference->componentTypeName](BaseComponent* component)
+		if (BaseComponent* component = Utils::GetComponent(*componentReference, currentWorld))
 		{
-			return component->getComponentTypeName() == componentTypeName;
-		});
-
-		if (it != entityComponents.end())
-		{
-			mMainWindow->getComponentContentFactory().replaceEditContent(componentAttributesContainerWidget->layout(), entity, *it, mMainWindow->getCommandStack(), currentWorld);
+			mMainWindow->getComponentContentFactory().replaceEditContent(componentAttributesContainerWidget->layout(), componentReference->source, component, mMainWindow->getCommandStack(), currentWorld);
 			validComponentIsSelected = true;
 			mLastSelectedComponent = componentReference;
 		}

@@ -8,18 +8,21 @@
 
 namespace Utils
 {
+	BaseComponent* GetComponent(const ComponentReference& reference, World* world);
+	std::vector<BaseComponent*> GetComponents(const ComponentSourceReference& source, World* world);
+
 	template<typename T>
-	T* GetComponent<T>(const ComponentReference& reference, World* world)
+	T* GetComponent(const ComponentSourceReference& source, World* world)
 	{
-		if (reference.IsWorld)
+		if (source.isWorld)
 		{
-			if (reference.CellPos.has_value())
+			if (source.cellPos.has_value())
 			{
-				if (reference.entity.has_value()) // spatial entity
+				if (source.entity.has_value()) // spatial entity
 				{
-					if (WorldCell* cell = world->getSpatialData().getCell(*reference.cellPos))
+					if (WorldCell* cell = world->getSpatialData().getCell(*source.cellPos))
 					{
-						return std::get<0>(cell->getEntityManager().getEntityComponents<T>(*reference.entity));
+						return std::get<0>(cell->getEntityManager().getEntityComponents<T>(*source.entity));
 					}
 					else
 					{
@@ -28,7 +31,7 @@ namespace Utils
 				}
 				else // cell component
 				{
-					if (WorldCell* cell = world->getSpatialData().getCell(*reference.cellPos))
+					if (WorldCell* cell = world->getSpatialData().getCell(*source.cellPos))
 					{
 						return std::get<0>(cell->getCellComponents().getComponents<T>());
 					}
@@ -38,9 +41,9 @@ namespace Utils
 					}
 				}
 			}
-			else if (reference.Entity.has_value()) // world entity
+			else if (source.entity.has_value()) // world entity
 			{
-				return std::get<0>(world->getEntityManager().getEntityComponents<T>(*reference.entity));
+				return std::get<0>(world->getEntityManager().getEntityComponents<T>(*source.entity));
 			}
 			else // world component
 			{
@@ -50,6 +53,7 @@ namespace Utils
 		else // game component
 		{
 			ReportFatalError("Game Components references are not supported yet");
+			return nullptr;
 		}
 	}
 }

@@ -8,6 +8,8 @@
 #include "Entity.h"
 #include "Delegates.h"
 
+class ComponentFactory;
+
 class EntityManager
 {
 public:
@@ -258,7 +260,7 @@ public:
 	}
 
 	void getPrefabFromEntity(nlohmann::json& json, Entity entity);
-	Entity createPrefabInstance(const nlohmann::json& json, const class ComponentFactory& componentFactory);
+	Entity createPrefabInstance(const nlohmann::json& json, const ComponentFactory& componentFactory);
 	void applyPrefabToExistentEntity(const nlohmann::json& json, Entity entity, const ComponentFactory& componentFactory);
 
 	void transferEntityTo(EntityManager& otherManager, Entity entity);

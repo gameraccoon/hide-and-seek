@@ -37,6 +37,8 @@ MainWindow::MainWindow(QWidget* parent)
 	fillWindowContent();
 
 	initActions();
+
+	bindEvents();
 }
 
 MainWindow::~MainWindow()
@@ -99,6 +101,26 @@ void MainWindow::initActions()
 	connect(ui->actionLoad_Prefab_Library, &QAction::triggered, this, &MainWindow::actionLoadPrefabLibraryTriggered);
 	connect(ui->actionSave_Prefab_Library, &QAction::triggered, this, &MainWindow::actionSavePrefabLibraryTriggered);
 	connect(ui->actionSave_Prefab_Library_As, &QAction::triggered, this, &MainWindow::actionSavePrefabLibraryAsTriggered);
+}
+
+void MainWindow::bindEvents()
+{
+	// on selected entity change broadcast selected component source change automatically
+	OnSelectedEntityChanged.bind([this](const std::optional<EntityReference>& ref)
+	{
+		if (ref.has_value())
+		{
+			ComponentSourceReference componentSourceReference;
+			componentSourceReference.entity = ref->entity;
+			componentSourceReference.cellPos = ref->cellPos;
+			componentSourceReference.isWorld = true;
+			OnSelectedComponentSourceChanged.broadcast(componentSourceReference);
+		}
+		else
+		{
+			OnSelectedComponentSourceChanged.broadcast(std::nullopt);
+		}
+	});
 }
 
 void MainWindow::actionPrefabsTriggered()

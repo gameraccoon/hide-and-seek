@@ -20,7 +20,7 @@
  * In contrary to reference a Game Component nothing is needed (there's only one
  * such component possible).
  */
-struct ComponentReference
+struct ComponentSourceReference
 {
 	/** nullopt indicates that the component stored not by EntityManager */
 	std::optional<Entity> entity;
@@ -28,6 +28,10 @@ struct ComponentReference
 	std::optional<CellPos> cellPos;
 	/** false indicates that the component is not bound to any world */
 	bool isWorld = false; // std::optional<WorldID>?
+};
 
+struct ComponentReference
+{
+	ComponentSourceReference source;
 	StringID componentTypeName;
 };

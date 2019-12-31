@@ -113,10 +113,14 @@ void TransformEditorToolbox::onEntitySelected(const std::optional<EntityReferenc
 	}
 
 	mContent->mSelectedEntities.clear();
-	if (entityRef.has_value() && entityRef->cellPos.has_value() && world->getEntityManager().doesEntityHaveComponent<TransformComponent>(entityRef->entity))
+	if (entityRef.has_value() && entityRef->cellPos.has_value())
 	{
-		SpatialEntity spatialEntity(entityRef->entity, *entityRef->cellPos);
-		mContent->mSelectedEntities.push_back(spatialEntity);
+		WorldCell* cell = world->getSpatialData().getCell(*entityRef->cellPos);
+		if (cell != nullptr && cell->getEntityManager().doesEntityHaveComponent<TransformComponent>(entityRef->entity))
+		{
+			SpatialEntity spatialEntity(entityRef->entity, *entityRef->cellPos);
+			mContent->mSelectedEntities.push_back(spatialEntity);
+		}
 	}
 	mContent->repaint();
 }
@@ -440,8 +444,7 @@ void TransformEditorWidget::onClick(const QPoint& pos)
 		if (findResult.isValid())
 		{
 			mSelectedEntities.push_back(findResult);
-			EntityReference reference(findResult.entity.getEntity());
-			mMainWindow->OnSelectedEntityChanged.broadcast(reference);
+			mMainWindow->OnSelectedEntityChanged.broadcast(EntityReference(findResult));
 		}
 	}
 }
