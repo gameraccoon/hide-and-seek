@@ -32,7 +32,6 @@ void ComponentSetHolder::addComponent(BaseComponent* component, std::type_index 
 	if (component != nullptr)
 	{
 		mComponents[typeID] = component;
-		OnComponentAdded.broadcast();
 	}
 }
 
@@ -42,7 +41,6 @@ void ComponentSetHolder::removeComponent(std::type_index typeID)
 	{
 		delete it->second;
 		mComponents.erase(it);
-		OnComponentRemoved.broadcast();
 	}
 }
 

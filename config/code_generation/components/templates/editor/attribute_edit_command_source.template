@@ -5,32 +5,25 @@
 #include "src/editorutils/componentreferenceutils.h"
 
 Change{class_name}{attribute_name_capital}Command::Change{class_name}{attribute_name_capital}Command(const ComponentSourceReference& source, const {attribute_type}& old{attribute_name_capital}, const {attribute_type}& new{attribute_name_capital}, bool needToUpdateLayout)
-	: mComponentSource(source)
+	: EditorCommand(needToUpdateLayout ? EffectType::ComponentAttributes : EffectBitset(EffectType::ComponentAttributes, EffectType::SkipLayoutUpdate))
+	, mComponentSource(source)
 	, mOld{attribute_name_capital}(old{attribute_name_capital})
 	, mNew{attribute_name_capital}(new{attribute_name_capital})
-	, mNeedToUpdateLayout(needToUpdateLayout)
 {{
 }}
 
-bool Change{class_name}{attribute_name_capital}Command::doCommand(World* world)
+void Change{class_name}{attribute_name_capital}Command::doCommand(World* world)
 {{
 	if ({class_name}* component = Utils::GetComponent<{class_name}>(mComponentSource, world))
 	{{
 		component->set{attribute_name_capital}(mNew{attribute_name_capital});
 	}}
-	return mNeedToUpdateLayout;
 }}
 
-bool Change{class_name}{attribute_name_capital}Command::undoCommand(World* world)
+void Change{class_name}{attribute_name_capital}Command::undoCommand(World* world)
 {{
 	if ({class_name}* component = Utils::GetComponent<{class_name}>(mComponentSource, world))
 	{{
 		component->set{attribute_name_capital}(mOld{attribute_name_capital});
 	}}
-	return mNeedToUpdateLayout;
-}}
-
-EditorCommand::EffectType Change{class_name}{attribute_name_capital}Command::getEffectType()
-{{
-	return EffectType::ComponentAttributes;
 }}

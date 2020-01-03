@@ -1,5 +1,6 @@
-#ifndef EDITORCOMMAND_H
-#define EDITORCOMMAND_H
+#pragma once
+
+#include "Base/ComplexTypes/BitOperations.h"
 
 #include "GameData/World.h"
 
@@ -13,14 +14,22 @@ public:
 		Entities,
 		Components,
 		ComponentAttributes,
-		CommandsStack
+		CommandStack,
+		SkipLayoutUpdate
 	};
 
-public:
-	virtual ~EditorCommand() = default;
-	virtual bool doCommand(World* world) = 0;
-	virtual bool undoCommand(World* world) = 0;
-	virtual EffectType getEffectType() = 0;
-};
+	using EffectBitset = Bitset<EffectType>;
 
-#endif // EDITORCOMMAND_H
+public:
+	EditorCommand(EffectBitset effects)
+		: mEffects(effects)
+	{}
+	virtual ~EditorCommand() = default;
+
+	virtual void doCommand(World* world) = 0;
+	virtual void undoCommand(World* world) = 0;
+	EffectBitset getEffects() { return mEffects; }
+
+private:
+	EffectBitset mEffects;
+};

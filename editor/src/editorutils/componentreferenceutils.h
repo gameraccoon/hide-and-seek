@@ -1,58 +1,39 @@
 #pragma once
 
-#include "ECS/Component.h"
+#include <variant>
 
-#include "GameData/World.h"
+#include "ECS/Component.h"
+#include "ECS/ComponentSetHolder.h"
+#include "ECS/EntityManager.h"
 
 #include "componentreference.h"
+
+class World;
+class ComponentFactory;
 
 namespace Utils
 {
 	BaseComponent* GetComponent(const ComponentReference& reference, World* world);
 	std::vector<BaseComponent*> GetComponents(const ComponentSourceReference& source, World* world);
+	void AddComponent(const ComponentSourceReference& source, BaseComponent* component, World* world, ComponentFactory& componentFactory);
+	void RemoveComponent(const ComponentSourceReference& source, StringID componentTypeName, World* world, ComponentFactory& componentFactory);
+
+	std::variant<ComponentSetHolder*, EntityManager*, std::nullptr_t> GetBoundComponentHolderOrEntityManager(const ComponentSourceReference& source, World* world);
 
 	template<typename T>
 	T* GetComponent(const ComponentSourceReference& source, World* world)
 	{
-		if (source.isWorld)
+		auto componentHolderOrEntityManager = GetBoundComponentHolderOrEntityManager(source, world);
+		if (auto entityManager = std::get_if<EntityManager*>(&componentHolderOrEntityManager))
 		{
-			if (source.cellPos.has_value())
-			{
-				if (source.entity.has_value()) // spatial entity
-				{
-					if (WorldCell* cell = world->getSpatialData().getCell(*source.cellPos))
-					{
-						return std::get<0>(cell->getEntityManager().getEntityComponents<T>(*source.entity));
-					}
-					else
-					{
-						return nullptr;
-					}
-				}
-				else // cell component
-				{
-					if (WorldCell* cell = world->getSpatialData().getCell(*source.cellPos))
-					{
-						return std::get<0>(cell->getCellComponents().getComponents<T>());
-					}
-					else
-					{
-						return nullptr;
-					}
-				}
-			}
-			else if (source.entity.has_value()) // world entity
-			{
-				return std::get<0>(world->getEntityManager().getEntityComponents<T>(*source.entity));
-			}
-			else // world component
-			{
-				return std::get<0>(world->getWorldComponents().getComponents<T>());
-			}
+			return std::get<0>((*entityManager)->getEntityComponents<T>(*source.entity));
 		}
-		else // game component
+		else if (auto componentHolder = std::get_if<ComponentSetHolder*>(&componentHolderOrEntityManager))
 		{
-			ReportFatalError("Game Components references are not supported yet");
+			return std::get<0>((*componentHolder)->getComponents<T>());
+		}
+		else
+		{
 			return nullptr;
 		}
 	}

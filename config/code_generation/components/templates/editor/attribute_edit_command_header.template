@@ -10,13 +10,11 @@ class Change{class_name}{attribute_name_capital}Command : public EditorCommand
 public:
 	Change{class_name}{attribute_name_capital}Command(const ComponentSourceReference& source, const {attribute_type}& old{attribute_name_capital}, const {attribute_type}& new{attribute_name_capital}, bool needToUpdateLayout);
 
-	bool doCommand(World* world) override;
-	bool undoCommand(World* world) override;
-	EffectType getEffectType() override;
+	void doCommand(World* world) override;
+	void undoCommand(World* world) override;
 
 private:
 	ComponentSourceReference mComponentSource;
 	{attribute_type} mOld{attribute_name_capital};
 	{attribute_type} mNew{attribute_name_capital};
-	bool mNeedToUpdateLayout;
 }};

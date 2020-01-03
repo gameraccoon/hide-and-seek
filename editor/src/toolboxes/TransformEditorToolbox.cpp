@@ -34,7 +34,7 @@ TransformEditorToolbox::TransformEditorToolbox(MainWindow* mainWindow, ads::CDoc
 {
 	mOnWorldChangedHandle = mMainWindow->OnWorldChanged.bind([this]{updateWorld();});
 	mOnSelectedEntityChangedHandle = mMainWindow->OnSelectedEntityChanged.bind([this](const auto& entityRef){onEntitySelected(entityRef);});
-	mOnCommandEffectHandle = mMainWindow->OnCommandEffectApplied.bind([this](EditorCommand::EffectType effect, bool originalCall, bool forceUpdateLayout){updateContent(effect, originalCall, forceUpdateLayout);});
+	mOnCommandEffectHandle = mMainWindow->OnCommandEffectApplied.bind([this](EditorCommand::EffectBitset effects, bool originalCall){updateContent(effects, originalCall);});
 }
 
 TransformEditorToolbox::~TransformEditorToolbox()
@@ -103,9 +103,9 @@ void TransformEditorToolbox::updateWorld()
 	mContent->repaint();
 }
 
-void TransformEditorToolbox::updateContent(EditorCommand::EffectType effect, bool /*originalCall*/, bool /*forceUpdateLayout*/)
+void TransformEditorToolbox::updateContent(EditorCommand::EffectBitset effects, bool /*originalCall*/)
 {
-	if (effect == EditorCommand::EffectType::ComponentAttributes || effect == EditorCommand::EffectType::Entities)
+	if (effects.hasAnyOf(EditorCommand::EffectType::ComponentAttributes, EditorCommand::EffectType::Entities))
 	{
 		mContent->repaint();
 	}

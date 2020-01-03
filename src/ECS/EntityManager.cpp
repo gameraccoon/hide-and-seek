@@ -159,8 +159,6 @@ void EntityManager::removeComponent(Entity entity, std::type_index typeID)
 	{
 		delete componentsVector[entityIdxItr->second];
 		componentsVector[entityIdxItr->second] = nullptr;
-
-		OnComponentRemoved.broadcast();
 	}
 }
 
@@ -369,6 +367,5 @@ void EntityManager::addComponentToEntity(EntityIndex entityIdx, BaseComponent* c
 	if (componentsVector[entityIdx] == nullptr)
 	{
 		componentsVector[entityIdx] = component;
-		OnComponentAdded.broadcast();
 	}
 }

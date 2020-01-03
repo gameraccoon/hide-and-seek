@@ -52,7 +52,7 @@ public:
 	MulticastDelegate<const std::optional<EntityReference>&> OnSelectedEntityChanged;
 	MulticastDelegate<const std::optional<ComponentSourceReference>&> OnSelectedComponentSourceChanged;
 	MulticastDelegate<const std::optional<ComponentReference>&> OnSelectedComponentChanged;
-	MulticastDelegate<EditorCommand::EffectType, bool, bool> OnCommandEffectApplied;
+	MulticastDelegate<EditorCommand::EffectBitset, bool> OnCommandEffectApplied;
 
 private slots:
 	void on_actionTransform_Editor_triggered();

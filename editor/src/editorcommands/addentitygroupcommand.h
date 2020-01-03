@@ -16,9 +16,8 @@ class AddEntityGroupCommand : public EditorCommand
 public:
 	AddEntityGroupCommand(const std::vector<nlohmann::json>& entities, ComponentFactory* factory, const Vector2D& shift);
 
-	bool doCommand(World* world) override;
-	bool undoCommand(World* world) override;
-	EffectType getEffectType() override;
+	void doCommand(World* world) override;
+	void undoCommand(World* world) override;
 
 private:
 	std::vector<nlohmann::json> mEntities;

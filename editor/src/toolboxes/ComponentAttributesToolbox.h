@@ -31,7 +31,7 @@ public:
 	static const QString ContainerContentName;
 
 private:
-	void updateContent(EditorCommand::EffectType effect, bool originalCall, bool forceUpdateLayout);
+	void updateContent(EditorCommand::EffectBitset effects, bool originalCall);
 	void clearContent();
 	void onSelectedComponentChange(const std::optional<ComponentReference>& componentReference);
 

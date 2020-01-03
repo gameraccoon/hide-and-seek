@@ -43,8 +43,6 @@ private:
 	void removeSelectedEntity();
 	void createPrefabRequested();
 	void createPrefab(const QString& prefabName);
-	void onAddComponentToEntityRequested();
-	void addComponentToEntity(const QString& typeName);
 	void bindEvents();
 	void unbindEvents();
 

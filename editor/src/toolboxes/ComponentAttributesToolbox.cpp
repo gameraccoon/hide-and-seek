@@ -20,7 +20,7 @@ ComponentAttributesToolbox::ComponentAttributesToolbox(MainWindow* mainWindow, a
 	, mDockManager(dockManager)
 {
 	mOnComponentChangedHandle = mMainWindow->OnSelectedComponentChanged.bind([this](const auto& val){onSelectedComponentChange(val);});
-	mOnCommandEffectHandle = mMainWindow->OnCommandEffectApplied.bind([this](EditorCommand::EffectType effect, bool originalCall, bool forceUpdateLayout){updateContent(effect, originalCall, forceUpdateLayout);});
+	mOnCommandEffectHandle = mMainWindow->OnCommandEffectApplied.bind([this](EditorCommand::EffectBitset effects, bool originalCall){updateContent(effects, originalCall);});
 }
 
 ComponentAttributesToolbox::~ComponentAttributesToolbox()
@@ -70,9 +70,9 @@ bool ComponentAttributesToolbox::isShown() const
 	}
 }
 
-void ComponentAttributesToolbox::updateContent(EditorCommand::EffectType effect, bool originalCall, bool forceUpdateLayout)
+void ComponentAttributesToolbox::updateContent(EditorCommand::EffectBitset effects, bool originalCall)
 {
-	if (forceUpdateLayout || (!originalCall && effect == EditorCommand::EffectType::ComponentAttributes))
+	if (!originalCall || (effects.has(EditorCommand::EffectType::ComponentAttributes) && !effects.has(EditorCommand::EffectType::SkipLayoutUpdate)))
 	{
 		onSelectedComponentChange(mLastSelectedComponent);
 	}

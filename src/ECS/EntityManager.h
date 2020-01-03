@@ -271,8 +271,6 @@ public:
 public:
 	MulticastDelegate<> OnEntityAdded;
 	MulticastDelegate<> OnEntityRemoved;
-	MulticastDelegate<> OnComponentAdded;
-	MulticastDelegate<> OnComponentRemoved;
 
 private:
 	using EntityIndex = size_t;

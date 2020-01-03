@@ -10,6 +10,7 @@
 #include "src/editorutils/componentreference.h"
 
 class MainWindow;
+class QPushButton;
 
 namespace ads
 {
@@ -37,17 +38,15 @@ private:
 	void onSelectedComponentSourceChanged(const std::optional<ComponentSourceReference>& newSource);
 	void showContextMenu(const QPoint& pos);
 	void removeSelectedComponent();
-
-	void bindEvents();
-	void unbindEvents();
+	void addComponentCommand();
+	void addComponent(const QString& typeName);
 
 private:
-	MainWindow* mMainWindow;
-	ads::CDockManager* mDockManager;
+	MainWindow* mMainWindow = nullptr;
+	ads::CDockManager* mDockManager = nullptr;
+	QPushButton* mAddComponentButton = nullptr;
 	std::optional<ComponentSourceReference> mLastSelectedComponentSource;
 
-	Delegates::Handle mOnComponentAddedHandle;
-	Delegates::Handle mOnComponentRemovedHandle;
 	Delegates::Handle mOnWorldChangedHandle;
 	Delegates::Handle mOnComponentSourceChangedHandle;
 };

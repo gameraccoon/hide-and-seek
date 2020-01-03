@@ -55,10 +55,10 @@ void MainWindow::registerFactories()
 
 void MainWindow::initCommandStack()
 {
-	mCommandStack.bindFunctionToCommandChange([this](EditorCommand::EffectType effect, bool originalCall, bool forceUpdateLayout)
+	mCommandStack.bindFunctionToCommandChange([this](EditorCommand::EffectBitset effects, bool originalCall)
 	{
 		this->updateUndoRedo();
-		OnCommandEffectApplied.broadcast(effect, originalCall, forceUpdateLayout);
+		OnCommandEffectApplied.broadcast(effects, originalCall);
 	});
 
 	updateUndoRedo();

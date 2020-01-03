@@ -4,12 +4,13 @@
 #include <GameData/Components/TransformComponent.generated.h>
 
 ChangeEntityGroupLocationCommand::ChangeEntityGroupLocationCommand(const std::vector<SpatialEntity>& entities, const Vector2D& shift)
-	: mEntities(entities)
+	: EditorCommand(EffectType::ComponentAttributes)
+	, mEntities(entities)
 	, mShift(shift)
 {
 }
 
-bool ChangeEntityGroupLocationCommand::doCommand(World* world)
+void ChangeEntityGroupLocationCommand::doCommand(World* world)
 {
 	mEntitiesCellPos.resize(mEntities.size());
 	for (size_t i = 0; i < mEntities.size(); ++i)
@@ -33,10 +34,9 @@ bool ChangeEntityGroupLocationCommand::doCommand(World* world)
 			}
 		}
 	}
-	return true;
 }
 
-bool ChangeEntityGroupLocationCommand::undoCommand(World* world)
+void ChangeEntityGroupLocationCommand::undoCommand(World* world)
 {
 	for (size_t i = 0; i < mEntities.size(); ++i)
 	{
@@ -59,10 +59,4 @@ bool ChangeEntityGroupLocationCommand::undoCommand(World* world)
 			}
 		}
 	}
-	return true;
-}
-
-EditorCommand::EffectType ChangeEntityGroupLocationCommand::getEffectType()
-{
-	return EffectType::ComponentAttributes;
 }

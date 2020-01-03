@@ -46,13 +46,13 @@ namespace TypesEditConstructor
 		edit->addChild(editRadius);
 
 		Edit<std::vector<Vector2D>>::Ptr editPoints = FillEdit<std::vector<Vector2D>>::Call(layout, "points", initialValue.points);
-		editPoints->bindOnChange([editWeakPtr](const std::vector<Vector2D>& /*oldValue*/, const std::vector<Vector2D>& newValue, bool)
+		editPoints->bindOnChange([editWeakPtr](const std::vector<Vector2D>& /*oldValue*/, const std::vector<Vector2D>& newValue, bool needLayoutUpdate)
 		{
 			if (Edit<Hull>::Ptr edit = editWeakPtr.lock())
 			{
 				Hull hull = edit->getPreviousValue();
 				hull.points = newValue;
-				edit->transmitValueChange(hull);
+				edit->transmitValueChange(hull, needLayoutUpdate);
 			}
 		});
 		edit->addChild(editPoints);

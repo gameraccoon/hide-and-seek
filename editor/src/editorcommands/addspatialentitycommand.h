@@ -10,9 +10,8 @@ class AddSpatialEntityCommand : public EditorCommand
 public:
 	AddSpatialEntityCommand(const SpatialEntity& entity, const Vector2D& location);
 
-	bool doCommand(World* world) override;
-	bool undoCommand(World* world) override;
-	EffectType getEffectType() override;
+	void doCommand(World* world) override;
+	void undoCommand(World* world) override;
 
 private:
 	SpatialEntity mEntity;

@@ -10,9 +10,8 @@ class AddEntityCommand : public EditorCommand
 public:
 	AddEntityCommand(Entity entity);
 
-	bool doCommand(World* world) override;
-	bool undoCommand(World* world) override;
-	EffectType getEffectType() override;
+	void doCommand(World* world) override;
+	void undoCommand(World* world) override;
 
 private:
 	Entity mEntity;

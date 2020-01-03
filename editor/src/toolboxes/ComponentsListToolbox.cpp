@@ -9,9 +9,12 @@
 #include <QVBoxLayout>
 #include <QMenu>
 #include <QAction>
+#include <QInputDialog>
+#include <QPushButton>
 
 #include "src/editorcommands/removecomponentcommand.h"
 #include "src/editorutils/componentreferenceutils.h"
+#include "src/editorcommands/addcomponentcommand.h"
 
 const QString ComponentsListToolbox::WidgetName = "ComponentsList";
 const QString ComponentsListToolbox::ToolboxName = ComponentsListToolbox::WidgetName + "Toolbox";
@@ -23,7 +26,7 @@ ComponentsListToolbox::ComponentsListToolbox(MainWindow* mainWindow, ads::CDockM
 	: mMainWindow(mainWindow)
 	, mDockManager(dockManager)
 {
-	mOnWorldChangedHandle = mMainWindow->OnWorldChanged.bind([this]{bindEvents(); updateContent();});
+	mOnWorldChangedHandle = mMainWindow->OnWorldChanged.bind([this]{updateContent();});
 	mOnComponentSourceChangedHandle = mMainWindow->OnSelectedComponentSourceChanged.bind([this](const auto& val){onSelectedComponentSourceChanged(val);});
 }
 
@@ -31,7 +34,6 @@ ComponentsListToolbox::~ComponentsListToolbox()
 {
 	mMainWindow->OnWorldChanged.unbind(mOnWorldChangedHandle);
 	mMainWindow->OnSelectedComponentSourceChanged.unbind(mOnComponentSourceChangedHandle);
-	unbindEvents();
 }
 
 void ComponentsListToolbox::show()
@@ -66,6 +68,12 @@ void ComponentsListToolbox::show()
 	componentList->setObjectName(ListName);
 	componentList->setContextMenuPolicy(Qt::CustomContextMenu);
 
+	mAddComponentButton = new QPushButton();
+	mAddComponentButton->setText("Add Component");
+	QObject::connect(mAddComponentButton, &QPushButton::pressed, this, &ComponentsListToolbox::addComponentCommand);
+	mAddComponentButton->setEnabled(false);
+	layout->addWidget(mAddComponentButton);
+
 	QObject::connect(componentList, &QListWidget::currentItemChanged, this, &ComponentsListToolbox::onCurrentItemChanged);
 	QObject::connect(componentList, &QListWidget::customContextMenuRequested, this, &ComponentsListToolbox::showContextMenu);
 }
@@ -94,6 +102,11 @@ void ComponentsListToolbox::onSelectedComponentSourceChanged(const std::optional
 		{
 			componentsList->addItem(QString::fromStdString(ID_TO_STR(component->getComponentTypeName())));
 		}
+		mAddComponentButton->setEnabled(true);
+	}
+	else
+	{
+		mAddComponentButton->setEnabled(false);
 	}
 
 	mLastSelectedComponentSource = newSource;
@@ -148,10 +161,53 @@ void ComponentsListToolbox::removeSelectedComponent()
 
 	mMainWindow->getCommandStack().executeNewCommand<RemoveComponentCommand>(
 		currentWorld,
-		*mLastSelectedComponentSource->entity, // FixMe: need to fix the command to accept a ComponentReference
+		*mLastSelectedComponentSource,
 		STR_TO_ID(currentItem->text().toStdString()),
 		&mMainWindow->getComponentFactory()
 	);
+	updateContent();
+}
+
+void ComponentsListToolbox::addComponentCommand()
+{
+	QInputDialog* dialog = new QInputDialog();
+	dialog->setLabelText("Select Component Type:");
+	dialog->setCancelButtonText("Cancel");
+	dialog->setComboBoxEditable(false);
+	QStringList items;
+	mMainWindow->getComponentFactory().forEachComponentType([&items](std::type_index, StringID name)
+	{
+		items.append(QString::fromStdString(ID_TO_STR(name)));
+	});
+	dialog->setComboBoxItems(items);
+	connect(dialog, &QInputDialog::textValueSelected, this, &ComponentsListToolbox::addComponent);
+	dialog->show();
+}
+
+void ComponentsListToolbox::addComponent(const QString& typeName)
+{
+	QListWidget* entitiesList = mDockManager->findChild<QListWidget*>(ListName);
+	if (entitiesList == nullptr)
+	{
+		return;
+	}
+
+	World* currentWorld = mMainWindow->getCurrentWorld();
+	if (currentWorld == nullptr)
+	{
+		return;
+	}
+
+	if (mLastSelectedComponentSource.has_value())
+	{
+		mMainWindow->getCommandStack().executeNewCommand<AddComponentCommand>(
+			currentWorld,
+			*mLastSelectedComponentSource,
+			STR_TO_ID(typeName.toStdString()),
+			&mMainWindow->getComponentFactory()
+		);
+	}
+	updateContent();
 }
 
 void ComponentsListToolbox::onCurrentItemChanged(QListWidgetItem* current, QListWidgetItem* /*previous*/)
@@ -166,23 +222,5 @@ void ComponentsListToolbox::onCurrentItemChanged(QListWidgetItem* current, QList
 	else
 	{
 		mMainWindow->OnSelectedComponentChanged.broadcast(std::nullopt);
-	}
-}
-
-void ComponentsListToolbox::bindEvents()
-{
-	if (World* currentWorld = mMainWindow->getCurrentWorld())
-	{
-		mOnComponentAddedHandle = currentWorld->getEntityManager().OnComponentAdded.bind([this]{updateContent();});
-		mOnComponentRemovedHandle = currentWorld->getEntityManager().OnComponentRemoved.bind([this]{updateContent();});
-	}
-}
-
-void ComponentsListToolbox::unbindEvents()
-{
-	if (World* currentWorld = mMainWindow->getCurrentWorld())
-	{
-		currentWorld->getEntityManager().OnComponentAdded.unbind(mOnComponentAddedHandle);
-		currentWorld->getEntityManager().OnComponentRemoved.unbind(mOnComponentRemovedHandle);
 	}
 }

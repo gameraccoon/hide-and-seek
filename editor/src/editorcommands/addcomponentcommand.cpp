@@ -4,33 +4,33 @@
 
 #include <GameData/World.h>
 
-AddComponentCommand::AddComponentCommand(Entity entity, StringID typeName, ComponentFactory* factory)
-	: mEntity(entity)
+#include "src/editorutils/componentreferenceutils.h"
+
+AddComponentCommand::AddComponentCommand(const ComponentSourceReference& source, StringID typeName, ComponentFactory* factory)
+	: EditorCommand(EffectType::Components)
+	, mSource(source)
 	, mComponentTypeName(typeName)
 	, mComponentFactory(factory)
 {
 }
 
-bool AddComponentCommand::doCommand(World* world)
+void AddComponentCommand::doCommand(World* world)
 {
-	world->getEntityManager().addComponent(
-		mEntity,
+	Utils::AddComponent(
+		mSource,
 		mComponentFactory->createComponent(mComponentTypeName),
-		mComponentFactory->getTypeIDFromString(mComponentTypeName).value()
+		world,
+		*mComponentFactory
 	);
-	return false;
 }
 
-bool AddComponentCommand::undoCommand(World* world)
+void AddComponentCommand::undoCommand(World* world)
 {
-	world->getEntityManager().removeComponent(
-		mEntity,
-		mComponentFactory->getTypeIDFromString(mComponentTypeName).value()
+	Utils::RemoveComponent(
+		mSource,
+		mComponentTypeName,
+		world,
+		*mComponentFactory
 	);
-	return false;
 }
 
-EditorCommand::EffectType AddComponentCommand::getEffectType()
-{
-	return EffectType::Components;
-}

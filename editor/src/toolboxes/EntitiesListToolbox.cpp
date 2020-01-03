@@ -14,7 +14,6 @@
 #include "Base/Debug/Log.h"
 
 #include "src/editorcommands/removeentitycommand.h"
-#include "src/editorcommands/addcomponentcommand.h"
 
 #include "src/toolboxes/PrefabListToolbox.h"
 
@@ -167,10 +166,6 @@ void EntitiesListToolbox::showContextMenu(const QPoint& pos)
 
 	QMenu contextMenu(tr("Context menu"), this);
 
-	QAction actionAddComponent("Add Component", this);
-	connect(&actionAddComponent, &QAction::triggered, this, &EntitiesListToolbox::onAddComponentToEntityRequested);
-	contextMenu.addAction(&actionAddComponent);
-
 	QAction actionRemove("Remove Entity", this);
 	connect(&actionRemove, &QAction::triggered, this, &EntitiesListToolbox::removeSelectedEntity);
 	contextMenu.addAction(&actionRemove);
@@ -240,50 +235,6 @@ void EntitiesListToolbox::createPrefab(const QString& prefabName)
 
 	prefabToolbox->show();
 	prefabToolbox->createPrefabFromEntity(prefabName, Entity(currentItem->text().toUInt()));
-}
-
-void EntitiesListToolbox::onAddComponentToEntityRequested()
-{
-	QInputDialog* dialog = new QInputDialog();
-	dialog->setLabelText("Select Component Type:");
-	dialog->setCancelButtonText("Cancel");
-	dialog->setComboBoxEditable(false);
-	QStringList items;
-	mMainWindow->getComponentFactory().forEachComponentType([&items](std::type_index, StringID name)
-	{
-		items.append(QString::fromStdString(ID_TO_STR(name)));
-	});
-	dialog->setComboBoxItems(items);
-	connect(dialog, &QInputDialog::textValueSelected, this, &EntitiesListToolbox::addComponentToEntity);
-	dialog->show();
-}
-
-void EntitiesListToolbox::addComponentToEntity(const QString& typeName)
-{
-	QListWidget* entitiesList = mDockManager->findChild<QListWidget*>(ListName);
-	if (entitiesList == nullptr)
-	{
-		return;
-	}
-
-	QListWidgetItem* currentItem = entitiesList->currentItem();
-	if (currentItem == nullptr)
-	{
-		return;
-	}
-
-	World* currentWorld = mMainWindow->getCurrentWorld();
-	if (currentWorld == nullptr)
-	{
-		return;
-	}
-
-	mMainWindow->getCommandStack().executeNewCommand<AddComponentCommand>(
-		currentWorld,
-		Entity(currentItem->text().toUInt()),
-		STR_TO_ID(typeName.toStdString()),
-		&mMainWindow->getComponentFactory()
-	);
 }
 
 void EntitiesListToolbox::bindEvents()
