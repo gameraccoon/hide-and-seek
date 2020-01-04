@@ -1,7 +1,7 @@
 #pragma once
 
 #include <nlohmann/json_fwd.hpp>
-#include "Base/Types.h"
+#include "Base/Types/BasicTypes.h"
 
 class GameplayTimestamp
 {

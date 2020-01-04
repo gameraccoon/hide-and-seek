@@ -5,8 +5,8 @@
 #include <functional>
 
 #include "Base/Debug/Assert.h"
-#include "Base/String/StringID.h"
-#include "Base/String/Path.h"
+#include "Base/Types/String/StringID.h"
+#include "Base/Types/String/Path.h"
 
 #include "GameData/Core/ResourceHandle.h"
 

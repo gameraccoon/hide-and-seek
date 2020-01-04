@@ -12,7 +12,7 @@
 
 #include <QComboBox>
 
-#include "Base/String/StringID.h"
+#include "Base/Types/String/StringID.h"
 
 #include "typeeditconstructorhelpers.h"
 

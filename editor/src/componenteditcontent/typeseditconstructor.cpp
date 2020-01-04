@@ -3,7 +3,7 @@
 #include <limits>
 #include <string>
 
-#include "Base/String/Path.h"
+#include "Base/Types/String/Path.h"
 
 #include <QLabel>
 #include <QLineEdit>

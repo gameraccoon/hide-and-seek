@@ -1,6 +1,6 @@
 #include "GameLogic/Initialization/StateMachines.h"
 
-#include "Base/String/StringID.h"
+#include "Base/Types/String/StringID.h"
 
 #include "GameData/Enums/MoveDirection4.generated.h"
 

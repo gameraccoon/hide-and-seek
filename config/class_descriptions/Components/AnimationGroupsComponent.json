@@ -8,7 +8,7 @@
 			"includes": [
 				"<vector>",
 				"\"GameData/Resources/AnimationGroup.h\"",
-				"\"Base/String/StringID.h\""
+				"\"Base/Types/String/StringID.h\""
 			],
 			"flags": ["transient", "get_by_ref"]
 		},

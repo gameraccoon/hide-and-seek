@@ -5,7 +5,7 @@
 		{
 			"name": "id",
 			"type": "StringID",
-			"includes": ["\"Base/String/StringID.h\""]
+			"includes": ["\"Base/Types/String/StringID.h\""]
 		}
 	]
 }

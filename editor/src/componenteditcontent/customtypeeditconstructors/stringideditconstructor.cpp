@@ -8,7 +8,7 @@
 #include <QCheckBox>
 #include <QHBoxLayout>
 
-#include "Base/String/StringID.h"
+#include "Base/Types/String/StringID.h"
 
 namespace TypesEditConstructor
 {

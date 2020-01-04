@@ -3,7 +3,7 @@
 #include <nlohmann/json_fwd.hpp>
 
 // 3.1415...
-extern const float PI;
+inline constexpr float PI = 3.14159265358979323846f;
 
 /**
  * Hiding details of implementation of rotation angle
@@ -13,6 +13,10 @@ extern const float PI;
 class Rotator
 {
 public:
+	using UnderlyingType = float;
+	static constexpr float MinValue = -PI;
+	static constexpr float MaxValue = PI;
+
 	// leaves inner data uninitialized
 	explicit Rotator() = default;
 	explicit Rotator(float angle);

@@ -1,9 +1,9 @@
-#include "Base/String/StringID.h"
+#include "Base/Types/String/StringID.h"
 
 #include <nlohmann/json.hpp>
 
 #include "Base/Debug/Assert.h"
-#include "Base/String/GatheredStringIDs.generated.h"
+#include "Base/Types/String/GatheredStringIDs.generated.h"
 
 void to_json(nlohmann::json& outJson, const StringID& stringID)
 {

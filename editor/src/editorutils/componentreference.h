@@ -2,7 +2,7 @@
 
 #include <optional>
 
-#include <Base/String/StringID.h>
+#include <Base/Types/String/StringID.h>
 
 #include <ECS/Entity.h>
 

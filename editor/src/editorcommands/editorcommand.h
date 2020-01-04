@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Base/ComplexTypes/BitOperations.h"
+#include "Base/Types/ComplexTypes/Bitset.h"
 
 #include "GameData/World.h"
 

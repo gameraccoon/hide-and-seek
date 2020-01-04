@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include "Base/String/StringHelpers.h"
+#include "Base/Types/String/StringHelpers.h"
 
 /**
  * Class that helps to write log messages.

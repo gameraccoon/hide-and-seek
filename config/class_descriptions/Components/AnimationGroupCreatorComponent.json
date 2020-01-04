@@ -7,7 +7,7 @@
 			"type": "std::vector<ResourcePath>",
 			"includes": [
 				"<vector>",
-				"\"Base/String/Path.h\""
+				"\"Base/Types/String/Path.h\""
 			],
 			"flags": ["get_by_ref"]
 		},

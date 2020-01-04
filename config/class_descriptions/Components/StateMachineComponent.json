@@ -17,7 +17,7 @@
 			"type": "std::map<StringID, FSM::StateMachine<StringID, StringID>>",
 			"includes": [
 				"\"GameData/FSM/StateMachine.h\"",
-				"\"Base/String/StringID.h\"",
+				"\"Base/Types/String/StringID.h\"",
 				"<map>"
 			],
 			"flags": ["get_by_ref", "transient"]

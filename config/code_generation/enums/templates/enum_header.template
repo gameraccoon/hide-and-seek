@@ -3,7 +3,7 @@
 #include <vector>
 #include <nlohmann/json.hpp>
 
-#include "Base/String/StringID.h"
+#include "Base/Types/String/StringID.h"
 
 enum class {enum_name}
 {{

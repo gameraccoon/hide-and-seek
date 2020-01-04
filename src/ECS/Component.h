@@ -2,7 +2,7 @@
 
 #include <nlohmann/json_fwd.hpp>
 
-#include "Base/String/StringID.h"
+#include "Base/Types/String/StringID.h"
 
 /**
  * The base class for actor components

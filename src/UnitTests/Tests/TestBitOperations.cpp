@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 
-#include "Base/ComplexTypes/BitOperations.h"
+#include "Base/Types/ComplexTypes/Bitset.h"
 
-TEST(BitOperations, Bitset)
+TEST(Bitset, Usage)
 {
 	enum class TestEnum
 	{

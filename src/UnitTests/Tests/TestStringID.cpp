@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "Base/String/StringID.h"
+#include "Base/Types/String/StringID.h"
 
 #include "UnitTests/TestAssertHelper.h"
 

@@ -2,7 +2,7 @@
 	{
 		"name_template": "GatheredStringIDs.generated.h",
 		"template": "gathered_string_ids",
-		"output_dir": "src/Base/String/",
+		"output_dir": "src/Base/Types/String/",
 		"flags": ["list"]
 	}
 ]

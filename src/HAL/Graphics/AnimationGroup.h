@@ -4,7 +4,7 @@
 #include <vector>
 #include <map>
 
-#include "Base/String/StringID.h"
+#include "Base/Types/String/StringID.h"
 
 #include "GameData/Core/ResourceHandle.h"
 

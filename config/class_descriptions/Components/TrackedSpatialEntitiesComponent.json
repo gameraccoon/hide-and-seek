@@ -8,7 +8,7 @@
 			"includes": [
 				"<map>",
 				"\"GameData/Spatial/SpatialEntity.h\"",
-				"\"Base/String/StringID.h\""
+				"\"Base/Types/String/StringID.h\""
 			],
 			"flags": ["get_by_ref"]
 		}

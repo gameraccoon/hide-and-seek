@@ -1,4 +1,4 @@
-#include "Base/String/LocalizableText.h"
+#include "Base/Types/String/LocalizableText.h"
 
 #include <nlohmann/json.hpp>
 

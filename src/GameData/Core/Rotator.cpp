@@ -2,8 +2,6 @@
 
 #include <nlohmann/json.hpp>
 
-const float PI = 3.14159265358979323846f;
-
 Rotator::Rotator(float angle)
 	: mValue(angle)
 {
