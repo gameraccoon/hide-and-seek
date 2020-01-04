@@ -6,6 +6,10 @@
 #include "ECS/Delegates.h"
 #include "ECS/Entity.h"
 
+#include "GameData/Spatial/SpatialEntity.h"
+
+#include "src/editorutils/entityreference.h"
+
 class MainWindow;
 
 namespace ads
@@ -32,15 +36,13 @@ public:
 
 private:
 	void onWorldUpdated();
-	void onEntityChangedEvent(OptionalEntity entity);
+	void onEntityChangedEvent(const std::optional<EntityReference>& entity);
 	void updateContent();
 	void onCurrentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
 	void showContextMenu(const QPoint& pos);
 	void removeSelectedEntity();
 	void createPrefabRequested();
 	void createPrefab(const QString& prefabName);
-	void onAddComponentToEntityRequested();
-	void addComponentToEntity(const QString& typeName);
 	void bindEvents();
 	void unbindEvents();
 

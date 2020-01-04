@@ -1,14 +1,28 @@
 #pragma once
 
-#include "../Core/Vector2D.h"
+#include "GameData/Core/Vector2D.h"
 /**
  * Axis-aligned bounding box (AABB)
  */
-class BoundingBox
+class  BoundingBox
 {
 public:
-	BoundingBox(float minX, float minY, float maxX, float maxY);
-	BoundingBox(Vector2D minPoint, Vector2D maxPoint);
+	constexpr BoundingBox(float minX, float minY, float maxX, float maxY)
+		: minX(minX)
+		, minY(minY)
+		, maxX(maxX)
+		, maxY(maxY)
+	{
+	}
+
+	constexpr BoundingBox(Vector2D minPoint, Vector2D maxPoint)
+		: minX(minPoint.x)
+		, minY(minPoint.y)
+		, maxX(maxPoint.x)
+		, maxY(maxPoint.y)
+	{
+	}
+
 	/** Left-top point */
 	Vector2D getFirst();
 	/** Right-top point */

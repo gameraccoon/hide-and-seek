@@ -1,5 +1,4 @@
-#ifndef EDITORCOMMANDSSTACK_H
-#define EDITORCOMMANDSSTACK_H
+#pragma once
 
 #include "editorcommand.h"
 #include <functional>
@@ -7,7 +6,7 @@
 class EditorCommandsStack
 {
 public:
-	using OnChangeFn = std::function<void(EditorCommand::EffectType, bool, bool)>;
+	using OnChangeFn = std::function<void(EditorCommand::EffectBitset, bool)>;
 
 public:
 	template<typename T, typename... Args>
@@ -21,8 +20,8 @@ public:
 
 		// add and activate
 		mCommands.emplace_back(new T(std::forward<Args>(args)...));
-		bool forceUpdateLayout = mCommands.back()->doCommand(world);
-		EditorCommand::EffectType effect = mCommands.back()->getEffectType();
+		mCommands.back()->doCommand(world);
+		EditorCommand::EffectBitset effects = mCommands.back()->getEffects();
 		++mCurrentHeadIndex;
 
 		// clear old commands if exceed limits
@@ -33,12 +32,12 @@ public:
 
 		if (mChangeHandler)
 		{
-			mChangeHandler(effect, true, forceUpdateLayout);
+			mChangeHandler(effects, true);
 		}
 	}
 
-	bool undo(World* world);
-	bool redo(World* world);
+	void undo(World* world);
+	void redo(World* world);
 	bool haveSomethingToUndo() const;
 	bool haveSomethingToRedo() const;
 	void clear();
@@ -57,5 +56,3 @@ private:
 
 	Delegates::Handle mOnCommandEffectHandle;
 };
-
-#endif // EDITORCOMMANDSSTACK_H

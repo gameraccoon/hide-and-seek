@@ -8,6 +8,8 @@
 #include "GameData/Components/RenderModeComponent.generated.h"
 #include "GameData/Components/AiControllerComponent.generated.h"
 #include "GameData/Components/CharacterStateComponent.generated.h"
+#include "GameData/Components/WorldCachedDataComponent.generated.h"
+#include "GameData/Components/DebugDrawComponent.generated.h"
 #include "GameData/World.h"
 #include "GameData/GameData.h"
 
@@ -38,37 +40,57 @@ void DebugDrawSystem::update()
 	GameData& gameData = mWorldHolder.getGameData();
 	Graphics::Renderer& renderer = mEngine.getRenderer();
 
-	static const Vector2D maxFov(500.0f, 500.0f);
+	auto [worldCachedData] = world.getWorldComponents().getComponents<WorldCachedDataComponent>();
+	Vector2D workingRect = worldCachedData->getScreenSize();
+	Vector2D cameraLocation = worldCachedData->getCameraPos();
+	CellPos cameraCell = worldCachedData->getCameraCellPos();
 
-	OptionalEntity mainCamera = world.getMainCamera();
-	if (!mainCamera.isValid())
-	{
-		return;
-	}
-
-	auto [cameraTransformComponent] = world.getEntityManager().getEntityComponents<TransformComponent>(mainCamera.getEntity());
-	if (cameraTransformComponent == nullptr)
-	{
-		return;
-	}
-
-	Vector2D cameraLocation = cameraTransformComponent->getLocation();
 	Vector2D mouseScreenPos(mEngine.getMouseX(), mEngine.getMouseY());
 	Vector2D screenHalfSize = Vector2D(static_cast<float>(mEngine.getWidth()), static_cast<float>(mEngine.getHeight())) * 0.5f;
 
-	Vector2D drawShift = screenHalfSize - cameraLocation + (screenHalfSize - mouseScreenPos) * 0.5;
+	Vector2D drawShift = screenHalfSize - cameraLocation;
+
+	SpatialEntityManager spatialManager = world.getSpatialData().getCellManagersAround(worldCachedData->getCameraCellPos(), cameraLocation, workingRect);
 
 	auto [renderMode] = gameData.getGameComponents().getComponents<RenderModeComponent>();
+
+	if (renderMode && renderMode->getIsDrawDebugCellInfoEnabled())
+	{
+		const Graphics::Font& font = mResourceManager.getResource<Graphics::Font>(mFontHandle);
+		const Graphics::Sprite& collisionSprite = mResourceManager.getResource<Graphics::Sprite>(mCollisionSpriteHandle);
+		Graphics::QuadUV quadUV = collisionSprite.getUV();
+
+		std::vector<WorldCell*> cellsAround = world.getSpatialData().getCellsAround(cameraCell, cameraLocation, screenHalfSize*2.0f);
+
+		for (WorldCell* cell : cellsAround)
+		{
+			CellPos cellPos = cell->getPos();
+			Vector2D location = SpatialWorldData::GetRelativeLocation(cameraCell, cellPos, drawShift);
+			renderer.render(*collisionSprite.getTexture(),
+				location,
+				SpatialWorldData::CellSizeVector,
+				ZERO_VECTOR,
+				0.0f,
+				quadUV);
+
+			std::string text = FormatString("(%d, %d)", cellPos.x, cellPos.y);
+			std::array<int, 2> textSize = renderer.getTextSize(font, text.c_str());
+			Vector2D screenPos = SpatialWorldData::CellSizeVector*0.5 + SpatialWorldData::GetCellRealDistance(cellPos - cameraCell) - cameraLocation + screenHalfSize - Vector2D(textSize[0] * 0.5f, textSize[1] * 0.5f);
+			renderer.renderText(font, screenPos, {255, 255, 255, 255}, text.c_str());
+		}
+	}
+
 	if (renderMode && renderMode->getIsDrawDebugCollisionsEnabled())
 	{
 		const Graphics::Sprite& collisionSprite = mResourceManager.getResource<Graphics::Sprite>(mCollisionSpriteHandle);
 		Graphics::QuadUV quadUV = collisionSprite.getUV();
-		world.getEntityManager().forEachComponentSet<CollisionComponent>([&collisionSprite, &quadUV, drawShift, &renderer](CollisionComponent* collisionComponent)
+		spatialManager.forEachSpatialComponentSet<CollisionComponent, TransformComponent>([&collisionSprite, &quadUV, drawShift, &renderer, cameraCell](WorldCell* cell, CollisionComponent* collision, TransformComponent* transform)
 		{
+			Vector2D location = SpatialWorldData::GetRelativeLocation(cameraCell, cell->getPos(), transform->getLocation() + drawShift);
 			renderer.render(*collisionSprite.getTexture(),
-				Vector2D(collisionComponent->getBoundingBox().minX + drawShift.x, collisionComponent->getBoundingBox().minY + drawShift.y),
-				Vector2D(collisionComponent->getBoundingBox().maxX-collisionComponent->getBoundingBox().minX,
-						 collisionComponent->getBoundingBox().maxY-collisionComponent->getBoundingBox().minY),
+				Vector2D(collision->getBoundingBox().minX + location.x, collision->getBoundingBox().minY + location.y),
+				Vector2D(collision->getBoundingBox().maxX-collision->getBoundingBox().minX,
+						 collision->getBoundingBox().maxY-collision->getBoundingBox().minY),
 				ZERO_VECTOR,
 				0.0f,
 				quadUV);
@@ -115,7 +137,7 @@ void DebugDrawSystem::update()
 			}
 		}
 
-		world.getEntityManager().forEachComponentSet<AiControllerComponent>([drawShift, &quadUV, &navMeshSprite, &renderer](AiControllerComponent* aiController)
+		spatialManager.forEachComponentSet<AiControllerComponent>([drawShift, &quadUV, &navMeshSprite, &renderer](AiControllerComponent* aiController)
 		{
 			std::vector<Vector2D>& path = aiController->getPathRef().getSmoothPathRef();
 			if (path.size() > 1)
@@ -155,6 +177,35 @@ void DebugDrawSystem::update()
 		});
 	}
 
+	if (renderMode && renderMode->getIsDrawDebugPrimitivesEnabled())
+	{
+		auto [debugDraw] = gameData.getGameComponents().getComponents<DebugDrawComponent>();
+		if (debugDraw != nullptr)
+		{
+			Vector2D pointSize(6, 6);
+			const Graphics::Sprite& pointSprite = mResourceManager.getResource<Graphics::Sprite>(mPointTextureHandle);
+			const Graphics::Font& font = mResourceManager.getResource<Graphics::Font>(mFontHandle);
+			for (auto& screenPoint : debugDraw->getFrameScreenPoints())
+			{
+				renderer.render(*pointSprite.getTexture(), screenPoint.screenPos, pointSize);
+				if (!screenPoint.name.empty())
+				{
+					renderer.renderText(font, screenPoint.screenPos, {255, 255, 255, 255}, screenPoint.name.c_str());
+				}
+			}
+
+			for (auto& worldPoint : debugDraw->getFrameWorldPoints())
+			{
+				Vector2D screenPos = worldPoint.pos + SpatialWorldData::GetCellRealDistance(worldPoint.cellPos - cameraCell) - cameraLocation + screenHalfSize;
+				renderer.render(*pointSprite.getTexture(), screenPos, pointSize);
+				if (!worldPoint.name.empty())
+				{
+					renderer.renderText(font, screenPos, {255, 255, 255, 255}, worldPoint.name.c_str());
+				}
+			}
+		}
+	}
+
 	if (renderMode && renderMode->getIsDrawDebugFpsEnabled())
 	{
 		const Graphics::Font& font = mResourceManager.getResource<Graphics::Font>(mFontHandle);
@@ -186,10 +237,18 @@ void DebugDrawSystem::update()
 	if (renderMode && renderMode->getIsDrawDebugCharacterInfoEnabled())
 	{
 		const Graphics::Font& font = mResourceManager.getResource<Graphics::Font>(mFontHandle);
-		world.getEntityManager().forEachComponentSet<CharacterStateComponent, TransformComponent>([&renderer, &font, drawShift](CharacterStateComponent* characterState, TransformComponent* transform)
+		spatialManager.forEachSpatialComponentSet<CharacterStateComponent, TransformComponent>([&renderer, &font, drawShift, cameraCell](WorldCell* cell, CharacterStateComponent* characterState, TransformComponent* transform)
 		{
-			renderer.renderText(font, transform->getLocation() + drawShift, {255, 255, 255, 255}, ID_TO_STR(enum_to_string(characterState->getState())).c_str());
+			Vector2D location = SpatialWorldData::GetRelativeLocation(cameraCell, cell->getPos(), transform->getLocation() + drawShift);
+			renderer.renderText(font, location, {255, 255, 255, 255}, ID_TO_STR(enum_to_string(characterState->getState())).c_str());
 		});
+	}
+
+	auto [debugDraw] = gameData.getGameComponents().getComponents<DebugDrawComponent>();
+	if (debugDraw != nullptr)
+	{
+		debugDraw->getFrameWorldPointsRef().clear();
+		debugDraw->getFrameScreenPointsRef().clear();
 	}
 }
 
@@ -197,5 +256,6 @@ void DebugDrawSystem::initResources()
 {
 	mCollisionSpriteHandle = mResourceManager.lockSprite("resources/textures/collision.png");
 	mNavmeshSpriteHandle = mResourceManager.lockSprite("resources/textures/testTexture.png");
+	mPointTextureHandle = mResourceManager.lockSprite("resources/textures/collision.png");
 	mFontHandle = mResourceManager.lockFont("resources/fonts/prstart.ttf", 16);
 }

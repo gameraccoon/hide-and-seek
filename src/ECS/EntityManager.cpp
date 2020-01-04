@@ -1,4 +1,4 @@
-#include "EntityManager.h"
+#include "ECS/EntityManager.h"
 
 #include <algorithm>
 #include <random>
@@ -159,8 +159,6 @@ void EntityManager::removeComponent(Entity entity, std::type_index typeID)
 	{
 		delete componentsVector[entityIdxItr->second];
 		componentsVector[entityIdxItr->second] = nullptr;
-
-		OnComponentRemoved.broadcast();
 	}
 }
 
@@ -224,6 +222,61 @@ void EntityManager::applyPrefabToExistentEntity(const nlohmann::json& json, Enti
 			componentFactory.getTypeIDFromString(componentTypeName).value()
 		);
 	}
+}
+
+void EntityManager::transferEntityTo(EntityManager& otherManager, Entity entity)
+{
+	auto entityIdxItr = mEntityIndexMap.find(entity.getID());
+	if (entityIdxItr == mEntityIndexMap.end())
+	{
+		return;
+	}
+
+	// ToDo use global entity ID collision detection
+	auto insertionResult = otherManager.mEntityIndexMap.try_emplace(entity.getID(), otherManager.mNextEntityIndex);
+	AssertFatal(insertionResult.second, "EntityID is not unique, two entities have just collided");
+	otherManager.mIndexEntityMap.emplace(otherManager.mNextEntityIndex, entity.getID());
+	++otherManager.mNextEntityIndex;
+
+	--mNextEntityIndex; // now it points to the element that going to be removed
+	EntityIndex oldEntityIdx = entityIdxItr->second;
+
+	for (auto& componentVector : mComponents)
+	{
+		if (oldEntityIdx < componentVector.second.size())
+		{
+			// add the element to the new manager
+			if (componentVector.second[oldEntityIdx] != nullptr)
+			{
+				otherManager.addComponent(
+					entity,
+					componentVector.second[oldEntityIdx],
+					componentVector.first
+				);
+			}
+
+			// remove the element from the old manager
+			componentVector.second[oldEntityIdx] = nullptr;
+
+			// if the vector containts the last entity
+			if (mNextEntityIndex < componentVector.second.size() && oldEntityIdx != mNextEntityIndex)
+			{
+				// move it to the freed space
+				std::swap(componentVector.second[oldEntityIdx], componentVector.second[mNextEntityIndex]);
+			}
+		}
+	}
+
+	mEntityIndexMap.erase(entity.getID());
+
+	if (oldEntityIdx != mNextEntityIndex)
+	{
+		// relink maps
+		Entity::EntityID entityID = mIndexEntityMap[mNextEntityIndex];
+		mEntityIndexMap[entityID] = oldEntityIdx;
+		mIndexEntityMap[oldEntityIdx] = entityID;
+	}
+	mIndexEntityMap.erase(mNextEntityIndex);
 }
 
 nlohmann::json EntityManager::toJson(const ComponentFactory& componentFactory) const
@@ -314,6 +367,5 @@ void EntityManager::addComponentToEntity(EntityIndex entityIdx, BaseComponent* c
 	if (componentsVector[entityIdx] == nullptr)
 	{
 		componentsVector[entityIdx] = component;
-		OnComponentAdded.broadcast();
 	}
 }

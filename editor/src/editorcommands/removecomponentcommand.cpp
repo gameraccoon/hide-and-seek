@@ -6,18 +6,21 @@
 #include "ECS/ComponentFactory.h"
 #include "GameData/World.h"
 
-RemoveComponentCommand::RemoveComponentCommand(Entity entity, StringID typeName, ComponentFactory* factory)
-	: mEntity(entity)
+#include "src/editorutils/componentreferenceutils.h"
+
+RemoveComponentCommand::RemoveComponentCommand(const ComponentSourceReference& source, StringID typeName, ComponentFactory* factory)
+	: EditorCommand(EffectType::Components)
+	, mSource(source)
 	, mComponentTypeName(typeName)
 	, mComponentFactory(factory)
 {
 }
 
-bool RemoveComponentCommand::doCommand(World* world)
+void RemoveComponentCommand::doCommand(World* world)
 {
 	if (mSerializedComponent.empty())
 	{
-		std::vector<BaseComponent*> components = world->getEntityManager().getAllEntityComponents(mEntity);
+		std::vector<BaseComponent*> components = Utils::GetComponents(mSource, world);
 
 		auto it = std::find_if(components.begin(), components.end(), [typeName = mComponentTypeName](BaseComponent* component)
 		{
@@ -26,34 +29,30 @@ bool RemoveComponentCommand::doCommand(World* world)
 
 		if (it == components.end())
 		{
-			return false;
+			return;
 		}
 
 		(*it)->toJson(mSerializedComponent);
 	}
 
-	world->getEntityManager().removeComponent(
-		mEntity,
-		mComponentFactory->getTypeIDFromString(mComponentTypeName).value()
+	Utils::RemoveComponent(
+		mSource,
+		mComponentTypeName,
+		world,
+		*mComponentFactory
 	);
-	return false;
 }
 
-bool RemoveComponentCommand::undoCommand(World* world)
+void RemoveComponentCommand::undoCommand(World* world)
 {
 	BaseComponent* component = mComponentFactory->createComponent(mComponentTypeName);
 
 	component->fromJson(mSerializedComponent);
 
-	world->getEntityManager().addComponent(
-		mEntity,
+	Utils::AddComponent(
+		mSource,
 		component,
-		mComponentFactory->getTypeIDFromString(mComponentTypeName).value()
+		world,
+		*mComponentFactory
 	);
-	return false;
-}
-
-EditorCommand::EffectType RemoveComponentCommand::getEffectType()
-{
-	return EffectType::Components;
 }

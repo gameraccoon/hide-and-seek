@@ -8,6 +8,8 @@
 #include "Entity.h"
 #include "Delegates.h"
 
+class ComponentFactory;
+
 class EntityManager
 {
 public:
@@ -43,8 +45,8 @@ public:
 		return entityIdxItr->second < componentVector.size() && componentVector[entityIdxItr->second] != nullptr;
 	}
 
-	template<typename T>
-	T* addComponent(Entity entity)
+	template<typename ComponentType>
+	ComponentType* addComponent(Entity entity)
 	{
 		auto entityIdxItr = mEntityIndexMap.find(std::forward<Entity>(entity).getID());
 		if (entityIdxItr == mEntityIndexMap.end())
@@ -52,37 +54,37 @@ public:
 			return nullptr;
 		}
 
-		T* component = new T();
+		ComponentType* component = new ComponentType();
 
-		addComponentToEntity(entityIdxItr->second, component, typeid(T));
+		addComponentToEntity(entityIdxItr->second, component, typeid(ComponentType));
 
 		return component;
 	}
 
 	void addComponent(Entity entity, BaseComponent* component, std::type_index typeID);
 
-	template<typename T>
+	template<typename ComponentType>
 	void removeComponent(Entity entity)
 	{
-		removeComponent(std::forward<Entity>(entity), typeid(T));
+		removeComponent(std::forward<Entity>(entity), typeid(ComponentType));
 	}
 
 	void removeComponent(Entity entity, std::type_index typeID);
 
-	template<typename T>
-	T* scheduleAddComponent(Entity entity)
+	template<typename ComponentType>
+	ComponentType* scheduleAddComponent(Entity entity)
 	{
-		T* component = new T();
-		scheduleAddComponentToEntity(entity, component, typeid(T));
+		ComponentType* component = new ComponentType();
+		scheduleAddComponentToEntity(entity, component, typeid(ComponentType));
 		return component;
 	}
 
 	void scheduleAddComponentToEntity(Entity entity, BaseComponent* component, std::type_index typeID);
 
-	template<typename T>
+	template<typename ComponentType>
 	void scheduleRemoveComponent(Entity entity)
 	{
-		scheduleRemoveComponent(std::forward<Entity>(entity), typeid(T));
+		scheduleRemoveComponent(std::forward<Entity>(entity), typeid(ComponentType));
 	}
 
 	void scheduleRemoveComponent(Entity entity, std::type_index typeID);
@@ -104,12 +106,9 @@ public:
 	}
 
 	template<typename FirstComponent, typename... Components>
-	std::vector<std::tuple<FirstComponent*, Components*...>> getComponents()
+	void getComponents(std::vector<std::tuple<FirstComponent*, Components*...>>& inOutComponents)
 	{
 		auto& firstComponentVector = mComponents[typeid(FirstComponent)];
-
-		std::vector<std::tuple<FirstComponent*, Components*...>> result;
-		result.reserve(firstComponentVector.size());
 
 		auto componentVectors = std::make_tuple(firstComponentVector, mComponents[typeid(Components)]...);
 
@@ -127,11 +126,40 @@ public:
 
 			if (std::get<componentsSize>(components) != nullptr)
 			{
-				result.push_back(components);
+				inOutComponents.push_back(components);
 			}
 		}
+	}
 
-		return result;
+	template<typename FirstComponent, typename... Components>
+	void getComponentsWithEntities(std::vector<std::tuple<Entity, FirstComponent*, Components*...>>& inOutComponents)
+	{
+		auto& firstComponentVector = mComponents[typeid(FirstComponent)];
+
+		auto componentVectors = std::make_tuple(firstComponentVector, mComponents[typeid(Components)]...);
+
+		constexpr unsigned componentsSize = sizeof...(Components);
+
+		for (auto& [entityID, entityIndex] : mEntityIndexMap)
+		{
+			if (entityIndex >= firstComponentVector.size())
+			{
+				continue;
+			}
+
+			auto& firstComponent = firstComponentVector[entityIndex];
+			if (firstComponent == nullptr)
+			{
+				continue;
+			}
+
+			auto components = std::tuple_cat(std::make_tuple(Entity(entityID)), getEntityComponentSet<FirstComponent, Components...>(entityIndex, componentVectors));
+
+			if (std::get<componentsSize+1>(components) != nullptr)
+			{
+				inOutComponents.push_back(components);
+			}
+		}
 	}
 
 	template<typename FirstComponent, typename... Components, typename FunctionType>
@@ -195,9 +223,47 @@ public:
 		}
 	}
 
+	template<typename FirstComponent, typename... Components>
+	std::vector<Entity> getEntitiesHavingComponents()
+	{
+		std::vector<Entity> result;
+		auto& firstComponentVector = mComponents[typeid(FirstComponent)];
+		result.reserve(firstComponentVector.size());
+
+		auto componentVectors = std::make_tuple(firstComponentVector, mComponents[typeid(Components)]...);
+
+		constexpr unsigned componentsSize = sizeof...(Components);
+
+		for (auto& [entityID, entityIndex] : mEntityIndexMap)
+		{
+			if (entityIndex >= firstComponentVector.size())
+			{
+				continue;
+			}
+
+			auto& firstComponent = firstComponentVector[entityIndex];
+			if (firstComponent == nullptr)
+			{
+				continue;
+			}
+
+			auto components = getEntityComponentSet<FirstComponent, Components...>(entityIndex, componentVectors);
+
+			if (std::get<componentsSize>(components) == nullptr)
+			{
+				continue;
+			}
+
+			result.emplace_back(entityID);
+		}
+		return result;
+	}
+
 	void getPrefabFromEntity(nlohmann::json& json, Entity entity);
-	Entity createPrefabInstance(const nlohmann::json& json, const class ComponentFactory& componentFactory);
+	Entity createPrefabInstance(const nlohmann::json& json, const ComponentFactory& componentFactory);
 	void applyPrefabToExistentEntity(const nlohmann::json& json, Entity entity, const ComponentFactory& componentFactory);
+
+	void transferEntityTo(EntityManager& otherManager, Entity entity);
 
 	nlohmann::json toJson(const class ComponentFactory& componentFactory) const;
 	void fromJson(const nlohmann::json& json, const class ComponentFactory& componentFactory);
@@ -205,8 +271,6 @@ public:
 public:
 	MulticastDelegate<> OnEntityAdded;
 	MulticastDelegate<> OnEntityRemoved;
-	MulticastDelegate<> OnComponentAdded;
-	MulticastDelegate<> OnComponentRemoved;
 
 private:
 	using EntityIndex = size_t;

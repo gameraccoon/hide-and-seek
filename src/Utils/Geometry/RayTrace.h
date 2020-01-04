@@ -1,7 +1,7 @@
 #pragma once
 
 class World;
-class Vector2D;
+struct Vector2D;
 class BoundingBox;
 
 namespace RayTrace

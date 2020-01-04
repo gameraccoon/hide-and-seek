@@ -1,4 +1,4 @@
-#include "ComponentFactory.h"
+#include "ECS/ComponentFactory.h"
 
 #include "Base/Debug/Assert.h"
 

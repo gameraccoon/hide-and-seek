@@ -15,5 +15,11 @@ namespace std
 
 namespace Math
 {
-	bool AreEqualWithEpsilon(float a, float b, float epsilon);
+	constexpr float DEFAULT_EPSILON = 0.001f;
+
+	bool AreEqualWithEpsilon(float a, float b, float epsilon = DEFAULT_EPSILON);
+	bool IsGreaterWithEpsilon(float a, float b, float epsilon = DEFAULT_EPSILON);
+	bool IsGreaterOrEqualWithEpsilon(float a, float b, float epsilon = DEFAULT_EPSILON);
+	bool IsLessWithEpsilon(float a, float b, float epsilon = DEFAULT_EPSILON);
+	bool IsLessOrEqualWithEpsilon(float a, float b, float epsilon = DEFAULT_EPSILON);
 }

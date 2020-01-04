@@ -10,7 +10,13 @@
 #include "GameData/Components/CharacterStateComponent.generated.h"
 
 #include "GameData/World.h"
+#include "GameData/Spatial/SpatialWorldData.h"
 
+static const int jitterRand = 500;
+static const float jitterMax = 30.0f;
+static const float halfJitterMax = jitterMax / 2.0f;
+static const float jitterDivider = jitterRand / jitterMax;
+static const float distance = 50.0f;
 
 TestUnitsCountControlSystem::TestUnitsCountControlSystem(WorldHolder& worldHolder)
 	: mWorldHolder(worldHolder)
@@ -26,7 +32,7 @@ static void spawnUnit(EntityManager& entityManager, Vector2D pos)
 	}
 	{
 		MovementComponent* movement = entityManager.addComponent<MovementComponent>(entity);
-		movement->setOriginalSpeed(30.0f);
+		movement->setOriginalSpeed(2.0f);
 	}
 	{
 		SpriteCreatorComponent* sprite = entityManager.addComponent<SpriteCreatorComponent>(entity);
@@ -45,25 +51,26 @@ static void spawnUnit(EntityManager& entityManager, Vector2D pos)
 	entityManager.addComponent<CharacterStateComponent>(entity);
 }
 
-static void spawnUnits(EntityManager& entityManager, int count, Vector2D pos)
+static void spawnJitteredUnit(const Vector2D& pos, const Vector2D& centerShifted, SpatialWorldData& spatialData)
+{
+	Vector2D jitter = Vector2D((rand() % jitterRand) / jitterDivider - halfJitterMax, ((rand() % jitterRand) / jitterDivider - halfJitterMax));
+	Vector2D newPos = centerShifted + pos + jitter;
+	std::pair<CellPos, Vector2D> transformedPos = SpatialWorldData::GetTransformedCellPos(CellPos(0, 0), newPos);
+	spawnUnit(spatialData.getOrCreateCell(transformedPos.first).getEntityManager(), transformedPos.second);
+}
+
+static void spawnUnits(SpatialWorldData& spatialData, int count, Vector2D pos)
 {
 	int n = static_cast<int>(std::sqrt(count));
 	int m = count / n;
-	constexpr float distance = 50.0f;
 
 	Vector2D centerShifted = pos - Vector2D(static_cast<float>(n - 1), m - ((count == m * n) ? 1.0f : 0.0f)) * (distance * 0.5f);
-
-	constexpr int jitterRand = 500;
-	constexpr float jitterMax = 30.0f;
-	constexpr float halfJitterMax = jitterMax / 2.0f;
-	constexpr float jitterDivider = jitterRand / jitterMax;
 
 	for (int j = 0; j < m; ++j)
 	{
 		for (int i = 0; i < n; ++i)
 		{
-			Vector2D jitter = Vector2D((rand() % jitterRand) / jitterDivider - halfJitterMax, ((rand() % jitterRand) / jitterDivider - halfJitterMax));
-			spawnUnit(entityManager, centerShifted + Vector2D(i * distance, j * distance) + jitter);
+			spawnJitteredUnit(Vector2D(i * distance, j * distance), centerShifted, spatialData);
 		}
 	}
 
@@ -71,7 +78,7 @@ static void spawnUnits(EntityManager& entityManager, int count, Vector2D pos)
 	int unitsLeft = count - m * n;
 	for (int i = 0; i < unitsLeft; ++i)
 	{
-		spawnUnit(entityManager, centerShifted + Vector2D(i * distance, yPos));
+		spawnJitteredUnit(Vector2D(i * distance, yPos), centerShifted, spatialData);
 	}
 }
 
@@ -81,7 +88,7 @@ void TestUnitsCountControlSystem::update()
 
 	if (ticksPassed == 5)
 	{
-		spawnUnits(world.getEntityManager(), 500, Vector2D(-400.0f, 0.0f));
+		spawnUnits(world.getSpatialData(), 500, Vector2D(-400.0f, 0.0f));
 	}
 
 	++ticksPassed;

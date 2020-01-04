@@ -9,6 +9,7 @@
 #include "GameData/Components/AnimationClipsComponent.generated.h"
 #include "GameData/Components/AnimationGroupsComponent.generated.h"
 #include "GameData/Components/StateMachineComponent.generated.h"
+#include "GameData/Components/WorldCachedDataComponent.generated.h"
 #include "GameData/World.h"
 #include "GameData/GameData.h"
 
@@ -26,8 +27,14 @@ void AnimationSystem::update()
 
 	auto [stateMachines] = gameData.getGameComponents().getComponents<StateMachineComponent>();
 
+	auto [worldCachedData] = world.getWorldComponents().getComponents<WorldCachedDataComponent>();
+	Vector2D workingRect = worldCachedData->getScreenSize();
+	Vector2D cameraLocation = worldCachedData->getCameraPos();
+
+	SpatialEntityManager spatialManager = world.getSpatialData().getCellManagersAround(worldCachedData->getCameraCellPos(), cameraLocation, workingRect);
+
 	// update animation clip from FSM
-	world.getEntityManager().forEachComponentSet<AnimationGroupsComponent, AnimationClipsComponent>([dt, stateMachines](AnimationGroupsComponent* animationGroups, AnimationClipsComponent* animationClips)
+	spatialManager.forEachComponentSet<AnimationGroupsComponent, AnimationClipsComponent>([dt, stateMachines](AnimationGroupsComponent* animationGroups, AnimationClipsComponent* animationClips)
 	{
 		for (auto& data : animationGroups->getDataRef())
 		{
@@ -43,7 +50,7 @@ void AnimationSystem::update()
 	});
 
 	// update animation frame
-	world.getEntityManager().forEachComponentSet<AnimationClipsComponent, RenderComponent>([dt](AnimationClipsComponent* animationClips, RenderComponent* render)
+	spatialManager.forEachComponentSet<AnimationClipsComponent, RenderComponent>([dt](AnimationClipsComponent* animationClips, RenderComponent* render)
 	{
 		std::vector<AnimationClip>& animationDatas = animationClips->getDatasRef();
 		for (auto& data : animationDatas)

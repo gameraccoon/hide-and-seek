@@ -69,7 +69,7 @@ def append_attributes_data_dictionary(data_dictionary, data_description):
                 if len(attribute["data_dict"][attribute_template_data["value_to_empty_test"]]) == 0:
                     continue
 
-            # skip blacklisted attributed
+            # skip blacklisted attributes
             if "blacklist" in attribute_template_data:
                 if any(x in attribute["data_dict"]["attribute_flags"] for x in attribute_template_data["blacklist"]):
                     continue
@@ -135,13 +135,18 @@ def generate_component_list_cpp_file(template_name, destination_dir, file_name_t
     write_file(path.join(destination_dir, file_name), generated_content)
 
 
-def generate_per_attribute_cpp_files(data_description, template_name, destination_dir, file_name_template, full_data_dictionary):
+def generate_per_attribute_cpp_files(data_description, template_name, destination_dir, file_name_template, blacklist, full_data_dictionary):
     template = read_template(template_name, templates_dir)
     for attribute in data_description["attributes"]:
         attribute_dict = {
             **full_data_dictionary,
             **attribute["data_dict"]
         }
+
+        # skip blacklisted attributes
+        if blacklist is not None:
+            if any(x in attribute["data_dict"]["attribute_flags"] for x in blacklist):
+                continue
 
         generated_content = replace_content(template, attribute_dict)
         file_name = replace_content(file_name_template, attribute_dict)
@@ -158,6 +163,7 @@ def generate_files(file_infos, data_description, full_data_dict):
             generate_per_attribute_cpp_files(data_description, file_info["template"],
                                              path.join(working_dir, file_info["output_dir"]),
                                              file_info["name_template"],
+                                             file_info["blacklist"],
                                              full_data_dict)
         elif "flags" in file_info and "list" in file_info["flags"]:
             pass # generated in another function

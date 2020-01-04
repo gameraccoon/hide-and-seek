@@ -1,7 +1,7 @@
 #pragma once
 
 class CollisionComponent;
-class Vector2D;
+struct Vector2D;
 
 namespace Collide
 {
@@ -10,5 +10,5 @@ namespace Collide
 	bool DoCollide(const CollisionComponent* collisionA, const Vector2D& locationA,
 				   const CollisionComponent* collisionB, const Vector2D& locationB, Vector2D& outResist);
 
-	void UpdateOriginalBoundingBox(CollisionComponent* collision);
+	void UpdateBoundingBox(CollisionComponent* collision);
 }

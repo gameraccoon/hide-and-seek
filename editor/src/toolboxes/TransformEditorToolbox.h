@@ -8,11 +8,15 @@
 #include <QWidget>
 #include <QVector2D>
 
-#include "GameData/Core/Vector2D.h"
 #include "ECS/Entity.h"
 #include "ECS/Delegates.h"
 
+#include "GameData/Core/Vector2D.h"
+#include "GameData/Spatial/SpatialEntity.h"
+#include "GameData/Spatial/CellPos.h"
+
 #include "src/editorcommands/editorcommand.h"
+#include "src/editorutils/entityreference.h"
 
 class MainWindow;
 
@@ -32,12 +36,15 @@ public:
 	void paintEvent(QPaintEvent* event) override;
 
 	void onClick(const class QPoint& pos);
-	OptionalEntity getEntityUnderPoint(const QPoint& pos);
+	std::vector<WorldCell*> getCellsOnScreen();
+	SpatialEntity getEntityUnderPoint(const QPoint& pos);
 
 	void addEntitiesInRectToSelection(const Vector2D& start, const Vector2D& end);
 
-	QVector2D project(const Vector2D& worldPos);
-	Vector2D deproject(const QVector2D& screenPos);
+	QVector2D projectAbsolute(const Vector2D& worldPos) const;
+	Vector2D deprojectAbsolute(const QVector2D& screenPos) const;
+	QVector2D project(const CellPos& cellPos, const Vector2D& pos) const;
+	std::pair<CellPos, Vector2D> deproject(const QVector2D& screenPos) const;
 
 	class World* mWorld = nullptr;
 	MainWindow* mMainWindow;
@@ -50,9 +57,9 @@ public:
 	float mScale = 1.0f;
 	Vector2D mCursorObjectOffset;
 
-	SinglecastDelegate<std::vector<Entity>, const Vector2D&> OnEntitiesMoved;
+	SinglecastDelegate<std::vector<SpatialEntity>, const Vector2D&> OnEntitiesMoved;
 
-	std::vector<Entity> mSelectedEntities;
+	std::vector<SpatialEntity> mSelectedEntities;
 
 	bool mFreeMove = true;
 	bool mIsMoved = false;
@@ -66,20 +73,23 @@ public:
 	TransformEditorToolbox(MainWindow* mainWindow, ads::CDockManager* dockManager);
 	~TransformEditorToolbox();
 	void show();
+	bool isShown() const;
+
+	std::pair<CellPos, Vector2D> getWidgetCenterWorldPosition() const;
 
 	static const QString WidgetName;
 	static const QString ToolboxName;
 
 private:
 	void updateWorld();
-	void updateContent(EditorCommand::EffectType effect, bool originalCall, bool forceUpdateLayout);
-	void onEntitySelected(OptionalEntity entity);
-	void onEntitiesMoved(std::vector<Entity> entities, const Vector2D& shift);
+	void updateContent(EditorCommand::EffectBitset effects, bool originalCall);
+	void onEntitySelected(const std::optional<EntityReference>& entityRef);
+	void onEntitiesMoved(std::vector<SpatialEntity> entities, const Vector2D& shift);
 	void onFreeMoveChanged(int newValue);
 	void showContextMenu(const QPoint& pos);
 	void onCopyCommand();
 	void onPasteCommand();
-	QVector2D getWidgetCenter();
+	QVector2D getWidgetCenter() const;
 
 private:
 	MainWindow* mMainWindow;

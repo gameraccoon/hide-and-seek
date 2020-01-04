@@ -1,4 +1,4 @@
-#include "Entity.h"
+#include "ECS/Entity.h"
 
 #include <nlohmann/json.hpp>
 
@@ -17,6 +17,12 @@ void from_json(const nlohmann::json& json, Entity& outEntity)
 Entity OptionalEntity::getEntity() const {
 	Assert(mIsValid, "Getting uninitialized entity");
 	return Entity(mId);
+}
+
+Entity::EntityID OptionalEntity::getID() const
+{
+	Assert(mIsValid, "Getting uninitialized entity ID");
+	return mId;
 }
 
 void to_json(nlohmann::json& outJson, const OptionalEntity& entity)

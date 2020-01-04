@@ -2,8 +2,8 @@
 
 #include "editorcommand.h"
 
-#include "ECS/Entity.h"
 #include "GameData/Core/Vector2D.h"
+#include "GameData/Spatial/SpatialEntity.h"
 
 class World;
 
@@ -13,13 +13,13 @@ public:
 	using SetterFunction = void (World::*)(const OptionalEntity&);
 
 public:
-	ChangeEntityGroupLocationCommand(const std::vector<Entity>& entities, const Vector2D& shift);
+	ChangeEntityGroupLocationCommand(const std::vector<SpatialEntity>& entities, const Vector2D& shift);
 
-	bool doCommand(World* world) override;
-	bool undoCommand(World* world) override;
-	EffectType getEffectType() override;
+	void doCommand(World* world) override;
+	void undoCommand(World* world) override;
 
 private:
-	std::vector<Entity> mEntities;
+	std::vector<SpatialEntity> mEntities;
+	std::vector<CellPos> mEntitiesCellPos;
 	Vector2D mShift;
 };

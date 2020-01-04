@@ -50,10 +50,6 @@ public:
 	nlohmann::json toJson(const class ComponentFactory& componentFactory) const;
 	void fromJson(const nlohmann::json& json, const class ComponentFactory& componentFactory);
 
-public:
-	MulticastDelegate<> OnComponentAdded;
-	MulticastDelegate<> OnComponentRemoved;
-
 private:
 	std::map<std::type_index, BaseComponent*> mComponents;
 };

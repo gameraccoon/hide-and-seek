@@ -6,6 +6,8 @@
 #include "GameData/Components/MovementComponent.generated.h"
 #include "GameData/Components/RenderModeComponent.generated.h"
 #include "GameData/Components/CharacterStateComponent.generated.h"
+#include "GameData/Components/WorldCachedDataComponent.generated.h"
+#include "GameData/Components/DebugDrawComponent.generated.h"
 
 #include "GameData/World.h"
 #include "GameData/GameData.h"
@@ -55,39 +57,40 @@ void ControlSystem::update()
 		movementDirection += DOWN_DIRECTION;
 	}
 
-	OptionalEntity controlledEntity = world.getPlayerControlledEntity();
-	if (controlledEntity.isValid())
+	std::optional<std::pair<EntityView, CellPos>> controlledEntity = world.getTrackedSpatialEntity(STR_TO_ID("ControlledEntity"));
+
+	if (controlledEntity.has_value())
 	{
-		if (auto [characterState] = world.getEntityManager().getEntityComponents<CharacterStateComponent>(controlledEntity.getEntity()); characterState != nullptr)
+		if (auto [characterState] = controlledEntity->first.getComponents<CharacterStateComponent>(); characterState != nullptr)
 		{
 			characterState->getBlackboardRef().setValue<bool>(CharacterStateBlackboardKeys::TryingToMove, !movementDirection.isZeroLength());
 			characterState->getBlackboardRef().setValue<bool>(CharacterStateBlackboardKeys::ReadyToRun, isRunPressed);
 		}
-	}
 
-	OptionalEntity mainCamera = world.getMainCamera();
-	if (mainCamera.isValid())
-	{
-		auto [cameraTransform] = world.getEntityManager().getEntityComponents<TransformComponent>(mainCamera.getEntity());
-		if (cameraTransform == nullptr)
+		auto [transform, movement] = controlledEntity->first.getComponents<TransformComponent, MovementComponent>();
+		movement->setMoveDirection(movementDirection);
+
+		std::optional<std::pair<EntityView, CellPos>> mainCamera = world.getTrackedSpatialEntity(STR_TO_ID("CameraEntity"));
+
+		if (mainCamera.has_value())
 		{
-			return;
-		}
+			auto [cameraTransform] = mainCamera->first.getComponents<TransformComponent>();
+			if (cameraTransform == nullptr)
+			{
+				return;
+			}
 
-		Vector2D screenHalfSize = Vector2D(static_cast<float>(mEngine.getWidth()), static_cast<float>(mEngine.getHeight())) * 0.5f;
-		Vector2D mouseScreenPos(mEngine.getMouseX(), mEngine.getMouseY());
+			CellPosDiff cellDiff = controlledEntity->second - mainCamera->second;
 
-		Vector2D drawShift = screenHalfSize - cameraTransform->getLocation();
+			Vector2D screenSize = Vector2D(static_cast<float>(mEngine.getWidth()), static_cast<float>(mEngine.getHeight()));
+			Vector2D screenHalfSize = screenSize * 0.5f;
+			Vector2D mouseScreenPos(mEngine.getMouseX(), mEngine.getMouseY());
 
-		if (controlledEntity.isValid())
-		{
-			auto [transform, movement] = world.getEntityManager().getEntityComponents<TransformComponent, MovementComponent>(controlledEntity.getEntity());
+			Vector2D mouseHeroPos = -mouseScreenPos + screenHalfSize + cameraTransform->getLocation() - SpatialWorldData::GetCellRealDistance(cellDiff);
 
-			movement->setMoveDirection(movementDirection);
-			movement->setSightDirection(mouseScreenPos - transform->getLocation() - drawShift);
+			movement->setSightDirection(transform->getLocation() - mouseHeroPos);
 		}
 	}
-
 
 	auto [renderMode] = gameData.getGameComponents().getComponents<RenderModeComponent>();
 	if (renderMode)
@@ -98,5 +101,7 @@ void ControlSystem::update()
 		UpdateRenderStateOnPressed(mKeyStates, renderMode, SDLK_F4, &RenderModeComponent::getIsDrawLightsEnabled, &RenderModeComponent::setIsDrawLightsEnabled);
 		UpdateRenderStateOnPressed(mKeyStates, renderMode, SDLK_F5, &RenderModeComponent::getIsDrawVisibleEntitiesEnabled, &RenderModeComponent::setIsDrawVisibleEntitiesEnabled);
 		UpdateRenderStateOnPressed(mKeyStates, renderMode, SDLK_F6, &RenderModeComponent::getIsDrawDebugCharacterInfoEnabled, &RenderModeComponent::setIsDrawDebugCharacterInfoEnabled);
+		UpdateRenderStateOnPressed(mKeyStates, renderMode, SDLK_F7, &RenderModeComponent::getIsDrawDebugPrimitivesEnabled, &RenderModeComponent::setIsDrawDebugPrimitivesEnabled);
+		UpdateRenderStateOnPressed(mKeyStates, renderMode, SDLK_F8, &RenderModeComponent::getIsDrawDebugCellInfoEnabled, &RenderModeComponent::setIsDrawDebugCellInfoEnabled);
 	}
 }

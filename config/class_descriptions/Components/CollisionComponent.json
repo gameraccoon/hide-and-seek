@@ -9,20 +9,7 @@
 			"flags": ["get_by_ref"]
 		},
 		{
-			"name": "isBoundingBoxDirty",
-			"type": "bool",
-			"default": " = true",
-			"flags": ["transient"]
-		},
-		{
 			"name": "boundingBox",
-			"type": "BoundingBox",
-			"default": " = BoundingBox(Vector2D(0.0f, 0.0f), Vector2D(0.0f, 0.0f))",
-			"includes": ["\"GameData/Core/BoundingBox.h\""],
-			"flags": ["transient", "get_by_ref"]
-		},
-		{
-			"name": "originalBoundingBox",
 			"type": "BoundingBox",
 			"default": " = BoundingBox(Vector2D(0.0f, 0.0f), Vector2D(0.0f, 0.0f))",
 			"includes": ["\"GameData/Core/BoundingBox.h\""],

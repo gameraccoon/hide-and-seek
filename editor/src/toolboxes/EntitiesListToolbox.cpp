@@ -14,7 +14,6 @@
 #include "Base/Debug/Log.h"
 
 #include "src/editorcommands/removeentitycommand.h"
-#include "src/editorcommands/addcomponentcommand.h"
 
 #include "src/toolboxes/PrefabListToolbox.h"
 
@@ -29,7 +28,7 @@ EntitiesListToolbox::EntitiesListToolbox(MainWindow* mainWindow, ads::CDockManag
 	, mDockManager(dockManager)
 {
 	mOnWorldChangedHandle = mMainWindow->OnWorldChanged.bind([this]{bindEvents(); updateContent();});
-	mOnSelectedEntityChangedHandle = mMainWindow->OnSelectedEntityChanged.bind([this](OptionalEntity entity){onEntityChangedEvent(entity);});
+	mOnSelectedEntityChangedHandle = mMainWindow->OnSelectedEntityChanged.bind([this](const auto& entityRef){onEntityChangedEvent(entityRef);});
 }
 
 EntitiesListToolbox::~EntitiesListToolbox()
@@ -83,9 +82,9 @@ void EntitiesListToolbox::onWorldUpdated()
 	bindEvents();
 }
 
-void EntitiesListToolbox::onEntityChangedEvent(OptionalEntity entity)
+void EntitiesListToolbox::onEntityChangedEvent(const std::optional<EntityReference>& entity)
 {
-	if (!entity.isValid())
+	if (!entity.has_value())
 	{
 		return;
 	}
@@ -96,7 +95,7 @@ void EntitiesListToolbox::onEntityChangedEvent(OptionalEntity entity)
 		return;
 	}
 
-	QString text = QString::number(entity.mId);
+	QString text = QString::number(entity->entity.getID());
 	int i = 0;
 	while (QListWidgetItem* item = entitiesList->item(i))
 	{
@@ -119,17 +118,16 @@ void EntitiesListToolbox::updateContent()
 		return;
 	}
 
-	QStringList entitiesStringList;
 	const auto& entities = currentWorld->getEntityManager().getEntities();
-	for (auto& entity : entities)
-	{
-		entitiesStringList.append(QString::number(entity.first));
-	}
-
 	if (QListWidget* entitiesList = mDockManager->findChild<QListWidget*>(ListName))
 	{
-		entitiesList->clear();
-		entitiesList->addItems(entitiesStringList);
+		for (auto& entity : entities)
+		{
+			QListWidgetItem* newItem = new QListWidgetItem(QString::number(entity.first));
+			newItem->setData(0, entity.first);
+			newItem->setData(1, false);
+			entitiesList->addItem(newItem);
+		}
 	}
 }
 
@@ -137,11 +135,19 @@ void EntitiesListToolbox::onCurrentItemChanged(QListWidgetItem* current, QListWi
 {
 	if (current)
 	{
-		mMainWindow->OnSelectedEntityChanged.broadcast(Entity(current->text().toUInt()));
+		Entity::EntityID entityID = current->data(0).toUInt();
+		EntityReference reference{Entity(entityID)};
+
+		if (current->data(1).toBool())
+		{
+			CellPos cellPos{current->data(2).toInt(), current->data(3).toInt()};
+			reference.cellPos = cellPos;
+		}
+		mMainWindow->OnSelectedEntityChanged.broadcast(reference);
 	}
 	else
 	{
-		mMainWindow->OnSelectedEntityChanged.broadcast(OptionalEntity());
+		mMainWindow->OnSelectedEntityChanged.broadcast(std::nullopt);
 	}
 }
 
@@ -159,10 +165,6 @@ void EntitiesListToolbox::showContextMenu(const QPoint& pos)
 	}
 
 	QMenu contextMenu(tr("Context menu"), this);
-
-	QAction actionAddComponent("Add Component", this);
-	connect(&actionAddComponent, &QAction::triggered, this, &EntitiesListToolbox::onAddComponentToEntityRequested);
-	contextMenu.addAction(&actionAddComponent);
 
 	QAction actionRemove("Remove Entity", this);
 	connect(&actionRemove, &QAction::triggered, this, &EntitiesListToolbox::removeSelectedEntity);
@@ -233,50 +235,6 @@ void EntitiesListToolbox::createPrefab(const QString& prefabName)
 
 	prefabToolbox->show();
 	prefabToolbox->createPrefabFromEntity(prefabName, Entity(currentItem->text().toUInt()));
-}
-
-void EntitiesListToolbox::onAddComponentToEntityRequested()
-{
-	QInputDialog* dialog = new QInputDialog();
-	dialog->setLabelText("Select Component Type:");
-	dialog->setCancelButtonText("Cancel");
-	dialog->setComboBoxEditable(false);
-	QStringList items;
-	mMainWindow->getComponentFactory().forEachComponentType([&items](std::type_index, StringID name)
-	{
-		items.append(QString::fromStdString(ID_TO_STR(name)));
-	});
-	dialog->setComboBoxItems(items);
-	connect(dialog, &QInputDialog::textValueSelected, this, &EntitiesListToolbox::addComponentToEntity);
-	dialog->show();
-}
-
-void EntitiesListToolbox::addComponentToEntity(const QString& typeName)
-{
-	QListWidget* entitiesList = mDockManager->findChild<QListWidget*>(ListName);
-	if (entitiesList == nullptr)
-	{
-		return;
-	}
-
-	QListWidgetItem* currentItem = entitiesList->currentItem();
-	if (currentItem == nullptr)
-	{
-		return;
-	}
-
-	World* currentWorld = mMainWindow->getCurrentWorld();
-	if (currentWorld == nullptr)
-	{
-		return;
-	}
-
-	mMainWindow->getCommandStack().executeNewCommand<AddComponentCommand>(
-		currentWorld,
-		Entity(currentItem->text().toUInt()),
-		STR_TO_ID(typeName.toStdString()),
-		&mMainWindow->getComponentFactory()
-	);
 }
 
 void EntitiesListToolbox::bindEvents()

@@ -12,6 +12,11 @@
 #include "ECS/Delegates.h"
 #include "ECS/ComponentFactory.h"
 
+#include "GameData/Spatial/SpatialEntity.h"
+
+#include "editorutils/componentreference.h"
+#include "editorutils/entityreference.h"
+
 namespace ads
 {
 	class CDockManager;
@@ -25,7 +30,6 @@ namespace Ui
 class ComponentAttributesToolbox;
 class ComponentsListToolbox;
 class EntitiesListToolbox;
-class WorldPropertiesToolbox;
 class PrefabListToolbox;
 class TransformEditorToolbox;
 
@@ -45,9 +49,10 @@ public:
 
 public:
 	MulticastDelegate<> OnWorldChanged;
-	MulticastDelegate<OptionalEntity> OnSelectedEntityChanged;
-	MulticastDelegate<const QString&> OnSelectedComponentChanged;
-	MulticastDelegate<EditorCommand::EffectType, bool, bool> OnCommandEffectApplied;
+	MulticastDelegate<const std::optional<EntityReference>&> OnSelectedEntityChanged;
+	MulticastDelegate<const std::optional<ComponentSourceReference>&> OnSelectedComponentSourceChanged;
+	MulticastDelegate<const std::optional<ComponentReference>&> OnSelectedComponentChanged;
+	MulticastDelegate<EditorCommand::EffectBitset, bool> OnCommandEffectApplied;
 
 private slots:
 	void on_actionTransform_Editor_triggered();
@@ -61,6 +66,7 @@ private:
 	void updateSelectedComponentData(QListWidgetItem* selectedItem);
 	void updateUndoRedo();
 	void initActions();
+	void bindEvents();
 
 	void actionPrefabsTriggered();
 	void actionNewPrefabLibraryTriggered();
@@ -80,7 +86,10 @@ private slots:
 	void on_actionEntities_List_triggered();
 	void on_actionComponents_List_triggered();
 	void on_actionComponent_Properties_triggered();
-	void on_actionWorld_Settings_triggered();
+
+	void on_actionEdit_Components_triggered();
+
+	void on_actionCreate_Spatial_triggered();
 
 private:
 	// need to be a raw pointer in order to Qt Designer to work normally with this class
@@ -93,7 +102,6 @@ private:
 	EditorCommandsStack mCommandStack;
 
 	std::unique_ptr<EntitiesListToolbox> mEntitiesListToolbox;
-	std::unique_ptr<WorldPropertiesToolbox> mWorldPropertiesToolbox;
 	std::unique_ptr<ComponentAttributesToolbox> mComponentAttributesToolbox;
 	std::unique_ptr<ComponentsListToolbox> mComponentsListToolbox;
 	std::unique_ptr<PrefabListToolbox> mPrefabListToolbox;

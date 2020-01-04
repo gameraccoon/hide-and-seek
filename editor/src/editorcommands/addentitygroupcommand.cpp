@@ -6,13 +6,14 @@
 #include "GameData/Components/TransformComponent.generated.h"
 
 AddEntityGroupCommand::AddEntityGroupCommand(const std::vector<nlohmann::json>& entities, ComponentFactory* factory, const Vector2D& shift)
-	: mEntities(entities)
+	: EditorCommand(EffectType::Entities)
+	, mEntities(entities)
 	, mComponentFactory(factory)
 	, mShift(shift)
 {
 }
 
-bool AddEntityGroupCommand::doCommand(World* world)
+void AddEntityGroupCommand::doCommand(World* world)
 {
 	mCreatedEntities.clear();
 	for (const auto& serializedObject : mEntities)
@@ -25,19 +26,12 @@ bool AddEntityGroupCommand::doCommand(World* world)
 			transform->setLocation(transform->getLocation() + mShift);
 		}
 	}
-	return false;
 }
 
-bool AddEntityGroupCommand::undoCommand(World* world)
+void AddEntityGroupCommand::undoCommand(World* world)
 {
 	for (Entity entity : mCreatedEntities)
 	{
 		world->getEntityManager().removeEntity(entity);
 	}
-	return false;
-}
-
-EditorCommand::EffectType AddEntityGroupCommand::getEffectType()
-{
-	return EffectType::Entities;
 }

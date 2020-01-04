@@ -2,6 +2,7 @@
 #define TYPESEDITCONSTRUCTOR_H
 
 #include <vector>
+#include <map>
 #include <memory>
 
 #include <QObject>
@@ -67,9 +68,6 @@ namespace TypesEditConstructor
 		}
 	};
 
-	template<>
-	Edit<float>::Ptr FillEdit<float>::Call(QLayout* layout, const QString& label, const float& initialValue);
-
 	template <typename T>
 	using is_vector = std::is_same<T, std::vector<typename T::value_type, typename T::allocator_type>>;
 
@@ -126,6 +124,87 @@ namespace TypesEditConstructor
 				{
 					T container = edit->getPreviousValue();
 					container.push_back(item_type());
+					edit->transmitValueChange(container, true);
+				}
+			});
+			edit->addChild(addItem);
+			layout->addWidget(addButton);
+
+			return edit;
+		}
+	};
+
+	template <typename T>
+	using is_map = std::is_same<T, std::map<typename T::key_type, typename T::mapped_type, typename T::key_compare>>;
+
+	// partial specilization for maps
+	template<typename T>
+	struct FillEdit<T, typename std::enable_if<is_map<T>::value>::type> {
+		static typename Edit<T>::Ptr Call(QLayout* layout, const QString& label, const T& initialValue)
+		{
+			using key_type = typename T::key_type;
+			using value_type = typename T::mapped_type;
+
+			typename Edit<T>::Ptr edit = std::make_shared<Edit<T>>(initialValue);
+			typename Edit<T>::WeakPtr editWeakPtr = edit;
+
+			FillLabel(layout, label);
+
+			for (const auto& pair : initialValue)
+			{
+				typename Edit<key_type>::Ptr editKey = FillEdit<key_type>::Call(layout, "key", pair.first);
+				editKey->bindOnChange([editWeakPtr, value = pair.second](const key_type& oldKey, const key_type& newKey, bool)
+				{
+					if (typename Edit<T>::Ptr edit = editWeakPtr.lock())
+					{
+						T container = edit->getPreviousValue();
+						if (container.find(oldKey) != container.end())
+						{
+							container[newKey] = value;
+							container.erase(oldKey);
+							edit->transmitValueChange(container);
+						}
+					}
+				});
+				edit->addChild(editKey);
+
+				typename Edit<value_type>::Ptr editValue = FillEdit<value_type>::Call(layout, "value", pair.second);
+				editValue->bindOnChange([editWeakPtr, key = pair.first](const value_type& /*oldValue*/, const value_type& newValue, bool)
+				{
+					if (typename Edit<T>::Ptr edit = editWeakPtr.lock())
+					{
+						T container = edit->getPreviousValue();
+						container[key] = newValue;
+						edit->transmitValueChange(container);
+					}
+				});
+				edit->addChild(editValue);
+
+				QPushButton* removeButton = new QPushButton();
+				removeButton->setText("x");
+				Edit<bool>::Ptr removeItem = std::make_shared<Edit<bool>>(false);
+				QObject::connect(removeButton, &QPushButton::pressed, edit->getOwner(), [editWeakPtr, key = pair.first]()
+				{
+					if (typename Edit<T>::Ptr edit = editWeakPtr.lock())
+					{
+						T container = edit->getPreviousValue();
+						container.erase(key);
+						edit->transmitValueChange(container, true);
+					}
+				});
+				edit->addChild(removeItem);
+				layout->addWidget(removeButton);
+			}
+
+			QPushButton* addButton = new QPushButton();
+			addButton->setText("add item");
+			Edit<bool>::Ptr addItem = std::make_shared<Edit<bool>>(false);
+			QObject::connect(addButton, &QPushButton::pressed, edit->getOwner(), [editWeakPtr]()
+			{
+				if (typename Edit<T>::Ptr edit = editWeakPtr.lock())
+				{
+					T container = edit->getPreviousValue();
+					container.emplace();
 					edit->transmitValueChange(container, true);
 				}
 			});

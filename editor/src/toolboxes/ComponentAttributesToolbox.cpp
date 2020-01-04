@@ -8,6 +8,8 @@
 
 #include <QVBoxLayout>
 
+#include "src/editorutils/componentreferenceutils.h"
+
 const QString ComponentAttributesToolbox::WidgetName = "ComponentAttributes";
 const QString ComponentAttributesToolbox::ToolboxName = ComponentAttributesToolbox::WidgetName + "Toolbox";
 const QString ComponentAttributesToolbox::ContainerName = ComponentAttributesToolbox::WidgetName + "Container";
@@ -17,8 +19,8 @@ ComponentAttributesToolbox::ComponentAttributesToolbox(MainWindow* mainWindow, a
 	: mMainWindow(mainWindow)
 	, mDockManager(dockManager)
 {
-	mOnComponentChangedHandle = mMainWindow->OnSelectedComponentChanged.bind([this](const QString& val){onSelectedComponentChange(val);});
-	mOnCommandEffectHandle = mMainWindow->OnCommandEffectApplied.bind([this](EditorCommand::EffectType effect, bool originalCall, bool forceUpdateLayout){updateContent(effect, originalCall, forceUpdateLayout);});
+	mOnComponentChangedHandle = mMainWindow->OnSelectedComponentChanged.bind([this](const auto& val){onSelectedComponentChange(val);});
+	mOnCommandEffectHandle = mMainWindow->OnCommandEffectApplied.bind([this](EditorCommand::EffectBitset effects, bool originalCall){updateContent(effects, originalCall);});
 }
 
 ComponentAttributesToolbox::~ComponentAttributesToolbox()
@@ -56,11 +58,23 @@ void ComponentAttributesToolbox::show()
 	containerWidget->setLayout(layout);
 }
 
-void ComponentAttributesToolbox::updateContent(EditorCommand::EffectType effect, bool originalCall, bool forceUpdateLayout)
+bool ComponentAttributesToolbox::isShown() const
 {
-	if (forceUpdateLayout || (!originalCall && effect == EditorCommand::EffectType::ComponentAttributes))
+	if (ads::CDockWidget* dockWidget = mDockManager->findDockWidget(ToolboxName))
 	{
-		onSelectedComponentChange(mLastSelectedComlonent);
+		return dockWidget->isVisible();
+	}
+	else
+	{
+		return false;
+	}
+}
+
+void ComponentAttributesToolbox::updateContent(EditorCommand::EffectBitset effects, bool originalCall)
+{
+	if (!originalCall || (effects.has(EditorCommand::EffectType::ComponentAttributes) && !effects.has(EditorCommand::EffectType::SkipLayoutUpdate)))
+	{
+		onSelectedComponentChange(mLastSelectedComponent);
 	}
 }
 
@@ -74,7 +88,7 @@ void ComponentAttributesToolbox::clearContent()
 	mMainWindow->getComponentContentFactory().removeEditContent(componentAttributesContainerWidget->layout());
 }
 
-void ComponentAttributesToolbox::onSelectedComponentChange(const QString& componentTypeName)
+void ComponentAttributesToolbox::onSelectedComponentChange(const std::optional<ComponentReference>& componentReference)
 {
 	QListWidget* entitiesList = mDockManager->findChild<QListWidget*>("EntityList");
 	if (entitiesList == nullptr)
@@ -88,13 +102,6 @@ void ComponentAttributesToolbox::onSelectedComponentChange(const QString& compon
 		return;
 	}
 
-	QListWidgetItem* currentItem = entitiesList->currentItem();
-	if (currentItem == nullptr)
-	{
-		clearContent();
-		return;
-	}
-
 	World* currentWorld = mMainWindow->getCurrentWorld();
 	if (currentWorld == nullptr)
 	{
@@ -103,22 +110,13 @@ void ComponentAttributesToolbox::onSelectedComponentChange(const QString& compon
 
 	bool validComponentIsSelected = false;
 
-	bool ok;
-	int index = currentItem->text().toInt(&ok);
-	if (ok && index != 0)
+	if (componentReference.has_value())
 	{
-		Entity entity = Entity(static_cast<Entity::EntityID>(index));
-		std::vector<BaseComponent*> entityComponents = currentWorld->getEntityManager().getAllEntityComponents(entity);
-		auto it = std::find_if(entityComponents.begin(), entityComponents.end(), [componentTypeName = STR_TO_ID(componentTypeName.toStdString())](BaseComponent* component)
+		if (BaseComponent* component = Utils::GetComponent(*componentReference, currentWorld))
 		{
-			return component->getComponentTypeName() == componentTypeName;
-		});
-
-		if (it != entityComponents.end())
-		{
-			mMainWindow->getComponentContentFactory().replaceEditContent(componentAttributesContainerWidget->layout(), entity, *it, mMainWindow->getCommandStack(), currentWorld);
+			mMainWindow->getComponentContentFactory().replaceEditContent(componentAttributesContainerWidget->layout(), componentReference->source, component, mMainWindow->getCommandStack(), currentWorld);
 			validComponentIsSelected = true;
-			mLastSelectedComlonent = componentTypeName;
+			mLastSelectedComponent = componentReference;
 		}
 	}
 

@@ -19,7 +19,4 @@ public:
 	using BaseTestCase::BaseTestCase;
 
 	void initTestCase(const ArgumentsParser& arguments) override;
-	void initResources() override {}
-	void setKeyboardKeyState(int, bool) override {}
-	void setMouseKeyState(int, bool) override {}
 };

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <string>
-
 #include <nlohmann/json_fwd.hpp>
 
 class Entity
@@ -35,11 +33,12 @@ public:
 
 	bool isValid() const { return mIsValid; }
 	Entity getEntity() const;
+	Entity::EntityID getID() const;
 
 	friend void to_json(nlohmann::json& outJson, const OptionalEntity& entity);
 	friend void from_json(const nlohmann::json& json, OptionalEntity& outEntity);
 
-public:
+private:
 	Entity::EntityID mId = 0;
 	bool mIsValid = false;
 };

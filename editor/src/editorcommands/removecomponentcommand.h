@@ -6,20 +6,21 @@
 
 #include <nlohmann/json.hpp>
 
+#include "src/editorutils/componentreference.h"
+
 class World;
 class ComponentFactory;
 
 class RemoveComponentCommand : public EditorCommand
 {
 public:
-	RemoveComponentCommand(Entity mEntity, StringID typeName, ComponentFactory* factory);
+	RemoveComponentCommand(const ComponentSourceReference& source, StringID typeName, ComponentFactory* factory);
 
-	bool doCommand(World* world) override;
-	bool undoCommand(World* world) override;
-	EffectType getEffectType() override;
+	void doCommand(World* world) override;
+	void undoCommand(World* world) override;
 
 private:
-	Entity mEntity;
+	ComponentSourceReference mSource;
 	StringID mComponentTypeName;
 	ComponentFactory* mComponentFactory;
 	nlohmann::json mSerializedComponent;

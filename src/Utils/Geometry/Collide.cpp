@@ -7,6 +7,8 @@
 #include "GameData/Components/CollisionComponent.generated.h"
 #include "GameData/Components/TransformComponent.generated.h"
 
+#include "Utils/Math.h"
+
 namespace Collide
 {
 	float SignedArea(const Vector2D& a, const Vector2D& b, const Vector2D& c)
@@ -27,7 +29,7 @@ namespace Collide
 		if (hull1.type == HullType::Circular && hull2.type == HullType::Circular)
 		{
 			float dist = (center2 - center1).qSize() - (hull1.getQRadius() + hull2.getQRadius() + 2.0f * hull1.getRadius() * hull2.getRadius());
-			if (dist <= 0.0f)
+			if (Math::IsLessWithEpsilon(dist, 0.0f))
 			{
 				outResist = (center2 - center1) - (center2 - center1).unit() * (hull1.getRadius() + hull2.getRadius());
 				return true;
@@ -163,8 +165,8 @@ namespace Collide
 				   const CollisionComponent* collisionB, const Vector2D& locationB, Vector2D& outResist)
 	{
 		// get AABB of the actors
-		const BoundingBox& box = collisionA->getBoundingBox();
-		const BoundingBox& ourBox = collisionB->getBoundingBox();
+		const BoundingBox box = collisionA->getBoundingBox() + locationA;
+		const BoundingBox ourBox = collisionB->getBoundingBox() + locationB;
 		// if the actor's AABB intersects with the Man's AABB (in new Man location)
 		if ((box.minX < ourBox.maxX
 			&& ourBox.minX < box.maxX)
@@ -177,14 +179,14 @@ namespace Collide
 		return false;
 	}
 
-	void UpdateOriginalBoundingBox(CollisionComponent* collision)
+	void UpdateBoundingBox(CollisionComponent* collision)
 	{
 		const Hull& geometry = collision->getGeometry();
 
 		if (geometry.type == HullType::Circular)
 		{
 			float radius = geometry.getRadius();
-			collision->setOriginalBoundingBox(BoundingBox(Vector2D(-radius, -radius), Vector2D(radius, radius)));
+			collision->setBoundingBox(BoundingBox(Vector2D(-radius, -radius), Vector2D(radius, radius)));
 		}
 		else
 		{
@@ -216,8 +218,7 @@ namespace Collide
 				}
 			}
 
-			collision->setOriginalBoundingBox(BoundingBox(Vector2D(minX, minY), Vector2D(maxX, maxY)));
+			collision->setBoundingBox(BoundingBox(Vector2D(minX, minY), Vector2D(maxX, maxY)));
 		}
 	}
-
 }

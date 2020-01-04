@@ -7,6 +7,7 @@
 #include "GameData/Components/CollisionComponent.generated.h"
 #include "GameData/Components/LightComponent.generated.h"
 #include "GameData/Components/RenderModeComponent.generated.h"
+#include "GameData/Components/WorldCachedDataComponent.generated.h"
 #include "GameData/World.h"
 
 #include "Utils/Geometry/VisibilityPolygon.h"
@@ -37,38 +38,32 @@ void RenderSystem::update()
 	World& world = mWorldHolder.getWorld();
 	Graphics::Renderer& renderer = mEngine.getRenderer();
 
+	auto [worldCachedData] = world.getWorldComponents().getComponents<WorldCachedDataComponent>();
+	Vector2D workingRect = worldCachedData->getScreenSize();
+	Vector2D cameraLocation = worldCachedData->getCameraPos();
+	CellPos cameraCell = worldCachedData->getCameraCellPos();
+
 	static const Vector2D maxFov(500.0f, 500.0f);
-
-	OptionalEntity mainCamera = world.getMainCamera();
-	if (!mainCamera.isValid())
-	{
-		return;
-	}
-
-	auto [cameraTransformComponent] = world.getEntityManager().getEntityComponents<TransformComponent>(mainCamera.getEntity());
-	if (cameraTransformComponent == nullptr)
-	{
-		return;
-	}
 
 	auto [renderMode] = world.getWorldComponents().getComponents<RenderModeComponent>();
 
-	Vector2D cameraLocation = cameraTransformComponent->getLocation();
 	Vector2D mouseScreenPos(mEngine.getMouseX(), mEngine.getMouseY());
 	Vector2D screenHalfSize = Vector2D(static_cast<float>(mEngine.getWidth()), static_cast<float>(mEngine.getHeight())) * 0.5f;
 
-	Vector2D drawShift = screenHalfSize - cameraLocation + (screenHalfSize - mouseScreenPos) * 0.5;
+	Vector2D drawShift = screenHalfSize - cameraLocation;
+
+	SpatialEntityManager spatialManager = world.getSpatialData().getCellManagersAround(worldCachedData->getCameraCellPos(), cameraLocation, workingRect);
 
 	if (!renderMode || renderMode->getIsDrawLightsEnabled())
 	{
-		drawLights(world, drawShift, maxFov, screenHalfSize);
+		drawLights(spatialManager, cameraLocation, drawShift, maxFov, screenHalfSize);
 	}
 
 	if (!renderMode || renderMode->getIsDrawVisibleEntitiesEnabled())
 	{
-		world.getEntityManager().forEachComponentSet<RenderComponent, TransformComponent>([&drawShift, &resourceManager = mResourceManager, &renderer](RenderComponent* render, TransformComponent* transform)
+		spatialManager.forEachSpatialComponentSet<RenderComponent, TransformComponent>([&drawShift, &resourceManager = mResourceManager, &renderer, cameraCell](WorldCell* cell, RenderComponent* render, TransformComponent* transform)
 		{
-			auto location = transform->getLocation() + drawShift;
+			Vector2D location = SpatialWorldData::GetRelativeLocation(cameraCell, cell->getPos(), transform->getLocation() + drawShift);
 			float rotation = transform->getRotation().getValue();
 			for (const auto& data : render->getSpriteDatas())
 			{
@@ -104,9 +99,10 @@ Vector2D RenderSystem::GetPlayerSightPosition(World& world)
 {
 	Vector2D result(0.0f, 0.0f);
 
-	if (OptionalEntity playerEntity = world.getPlayerControlledEntity(); playerEntity.isValid())
+	std::optional<std::pair<EntityView, CellPos>> controlledEntity = world.getTrackedSpatialEntity(STR_TO_ID("ControlledEntity"));
+	if (controlledEntity.has_value())
 	{
-		auto [playerTransform] = world.getEntityManager().getEntityComponents<TransformComponent>(playerEntity.getEntity());
+		auto [playerTransform] = controlledEntity->first.getComponents<TransformComponent>();
 
 		if (playerTransform != nullptr)
 		{
@@ -138,6 +134,8 @@ public:
 	{
 		Assert(mFinalizeFn, "finalizeFn should be set");
 	}
+
+	~VisibilityPolygonCalculationJob() override;
 
 	void process() override
 	{
@@ -192,6 +190,9 @@ private:
 	std::vector<Result> mCalculationResults;
 };
 
+// just to suppress weak vtables warning
+VisibilityPolygonCalculationJob::~VisibilityPolygonCalculationJob() {}
+
 static size_t GetJobDivisor(size_t maxThreadsCount)
 {
 	// this alghorithm is subject to change
@@ -201,7 +202,7 @@ static size_t GetJobDivisor(size_t maxThreadsCount)
 	return maxThreadsCount * 3 - 1;
 }
 
-void RenderSystem::drawLights(World& world, const Vector2D& drawShift, const Vector2D& maxFov, const Vector2D& screenHalfSize)
+void RenderSystem::drawLights(SpatialEntityManager& managerGroup, const Vector2D& playerSightPosition, const Vector2D& drawShift, const Vector2D& maxFov, const Vector2D& screenHalfSize)
 {
 	const GameplayTimestamp timestampNow = mTime.currentTimestamp;
 
@@ -211,11 +212,11 @@ void RenderSystem::drawLights(World& world, const Vector2D& drawShift, const Vec
 		return;
 	}
 
-	Vector2D playerSightPosition = GetPlayerSightPosition(world);
+	std::vector<std::tuple<CollisionComponent*, TransformComponent*>> collidableComponents;
+	managerGroup.getComponents<CollisionComponent, TransformComponent>(collidableComponents);
 
-	const auto collidableComponents = world.getEntityManager().getComponents<CollisionComponent, TransformComponent>();
-
-	std::vector<std::tuple<LightComponent*, TransformComponent*>> componentSets = world.getEntityManager().getComponents<LightComponent, TransformComponent>();
+	std::vector<std::tuple<LightComponent*, TransformComponent*>> componentSets;
+	managerGroup.getComponents<LightComponent, TransformComponent>(componentSets);
 
 	Vector2D emitterPositionBordersLT = playerSightPosition - screenHalfSize - maxFov*0.5;
 	Vector2D emitterPositionBordersRB = playerSightPosition + screenHalfSize + maxFov*0.5;

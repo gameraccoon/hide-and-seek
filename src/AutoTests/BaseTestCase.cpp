@@ -23,7 +23,7 @@ void BaseTestCase::start(const ArgumentsParser& arguments)
 
 void BaseTestCase::update(float)
 {
-	constexpr float fixedDt = 0.16f;
+	constexpr float fixedDt = 1.0f / 60.0f;
 
 	do
 	{
@@ -43,6 +43,13 @@ void BaseTestCase::update(float)
 		finalizeTestCase();
 		getEngine().quit();
 	}
+	mKeyStates.clearLastFrameState();
+}
+
+void BaseTestCase::initResources()
+{
+	getResourceManager().loadAtlasesData("resources/atlas/atlas-list.json");
+	mSystemsManager.initResources();
 }
 
 void BaseTestCase::finalizeTestCase()

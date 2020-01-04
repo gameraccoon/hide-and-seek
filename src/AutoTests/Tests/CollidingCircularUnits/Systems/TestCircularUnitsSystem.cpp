@@ -9,32 +9,39 @@
 #include "GameData/Components/MovementComponent.generated.h"
 
 
-TestCircularUnitsSystem::TestCircularUnitsSystem(WorldHolder& worldHolder)
+TestCircularUnitsSystem::TestCircularUnitsSystem(WorldHolder& worldHolder, TimeData& time)
 	: mWorldHolder(worldHolder)
+	, mTime(time)
 {
 }
 
 void TestCircularUnitsSystem::update()
 {
 	World& world = mWorldHolder.getWorld();
+	float dt = mTime.dt;
 
-	OptionalEntity playerEntity = world.getPlayerControlledEntity();
-	if (!playerEntity.isValid())
+	std::optional<std::pair<EntityView, CellPos>> playerEntity = world.getTrackedSpatialEntity(STR_TO_ID("ControlledEntity"));
+	if (!playerEntity.has_value())
 	{
 		return;
 	}
 
-	auto [playerTransform] = world.getEntityManager().getEntityComponents<TransformComponent>(playerEntity.getEntity());
+	auto [playerTransform] = playerEntity->first.getComponents<TransformComponent>();
 	if (playerTransform == nullptr)
 	{
 		return;
 	}
 
 	Vector2D targetLocation = playerTransform->getLocation();
+	CellPos targetCell = playerEntity->second;
 
-	world.getEntityManager().forEachComponentSet<AiControllerComponent, TransformComponent, MovementComponent>([targetLocation](AiControllerComponent* /*aiController*/, TransformComponent* transform, MovementComponent* movement)
+	SpatialEntityManager spatialManager = world.getSpatialData().getAllCellManagers();
+	spatialManager.forEachSpatialComponentSet<AiControllerComponent, TransformComponent, MovementComponent>([targetLocation, targetCell, dt](WorldCell* cell, AiControllerComponent* /*aiController*/, TransformComponent* transform, MovementComponent* movement)
 	{
-		movement->setMoveDirection(targetLocation - transform->getLocation());
+		Vector2D cellPosDiff = SpatialWorldData::GetCellRealDistance(targetCell - cell->getPos());
+		Vector2D nextStep = targetLocation - transform->getLocation() + cellPosDiff;
+		movement->setMoveDirection(nextStep);
+		movement->setNextStep(nextStep * movement->getOriginalSpeed() * dt);
 		movement->setSpeed(movement->getOriginalSpeed());
 	});
 }

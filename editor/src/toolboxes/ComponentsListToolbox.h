@@ -6,7 +6,11 @@
 #include "ECS/Delegates.h"
 #include "ECS/Entity.h"
 
+#include "src/editorutils/entityreference.h"
+#include "src/editorutils/componentreference.h"
+
 class MainWindow;
+class QPushButton;
 
 namespace ads
 {
@@ -31,20 +35,18 @@ public:
 private:
 	void updateContent();
 	void onCurrentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
-	void onSelectedEntityChanged(OptionalEntity newEntity);
+	void onSelectedComponentSourceChanged(const std::optional<ComponentSourceReference>& newSource);
 	void showContextMenu(const QPoint& pos);
 	void removeSelectedComponent();
-
-	void bindEvents();
-	void unbindEvents();
+	void addComponentCommand();
+	void addComponent(const QString& typeName);
 
 private:
-	MainWindow* mMainWindow;
-	ads::CDockManager* mDockManager;
-	OptionalEntity mLastSelectedEntity;
+	MainWindow* mMainWindow = nullptr;
+	ads::CDockManager* mDockManager = nullptr;
+	QPushButton* mAddComponentButton = nullptr;
+	std::optional<ComponentSourceReference> mLastSelectedComponentSource;
 
-	Delegates::Handle mOnComponentAddedHandle;
-	Delegates::Handle mOnComponentRemovedHandle;
 	Delegates::Handle mOnWorldChangedHandle;
-	Delegates::Handle mOnEntityChangedHandle;
+	Delegates::Handle mOnComponentSourceChangedHandle;
 };

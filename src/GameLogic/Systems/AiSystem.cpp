@@ -6,6 +6,7 @@
 #include "GameData/Components/TransformComponent.generated.h"
 #include "GameData/Components/MovementComponent.generated.h"
 #include "GameData/Components/CharacterStateComponent.generated.h"
+#include "GameData/Components/TrackedSpatialEntitiesComponent.generated.h"
 #include "GameData/World.h"
 
 #include "Utils/AI/NavMeshGenerator.h"
@@ -116,7 +117,7 @@ static int fixupCorridor(dtPolyRef* path, const int npath, const int maxPath,
 		size = maxPath-req;
 	}
 	if (size) {
-		memmove(path+req, path+orig, size*sizeof(dtPolyRef));
+		memmove(path+req, path+orig, static_cast<size_t>(size)*sizeof(dtPolyRef));
 	}
 
 	// Store visited
@@ -218,7 +219,7 @@ static void RecalcNavmesh(dtNavMesh* m_navMesh, dtNavMeshQuery* m_navQuery, floa
 		{
 			// Iterate over the path to find smooth path on the detail mesh surface.
 			dtPolyRef polys[MAX_POLYS];
-			memcpy(polys, m_polys, sizeof(dtPolyRef)*m_npolys);
+			memcpy(polys, m_polys, sizeof(dtPolyRef)*static_cast<size_t>(m_npolys));
 			int npolys = m_npolys;
 
 			float iterPos[3], targetPos[3];
@@ -361,7 +362,8 @@ void AiSystem::update()
 		return;
 	}
 
-	std::vector<std::tuple<CollisionComponent*, TransformComponent*>> collisions = world.getEntityManager().getComponents<CollisionComponent, TransformComponent>();
+	std::vector<std::tuple<CollisionComponent*, TransformComponent*>> collisions;
+	world.getEntityManager().getComponents<CollisionComponent, TransformComponent>(collisions);
 
 	auto it = std::find_if(std::begin(collisions), std::end(collisions), [lastUpdateTimestamp = navMeshComponent->getUpdateTimestamp()](const std::tuple<CollisionComponent*, TransformComponent*>& set)
 	{
@@ -376,13 +378,14 @@ void AiSystem::update()
 		navMeshComponent->setUpdateTimestamp(timestampNow);
 	}
 
-	OptionalEntity playerEntity = world.getPlayerControlledEntity();
-	if (!playerEntity.isValid())
+	std::optional<std::pair<EntityView, CellPos>> playerEntity = world.getTrackedSpatialEntity(STR_TO_ID("ControlledEntity"));
+
+	if (!playerEntity.has_value())
 	{
 		return;
 	}
 
-	auto [playerTransform] = world.getEntityManager().getEntityComponents<TransformComponent>(playerEntity.getEntity());
+	auto [playerTransform] = playerEntity->first.getComponents<TransformComponent>();
 	if (playerTransform == nullptr)
 	{
 		return;

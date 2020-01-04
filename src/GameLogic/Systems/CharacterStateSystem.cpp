@@ -13,8 +13,9 @@
 #include "GameData/GameData.h"
 
 
-CharacterStateSystem::CharacterStateSystem(WorldHolder& worldHolder)
+CharacterStateSystem::CharacterStateSystem(WorldHolder& worldHolder, const TimeData& timeData)
 	: mWorldHolder(worldHolder)
+	, mTime(timeData)
 {
 }
 
@@ -32,12 +33,13 @@ void CharacterStateSystem::update()
 {
 	World& world = mWorldHolder.getWorld();
 	GameData& gameData = mWorldHolder.getGameData();
+	float dt = mTime.dt;
 
 	auto [stateMachine] = gameData.getGameComponents().getComponents<StateMachineComponent>();
 
 	if (stateMachine)
 	{
-		world.getEntityManager().forEachComponentSet<CharacterStateComponent, MovementComponent, AnimationGroupsComponent>([stateMachine](CharacterStateComponent* characterState, MovementComponent* movement, AnimationGroupsComponent* animationGroups)
+		world.getSpatialData().getAllCellManagers().forEachComponentSet<CharacterStateComponent, MovementComponent, AnimationGroupsComponent>([stateMachine, dt](CharacterStateComponent* characterState, MovementComponent* movement, AnimationGroupsComponent* animationGroups)
 		{
 			// calculate state
 			CharacterState state = stateMachine->getCharacterSM().getNextState(characterState->getBlackboard(), characterState->getState());
@@ -48,8 +50,10 @@ void CharacterStateSystem::update()
 			{
 				movement->setMoveDirection(ZERO_VECTOR);
 				movement->setSightDirection(ZERO_VECTOR);
+				movement->setNextStep(ZERO_VECTOR);
 			}
 			movement->setSpeed(IsRunning(state) ? movement->getOriginalSpeed() * 2.0f : movement->getOriginalSpeed());
+			movement->setNextStep(movement->getMoveDirection() * movement->getSpeed() * dt);
 
 			// update animation blackboard
 			auto& animBlackboard = animationGroups->getBlackboardRef();
