@@ -33,7 +33,7 @@ namespace TypesEditConstructor
 		});
 		edit->addChild(editType);
 
-		Edit<float>::Ptr editRadius = FillEdit<float>::Call(layout, "radius", initialValue.getQRadius());
+		Edit<float>::Ptr editRadius = FillEdit<float>::Call(layout, "radius", initialValue.getRadius());
 		editRadius->bindOnChange([editWeakPtr](float /*oldValue*/, float newValue, bool)
 		{
 			if (Edit<Hull>::Ptr edit = editWeakPtr.lock())
