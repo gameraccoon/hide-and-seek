@@ -23,13 +23,15 @@
 		"name_template": "Change{class_name}{attribute_name_capital}Command.generated.h",
 		"template": "editor/attribute_edit_command_header",
 		"output_dir": "editor/src/editorcommands/generated/",
-		"flags": ["per_attribute"]
+		"flags": ["per_attribute"],
+		"blacklist": ["transient", "custom_editor"]
 	},
 	{
 		"name_template": "Change{class_name}{attribute_name_capital}Command.generated.cpp",
 		"template": "editor/attribute_edit_command_source",
 		"output_dir": "editor/src/editorcommands/generated/",
-		"flags": ["per_attribute"]
+		"flags": ["per_attribute"],
+		"blacklist": ["transient", "custom_editor"]
 	},
 	{
 		"name_template": "ComponentsRegistration.generated.cpp",

@@ -6,7 +6,8 @@
 			"name": "location",
 			"type": "Vector2D",
 			"default": " = ZERO_VECTOR",
-			"includes": ["\"GameData/Core/Vector2D.h\""]
+			"includes": ["\"GameData/Core/Vector2D.h\""],
+			"flags": ["custom_editor"]
 		},
 		{
 			"name": "rotation",

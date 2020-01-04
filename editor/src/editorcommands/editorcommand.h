@@ -12,6 +12,7 @@ public:
 	enum class EffectType
 	{
 		Entities,
+		EntityLocations,
 		Components,
 		ComponentAttributes,
 		CommandStack,
