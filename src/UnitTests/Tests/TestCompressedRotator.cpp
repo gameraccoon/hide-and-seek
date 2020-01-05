@@ -7,30 +7,35 @@
 
 TEST(CompressedRotator, Value)
 {
-	Rotator zeroRotator{0};
+	Rotator zeroRotator{0.0f};
 	Rotator minusPiRotator{-PI};
+	Rotator minusHalfPiRotator{-PI/2.0f};
 	Rotator piRotator{PI};
 
-	EXPECT_NEAR(zeroRotator.getValue(), CompressedRotator<u16>{zeroRotator}.decompress().getValue(), 0.001);
-	EXPECT_NEAR(minusPiRotator.getValue(), CompressedRotator<u16>{minusPiRotator}.decompress().getValue(), 0.001);
-	EXPECT_NEAR(piRotator.getValue(), CompressedRotator<u16>{piRotator}.decompress().getValue(), 0.001);
+	EXPECT_TRUE(zeroRotator.isNearlyEqualTo(CompressedRotator<u16>{zeroRotator}.decompress()));
+	EXPECT_TRUE(minusPiRotator.isNearlyEqualTo(CompressedRotator<u16>{minusPiRotator}.decompress()));
+	EXPECT_TRUE(minusHalfPiRotator.isNearlyEqualTo(CompressedRotator<u16>{minusHalfPiRotator}.decompress()));
+	EXPECT_TRUE(piRotator.isNearlyEqualTo(CompressedRotator<u16>{piRotator}.decompress()));
 
 	static_assert(std::is_pod<CompressedRotator<u16>>(), "CompressedRotator should be POD type");
 }
 
 TEST(CompressedRotator, Static)
 {
-	Rotator zeroRotator{0};
+	Rotator zeroRotator{0.0f};
 	Rotator minusPiRotator{-PI};
+	Rotator minusHalfPiRotator{-PI/2.0f};
 	Rotator piRotator{PI};
 
 	u16 zeroInt = CompressedRotator<u16>::Compress(zeroRotator, 16);
 	u16 minusPiInt = CompressedRotator<u16>::Compress(minusPiRotator, 16);
+	u16 minusHalfPiInt = CompressedRotator<u16>::Compress(minusHalfPiRotator, 16);
 	u16 piInt = CompressedRotator<u16>::Compress(piRotator, 16);
 
 	EXPECT_EQ(0u, zeroInt);
 
-	EXPECT_NEAR(zeroRotator.getValue(), CompressedRotator<u16>::Decompress(zeroInt).getValue(), 0.001);
-	EXPECT_NEAR(minusPiRotator.getValue(), CompressedRotator<u16>::Decompress(minusPiInt).getValue(), 0.001);
-	EXPECT_NEAR(piRotator.getValue(), CompressedRotator<u16>::Decompress(piInt).getValue(), 0.001);
+	EXPECT_TRUE(zeroRotator.isNearlyEqualTo(CompressedRotator<u16>::Decompress(zeroInt)));
+	EXPECT_TRUE(minusPiRotator.isNearlyEqualTo(CompressedRotator<u16>::Decompress(minusPiInt)));
+	EXPECT_TRUE(minusHalfPiRotator.isNearlyEqualTo(CompressedRotator<u16>::Decompress(minusHalfPiInt)));
+	EXPECT_TRUE(piRotator.isNearlyEqualTo(CompressedRotator<u16>::Decompress(piInt)));
 }

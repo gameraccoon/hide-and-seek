@@ -2,10 +2,11 @@
 
 #include <algorithm>
 
+#include "Base/Math/Float.h"
+
 #include "GameData/Components/TransformComponent.generated.h"
 #include "GameData/Components/CollisionComponent.generated.h"
 
-#include "Utils/Math.h"
 #include "Utils/Geometry/RayTrace.h"
 #include "Utils/Geometry/Collide.h"
 

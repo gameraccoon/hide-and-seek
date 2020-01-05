@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 
-#include "Utils/Math.h"
+#include "Base/Math/Float.h"
 
-TEST(Math, AreFloatsEqual)
+TEST(FloatMath, AreFloatsEqual)
 {
 	const float epsilon = 0.001f;
 
@@ -15,7 +15,7 @@ TEST(Math, AreFloatsEqual)
 	EXPECT_FALSE(Math::AreEqualWithEpsilon(1000.0f, 1000.1f, epsilon));
 }
 
-TEST(Math, IsFloatGreater)
+TEST(FloatMath, IsFloatGreater)
 {
 	const float epsilon = 0.001f;
 
@@ -28,7 +28,7 @@ TEST(Math, IsFloatGreater)
 	EXPECT_FALSE(Math::IsGreaterWithEpsilon(100000.0f, 100000.0f, epsilon));
 }
 
-TEST(Math, IsFloatGreaterOrEqual)
+TEST(FloatMath, IsFloatGreaterOrEqual)
 {
 	const float epsilon = 0.001f;
 
@@ -41,7 +41,7 @@ TEST(Math, IsFloatGreaterOrEqual)
 	EXPECT_TRUE(Math::IsGreaterOrEqualWithEpsilon(100000.0f, 100000.0f, epsilon));
 }
 
-TEST(Math, IsFloatLess)
+TEST(FloatMath, IsFloatLess)
 {
 	const float epsilon = 0.001f;
 
@@ -54,7 +54,7 @@ TEST(Math, IsFloatLess)
 	EXPECT_FALSE(Math::IsLessWithEpsilon(100000.0f, 100000.0f, epsilon));
 }
 
-TEST(Math, IsFloatLessOrEqual)
+TEST(FloatMath, IsFloatLessOrEqual)
 {
 	const float epsilon = 0.001f;
 
@@ -65,4 +65,10 @@ TEST(Math, IsFloatLessOrEqual)
 	EXPECT_TRUE(Math::IsLessOrEqualWithEpsilon(100000.0f, 100000.01f, epsilon));
 	EXPECT_FALSE(Math::IsLessOrEqualWithEpsilon(100000.02f, 100000.01f, epsilon));
 	EXPECT_TRUE(Math::IsLessOrEqualWithEpsilon(100000.0f, 100000.0f, epsilon));
+}
+
+TEST(FloatMath, Lerp)
+{
+	EXPECT_TRUE(Math::AreEqualWithEpsilon(10.0f, std::lerp(5.0f, 15.0f, 0.5f)));
+	EXPECT_TRUE(Math::AreEqualWithEpsilon(-5.0f, std::lerp(5.0f, -15.0f, 0.5f)));
 }

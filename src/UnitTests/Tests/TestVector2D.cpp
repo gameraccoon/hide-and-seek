@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 
 #include "GameData/Core/Vector2D.h"
-#include "GameData/Core/Rotator.h"
 
 
 TEST(Vector2D, Creation)

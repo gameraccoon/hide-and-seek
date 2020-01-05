@@ -7,7 +7,7 @@
 #include "GameData/Components/CollisionComponent.generated.h"
 #include "GameData/Components/TransformComponent.generated.h"
 
-#include "Utils/Math.h"
+#include "Base/Math/Float.h"
 
 namespace Collide
 {

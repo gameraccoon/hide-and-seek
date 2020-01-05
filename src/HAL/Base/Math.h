@@ -3,7 +3,7 @@
 #include "HAL/Base/Types.h"
 
 #include "GameData/Core/Vector2D.h"
-#include "Utils/Math.h"
+#include "Base/Math/Float.h"
 
 namespace Graphics
 {

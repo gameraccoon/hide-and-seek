@@ -2,10 +2,18 @@
 
 #include <nlohmann/json.hpp>
 
+#include "Base/Math/Float.h"
+
 Rotator::Rotator(float angle)
 	: mValue(angle)
 {
 	normalize();
+}
+
+bool Rotator::isNearlyEqualTo(Rotator other) const
+{
+	float difference = this->getValue() - other.getValue();
+	return Math::AreEqualWithEpsilon(difference, 0) || Math::AreEqualWithEpsilon(difference, TwoPI);
 }
 
 float Rotator::getValue() const

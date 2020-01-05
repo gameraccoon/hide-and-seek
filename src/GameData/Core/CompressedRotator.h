@@ -31,15 +31,16 @@ public:
 	static T Compress(Rotator rotator, unsigned int bitsCount = MaxBitsCount)
 	{
 		// comvert the value to the range from 0 to max
-		Rotator::UnderlyingType zeroToMaxRotation = rotator.getValue() >= 0 ? rotator.getValue() : MaxRotationFromZero-rotator.getValue();
+		Rotator::UnderlyingType zeroToMaxRotation = rotator.getValue() >= 0 ? rotator.getValue() : MaxRotationFromZero+rotator.getValue();
 		return Utils::CompressFloatToIntCL<T, Rotator::UnderlyingType>(zeroToMaxRotation, 0, MaxRotationFromZero, bitsCount);
 	}
 
 	static Rotator Decompress(T value, unsigned int bitsCount = MaxBitsCount)
 	{
 		Rotator::UnderlyingType zeroToMaxRotation = Utils::DecompressFloatFromIntCL<Rotator::UnderlyingType, T>(value, 0, MaxRotationFromZero, bitsCount);
-		// comvert the value back to the Rotator value range
-		return Rotator((zeroToMaxRotation <= Rotator::MaxValue) ? zeroToMaxRotation : (MaxRotationFromZero - zeroToMaxRotation));
+		// convert the value back to the Rotator value range
+		// rotator will by itself normalize the value
+		return Rotator((zeroToMaxRotation <= Rotator::MaxValue) ? zeroToMaxRotation : (zeroToMaxRotation-MaxRotationFromZero));
 	}
 
 private:
