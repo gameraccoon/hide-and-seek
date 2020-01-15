@@ -12,6 +12,7 @@ namespace Utils
 		static_assert(std::is_integral<I>() && std::is_unsigned<I>(), "CompressNormalizedFloatToIntCL can be used only with unsigned integers");
 		static_assert(std::is_floating_point<F>(), "CompressNormalizedFloatToIntCL should be called on floating point");
 		Assert(bitsCount <= std::numeric_limits<I>::digits, "bitsCount greater that the real bits count in the corresponding type");
+		Assert(bitsCount < std::numeric_limits<F>::digits, "Using the same (or greater) amount of bits than in original float value makes no sense");
 
 		I maxInterval = (1u << bitsCount) - 1u;
 		F scaled = unitValue * static_cast<F>(maxInterval);
@@ -30,7 +31,7 @@ namespace Utils
 		static_assert(std::is_integral<I>() && std::is_unsigned<I>(), "DecompressNormalizedFloatFromIntCL can be used only called on unsigned integers");
 		static_assert(std::is_floating_point<F>(), "CompressNormalizedFloatToIntCL should convert value to a floating point");
 		Assert(bitsCount <= std::numeric_limits<I>::digits, "bitsCount greater that the real bits count in the corresponding type");
-
+		Assert(bitsCount < std::numeric_limits<F>::digits, "Converting to a float with the same (or lesser) amount of bits than in the compressed value makes no sense (have you passed an incorrect type or amount of bits?)");
 		I maxInterval = (1u << bitsCount) - 1u;
 		F intervalSize = 1.0f / static_cast<F>(maxInterval);
 		return static_cast<F>(compressed) * intervalSize;
