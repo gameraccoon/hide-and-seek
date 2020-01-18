@@ -214,6 +214,7 @@ void RenderSystem::drawLights(SpatialEntityManager& managerGroup, const Vector2D
 	TupleVector<CollisionComponent*, TransformComponent*> collidableComponents;
 	managerGroup.getComponents<CollisionComponent, TransformComponent>(collidableComponents);
 
+	/*
 	TupleVector<LightComponent*, TransformComponent*> componentSets;
 	managerGroup.getComponents<LightComponent, TransformComponent>(componentSets);
 
@@ -271,7 +272,7 @@ void RenderSystem::drawLights(SpatialEntityManager& managerGroup, const Vector2D
 		}
 
 		mJobsWorkerManager.runJobs(std::move(jobs));
-	}
+	}*/
 
 	// draw player visibility polygon
 	VisibilityPolygonCalculator visibilityPolygonCalculator;
