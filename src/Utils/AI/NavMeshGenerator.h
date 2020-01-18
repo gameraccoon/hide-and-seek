@@ -1,9 +1,12 @@
 #pragma once
 
 #include <memory>
+#include <vector>
+
+#include "Base/Types/TemplateAliases.h"
+
 #include "GameData/AI/NavMesh.h"
 
-#include <vector>
 
 class CollisionComponent;
 class TransformComponent;
@@ -14,7 +17,7 @@ public:
 	NavMeshGenerator();
 	~NavMeshGenerator();
 
-	void generateNavMesh(NavMesh& outNavMesh, const std::vector<std::tuple<CollisionComponent*, TransformComponent*>>& collidableComponents);
+	void generateNavMesh(NavMesh& outNavMesh, const TupleVector<CollisionComponent*, TransformComponent*>& collidableComponents);
 
 private:
 	// caches that can be reused

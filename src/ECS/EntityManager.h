@@ -4,9 +4,11 @@
 #include <typeindex>
 #include <unordered_map>
 
-#include "Component.h"
-#include "Entity.h"
-#include "Delegates.h"
+#include "Base/Types/TemplateAliases.h"
+
+#include "ECS/Component.h"
+#include "ECS/Entity.h"
+#include "ECS/Delegates.h"
 
 class ComponentFactory;
 
@@ -105,8 +107,8 @@ public:
 		return getEntityComponentSet<Components...>(entityIdx, componentVectors);
 	}
 
-	template<typename FirstComponent, typename... Components>
-	void getComponents(std::vector<std::tuple<FirstComponent*, Components*...>>& inOutComponents)
+	template<typename FirstComponent, typename... Components, typename... AdditionalData>
+	void getComponents(TupleVector<FirstComponent*, AdditionalData..., Components*...>& inOutComponents, AdditionalData... data)
 	{
 		auto& firstComponentVector = mComponents[typeid(FirstComponent)];
 
@@ -126,13 +128,13 @@ public:
 
 			if (std::get<componentsSize>(components) != nullptr)
 			{
-				inOutComponents.push_back(components);
+				inOutComponents.push_back(std::tuple_cat(std::make_tuple(data...), std::move(components)));
 			}
 		}
 	}
 
-	template<typename FirstComponent, typename... Components>
-	void getComponentsWithEntities(std::vector<std::tuple<Entity, FirstComponent*, Components*...>>& inOutComponents)
+	template<typename FirstComponent, typename... Components, typename... AdditionalData>
+	void getComponentsWithEntities(TupleVector<Entity, AdditionalData..., FirstComponent*, Components*...>& inOutComponents, AdditionalData... data)
 	{
 		auto& firstComponentVector = mComponents[typeid(FirstComponent)];
 
@@ -153,17 +155,17 @@ public:
 				continue;
 			}
 
-			auto components = std::tuple_cat(std::make_tuple(Entity(entityID)), getEntityComponentSet<FirstComponent, Components...>(entityIndex, componentVectors));
+			auto components = getEntityComponentSet<FirstComponent, Components...>(entityIndex, componentVectors);
 
-			if (std::get<componentsSize+1>(components) != nullptr)
+			if (std::get<componentsSize>(components) != nullptr)
 			{
-				inOutComponents.push_back(components);
+				inOutComponents.push_back(std::tuple_cat(std::make_tuple(Entity(entityID)), std::make_tuple(data...), std::move(components)));
 			}
 		}
 	}
 
-	template<typename FirstComponent, typename... Components, typename FunctionType>
-	void forEachComponentSet(FunctionType processor)
+	template<typename FirstComponent, typename... Components, typename FunctionType, typename... AdditionalData>
+	void forEachComponentSet(FunctionType processor, AdditionalData... data)
 	{
 		auto& firstComponentVector = mComponents[typeid(FirstComponent)];
 
@@ -186,12 +188,12 @@ public:
 				continue;
 			}
 
-			std::apply(processor, components);
+			std::apply(processor, std::tuple_cat(std::make_tuple(data...), std::move(components)));
 		}
 	}
 
-	template<typename FirstComponent, typename... Components, typename FunctionType>
-	void forEachComponentSetWithEntity(FunctionType processor)
+	template<typename FirstComponent, typename... Components, typename FunctionType, typename... AdditionalData>
+	void forEachComponentSetWithEntity(FunctionType processor, AdditionalData... data)
 	{
 		auto& firstComponentVector = mComponents[typeid(FirstComponent)];
 
@@ -219,7 +221,7 @@ public:
 				continue;
 			}
 
-			std::apply(processor, std::tuple_cat(std::make_tuple(Entity(entityID)), components));
+			std::apply(processor, std::tuple_cat(std::make_tuple(Entity(entityID)), std::make_tuple(data...), std::move(components)));
 		}
 	}
 

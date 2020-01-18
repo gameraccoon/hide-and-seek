@@ -68,7 +68,7 @@ void VisibilityPolygonCalculator::AddPotentiallyVisiblePoint(bool isVisible, boo
 	}
 }
 
-void VisibilityPolygonCalculator::calculateVisibilityPolygon(std::vector<Vector2D>& outVisibilityPolygon, const std::vector<std::tuple<CollisionComponent*, TransformComponent*>>& components, const Vector2D& sourcePos, const Vector2D& polygonMaxSize)
+void VisibilityPolygonCalculator::calculateVisibilityPolygon(std::vector<Vector2D>& outVisibilityPolygon, const TupleVector<CollisionComponent*, TransformComponent*>& components, const Vector2D& sourcePos, const Vector2D& polygonMaxSize)
 {
 	outVisibilityPolygon.clear();
 

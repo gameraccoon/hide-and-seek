@@ -50,7 +50,7 @@ TEST(Components, RemoveEntityWithComponents)
 	TransformComponent* transform2 = entityManager.addComponent<TransformComponent>(testEntity2);
 	transform2->setLocation(location2);
 
-	std::vector<std::tuple<TransformComponent*>> components;
+	TupleVector<TransformComponent*> components;
 	entityManager.getComponents<TransformComponent>(components);
 	EXPECT_EQ(static_cast<size_t>(2), components.size());
 
@@ -84,7 +84,7 @@ TEST(Components, RemoveEntityWithComponents)
 	location1Found = false;
 	location2Found = false;
 	bool location3Found = false;
-	std::vector<std::tuple<TransformComponent*>> transforms;
+	TupleVector<TransformComponent*> transforms;
 	entityManager.getComponents<TransformComponent>(transforms);
 	for (auto& [transform] : transforms)
 	{

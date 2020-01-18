@@ -35,12 +35,13 @@ void ResourceStreamingSystem::update()
 
 	// load sprites
 	SpatialEntityManager spatialManager = world.getSpatialData().getCellManagersAround(worldCachedData->getCameraCellPos(), worldCachedData->getCameraPos(), workingRect);
-	spatialManager.forEachComponentSetWithEntity<SpriteCreatorComponent>([&resourceManager = mResourceManager](EntityView entity, SpriteCreatorComponent* spriteCreator)
+	spatialManager.forEachSpatialComponentSetWithEntity<SpriteCreatorComponent>([&resourceManager = mResourceManager](Entity entity, WorldCell* cell, SpriteCreatorComponent* spriteCreator)
 	{
+		EntityView entitiyView{ entity, cell->getEntityManager() };
 		const auto& descriptions = spriteCreator->getDescriptions();
 		Assert(!descriptions.empty(), "Sprite descriptions should not be empty");
 
-		RenderComponent* render = entity.scheduleAddComponent<RenderComponent>();
+		RenderComponent* render = entitiyView.scheduleAddComponent<RenderComponent>();
 		size_t spritesCount = descriptions.size();
 		auto& spriteDatas = render->getSpriteDatasRef();
 		spriteDatas.resize(spritesCount);
@@ -52,25 +53,26 @@ void ResourceStreamingSystem::update()
 			render->getSpriteIdsRef().push_back(id++);
 			render->setMaxSpriteId(id);
 		}
-		entity.scheduleRemoveComponent<SpriteCreatorComponent>();
+		entitiyView.scheduleRemoveComponent<SpriteCreatorComponent>();
 	});
 	spatialManager.executeScheduledActions();
 
 	// load single animations clips
-	spatialManager.forEachComponentSetWithEntity<AnimationClipCreatorComponent>([&resourceManager = mResourceManager](EntityView entity, AnimationClipCreatorComponent* animationClipCreator)
+	spatialManager.forEachSpatialComponentSetWithEntity<AnimationClipCreatorComponent>([&resourceManager = mResourceManager](Entity entity, WorldCell* cell, AnimationClipCreatorComponent* animationClipCreator)
 	{
+		EntityView entitiyView{ entity, cell->getEntityManager() };
 		const auto& descriptions = animationClipCreator->getDescriptionsRef();
 		Assert(!descriptions.empty(), "Animation descriptions should not be empty");
 
-		AnimationClipsComponent* animationClips = entity.scheduleAddComponent<AnimationClipsComponent>();
+		AnimationClipsComponent* animationClips = entitiyView.scheduleAddComponent<AnimationClipsComponent>();
 		size_t animationCount = descriptions.size();
 		auto& animations = animationClips->getDatasRef();
 		animations.resize(animationCount);
 
-		auto [render] = entity.getComponents<RenderComponent>();
+		auto [render] = entitiyView.getComponents<RenderComponent>();
 		if (render == nullptr)
 		{
-			render = entity.scheduleAddComponent<RenderComponent>();
+			render = entitiyView.scheduleAddComponent<RenderComponent>();
 		}
 
 		auto& spriteDatas = render->getSpriteDatasRef();
@@ -90,28 +92,29 @@ void ResourceStreamingSystem::update()
 			Assert(render->getSpriteIds().size() == spriteDatas.size(), "Sprites and SpriteIds have diverged");
 		}
 
-		entity.scheduleAddComponent<AnimationGroupsComponent>();
+		entitiyView.scheduleAddComponent<AnimationGroupsComponent>();
 
-		entity.scheduleRemoveComponent<AnimationClipCreatorComponent>();
+		entitiyView.scheduleRemoveComponent<AnimationClipCreatorComponent>();
 	});
 	spatialManager.executeScheduledActions();
 
 	// load animation groups
-	spatialManager.forEachComponentSetWithEntity<AnimationGroupCreatorComponent>([&resourceManager = mResourceManager](EntityView entity, AnimationGroupCreatorComponent* animationGroupCreator)
+	spatialManager.forEachSpatialComponentSetWithEntity<AnimationGroupCreatorComponent>([&resourceManager = mResourceManager](Entity entity, WorldCell* cell, AnimationGroupCreatorComponent* animationGroupCreator)
 	{
-		AnimationGroupsComponent* animationGroups = entity.scheduleAddComponent<AnimationGroupsComponent>();
+		EntityView entitiyView{ entity, cell->getEntityManager() };
+		AnimationGroupsComponent* animationGroups = entitiyView.scheduleAddComponent<AnimationGroupsComponent>();
 
-		auto [animationClips] = entity.getComponents<AnimationClipsComponent>();
+		auto [animationClips] = entitiyView.getComponents<AnimationClipsComponent>();
 		if (animationClips == nullptr)
 		{
-			animationClips = entity.scheduleAddComponent<AnimationClipsComponent>();
+			animationClips = entitiyView.scheduleAddComponent<AnimationClipsComponent>();
 		}
 		auto& clipDatas = animationClips->getDatasRef();
 
-		auto [render] = entity.getComponents<RenderComponent>();
+		auto [render] = entitiyView.getComponents<RenderComponent>();
 		if (render == nullptr)
 		{
-			render = entity.scheduleAddComponent<RenderComponent>();
+			render = entitiyView.scheduleAddComponent<RenderComponent>();
 		}
 		auto& spriteDatas = render->getSpriteDatasRef();
 
@@ -144,7 +147,7 @@ void ResourceStreamingSystem::update()
 			++i;
 		}
 
-		entity.scheduleRemoveComponent<AnimationGroupCreatorComponent>();
+		entitiyView.scheduleRemoveComponent<AnimationGroupCreatorComponent>();
 	});
 	spatialManager.executeScheduledActions();
 }

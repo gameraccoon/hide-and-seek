@@ -362,7 +362,7 @@ void AiSystem::update()
 		return;
 	}
 
-	std::vector<std::tuple<CollisionComponent*, TransformComponent*>> collisions;
+	TupleVector<CollisionComponent*, TransformComponent*> collisions;
 	world.getEntityManager().getComponents<CollisionComponent, TransformComponent>(collisions);
 
 	auto it = std::find_if(std::begin(collisions), std::end(collisions), [lastUpdateTimestamp = navMeshComponent->getUpdateTimestamp()](const std::tuple<CollisionComponent*, TransformComponent*>& set)

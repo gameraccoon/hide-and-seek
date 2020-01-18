@@ -2,9 +2,12 @@
 
 #include <algorithm>
 
+#include "Base/Types/TemplateAliases.h"
+
 #include "GameData/Components/CollisionComponent.generated.h"
 #include "GameData/Components/TransformComponent.generated.h"
 #include "GameData/Core/Hull.h"
+
 #include "Utils/Geometry/VisibilityPolygon.h"
 
 
@@ -45,7 +48,7 @@ TEST(VisibilityPolygon, TestPlygonsEqualityTest)
 TEST(VisibilityPolygon, Empty)
 {
 	VisibilityPolygonCalculator calc;
-	std::vector<std::tuple<CollisionComponent*, TransformComponent*>> components;
+	TupleVector<CollisionComponent*, TransformComponent*> components;
 	Vector2D pos(-10.0f, 20.0f);
 
 	std::vector<Vector2D> result;
@@ -58,7 +61,7 @@ TEST(VisibilityPolygon, OneBorder)
 	VisibilityPolygonCalculator calc;
 	Vector2D pos(-10.0f, -40.0f);
 
-	std::vector<std::tuple<CollisionComponent*, TransformComponent*>> components;
+	TupleVector<CollisionComponent*, TransformComponent*> components;
 	CollisionComponent collision;
 	Hull geometry;
 	geometry.type = HullType::Angular;
@@ -79,7 +82,7 @@ TEST(VisibilityPolygon, OneBorderEqualAngles)
 	VisibilityPolygonCalculator calc;
 	Vector2D pos(308.0f, -33.0f);
 
-	std::vector<std::tuple<CollisionComponent*, TransformComponent*>> components;
+	TupleVector<CollisionComponent*, TransformComponent*> components;
 	CollisionComponent collision;
 	Hull geometry;
 	geometry.type = HullType::Angular;

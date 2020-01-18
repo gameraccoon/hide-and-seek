@@ -123,7 +123,7 @@ public:
 	};
 
 	using FinalizeFn = std::function<void(const std::vector<Result>&, Vector2D)>;
-	using CollidableComponents = std::vector<std::tuple<CollisionComponent*, TransformComponent*>>;
+	using CollidableComponents = TupleVector<CollisionComponent*, TransformComponent*>;
 
 public:
 	VisibilityPolygonCalculationJob(Vector2D maxFov, const CollidableComponents& collidableComponents, GameplayTimestamp timestamp, FinalizeFn finalizeFn)
@@ -179,7 +179,7 @@ public:
 	}
 
 public:
-	std::vector<std::tuple<LightComponent*, TransformComponent*>> componentsToProcess;
+	TupleVector<LightComponent*, TransformComponent*> componentsToProcess;
 
 private:
 	Vector2D mMaxFov;
@@ -211,11 +211,10 @@ void RenderSystem::drawLights(SpatialEntityManager& managerGroup, const Vector2D
 	{
 		return;
 	}
-
-	std::vector<std::tuple<CollisionComponent*, TransformComponent*>> collidableComponents;
+	TupleVector<CollisionComponent*, TransformComponent*> collidableComponents;
 	managerGroup.getComponents<CollisionComponent, TransformComponent>(collidableComponents);
 
-	std::vector<std::tuple<LightComponent*, TransformComponent*>> componentSets;
+	TupleVector<LightComponent*, TransformComponent*> componentSets;
 	managerGroup.getComponents<LightComponent, TransformComponent>(componentSets);
 
 	Vector2D emitterPositionBordersLT = playerSightPosition - screenHalfSize - maxFov*0.5;

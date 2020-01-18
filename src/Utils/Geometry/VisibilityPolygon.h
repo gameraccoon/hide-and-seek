@@ -2,6 +2,8 @@
 
 #include <vector>
 
+#include "Base/Types/TemplateAliases.h"
+
 #include "GameData/Core/Vector2D.h"
 
 class CollisionComponent;
@@ -18,7 +20,7 @@ public:
 	VisibilityPolygonCalculator() = default;
 
 	// returns reference to the calculated polygon
-	void calculateVisibilityPolygon(std::vector<Vector2D>& outVisibilityPolygon, const std::vector<std::tuple<CollisionComponent*, TransformComponent*>>& components, const Vector2D& sourcePos, const Vector2D& polygonMaxSize);
+	void calculateVisibilityPolygon(std::vector<Vector2D>& outVisibilityPolygon, const TupleVector<CollisionComponent*, TransformComponent*>& components, const Vector2D& sourcePos, const Vector2D& polygonMaxSize);
 
 	// copying objects of this class has a little sense and usually indicates a poor use
 	VisibilityPolygonCalculator(VisibilityPolygonCalculator const&) = delete;

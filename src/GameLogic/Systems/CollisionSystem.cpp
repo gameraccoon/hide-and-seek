@@ -18,7 +18,7 @@ void CollisionSystem::update()
 	struct SpatialComponents
 	{
 		WorldCell* cell;
-		std::vector<std::tuple<Entity, CollisionComponent*, TransformComponent*>> components;
+		TupleVector<Entity, CollisionComponent*, TransformComponent*> components;
 	};
 
 	World& world = mWorldHolder.getWorld();

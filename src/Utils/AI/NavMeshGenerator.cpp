@@ -8,6 +8,7 @@
 #include <DetourNavMeshBuilder.h>
 
 #include "Base/Debug/Log.h"
+#include "Base/Types/TemplateAliases.h"
 
 #include "GameData/Components/CollisionComponent.generated.h"
 #include "GameData/Components/TransformComponent.generated.h"
@@ -26,7 +27,7 @@ NavMeshGenerator::~NavMeshGenerator()
 {
 }
 
-void NavMeshGenerator::generateNavMesh(NavMesh& outNavMesh, const std::vector<std::tuple<CollisionComponent*, TransformComponent*>>& collidableComponents)
+void NavMeshGenerator::generateNavMesh(NavMesh& outNavMesh, const TupleVector<CollisionComponent*, TransformComponent*>& collidableComponents)
 {
 	using DtCoordType = unsigned short;
 	using DtIndexType = unsigned short;

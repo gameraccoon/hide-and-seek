@@ -13,11 +13,29 @@ public:
 	explicit SpatialEntityManager(const std::vector<WorldCell*>& cells);
 
 	template<typename FirstComponent, typename... Components>
-	void getComponents(std::vector<std::tuple<FirstComponent*, Components*...>>& inOutComponents)
+	void getComponents(TupleVector<FirstComponent*, Components*...>& inOutComponents)
 	{
 		for (WorldCell* cell : mCells)
 		{
 			cell->getEntityManager().getComponents<FirstComponent, Components...>(inOutComponents);
+		}
+	}
+
+	template<typename FirstComponent, typename... Components>
+	void getSpatialComponents(TupleVector<WorldCell*, FirstComponent*, Components*...>& inOutComponents)
+	{
+		for (WorldCell* cell : mCells)
+		{
+			cell->getEntityManager().getComponents<FirstComponent, Components...>(inOutComponents, cell);
+		}
+	}
+
+	template<typename FirstComponent, typename... Components>
+	void getSpatialComponentsWithEntities(TupleVector<Entity, WorldCell*, FirstComponent*, Components*...>& inOutComponents)
+	{
+		for (WorldCell* cell : mCells)
+		{
+			cell->getEntityManager().getComponentsWithEntities<FirstComponent, Components...>(inOutComponents, cell);
 		}
 	}
 
@@ -35,22 +53,7 @@ public:
 	{
 		for (WorldCell* cell : mCells)
 		{
-			cell->getEntityManager().forEachComponentSet<FirstComponent, Components...>([cell, &processor](FirstComponent* first, Components*... components)
-			{
-				processor(cell, first, components...);
-			});
-		}
-	}
-
-	template<typename FirstComponent, typename... Components, typename FunctionType>
-	void forEachComponentSetWithEntity(FunctionType processor)
-	{
-		for (WorldCell* cell : mCells)
-		{
-			cell->getEntityManager().forEachComponentSetWithEntity<FirstComponent, Components...>([cell, &processor](Entity entity, FirstComponent* first, Components*... components)
-			{
-				processor(EntityView(entity, cell->getEntityManager()), first, components...);
-			});
+			cell->getEntityManager().forEachComponentSet<FirstComponent, Components...>(processor, cell);
 		}
 	}
 
@@ -59,10 +62,7 @@ public:
 	{
 		for (WorldCell* cell : mCells)
 		{
-			cell->getEntityManager().forEachComponentSetWithEntity<FirstComponent, Components...>([cell, &processor](Entity entity, FirstComponent* first, Components*... components)
-			{
-				processor(cell, EntityView(entity, cell->getEntityManager()), first, components...);
-			});
+			cell->getEntityManager().forEachComponentSetWithEntity<FirstComponent, Components...>(processor, cell);
 		}
 	}
 

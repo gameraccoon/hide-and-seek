@@ -133,7 +133,7 @@ static void RedistributeSpatialEntitiesBetweenCells(SpatialWorldData& spatialDat
 {
 	struct CellEntities
 	{
-		std::vector<std::tuple<Entity, TransformComponent*>> entities;
+		TupleVector<Entity, TransformComponent*> entities;
 		WorldCell& cell;
 
 		explicit CellEntities(WorldCell& cell) : cell(cell) {}
