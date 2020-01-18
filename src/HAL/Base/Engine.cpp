@@ -33,7 +33,7 @@ namespace HAL
 			: mSdl(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_NOPARACHUTE)
 			, mWindow(windowWidth, windowHeight)
 			, mGlContext(mWindow)
-			, mRenderer(mWindow)
+			, mRenderer()
 			, mElapsedTicks(static_cast<float>(SDL_GetTicks()))
 			, mGame(nullptr)
 			, mQuit(false)
@@ -128,7 +128,8 @@ namespace HAL
 	{
 		while (!mQuit)
 		{
-			mRenderer.clearFrame({0, 0, 0, 255});
+			SDL_GL_SwapWindow(mWindow.getRawWindow());
+			glClear(GL_COLOR_BUFFER_BIT);
 
 			parseEvents();
 
@@ -148,8 +149,6 @@ namespace HAL
 			{
 				mGame->update(lastFrameSeconds);
 			}
-
-			mRenderer.finalizeFrame();
 		}
 	}
 

@@ -66,7 +66,7 @@ void DebugDrawSystem::update()
 		{
 			CellPos cellPos = cell->getPos();
 			Vector2D location = SpatialWorldData::GetRelativeLocation(cameraCell, cellPos, drawShift);
-			renderer.render(*collisionSprite.getTexture(),
+			renderer.render(*collisionSprite.getSurface(),
 				location,
 				SpatialWorldData::CellSizeVector,
 				ZERO_VECTOR,
@@ -87,7 +87,7 @@ void DebugDrawSystem::update()
 		spatialManager.forEachSpatialComponentSet<CollisionComponent, TransformComponent>([&collisionSprite, &quadUV, drawShift, &renderer, cameraCell](WorldCell* cell, CollisionComponent* collision, TransformComponent* transform)
 		{
 			Vector2D location = SpatialWorldData::GetRelativeLocation(cameraCell, cell->getPos(), transform->getLocation() + drawShift);
-			renderer.render(*collisionSprite.getTexture(),
+			renderer.render(*collisionSprite.getSurface(),
 				Vector2D(collision->getBoundingBox().minX + location.x, collision->getBoundingBox().minY + location.y),
 				Vector2D(collision->getBoundingBox().maxX-collision->getBoundingBox().minX,
 						 collision->getBoundingBox().maxY-collision->getBoundingBox().minY),
@@ -130,7 +130,7 @@ void DebugDrawSystem::update()
 							}
 							glm::mat4 transform(1.0f);
 							transform = glm::translate(transform, glm::vec3(drawShift.x, drawShift.y, 0.0f));
-							renderer.renderFan(*navMeshSprite.getTexture(), drawablePolygon, transform, 0.3f);
+							renderer.renderFan(*navMeshSprite.getSurface(), drawablePolygon, transform, 0.3f);
 						}
 					}
 				}
@@ -172,7 +172,7 @@ void DebugDrawSystem::update()
 
 				glm::mat4 transform(1.0f);
 				transform = glm::translate(transform, glm::vec3(drawShift.x, drawShift.y, 0.0f));
-				renderer.renderStrip(*navMeshSprite.getTexture(), drawablePolygon, transform, 0.5f);
+				renderer.renderStrip(*navMeshSprite.getSurface(), drawablePolygon, transform, 0.5f);
 			}
 		});
 	}
@@ -187,7 +187,7 @@ void DebugDrawSystem::update()
 			const Graphics::Font& font = mResourceManager.getResource<Graphics::Font>(mFontHandle);
 			for (auto& screenPoint : debugDraw->getFrameScreenPoints())
 			{
-				renderer.render(*pointSprite.getTexture(), screenPoint.screenPos, pointSize);
+				renderer.render(*pointSprite.getSurface(), screenPoint.screenPos, pointSize);
 				if (!screenPoint.name.empty())
 				{
 					renderer.renderText(font, screenPoint.screenPos, {255, 255, 255, 255}, screenPoint.name.c_str());
@@ -197,7 +197,7 @@ void DebugDrawSystem::update()
 			for (auto& worldPoint : debugDraw->getFrameWorldPoints())
 			{
 				Vector2D screenPos = worldPoint.pos + SpatialWorldData::GetCellRealDistance(worldPoint.cellPos - cameraCell) - cameraLocation + screenHalfSize;
-				renderer.render(*pointSprite.getTexture(), screenPos, pointSize);
+				renderer.render(*pointSprite.getSurface(), screenPos, pointSize);
 				if (!worldPoint.name.empty())
 				{
 					renderer.renderText(font, screenPos, {255, 255, 255, 255}, worldPoint.name.c_str());

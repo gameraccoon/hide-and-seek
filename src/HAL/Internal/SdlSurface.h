@@ -1,14 +1,17 @@
 #pragma once
 
 #include <string>
+#include <memory>
+
+#include "HAL/Base/Resource.h"
 
 struct SDL_Surface;
 
-namespace HAL
+namespace Graphics
 {
 	namespace Internal
 	{
-		class Surface
+		class Surface : public HAL::Resource
 		{
 		public:
 			explicit Surface(const std::string& filename);
@@ -17,10 +20,13 @@ namespace HAL
 			int getWidth() const;
 			int getHeight() const;
 
-			SDL_Surface* getRawSurface();
+			void bind() const;
+
+			virtual bool isValid() const override;
 
 		private:
 			SDL_Surface* mSurface;
+			unsigned int mTextureID;
 		};
 	}
 }

@@ -99,9 +99,6 @@ add_folder_as_library(${GAME_SRC_DIR}/GameLogic GameLogic)
 add_folder_as_library(${GAME_SRC_DIR}/Utils Utils)
 add_folder_as_library(${GAME_SRC_DIR}/HAL Hal)
 
-add_library(SDL_FontCache ${EXTERNALS_DIR}/sources/SDL_FontCache/SDL_FontCache.c)
-target_compile_options(SDL_FontCache PRIVATE ${EXTERNALS_C_FLAGS})
-
 file(GLOB_RECURSE APP_SRC RELATIVE "" FOLLOW_SYMLINKS "${GAME_SRC_DIR}/GameMain/*")
 add_executable(${APP_NAME} "${APP_SRC}")
 target_compile_options(${APP_NAME} PRIVATE ${PROJECT_CXX_FLAGS})
@@ -138,7 +135,6 @@ set(GENERAL_PROJECT_LIBS
 	SDL2
 	SDL2_image
 	SDL2_mixer
-	SDL_FontCache
 	SDL2_ttf
 	SDL2main
 )

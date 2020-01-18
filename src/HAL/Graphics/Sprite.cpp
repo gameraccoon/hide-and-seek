@@ -1,26 +1,33 @@
 #include "HAL/Graphics/Sprite.h"
 
-#include "Base/Debug/Assert.h"
-
+#include "HAL/Internal/SdlSurface.h"
 #include "HAL/Base/Engine.h"
-#include "HAL/Graphics/Texture.h"
 
 namespace Graphics
 {
-	Sprite::Sprite(const Graphics::Texture* texture, QuadUV uv)
-		: mTexture(texture)
+	Sprite::Sprite(const Internal::Surface* surface, QuadUV uv)
+		: mSurface(surface)
 		, mUV(uv)
 	{
-		Assert(texture != nullptr, "Texture pointer shouldn't be nullptr");
 	}
 
-	const Graphics::Texture* Sprite::getTexture() const
+	int Sprite::getHeight() const
 	{
-		return mTexture;
+		return mSurface->getHeight();
+	}
+
+	int Sprite::getWidth() const
+	{
+		return mSurface->getWidth();
+	}
+
+	const Internal::Surface* Sprite::getSurface() const
+	{
+		return mSurface;
 	}
 
 	bool Sprite::isValid() const
 	{
-		return mTexture != nullptr;
+		return mSurface != nullptr;
 	}
 }
