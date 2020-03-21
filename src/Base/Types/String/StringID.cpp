@@ -31,14 +31,16 @@ StringIDManager& StringIDManager::Instance()
 StringID StringIDManager::stringToID(const std::string& stringValue)
 {
 	const StringID::KeyType hash = hash_64_fnv1a_const(stringValue.c_str());
-	AssertFatal(hash != 0UL, "String hashing result should not be 0: '%s'", stringValue.c_str());
+	AssertFatal(hash != 0UL, "String hashing result should not be 0: '%s'", stringValue);
 	auto [it, hasInserted] = mStringIDsToStringsMap.emplace(hash, stringValue);
 	AssertFatal(hasInserted || it->second == stringValue, "Hash collision for '%s' and '%s'", stringValue.c_str(), it->second.c_str());
 	return StringID(hash);
 }
 
-std::string StringIDManager::getStringFromID(StringID id)
+const std::string& StringIDManager::getStringFromID(StringID id)
 {
+	const static std::string EMPTY_STRING;
+
 	auto it = mStringIDsToStringsMap.find(id.hash);
 	if (it != mStringIDsToStringsMap.end())
 	{
@@ -47,7 +49,7 @@ std::string StringIDManager::getStringFromID(StringID id)
 	else
 	{
 		ReportError("String representation for id '%d' not found", id.hash);
-		return std::string();
+		return EMPTY_STRING;
 	}
 }
 

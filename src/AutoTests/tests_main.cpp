@@ -1,5 +1,7 @@
 #include "Base/precomp.h"
 
+#include <iostream>
+
 #include "Base/Random/Random.h"
 
 #include "Utils/Application/ArgumentsParser.h"

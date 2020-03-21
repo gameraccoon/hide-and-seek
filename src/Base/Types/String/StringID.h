@@ -73,7 +73,7 @@ public:
 	}
 
 	StringID stringToID(const std::string& stringValue);
-	std::string getStringFromID(StringID id);
+	const std::string& getStringFromID(StringID id);
 
 private:
 	std::unordered_map<StringID::KeyType, std::string> mStringIDsToStringsMap;

@@ -27,9 +27,9 @@ static void InitSpatialTrackedEntities(SpatialWorldData& spatialData, ComponentS
 		{
 			it->second.cell = cell->getPos();
 		}
-		else
+		//else
 		{
-			ReportError("No tracked spatial entity record found for entity %s", ID_TO_STR(spatialTrack->getId()).c_str());
+			ReportError("No tracked spatial entity record found for entity %s", spatialTrack->getId());
 		}
 	});
 }

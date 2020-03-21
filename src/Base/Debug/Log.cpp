@@ -5,6 +5,7 @@
 #include <chrono>
 #include <iomanip>
 #include <filesystem>
+#include <iostream>
 
 Log::Log()
 {

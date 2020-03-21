@@ -22,7 +22,7 @@ public:
 	template<typename... Args>
 	void unset(Args... flags) { (setInner(flags, false), ...); }
 
-	bool has(T flag) { return mBitset.test(static_cast<typename std::underlying_type<T>::type>(flag)); }
+	bool has(T flag) { return mBitset.test(static_cast<typename std::underlying_type_t<T>>(flag)); }
 	template<typename... Args>
 	bool hasAll(Args... flags) { return (has(flags) && ...); }
 	template<typename... Args>
@@ -31,7 +31,7 @@ public:
 	private:
 	void setInner(T flag, bool isSet)
 	{
-		mBitset.set(static_cast<typename std::underlying_type<T>::type>(flag), isSet);
+		mBitset.set(static_cast<typename std::underlying_type_t<T>>(flag), isSet);
 	}
 
 private:

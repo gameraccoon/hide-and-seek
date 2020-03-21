@@ -12,7 +12,7 @@ ComponentFactory::CreationFn ComponentFactory::getCreationFn(StringID typeName) 
 		return it->second;
 	}
 
-	ReportFatalError("Unknown component type: '%s'", ID_TO_STR(typeName).c_str());
+	ReportFatalError("Unknown component type: '%s'", typeName);
 	return nullptr;
 }
 
@@ -24,7 +24,7 @@ std::optional<std::type_index> ComponentFactory::getTypeIDFromString(StringID ty
 		return it->second;
 	}
 
-	ReportFatalError("Unknown component type: '%s'", ID_TO_STR(typeName).c_str());
+	ReportFatalError("Unknown component type: '%s'", typeName);
 	return std::nullopt;
 }
 

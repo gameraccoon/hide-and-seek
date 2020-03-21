@@ -19,7 +19,7 @@ namespace Graphics
 			: mSurface(IMG_Load(filename.c_str()))
 			, mTextureID(0)
 		{
-			AssertFatal(mSurface, "Unable to load texture %s", filename.c_str());
+			AssertFatal(mSurface, "Unable to load texture %s", filename);
 
 			glGenTextures(1, &mTextureID);
 			glBindTexture(GL_TEXTURE_2D, mTextureID);
