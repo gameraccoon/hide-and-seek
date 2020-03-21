@@ -114,7 +114,7 @@ void NavMeshGenerator::generateNavMesh(NavMesh& outNavMesh, const TupleVector<Co
 	std::vector<DtFlagsType> flags(resultPolygons.size(), 1);
 	std::vector<DtAreaType> areas(resultPolygons.size(), 0);
 
-	outNavMesh.setMesh(new dtNavMesh());
+	outNavMesh.setMesh(std::make_unique<dtNavMesh>());
 	dtNavMeshCreateParams params;
 	params.bmax[0] = size.x*0.5f;
 	params.bmax[1] = 0.0f;

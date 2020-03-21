@@ -1,15 +1,17 @@
 #pragma once
 
+#include <memory>
+
 class dtNavMesh;
 
 class NavMesh
 {
 public:
+	NavMesh();
 	~NavMesh();
-
-	void setMesh(dtNavMesh* newMesh);
+	void setMesh(std::unique_ptr<dtNavMesh>&& newMesh);
 	dtNavMesh* getMesh();
 
 private:
-	dtNavMesh* mMesh = nullptr;
+	std::unique_ptr<dtNavMesh> mMesh;
 };

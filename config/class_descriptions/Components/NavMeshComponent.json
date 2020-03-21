@@ -6,7 +6,7 @@
 			"name": "navMesh",
 			"type": "NavMesh",
 			"includes": ["\"GameData/AI/NavMesh.h\""],
-			"flags": ["transient", "get_by_ref"]
+			"flags": ["transient", "nocopyable", "get_by_ref"]
 		},
 		{
 			"name": "updateTimestamp",

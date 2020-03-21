@@ -4,24 +4,15 @@
 
 #include <DetourNavMesh.h>
 
-NavMesh::~NavMesh()
-{
-	if (mMesh)
-	{
-		delete mMesh;
-	}
-}
+NavMesh::NavMesh() {}
+NavMesh::~NavMesh() {}
 
-void NavMesh::setMesh(dtNavMesh *newMesh)
+void NavMesh::setMesh(std::unique_ptr<dtNavMesh>&& newMesh)
 {
-	if (mMesh)
-	{
-		delete mMesh;
-	}
-	mMesh = newMesh;
+	mMesh = std::move(newMesh);
 }
 
 dtNavMesh* NavMesh::getMesh()
 {
-	return mMesh;
+	return mMesh.get();
 }

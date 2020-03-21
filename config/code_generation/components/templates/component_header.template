@@ -12,9 +12,11 @@
 class {class_name} : public BaseComponent
 {{
 public:
-	{attribute_accessors_decl}
+	{attribute_getters}
 
-	{attribute_accessors_ref_decl}
+	{attribute_getters_ref}
+
+	{attribute_setters}
 
 public:
 	static StringID GetClassName() {{ return STR_TO_ID("{class_name}"); }}

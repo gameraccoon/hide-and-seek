@@ -9,14 +9,19 @@
 		"params": []
 	},
 	{
-		"name": "attribute_accessors_decl",
+		"name": "attribute_getters",
 		"params": [],
 		"blacklist": ["get_by_ref"]
 	},
 	{
-		"name": "attribute_accessors_ref_decl",
+		"name": "attribute_getters_ref",
 		"params": [],
 		"whitelist": ["get_by_ref"]
+	},
+	{
+		"name": "attribute_setters",
+		"params": [],
+		"blacklist": ["nocopyable"]
 	},
 	{
 		"name": "attribute_fields",
