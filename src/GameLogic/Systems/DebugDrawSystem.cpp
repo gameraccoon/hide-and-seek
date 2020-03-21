@@ -2,6 +2,8 @@
 
 #include "GameLogic/Systems/DebugDrawSystem.h"
 
+#include "Base/Random/Random.h"
+
 #include <algorithm>
 
 #include "GameData/Components/TransformComponent.generated.h"
@@ -123,8 +125,8 @@ void DebugDrawSystem::update()
 							drawablePolygon.reserve(3);
 							for (int j = 0; j < poly.vertCount; ++j)
 							{
-								float u = static_cast<float>(std::rand() * 1.0f / RAND_MAX);
-								float v = static_cast<float>(std::rand() * 1.0f / RAND_MAX);
+								float u = static_cast<float>(Random::GlobalGenerator() * 1.0f / Random::GlobalGenerator.max());
+								float v = static_cast<float>(Random::GlobalGenerator() * 1.0f / Random::GlobalGenerator.max());
 
 								float x = tile->verts[poly.verts[j] * 3];
 								float y = tile->verts[poly.verts[j] * 3 + 2];
@@ -148,10 +150,10 @@ void DebugDrawSystem::update()
 				drawablePolygon.reserve(path.size() * 2);
 
 				{
-					float u1 = static_cast<float>(std::rand() * 1.0f / RAND_MAX);
-					float v1 = static_cast<float>(std::rand() * 1.0f / RAND_MAX);
-					float u2 = static_cast<float>(std::rand() * 1.0f / RAND_MAX);
-					float v2 = static_cast<float>(std::rand() * 1.0f / RAND_MAX);
+					float u1 = static_cast<float>(Random::GlobalGenerator() * 1.0f / Random::GlobalGenerator.max());
+					float v1 = static_cast<float>(Random::GlobalGenerator() * 1.0f / Random::GlobalGenerator.max());
+					float u2 = static_cast<float>(Random::GlobalGenerator() * 1.0f / Random::GlobalGenerator.max());
+					float v2 = static_cast<float>(Random::GlobalGenerator() * 1.0f / Random::GlobalGenerator.max());
 
 					Vector2D normal = (path[1] - path[0]).normal() * 3;
 
@@ -161,10 +163,10 @@ void DebugDrawSystem::update()
 
 				for (size_t i = 1; i < path.size(); ++i)
 				{
-					float u1 = static_cast<float>(std::rand() * 1.0f / RAND_MAX);
-					float v1 = static_cast<float>(std::rand() * 1.0f / RAND_MAX);
-					float u2 = static_cast<float>(std::rand() * 1.0f / RAND_MAX);
-					float v2 = static_cast<float>(std::rand() * 1.0f / RAND_MAX);
+					float u1 = static_cast<float>(Random::GlobalGenerator() * 1.0f / Random::GlobalGenerator.max());
+					float v1 = static_cast<float>(Random::GlobalGenerator() * 1.0f / Random::GlobalGenerator.max());
+					float u2 = static_cast<float>(Random::GlobalGenerator() * 1.0f / Random::GlobalGenerator.max());
+					float v2 = static_cast<float>(Random::GlobalGenerator() * 1.0f / Random::GlobalGenerator.max());
 
 					Vector2D normal = (path[i] - path[i-1]).normal() * 3;
 

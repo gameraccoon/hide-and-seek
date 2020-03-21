@@ -1,5 +1,7 @@
 #include "Base/precomp.h"
 
+#include "Base/Random/Random.h"
+
 #include "Utils/Application/ArgumentsParser.h"
 
 #include "Base/Debug/Assert.h"
@@ -33,7 +35,7 @@ int main(int argc, char** argv)
 		seed = static_cast<unsigned int>(std::atoi(seedStr.c_str()));
 	}
 
-	std::srand(seed);
+	Random::GlobalGenerator = std::mt19937(seed);
 
 	auto cases = getCases();
 

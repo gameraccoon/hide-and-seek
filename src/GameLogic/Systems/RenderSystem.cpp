@@ -195,16 +195,16 @@ private:
 // just to suppress weak vtables warning
 VisibilityPolygonCalculationJob::~VisibilityPolygonCalculationJob() {}
 
-static size_t GetJobDivisor(size_t maxThreadsCount)
+/*static size_t GetJobDivisor(size_t maxThreadsCount)
 {
 	// this alghorithm is subject to change
 	// we need to divide work into chunks to pass to different threads
 	// take to consideration that the count of free threads most likely
 	// smaller that threadsCount and can fluctuate over time
 	return maxThreadsCount * 3 - 1;
-}
+}*/
 
-void RenderSystem::drawLights(SpatialEntityManager& managerGroup, const Vector2D& playerSightPosition, const Vector2D& drawShift, const Vector2D& maxFov, const Vector2D& screenHalfSize)
+void RenderSystem::drawLights(SpatialEntityManager& managerGroup, const Vector2D& playerSightPosition, const Vector2D& drawShift, const Vector2D& maxFov, const Vector2D& /*screenHalfSize*/)
 {
 	const GameplayTimestamp timestampNow = mTime.currentTimestamp;
 

@@ -1,9 +1,10 @@
 #include "Base/precomp.h"
 
+#include "Base/Random/Random.h"
+
 #include "ECS/EntityManager.h"
 
 #include <algorithm>
-#include <random>
 
 #include <nlohmann/json.hpp>
 
@@ -31,8 +32,7 @@ Entity EntityManager::addEntity()
 
 	while (insertionTrial < EntityInsertionTrialsLimit)
 	{
-		// ToDo: use generators
-		Entity::EntityID id = static_cast<Entity::EntityID>(std::rand());
+		Entity::EntityID id = static_cast<Entity::EntityID>(Random::GlobalGenerator());
 		auto insertionResult = mEntityIndexMap.try_emplace(id, mNextEntityIndex);
 		if (insertionResult.second)
 		{
@@ -54,8 +54,7 @@ Entity EntityManager::getNonExistentEntity()
 
 	while (generationTrial < EntityInsertionTrialsLimit)
 	{
-		// ToDo: use generators
-		Entity::EntityID id = static_cast<Entity::EntityID>(std::rand());
+		Entity::EntityID id = static_cast<Entity::EntityID>(Random::GlobalGenerator());
 		if (mEntityIndexMap.find(id) == mEntityIndexMap.end())
 		{
 			return Entity(id);

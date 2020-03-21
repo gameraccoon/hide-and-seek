@@ -1,5 +1,7 @@
 #include "Base/precomp.h"
 
+#include "Base/Random/Random.h"
+
 #include "GameLogic/Game.h"
 
 #include <time.h>
@@ -8,7 +10,7 @@
 
 int main(int argc, char** argv)
 {
-	std::srand(static_cast<unsigned int>(time(nullptr)));
+	Random::GlobalGenerator = std::mt19937(time(nullptr));
 
 	ArgumentsParser arguments(argc, argv);
 

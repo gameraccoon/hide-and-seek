@@ -2,6 +2,8 @@
 
 #include "AutoTests/Tests/CollidingCircularUnits/Systems/TestUnitsCountControlSystem.h"
 
+#include "Base/Random/Random.h"
+
 #include <sdl/SDL_keycode.h>
 
 #include "GameData/Components/SpriteCreatorComponent.generated.h"
@@ -55,7 +57,7 @@ static void spawnUnit(EntityManager& entityManager, Vector2D pos)
 
 static void spawnJitteredUnit(const Vector2D& pos, const Vector2D& centerShifted, SpatialWorldData& spatialData)
 {
-	Vector2D jitter = Vector2D((rand() % jitterRand) / jitterDivider - halfJitterMax, ((rand() % jitterRand) / jitterDivider - halfJitterMax));
+	Vector2D jitter = Vector2D((Random::GlobalGenerator() % jitterRand) / jitterDivider - halfJitterMax, ((Random::GlobalGenerator() % jitterRand) / jitterDivider - halfJitterMax));
 	Vector2D newPos = centerShifted + pos + jitter;
 	std::pair<CellPos, Vector2D> transformedPos = SpatialWorldData::GetTransformedCellPos(CellPos(0, 0), newPos);
 	spawnUnit(spatialData.getOrCreateCell(transformedPos.first).getEntityManager(), transformedPos.second);
