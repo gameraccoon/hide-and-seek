@@ -20,19 +20,18 @@ static void InitSpatialTrackedEntities(SpatialWorldData& spatialData, ComponentS
 {
 	auto [trackedSpatialEntities] = worldComponents.getComponents<TrackedSpatialEntitiesComponent>();
 
-	for (auto& cell : spatialData.getAllCells())
+	spatialData.getAllCellManagers().forEachSpatialComponentSet<SpatialTrackComponent>([trackedSpatialEntities](WorldCell* cell, SpatialTrackComponent* spatialTrack)
 	{
-		CellPos cellPos = cell.first;
-		for (auto& entityPair : trackedSpatialEntities->getEntitiesRef())
+		auto it = trackedSpatialEntities->getEntitiesRef().find(spatialTrack->getId());
+		if (it != trackedSpatialEntities->getEntitiesRef().end())
 		{
-			SpatialTrackComponent* spatialTrack = cell.second.getEntityManager().addComponent<SpatialTrackComponent>(entityPair.second.entity.getEntity());
-			if (spatialTrack)
-			{
-				spatialTrack->setId(entityPair.first);
-				entityPair.second.cell = cellPos;
-			}
+			it->second.cell = cell->getPos();
 		}
-	}
+		else
+		{
+			ReportError("No tracked spatial entity record found for entity %s", ID_TO_STR(spatialTrack->getId()).c_str());
+		}
+	});
 }
 
 void World::fromJson(const nlohmann::json& json, const ComponentFactory& componentFactory)

@@ -370,4 +370,8 @@ void EntityManager::addComponentToEntity(EntityIndex entityIdx, BaseComponent* c
 	{
 		componentsVector[entityIdx] = component;
 	}
+	else
+	{
+		ReportFatalError("Trying to add a component when the entity already has one of the same type. This will result in memory leak");
+	}
 }

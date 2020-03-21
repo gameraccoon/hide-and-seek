@@ -62,18 +62,23 @@ public:
             free(item);
             item = next;
         }
+
+        writeLine("Memory leak report file closed");
     }
 
     void PrintLeaked() noexcept
     {
         std::lock_guard<std::mutex> g(mutex);
 
+        writeLine("Memory leak report started\n");
+
         AllocatedPtr* item = allocatedList;
         while (item != nullptr)
         {
-            writeLine("leaked ", item->size, " bytes (", std::hex, item->pointer, std::dec, ") allocated in ", item->file, "(", item->line, ")");
+            writeLine("Error: Leaked ", item->size, " bytes (", std::hex, item->pointer, std::dec, ") allocated in ", item->file, "(", item->line, ")");
             item = item->next;
         }
+        writeLine("\nMemory leak report finished");
     }
 
     void AddAllocated(void* p, size_t size, const char* file, int line) noexcept
@@ -166,16 +171,16 @@ private:
             {
                 if (item->pointer == p)
                 {
-                    writeLine("Try to deallocate memory twice (", std::hex, p, std::dec, ") ", item->size, " bytes ", file, "(", line, ") allocated in ", item->file, "(", item->line, ")");
+                    writeLine("Error: Detected a try to deallocate memory twice (", std::hex, p, std::dec, ") ", item->size, " bytes ", file, "(", line, ") allocated in ", item->file, "(", item->line, ")");
                     return;
                 }
                 item = item->next;
             }
-            writeLine("Try to deallocate not allocated pointer (", std::hex, p, std::dec, ") at", file, "(", line, ")");
+            writeLine("Error: Detected a try to deallocate not allocated pointer (", std::hex, p, std::dec, ") at", file, "(", line, ")");
         }
         else
         {
-            writeLine("Try to deallocate not allocated pointer or deallocate memory twice (", std::hex, p, std::dec, ") at ", file, "(", line, ")");
+            writeLine("Error: Detected a try to deallocate not allocated pointer or deallocate memory twice (", std::hex, p, std::dec, ") at ", file, "(", line, ")");
         }
     }
 
