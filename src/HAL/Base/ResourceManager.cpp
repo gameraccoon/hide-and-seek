@@ -16,7 +16,6 @@
 #include "HAL/Audio/Music.h"
 #include "HAL/Audio/Sound.h"
 #include "HAL/Graphics/Font.h"
-#include "HAL/Graphics/Texture.h"
 #include "HAL/Graphics/Sprite.h"
 #include "HAL/Graphics/SpriteAnimationClip.h"
 #include "HAL/Graphics/AnimationGroup.h"
@@ -142,7 +141,7 @@ namespace HAL
 		return result;
 	}
 
-	ResourceHandle ResourceManager::lockTexture(const ResourcePath& path)
+	ResourceHandle ResourceManager::lockSurface(const ResourcePath& path)
 	{
 		auto it = mPathsMap.find(path);
 		if (it != mPathsMap.end())
@@ -153,7 +152,7 @@ namespace HAL
 		else
 		{
 			int thisHandle = createResourceLock(path);
-			mResources[thisHandle] = std::make_unique<Graphics::Texture>(path, mEngine.getRenderer().getRawRenderer());
+			mResources[thisHandle] = std::make_unique<Graphics::Internal::Surface>(path);
 			return ResourceHandle(thisHandle);
 		}
 	}
@@ -170,7 +169,7 @@ namespace HAL
 		else
 		{
 			int thisHandle = createResourceLock(static_cast<ResourcePath>(id));
-			mResources[thisHandle] = std::make_unique<Graphics::Font>(path, fontSize, mEngine.getRenderer().getRawRenderer());
+			mResources[thisHandle] = std::make_unique<Graphics::Font>(path, fontSize);
 			return ResourceHandle(thisHandle);
 		}
 	}
@@ -187,19 +186,19 @@ namespace HAL
 		else
 		{
 			int thisHandle = createResourceLock(static_cast<ResourcePath>(spritePathId));
-			ResourceHandle originalTextureHandle;
+			ResourceHandle originalSurfaceHandle;
 			auto it = mAtlasFrames.find(path);
 			if (it != mAtlasFrames.end())
 			{
-				originalTextureHandle = lockTexture(it->second.atlasPath);
-				const Graphics::Texture& texture = getResource<Graphics::Texture>(originalTextureHandle);
+				originalSurfaceHandle = lockSurface(it->second.atlasPath);
+				const Graphics::Internal::Surface& texture = getResource<Graphics::Internal::Surface>(originalSurfaceHandle);
 				mResources[thisHandle] = std::make_unique<Graphics::Sprite>(&texture, it->second.quadUV);
 			}
 			else
 			{
-				originalTextureHandle = lockTexture(path);
-				const Graphics::Texture& texture = getResource<Graphics::Texture>(originalTextureHandle);
-				mResources[thisHandle] = std::make_unique<Graphics::Sprite>(&texture, Graphics::QuadUV());
+				originalSurfaceHandle = lockSurface(path);
+				const Graphics::Internal::Surface& surface = getResource<Graphics::Internal::Surface>(originalSurfaceHandle);
+				mResources[thisHandle] = std::make_unique<Graphics::Sprite>(&surface, Graphics::QuadUV());
 			}
 			return ResourceHandle(thisHandle);
 		}

@@ -179,6 +179,6 @@ void SpatialWorldData::fromJson(const nlohmann::json& json, const ComponentFacto
 	int cellSize = json.at("cell_size");
 	if (cellSize != CellSizeInt)
 	{
-		RedistributeSpatialEntitiesBetweenCells(*this, cellSize);
+		RedistributeSpatialEntitiesBetweenCells(*this, static_cast<float>(cellSize));
 	}
 }

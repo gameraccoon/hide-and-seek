@@ -1,7 +1,5 @@
 #pragma once
 
-#include <memory>
-
 #include "HAL/EngineFwd.h"
 
 #include "HAL/Base/Resource.h"
@@ -9,21 +7,26 @@
 
 namespace Graphics
 {
-	class Texture;
+	namespace Internal
+	{
+		class Surface;
+	}
 
 	class Sprite : public HAL::Resource
 	{
 	public:
-		Sprite() = default;
-		Sprite(const Graphics::Texture* texture, QuadUV uv);
+		Sprite(const Internal::Surface* surface, QuadUV uv);
 
-		const Graphics::Texture* getTexture() const;
+		int getHeight() const;
+		int getWidth() const;
+
+		const Internal::Surface* getSurface() const;
 		QuadUV getUV() const { return mUV; }
 
-		bool isValid() const override;
+		virtual bool isValid() const override;
 
 	private:
-		const Graphics::Texture* mTexture = nullptr;
+		const Internal::Surface* mSurface = nullptr;
 		QuadUV mUV;
 	};
 }

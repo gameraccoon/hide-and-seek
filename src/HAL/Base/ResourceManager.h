@@ -32,12 +32,14 @@ namespace HAL
 		ResourceManager& operator=(ResourceManager&&) = delete;
 
 		ResourceHandle lockFont(const ResourcePath& path, int fontSize);
-		ResourceHandle lockTexture(const ResourcePath& path);
 		ResourceHandle lockSprite(const ResourcePath& path);
 		ResourceHandle lockSpriteAnimationClip(const ResourcePath& path);
 		ResourceHandle lockAnimationGroup(const ResourcePath& path);
 		ResourceHandle lockSound(const ResourcePath& path);
 		ResourceHandle lockMusic(const ResourcePath& path);
+	private:
+		ResourceHandle lockSurface(const ResourcePath& path);
+	public:
 
 		template<typename T>
 		[[nodiscard]] const T& getResource(ResourceHandle handle)

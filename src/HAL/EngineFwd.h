@@ -8,4 +8,8 @@ namespace HAL
 namespace Graphics
 {
 	class Sprite;
+	namespace Internal
+	{
+		class Surface;
+	}
 }

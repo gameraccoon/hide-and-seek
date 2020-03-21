@@ -14,7 +14,7 @@ namespace Graphics
 	public:
 		Font() = default;
 
-		explicit Font(const ResourcePath& path, int fontSize, SDL_Renderer* renderer);
+		explicit Font(const ResourcePath& path, int fontSize);
 		~Font() override;
 
 		bool isValid() const override;

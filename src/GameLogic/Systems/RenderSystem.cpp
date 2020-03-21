@@ -68,7 +68,7 @@ void RenderSystem::update()
 			for (const auto& data : render->getSpriteDatas())
 			{
 				const Graphics::Sprite& spriteData = resourceManager.getResource<Graphics::Sprite>(data.spriteHandle);
-				renderer.render(*spriteData.getTexture(), location, data.params.size, data.params.anchor, rotation, spriteData.getUV(), 1.0f);
+				renderer.render(*spriteData.getSurface(), location, data.params.size, data.params.anchor, rotation, spriteData.getUV(), 1.0f);
 			}
 		});
 	}
@@ -91,7 +91,7 @@ void RenderSystem::drawVisibilityPolygon(const Graphics::Sprite& lightSprite, co
 
 		glm::mat4 transform(1.0f);
 		transform = glm::translate(transform, glm::vec3(drawShift.x, drawShift.y, 0.0f));
-		mEngine.getRenderer().renderFan(*lightSprite.getTexture(), drawablePolygon, transform, 0.5f);
+		mEngine.getRenderer().renderFan(*lightSprite.getSurface(), drawablePolygon, transform, 0.5f);
 	}
 }
 
