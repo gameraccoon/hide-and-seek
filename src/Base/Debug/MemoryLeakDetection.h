@@ -24,6 +24,7 @@ public:
         }
 
         mLogFileStream = std::ofstream(LOG_FILE, std::ios_base::trunc);
+        mLogFileStream << std::showbase;
         writeLine("Memory leak report file created");
     }
 
@@ -70,7 +71,7 @@ public:
         AllocatedPtr* item = allocatedList;
         while (item != nullptr)
         {
-            writeLine("leaked ", item->size, " bytes allocated in ", item->file, "(", item->line, ")");
+            writeLine("leaked ", item->size, " bytes (", std::hex, item->pointer, std::dec, ") allocated in ", item->file, "(", item->line, ")");
             item = item->next;
         }
     }
@@ -92,6 +93,11 @@ public:
     void AddDeallocated(void* p, const char* file, int line) noexcept
     {
         std::lock_guard<std::mutex> g(mutex);
+
+        if (p == nullptr)
+        {
+            return;
+        }
 
         if (allocatedList == nullptr)
         {
@@ -160,16 +166,16 @@ private:
             {
                 if (item->pointer == p)
                 {
-                    writeLine("Try to deallocate memory twice ", item->size, " bytes ", file, "(", line, ") allocated in ", item->file, "(", item->line, ")");
+                    writeLine("Try to deallocate memory twice (", std::hex, p, std::dec, ") ", item->size, " bytes ", file, "(", line, ") allocated in ", item->file, "(", item->line, ")");
                     return;
                 }
                 item = item->next;
             }
-            writeLine("Try to deallocate not allocated pointer at", file, "(", line, ")");
+            writeLine("Try to deallocate not allocated pointer (", std::hex, p, std::dec, ") at", file, "(", line, ")");
         }
         else
         {
-            writeLine("Try to deallocate not allocated pointer or deallocate memory twice at ", file, "(", line, ")");
+            writeLine("Try to deallocate not allocated pointer or deallocate memory twice (", std::hex, p, std::dec, ") at ", file, "(", line, ")");
         }
     }
 
@@ -265,7 +271,6 @@ inline void operator delete[](void* p)
 #define DEBUG_NEW new(__FILE__, __LINE__)
 #define new DEBUG_NEW
 
-//#define DEBUG_DELETE delete(__FILE__, __LINE__)
-//#define delete DEBUG_DELETE
+#define DEBUG_DELETE(p) operator delete(p, __FILE__, __LINE__)
 
 #endif // DETECT_MEMORY_LEAKS

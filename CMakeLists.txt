@@ -60,6 +60,10 @@ else()
 	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_RELEASE} -O2")
 endif()
 
+# uncomment to enable specific debug features
+# add_definitions(-DDETECT_MEMORY_LEAKS)
+# add_definitions(-DDETECT_DOUBLE_DELETE)
+
 # code generation
 execute_process(
 	COMMAND ${PYTHON_EXECUTABLE} ${GAME_BASE_DIR}/scripts/build/code_generate.py ${GAME_BASE_DIR}
