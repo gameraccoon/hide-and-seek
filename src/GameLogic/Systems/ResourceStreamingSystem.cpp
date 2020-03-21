@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "GameLogic/Systems/ResourceStreamingSystem.h"
 
 #include "GameData/Components/SpriteCreatorComponent.generated.h"

@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "Utils/Application/ArgumentsParser.h"
 
 #include "Base/Debug/Assert.h"

@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "HAL/Graphics/Font.h"
 
 #include "HAL/Base/Engine.h"

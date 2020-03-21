@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "KeyStatesMap.h"
 
 #include <algorithm>

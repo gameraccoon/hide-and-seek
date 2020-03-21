@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "AutoTests/Tests/CollidingCircularUnits/TestCase.h"
 
 #include <memory>

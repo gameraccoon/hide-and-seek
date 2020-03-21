@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "Utils/Jobs/WorkerManager.h"
 
 #include <algorithm>

@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "GameData/Enums/{enum_name}.generated.h"
 
 template <>

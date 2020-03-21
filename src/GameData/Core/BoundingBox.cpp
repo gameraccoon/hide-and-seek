@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "GameData/Core/BoundingBox.h"
 
 

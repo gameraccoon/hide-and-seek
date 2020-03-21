@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "GameData/Core/Hull.h"
 
 #include <nlohmann/json.hpp>

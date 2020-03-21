@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include <gtest/gtest.h>
 
 #include "ECS/Delegates.h"

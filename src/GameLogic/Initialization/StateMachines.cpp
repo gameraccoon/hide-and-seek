@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "GameLogic/Initialization/StateMachines.h"
 
 #include "Base/Types/String/StringID.h"

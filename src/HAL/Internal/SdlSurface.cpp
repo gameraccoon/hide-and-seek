@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "SdlSurface.h"
 
 #include <stdexcept>

@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "GameLogic/Systems/CharacterStateSystem.h"
 
 #include "Base/Debug/Log.h"

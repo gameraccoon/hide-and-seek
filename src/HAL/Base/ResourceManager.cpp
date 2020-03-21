@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "HAL/Base/ResourceManager.h"
 
 #include <fstream>

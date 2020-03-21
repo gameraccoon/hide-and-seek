@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "GameLogic/Systems/CollisionSystem.h"
 
 #include "GameData/Components/CollisionComponent.generated.h"

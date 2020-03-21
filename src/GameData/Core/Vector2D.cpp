@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "GameData/Core/Vector2D.h"
 
 #include <cmath>

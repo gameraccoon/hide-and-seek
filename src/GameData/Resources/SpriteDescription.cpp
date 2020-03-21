@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "GameData/Resources/SpriteDescription.h"
 
 #include <nlohmann/json.hpp>

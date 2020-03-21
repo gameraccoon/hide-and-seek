@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "HAL/Audio/AudioManager.h"
 
 #include <cmath>

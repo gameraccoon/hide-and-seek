@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "Utils/Geometry/VisibilityPolygon.h"
 
 #include <algorithm>

@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "HAL/GameBase.h"
 
 #include "HAL/Base/Engine.h"

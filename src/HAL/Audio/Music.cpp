@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "HAL/Audio/Music.h"
 
 #include "sdl/SDL_mixer.h"

@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "Utils/AI/NavMeshGenerator.h"
 
 #include <unordered_map>

@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "Utils/World/GameDataLoader.h"
 
 #include <fstream>

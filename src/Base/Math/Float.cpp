@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "Base/Math/Float.h"
 
 #include <math.h>

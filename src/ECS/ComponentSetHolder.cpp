@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "ECS/ComponentSetHolder.h"
 
 #include <nlohmann/json.hpp>

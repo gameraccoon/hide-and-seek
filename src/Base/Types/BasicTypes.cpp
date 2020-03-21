@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "Base/Types/BasicTypes.h"
 
 #include <type_traits>

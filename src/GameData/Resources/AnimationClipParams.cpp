@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "GameData/Resources/AnimationClipParams.h"
 
 #include <nlohmann/json.hpp>

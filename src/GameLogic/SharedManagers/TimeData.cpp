@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "GameLogic/SharedManagers/TimeData.h"
 
 #include <math.h>

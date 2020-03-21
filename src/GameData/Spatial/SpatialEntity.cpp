@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "GameData/Spatial/SpatialEntity.h"
 
 #include <nlohmann/json.hpp>

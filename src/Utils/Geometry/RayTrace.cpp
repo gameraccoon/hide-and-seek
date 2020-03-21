@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "Utils/Geometry/RayTrace.h"
 
 #include "GameData/Components/CollisionComponent.generated.h"

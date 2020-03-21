@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "ECS/EntityManager.h"
 
 #include <algorithm>

@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "AutoTests/Tests/CollidingCircularUnits/Systems/TestUnitsCountControlSystem.h"
 
 #include <sdl/SDL_keycode.h>

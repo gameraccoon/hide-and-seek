@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "HAL/Graphics/AnimationGroup.h"
 
 #include "../Internal/SdlSurface.h"

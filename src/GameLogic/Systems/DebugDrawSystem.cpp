@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "GameLogic/Systems/DebugDrawSystem.h"
 
 #include <algorithm>

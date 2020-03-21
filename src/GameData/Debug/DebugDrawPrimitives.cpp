@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "GameData/Time/GameplayTimestamp.h"
 
 #include <type_traits>

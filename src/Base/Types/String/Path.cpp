@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "Base/Types/String/Path.h"
 
 #include <nlohmann/json.hpp>

@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "GameData/World.h"
 
 #include <nlohmann/json.hpp>

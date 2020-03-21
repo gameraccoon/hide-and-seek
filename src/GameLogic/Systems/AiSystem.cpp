@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "GameLogic/Systems/AiSystem.h"
 
 #include "GameData/Components/NavMeshComponent.generated.h"

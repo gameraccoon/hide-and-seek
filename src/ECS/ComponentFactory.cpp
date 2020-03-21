@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "ECS/ComponentFactory.h"
 
 #include "Base/Debug/Assert.h"

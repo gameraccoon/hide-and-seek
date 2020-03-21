@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "Utils/Geometry/Collide.h"
 
 #include <stdlib.h>

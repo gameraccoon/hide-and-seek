@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "GameLogic/Systems/MovementSystem.h"
 
 #include <sdl/SDL_keycode.h>

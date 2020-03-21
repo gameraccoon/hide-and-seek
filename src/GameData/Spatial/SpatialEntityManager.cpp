@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "GameData/Spatial/SpatialEntityManager.h"
 
 #include "Base/Debug/Assert.h"

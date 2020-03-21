@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "HAL/Base/Types.h"
 
 #include <type_traits>

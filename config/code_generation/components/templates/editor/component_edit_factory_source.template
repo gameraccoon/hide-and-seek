@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "{class_name}EditFactory.generated.h"
 
 #include <QWidget>

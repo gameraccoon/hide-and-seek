@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "ECS/SystemsManager.h"
 
 #include "Base/Debug/Log.h"

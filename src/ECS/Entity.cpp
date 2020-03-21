@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "ECS/Entity.h"
 
 #include <nlohmann/json.hpp>

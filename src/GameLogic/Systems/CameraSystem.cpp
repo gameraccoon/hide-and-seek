@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "GameLogic/Systems/CameraSystem.h"
 
 #include "GameData/Components/TransformComponent.generated.h"

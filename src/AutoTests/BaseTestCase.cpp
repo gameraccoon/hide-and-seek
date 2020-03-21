@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "AutoTests/BaseTestCase.h"
 
 #include <memory>

@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "componentregistration.h"
 
 #include "ECS/ComponentFactory.h"

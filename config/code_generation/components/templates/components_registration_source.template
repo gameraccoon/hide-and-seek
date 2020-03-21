@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "GameLogic/ComponentsRegistration.h"
 
 {component_includes}

@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "AutoTests/Tests/CollidingCircularUnits/Systems/TestCircularUnitsSystem.h"
 
 #include "GameData/World.h"

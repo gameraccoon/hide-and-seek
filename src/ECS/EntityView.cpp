@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "ECS/EntityView.h"
 
 #include "Base/Debug/Assert.h"

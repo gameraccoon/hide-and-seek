@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "Change{class_name}{attribute_name_capital}Command.generated.h"
 
 #include "GameData/Components/{class_name}.generated.h"

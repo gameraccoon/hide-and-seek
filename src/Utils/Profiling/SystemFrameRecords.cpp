@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "Utils/Profiling/SystemFrameRecords.h"
 
 #include <fstream>

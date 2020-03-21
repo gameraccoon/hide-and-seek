@@ -1,3 +1,5 @@
+#include "Base/precomp.h"
+
 #include "HAL/Graphics/SpriteAnimationClip.h"
 
 #include "../Internal/SdlSurface.h"
