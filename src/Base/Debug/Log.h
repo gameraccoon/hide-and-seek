@@ -1,12 +1,11 @@
 #pragma once
 
 #include <string>
+#include <fstream>
 #include "Base/Types/String/StringHelpers.h"
 
 /**
- * Class that helps to write log messages.
- * Log is a Singletone "phoenix".
- * (see Alexandrescu "Modern C++ Design: Generic Programming and Design Patterns Applied")
+ * Class that helps to write log messages
  */
 class Log
 {
@@ -28,7 +27,7 @@ private:
 	void writeLine(const std::string& text);
 
 	/** Filestream that holds the logfile handler */
-	std::ofstream *mLogFileStream;
+	std::ofstream mLogFileStream;
 
 	/** Construct singletone information */
 	static void create();
@@ -39,14 +38,6 @@ private:
 	/** function that destroy singletone with ability to construct it in future */
 	static void killPhoenixSingletone();
 
-	/** Single instance of class log */
-	static Log* mSingleInstance;
-
-	/** Flag shows that singletone was created and destroyed */
-	static bool mIsDestroyed;
-	/** Flag shows that this is the first life of this singletone */
-	static bool mIsFirstLife;
-
 	/* Turn off unusable operations */
 	Log();
 	~Log();
@@ -55,31 +46,31 @@ private:
 };
 
 template<typename... Args>
-void LogInit(const std::string& message, Args... args)
+void LogInit(const std::string& message, Args... args) noexcept
 {
 	Log::Instance().writeInit(FormatString(message, std::forward<Args>(args)...));
 }
 
 template<typename... Args>
-void LogInfo(const std::string& message, Args... args)
+void LogInfo(const std::string& message, Args... args) noexcept
 {
 	Log::Instance().writeLog(FormatString(message, std::forward<Args>(args)...));
 }
 
 template<typename... Args>
-void LogWarning(const std::string& message, Args... args)
+void LogWarning(const std::string& message, Args... args) noexcept
 {
 	Log::Instance().writeWarning(FormatString(message, std::forward<Args>(args)...));
 }
 
 template<typename... Args>
-void LogError(const std::string& message, Args... args)
+void LogError(const std::string& message, Args... args) noexcept
 {
 	Log::Instance().writeError(FormatString(message, std::forward<Args>(args)...));
 }
 
 template<typename... Args>
-void LogAssertHelper(const char* condition, const char* file, size_t line, const std::string& message, Args... args)
+void LogAssertHelper(const char* condition, const char* file, size_t line, const std::string& message, Args... args) noexcept
 {
 	Log::Instance().writeError(FormatString(std::string("Assertion failed '%s' %s:%d. Message: '").append(message), condition, file, line, std::forward<Args>(args)...));
 }
