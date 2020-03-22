@@ -5,6 +5,8 @@
 #include <map>
 #include <memory>
 
+#include "Base/Types/String/Path.h"
+
 #include <QObject>
 #include <QLayout>
 #include <QString>
@@ -37,6 +39,24 @@ namespace TypesEditConstructor
 	struct FillEdit {
 		static typename Edit<T>::Ptr Call(QLayout* layout, const QString& label, const T& initialValue);
 	};
+
+	template<>
+	Edit<float>::Ptr FillEdit<float>::Call(QLayout* layout, const QString& label, const float& initialValue);
+
+	template<>
+	Edit<int>::Ptr FillEdit<int>::Call(QLayout* layout, const QString& label, const int& initialValue);
+
+	template<>
+	Edit<unsigned int>::Ptr FillEdit<unsigned int>::Call(QLayout* layout, const QString& label, const unsigned int& initialValue);
+
+	template<>
+	Edit<bool>::Ptr FillEdit<bool>::Call(QLayout* layout, const QString& label, const bool& initialValue);
+
+	template<>
+	Edit<std::string>::Ptr FillEdit<std::string>::Call(QLayout* layout, const QString& label, const std::string& initialValue);
+
+	template<>
+	Edit<ResourcePath>::Ptr FillEdit<ResourcePath>::Call(QLayout* layout, const QString& label, const ResourcePath& initialValue);
 
 	// partial specilization for enums
 	template<typename T>

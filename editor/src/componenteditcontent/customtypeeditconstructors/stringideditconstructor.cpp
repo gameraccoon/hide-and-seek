@@ -1,4 +1,4 @@
-#include "../typeseditconstructor.h"
+#include "src/componenteditcontent/customtypeeditconstructors/customtypeeditconstructors.h"
 
 #include <string>
 
@@ -7,8 +7,6 @@
 #include <QDoubleValidator>
 #include <QCheckBox>
 #include <QHBoxLayout>
-
-#include "Base/Types/String/StringID.h"
 
 namespace TypesEditConstructor
 {

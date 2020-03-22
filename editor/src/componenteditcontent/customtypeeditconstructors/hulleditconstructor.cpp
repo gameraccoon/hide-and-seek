@@ -1,4 +1,4 @@
-#include "../typeseditconstructor.h"
+#include "src/componenteditcontent/customtypeeditconstructors/customtypeeditconstructors.h"
 
 #include <string>
 
@@ -8,8 +8,6 @@
 #include <QCheckBox>
 #include <QHBoxLayout>
 #include <QPushButton>
-
-#include "GameData/Core/Hull.h"
 
 namespace TypesEditConstructor
 {

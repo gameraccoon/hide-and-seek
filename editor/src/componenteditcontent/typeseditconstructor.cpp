@@ -3,8 +3,6 @@
 #include <limits>
 #include <string>
 
-#include "Base/Types/String/Path.h"
-
 #include <QLabel>
 #include <QLineEdit>
 #include <QDoubleValidator>

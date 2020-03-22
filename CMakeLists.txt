@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.3)
+cmake_minimum_required(VERSION 3.16)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -93,6 +93,8 @@ link_directories(
 function(add_folder_as_library folder_path name)
 	file(GLOB_RECURSE TEMP_SRC RELATIVE "" FOLLOW_SYMLINKS "${folder_path}/*")
 	add_library(${name} ${TEMP_SRC})
+	target_precompile_headers(${name} PRIVATE "${GAME_SRC_DIR}/Base/precomp.h")
+	set_target_properties(${name} PROPERTIES UNITY_BUILD ON)
 	target_compile_options(${name} PRIVATE ${PROJECT_CXX_FLAGS})
 endfunction()
 
