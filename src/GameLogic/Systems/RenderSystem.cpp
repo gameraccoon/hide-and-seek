@@ -206,7 +206,7 @@ VisibilityPolygonCalculationJob::~VisibilityPolygonCalculationJob() {}
 
 void RenderSystem::drawLights(SpatialEntityManager& managerGroup, const Vector2D& playerSightPosition, const Vector2D& drawShift, const Vector2D& maxFov, const Vector2D& /*screenHalfSize*/)
 {
-	const GameplayTimestamp timestampNow = mTime.currentTimestamp;
+//	const GameplayTimestamp timestampNow = mTime.currentTimestamp;
 
 	const Graphics::Sprite& lightSprite = mResourceManager.getResource<Graphics::Sprite>(mLightSpriteHandle);
 	if (!lightSprite.isValid())
