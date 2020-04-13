@@ -5,8 +5,6 @@
 #include <QWidget>
 #include <QLayout>
 
-#include "Base/CompilerHelpers.h"
-
 #include "src/componenteditcontent/typeseditconstructor.h"
 #include "src/editorcommands/editorcommandsstack.h"
 

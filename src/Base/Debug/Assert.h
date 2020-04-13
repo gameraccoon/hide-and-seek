@@ -1,10 +1,5 @@
 #pragma once
 
-#include <functional>
-
-#include "Base/Debug/Log.h"
-#include "Base/CompilerHelpers.h"
-
 #ifdef DEBUG
 // to be able to change behavior for tests
 inline std::function<void()> GlobalAssertHandler = [](){};

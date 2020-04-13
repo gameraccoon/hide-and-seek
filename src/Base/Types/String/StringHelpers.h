@@ -1,13 +1,5 @@
 #pragma once
 
-#include <string>
-#include <cstdio>
-#include <type_traits>
-
-#include <typeindex>
-
-#include "Base/Types/String/StringID.h"
-
 #define STR_HELPER(x) #x
 #define STR(x) STR_HELPER(x)
 

@@ -4,8 +4,6 @@
 
 #include <nlohmann/json.hpp>
 
-#include "Base/Debug/Assert.h"
-
 void to_json(nlohmann::json& outJson, Entity entity)
 {
 	outJson = nlohmann::json{{"id", entity.mId}};

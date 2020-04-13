@@ -9,8 +9,6 @@
 #include <sdl/SDL_surface.h>
 #include <sdl/SDL_image.h>
 
-#include "Base/Debug/Assert.h"
-
 namespace Graphics
 {
 	namespace Internal

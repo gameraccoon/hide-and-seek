@@ -1,9 +1,5 @@
 #pragma once
 
-#include <nlohmann/json_fwd.hpp>
-
-#include "Base/Types/String/StringID.h"
-
 /**
  * The base class for actor components
  *

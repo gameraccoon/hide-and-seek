@@ -108,7 +108,7 @@ public:
 	}
 
 	template<typename FirstComponent, typename... Components, typename... AdditionalData>
-	void getComponents(TupleVector<FirstComponent*, AdditionalData..., Components*...>& inOutComponents, AdditionalData... data)
+	void getComponents(TupleVector<AdditionalData..., FirstComponent*, Components*...>& inOutComponents, AdditionalData... data)
 	{
 		auto& firstComponentVector = mComponents[typeid(FirstComponent)];
 

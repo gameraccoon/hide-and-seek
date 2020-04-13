@@ -5,8 +5,6 @@
 #include <optional>
 #include <typeindex>
 
-#include "Base/Types/String/StringID.h"
-
 #include "ECS/Component.h"
 
 class ComponentFactory

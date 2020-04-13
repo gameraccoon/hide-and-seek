@@ -5,8 +5,6 @@
 #include <math.h>
 #include <memory.h>
 
-#include "Base/Debug/Assert.h"
-
 namespace Math
 {
 	static void CheckFloatsCanBeCompared(float a, float b, float epsilon)

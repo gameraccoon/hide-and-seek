@@ -2,9 +2,6 @@
 
 // This file is generated, don't make any manual changes
 
-#include <string>
-#include <unordered_map>
-
 inline std::unordered_map<uint64_t, std::string> getGatheredStringIDs() noexcept
 {{
 	return {{

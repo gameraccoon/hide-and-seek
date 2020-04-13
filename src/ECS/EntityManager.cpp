@@ -8,9 +8,6 @@
 
 #include <nlohmann/json.hpp>
 
-#include "Base/Debug/Assert.h"
-#include "Base/Debug/Log.h"
-
 #include "ECS/ComponentFactory.h"
 
 static const int EntityInsertionTrialsLimit = 10;

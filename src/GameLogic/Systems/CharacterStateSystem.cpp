@@ -2,8 +2,6 @@
 
 #include "GameLogic/Systems/CharacterStateSystem.h"
 
-#include "Base/Debug/Log.h"
-
 #include "GameData/Core/Rotator.h"
 #include "GameData/Components/CharacterStateComponent.generated.h"
 #include "GameData/Components/StateMachineComponent.generated.h"

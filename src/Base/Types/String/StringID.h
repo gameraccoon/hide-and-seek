@@ -1,14 +1,5 @@
 #pragma once
 
-#include <string>
-#include <type_traits>
-#include <unordered_map>
-#include <map>
-
-#include <fnv1a/hash_fnv1a_constexpr.h>
-
-#include <nlohmann/json_fwd.hpp>
-
 /**
  * String type used for technical identifiers that
  * don't need to be presented to the player in any form

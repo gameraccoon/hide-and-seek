@@ -83,6 +83,7 @@ add_subdirectory(Qt-Advanced-Docking-System EXCLUDE_FROM_ALL)
 
 add_executable(${APP_NAME} WIN32 ${APP_SRCS})
 set_target_properties(${APP_NAME} PROPERTIES UNITY_BUILD ON)
+target_precompile_headers(${APP_NAME} PRIVATE "${GAME_SRC_DIR}/Base/precomp.h")
 target_compile_options(${APP_NAME} PRIVATE ${PROJECT_CXX_FLAGS})
 if(BUILD_STATIC)
 	set(APP_DEFINE ${APP_DEFINE} ADS_STATIC)

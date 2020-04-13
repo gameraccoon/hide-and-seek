@@ -7,8 +7,7 @@
 			"type": "std::map<StringID, SpatialEntity>",
 			"includes": [
 				"<map>",
-				"\"GameData/Spatial/SpatialEntity.h\"",
-				"\"Base/Types/String/StringID.h\""
+				"\"GameData/Spatial/SpatialEntity.h\""
 			],
 			"flags": ["get_by_ref"]
 		}

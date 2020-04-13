@@ -1,9 +1,5 @@
 #pragma once
 
-#include <string>
-#include <fstream>
-#include "Base/Types/String/StringHelpers.h"
-
 /**
  * Class that helps to write log messages
  */

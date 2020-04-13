@@ -2,8 +2,6 @@
 
 #include <gtest/gtest.h>
 
-#include "Base/Debug/Assert.h"
-
 inline void EnableFailOnAssert() noexcept
 {
 	GlobalAssertHandler = [](){ GTEST_FAIL(); };

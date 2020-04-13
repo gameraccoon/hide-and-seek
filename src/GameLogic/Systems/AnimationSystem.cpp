@@ -4,9 +4,6 @@
 
 #include <algorithm>
 
-#include "Base/Debug/Assert.h"
-#include "Base/Debug/Log.h"
-
 #include "GameData/Components/RenderComponent.generated.h"
 #include "GameData/Components/AnimationClipsComponent.generated.h"
 #include "GameData/Components/AnimationGroupsComponent.generated.h"

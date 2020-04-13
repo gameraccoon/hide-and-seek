@@ -4,8 +4,6 @@
 #include <any>
 #include <typeindex>
 
-#include "Base/Debug/Assert.h"
-
 namespace FSM
 {
 	template <typename KeyType>

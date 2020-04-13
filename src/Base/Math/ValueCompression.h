@@ -2,8 +2,6 @@
 
 #include <type_traits>
 
-#include "Base/Debug/Assert.h"
-
 namespace Utils
 {
 	template<typename I, typename F>

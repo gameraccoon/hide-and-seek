@@ -4,7 +4,6 @@
 
 #include <nlohmann/json.hpp>
 
-#include "Base/CompilerHelpers.h"
 
 void {class_name}::toJson(nlohmann::json& outJson) const
 {{

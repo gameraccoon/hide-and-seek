@@ -7,8 +7,7 @@
 			"type": "std::vector<AnimationGroup<StringID>>",
 			"includes": [
 				"<vector>",
-				"\"GameData/Resources/AnimationGroup.h\"",
-				"\"Base/Types/String/StringID.h\""
+				"\"GameData/Resources/AnimationGroup.h\""
 			],
 			"flags": ["transient", "get_by_ref"]
 		},

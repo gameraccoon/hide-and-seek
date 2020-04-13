@@ -4,8 +4,6 @@
 #include <unordered_map>
 #include <functional>
 
-#include "Base/Debug/Assert.h"
-#include "Base/Types/String/StringID.h"
 #include "Base/Types/String/Path.h"
 
 #include "GameData/Core/ResourceHandle.h"

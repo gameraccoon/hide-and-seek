@@ -2,8 +2,6 @@
 
 #include "ECS/SystemsManager.h"
 
-#include "Base/Debug/Log.h"
-
 void SystemsManager::update()
 {
 #ifdef PROFILE_SYSTEMS

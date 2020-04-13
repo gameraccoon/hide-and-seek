@@ -3,8 +3,6 @@
 #include <QPushButton>
 #include <QSpacerItem>
 
-#include "Base/Debug/Assert.h"
-
 #include "componentregistration.h"
 
 #include "src/editorutils/componentreference.h"

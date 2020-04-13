@@ -14,8 +14,6 @@
 
 #include <QComboBox>
 
-#include "Base/Types/String/StringID.h"
-
 #include "typeeditconstructorhelpers.h"
 
 template <typename T>

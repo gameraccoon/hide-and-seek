@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Base/Types/String/StringID.h"
-
 #include "ECS/Component.h"
 
 {attribute_includes}

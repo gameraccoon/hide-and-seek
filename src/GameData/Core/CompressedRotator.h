@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Base/Debug/Assert.h"
 #include "Base/Math/ValueCompression.h"
 
 #include <nlohmann/json_fwd.hpp>

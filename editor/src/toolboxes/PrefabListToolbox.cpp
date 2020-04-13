@@ -16,7 +16,6 @@
 #include <QMessageBox>
 
 #include "ECS/ComponentFactory.h"
-#include "Base/Debug/Log.h"
 
 #include "src/editorcommands/removeentitycommand.h"
 #include "src/editorcommands/addcomponentcommand.h"

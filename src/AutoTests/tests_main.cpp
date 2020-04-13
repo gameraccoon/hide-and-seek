@@ -6,8 +6,6 @@
 
 #include "Utils/Application/ArgumentsParser.h"
 
-#include "Base/Debug/Assert.h"
-
 #include "AutoTests/Tests/CollidingCircularUnits/TestCase.h"
 
 using CasesMap = std::map<std::string, std::function<void(const ArgumentsParser& arguments)>>;

@@ -11,7 +11,6 @@
 #include "GameData/Spatial/SpatialEntity.h"
 #include "GameData/Resources/SpriteDescription.h"
 #include "GameData/Resources/SpriteParams.h"
-#include "Base/Types/String/StringID.h"
 #include "GameData/Core/Vector2D.h"
 
 namespace TypesEditConstructor

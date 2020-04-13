@@ -1,7 +1,5 @@
 #include "Base/precomp.h"
 
-#include "Base/Debug/Log.h"
-
 #include <chrono>
 #include <iomanip>
 #include <filesystem>

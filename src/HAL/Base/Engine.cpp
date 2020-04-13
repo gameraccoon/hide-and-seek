@@ -7,8 +7,6 @@
 #include <SDL_ttf.h>
 #include <SDL_mixer.h>
 
-#include "Base/Debug/Assert.h"
-
 #include "HAL/IGame.h"
 #include "HAL/Internal/GlContext.h"
 #include "HAL/Internal/Sdl.h"

@@ -5,9 +5,6 @@
 #include <nlohmann/json.hpp>
 
 #include "ComponentFactory.h"
-#include "Base/Debug/Assert.h"
-#include "Base/Debug/Log.h"
-
 
 ComponentSetHolder::~ComponentSetHolder()
 {

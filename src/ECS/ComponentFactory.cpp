@@ -2,8 +2,6 @@
 
 #include "ECS/ComponentFactory.h"
 
-#include "Base/Debug/Assert.h"
-
 ComponentFactory::CreationFn ComponentFactory::getCreationFn(StringID typeName) const
 {
 	const auto& it = mComponentCreators.find(typeName);

@@ -4,8 +4,6 @@
 #include <vector>
 #include <map>
 
-#include "Base/Types/String/StringID.h"
-
 #include "GameData/Core/ResourceHandle.h"
 
 #include "HAL/EngineFwd.h"
