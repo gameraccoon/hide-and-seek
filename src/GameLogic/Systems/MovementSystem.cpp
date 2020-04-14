@@ -64,7 +64,7 @@ void MovementSystem::update()
 
 	for (auto& transfer : transfers)
 	{
-		if (auto [spatialTracked] = transfer.entityView.getComponents<SpatialTrackComponent>(); spatialTracked != nullptr)
+		if (auto [transform, spatialTracked] = transfer.entityView.getComponents<TransformComponent, SpatialTrackComponent>(); spatialTracked != nullptr)
 		{
 			StringID spatialTrackID = spatialTracked->getId();
 			auto [trackedComponents] = world.getWorldComponents().getComponents<TrackedSpatialEntitiesComponent>();
@@ -72,8 +72,10 @@ void MovementSystem::update()
 			if (it != trackedComponents->getEntitiesRef().end())
 			{
 				it->second.cell = transfer.cellTo;
+				transform->setCellPos(transfer.cellTo);
 			}
 		}
+		// the component pointer get invalidated from this line
 		transfer.entityView.getManager().transferEntityTo(world.getSpatialData().getOrCreateCell(transfer.cellTo).getEntityManager(), transfer.entityView.getEntity());
 	}
 }

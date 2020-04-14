@@ -16,6 +16,13 @@
 			"includes": ["\"GameData/Core/Rotator.h\""]
 		},
 		{
+			"name": "cellPos",
+			"type": "CellPos",
+			"default": " = CellPos(0, 0)",
+			"includes": ["\"GameData/Spatial/CellPos.h\""],
+			"flags": ["transient"]
+		},
+		{
 			"name": "updateTimestamp",
 			"type": "GameplayTimestamp",
 			"default": "{1}",

@@ -58,7 +58,7 @@ void RenderSystem::update()
 
 	if (!renderMode || renderMode->getIsDrawLightsEnabled())
 	{
-		drawLights(spatialManager, cameraLocation, drawShift, maxFov, screenHalfSize);
+		drawLights(spatialManager, SpatialPoint(cameraLocation, cameraCell), drawShift, maxFov, screenHalfSize);
 	}
 
 	if (!renderMode || renderMode->getIsDrawVisibleEntitiesEnabled())
@@ -121,7 +121,7 @@ public:
 	struct Result
 	{
 		std::vector<Vector2D> polygon;
-		Vector2D location;
+		SpatialPoint location;
 	};
 
 	using FinalizeFn = std::function<void(const std::vector<Result>&, Vector2D)>;
@@ -156,7 +156,7 @@ public:
 
 			if (it != mCollidableComponents.end())
 			{
-				visibilityPolygonCalculator.calculateVisibilityPolygon(light->getCachedVisibilityPolygonRef(), mCollidableComponents, transform->getLocation(), mMaxFov);
+				visibilityPolygonCalculator.calculateVisibilityPolygon(light->getCachedVisibilityPolygonRef(), mCollidableComponents, SpatialPoint(transform->getLocation(), transform->getCellPos()), mMaxFov);
 				light->setUpdateTimestamp(mTimestamp);
 			}
 
@@ -168,7 +168,8 @@ public:
 				std::end(visibilityPolygon),
 				std::begin(mCalculationResults[i].polygon)
 			);
-			mCalculationResults[i].location = transform->getLocation();
+			mCalculationResults[i].location.pos = transform->getLocation();
+			mCalculationResults[i].location.cellPos = transform->getCellPos();
 		}
 	}
 
@@ -195,18 +196,18 @@ private:
 // just to suppress weak vtables warning
 VisibilityPolygonCalculationJob::~VisibilityPolygonCalculationJob() {}
 
-/*static size_t GetJobDivisor(size_t maxThreadsCount)
+static size_t GetJobDivisor(size_t maxThreadsCount)
 {
 	// this alghorithm is subject to change
 	// we need to divide work into chunks to pass to different threads
 	// take to consideration that the count of free threads most likely
 	// smaller that threadsCount and can fluctuate over time
 	return maxThreadsCount * 3 - 1;
-}*/
+}
 
-void RenderSystem::drawLights(SpatialEntityManager& managerGroup, const Vector2D& playerSightPosition, const Vector2D& drawShift, const Vector2D& maxFov, const Vector2D& /*screenHalfSize*/)
+void RenderSystem::drawLights(SpatialEntityManager& managerGroup, SpatialPoint playerSightPosition, const Vector2D& drawShift, const Vector2D& maxFov, const Vector2D& screenHalfSize)
 {
-//	const GameplayTimestamp timestampNow = mTime.currentTimestamp;
+	const GameplayTimestamp timestampNow = mTime.currentTimestamp;
 
 	const Graphics::Sprite& lightSprite = mResourceManager.getResource<Graphics::Sprite>(mLightSpriteHandle);
 	if (!lightSprite.isValid())
@@ -216,12 +217,11 @@ void RenderSystem::drawLights(SpatialEntityManager& managerGroup, const Vector2D
 	TupleVector<CollisionComponent*, TransformComponent*> collidableComponents;
 	managerGroup.getComponents<CollisionComponent, TransformComponent>(collidableComponents);
 
-	/*
 	TupleVector<LightComponent*, TransformComponent*> componentSets;
 	managerGroup.getComponents<LightComponent, TransformComponent>(componentSets);
 
-	Vector2D emitterPositionBordersLT = playerSightPosition - screenHalfSize - maxFov*0.5;
-	Vector2D emitterPositionBordersRB = playerSightPosition + screenHalfSize + maxFov*0.5;
+	Vector2D emitterPositionBordersLT = playerSightPosition.pos - screenHalfSize - maxFov*0.5;
+	Vector2D emitterPositionBordersRB = playerSightPosition.pos + screenHalfSize + maxFov*0.5;
 
 	// exclude lights that are too far to be visible
 	componentSets.erase(
@@ -247,11 +247,11 @@ void RenderSystem::drawLights(SpatialEntityManager& managerGroup, const Vector2D
 		std::vector<Jobs::BaseJob::UniquePtr> jobs;
 		size_t chunkItemIndex = 0;
 
-		VisibilityPolygonCalculationJob::FinalizeFn finalizeFn = [this, drawShift, &lightSprite](const std::vector<VisibilityPolygonCalculationJob::Result>& results, Vector2D maxFov)
+		VisibilityPolygonCalculationJob::FinalizeFn finalizeFn = [this, drawShift, &lightSprite, cellPos = playerSightPosition.cellPos](const std::vector<VisibilityPolygonCalculationJob::Result>& results, Vector2D maxFov)
 		{
 			for (auto& calcResult : results)
 			{
-				this->drawVisibilityPolygon(lightSprite, calcResult.polygon, maxFov, drawShift + calcResult.location);
+				this->drawVisibilityPolygon(lightSprite, calcResult.polygon, maxFov, drawShift + calcResult.location.pos + SpatialWorldData::GetCellRealDistance(calcResult.location.cellPos - cellPos));
 			}
 		};
 
@@ -274,11 +274,11 @@ void RenderSystem::drawLights(SpatialEntityManager& managerGroup, const Vector2D
 		}
 
 		mJobsWorkerManager.runJobs(std::move(jobs));
-	}*/
+	}
 
 	// draw player visibility polygon
-	VisibilityPolygonCalculator visibilityPolygonCalculator;
-	std::vector<Vector2D> polygon;
-	visibilityPolygonCalculator.calculateVisibilityPolygon(polygon, collidableComponents, playerSightPosition, maxFov);
-	drawVisibilityPolygon(lightSprite, polygon, maxFov, drawShift + playerSightPosition);
+	//VisibilityPolygonCalculator visibilityPolygonCalculator;
+	//std::vector<Vector2D> polygon;
+	//visibilityPolygonCalculator.calculateVisibilityPolygon(polygon, collidableComponents, playerSightPosition, maxFov);
+	//drawVisibilityPolygon(lightSprite, polygon, maxFov, drawShift + playerSightPosition.pos);
 }
