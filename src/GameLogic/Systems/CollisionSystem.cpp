@@ -26,16 +26,16 @@ void CollisionSystem::update()
 	World& world = mWorldHolder.getWorld();
 
 	auto& allCellsMap = world.getSpatialData().getAllCells();
-	std::vector<SpatialComponents> components(allCellsMap.size());
+	std::vector<SpatialComponents> collidableComponentGroups(allCellsMap.size());
 	size_t i = 0;
 	for (auto& pair : allCellsMap)
 	{
-		pair.second.getEntityManager().getComponentsWithEntities<CollisionComponent, TransformComponent>(components[i].components);
-		components[i].cell = &pair.second;
+		pair.second.getEntityManager().getComponentsWithEntities<CollisionComponent, TransformComponent>(collidableComponentGroups[i].components);
+		collidableComponentGroups[i].cell = &pair.second;
 		++i;
 	}
 
-	for (auto& pair : components)
+	for (auto& pair : collidableComponentGroups)
 	{
 		for (auto [entity, collision, transform] : pair.components)
 		{
@@ -43,11 +43,11 @@ void CollisionSystem::update()
 		}
 	}
 
-	world.getSpatialData().getAllCellManagers().forEachSpatialComponentSet<CollisionComponent, TransformComponent, MovementComponent>([&components](WorldCell* cell, CollisionComponent* collisionComponent, TransformComponent* transformComponent, MovementComponent* movementComponent)
+	world.getSpatialData().getAllCellManagers().forEachComponentSet<CollisionComponent, TransformComponent, MovementComponent>([&collidableComponentGroups](CollisionComponent* collisionComponent, TransformComponent* transformComponent, MovementComponent* movementComponent)
 	{
-		CellPos cellPos = cell->getPos();
+		CellPos cellPos = transformComponent->getCellPos();
 		Vector2D resist = ZERO_VECTOR;
-		for (auto& pair : components)
+		for (auto& pair : collidableComponentGroups)
 		{
 			Vector2D cellPosDiff = SpatialWorldData::GetCellRealDistance(pair.cell->getPos() - cellPos);
 
