@@ -11,6 +11,8 @@
 #include "GameLogic/SharedManagers/WorldHolder.h"
 #include "GameLogic/SharedManagers/TimeData.h"
 
+#include "GameLogic/Imgui/ImguiMainMenu.h"
+
 
 /**
  * System that handles dear imgui debug tool
@@ -34,9 +36,7 @@ private:
 	const TimeData& mTime;
 	HAL::Engine& mEngine;
 
-	// for tests
-	bool mShowDemoWindow = true;
-	bool mShowAnotherWindow = true;
+	ImguiMainMenu mImguiMainMenu;
 };
 
 #endif // IMGUI_ENABLED

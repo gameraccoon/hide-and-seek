@@ -5,7 +5,7 @@
 #include "GameData/Components/TransformComponent.generated.h"
 #include "GameData/Components/WorldCachedDataComponent.generated.h"
 #include "GameData/Components/MovementComponent.generated.h"
-#include "GameData/Components/RenderModeComponent.generated.h"
+#include "GameData/Components/ImguiComponent.generated.h"
 #include "GameData/World.h"
 #include "GameData/GameData.h"
 
@@ -20,8 +20,8 @@ void CameraSystem::update()
 {
 	GameData& gameData = mWorldHolder.getGameData();
 
-	auto [renderMode] = gameData.getGameComponents().getComponents<RenderModeComponent>();
-	if (renderMode && renderMode->getIsDrawImguiEnabled())
+	auto [imgui] = gameData.getGameComponents().getComponents<ImguiComponent>();
+	if (imgui && imgui->getIsImguiVisible())
 	{
 		return;
 	}

@@ -10,6 +10,7 @@
 #include "GameData/Components/LightComponent.generated.h"
 #include "GameData/Components/RenderModeComponent.generated.h"
 #include "GameData/Components/WorldCachedDataComponent.generated.h"
+#include "GameData/GameData.h"
 #include "GameData/World.h"
 
 #include "Utils/Geometry/VisibilityPolygon.h"
@@ -38,6 +39,7 @@ RenderSystem::RenderSystem(WorldHolder& worldHolder,
 void RenderSystem::update()
 {
 	World& world = mWorldHolder.getWorld();
+	GameData& gameData = mWorldHolder.getGameData();
 	Graphics::Renderer& renderer = mEngine.getRenderer();
 
 	auto [worldCachedData] = world.getWorldComponents().getComponents<WorldCachedDataComponent>();
@@ -47,7 +49,7 @@ void RenderSystem::update()
 
 	static const Vector2D maxFov(500.0f, 500.0f);
 
-	auto [renderMode] = world.getWorldComponents().getComponents<RenderModeComponent>();
+	auto [renderMode] = gameData.getGameComponents().getComponents<RenderModeComponent>();
 
 	Vector2D mouseScreenPos(mEngine.getMouseX(), mEngine.getMouseY());
 	Vector2D screenHalfSize = Vector2D(static_cast<float>(mEngine.getWidth()), static_cast<float>(mEngine.getHeight())) * 0.5f;

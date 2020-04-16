@@ -1,0 +1,12 @@
+{
+	"component": "imgui",
+	"description": "Component that stores information about the current render mode",
+	"attributes": [
+		{
+			"name": "isImguiVisible",
+			"type": "bool",
+			"default": " = false",
+			"flags": ["transient", "get_by_ref"]
+		}
+	]
+}

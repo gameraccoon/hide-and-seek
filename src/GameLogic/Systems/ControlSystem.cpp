@@ -7,6 +7,7 @@
 #include "GameData/Components/TransformComponent.generated.h"
 #include "GameData/Components/MovementComponent.generated.h"
 #include "GameData/Components/RenderModeComponent.generated.h"
+#include "GameData/Components/ImguiComponent.generated.h"
 #include "GameData/Components/CharacterStateComponent.generated.h"
 #include "GameData/Components/WorldCachedDataComponent.generated.h"
 #include "GameData/Components/DebugDrawComponent.generated.h"
@@ -22,12 +23,11 @@ ControlSystem::ControlSystem(WorldHolder& worldHolder, HAL::Engine& engine, HAL:
 {
 }
 
-template<typename F1, typename F2>
-void UpdateRenderStateOnPressed(HAL::KeyStatesMap& keys, RenderModeComponent* renderMode, int key, F1 getFPtr, F2 setFPtr)
+void UpdateRenderStateOnPressed(HAL::KeyStatesMap& keys, int key, bool& value)
 {
 	if (keys.isJustPressed(key))
 	{
-		(renderMode->*setFPtr)(!(renderMode->*getFPtr)());
+		value = !value;
 	}
 }
 
@@ -36,27 +36,17 @@ void ControlSystem::update()
 	World& world = mWorldHolder.getWorld();
 	GameData& gameData = mWorldHolder.getGameData();
 
-	auto [renderMode] = gameData.getGameComponents().getComponents<RenderModeComponent>();
-	if (renderMode)
-	{
-		UpdateRenderStateOnPressed(mKeyStates, renderMode, SDLK_F1, &RenderModeComponent::getIsDrawImguiEnabled, &RenderModeComponent::setIsDrawImguiEnabled);
-
 #ifdef IMGUI_ENABLED
-		if (renderMode->getIsDrawImguiEnabled())
+	if (auto [imgui] = gameData.getGameComponents().getComponents<ImguiComponent>(); imgui)
+	{
+		UpdateRenderStateOnPressed(mKeyStates, SDLK_F1, imgui->getIsImguiVisibleRef());
+		if (imgui->getIsImguiVisible())
 		{
 			// stop processing input if imgui is shown
 			return;
 		}
-#endif // IMGUI_ENABLED
-
-		UpdateRenderStateOnPressed(mKeyStates, renderMode, SDLK_F2, &RenderModeComponent::getIsDrawDebugCollisionsEnabled, &RenderModeComponent::setIsDrawDebugCollisionsEnabled);
-		UpdateRenderStateOnPressed(mKeyStates, renderMode, SDLK_F3, &RenderModeComponent::getIsDrawDebugAiDataEnabled, &RenderModeComponent::setIsDrawDebugAiDataEnabled);
-		UpdateRenderStateOnPressed(mKeyStates, renderMode, SDLK_F4, &RenderModeComponent::getIsDrawLightsEnabled, &RenderModeComponent::setIsDrawLightsEnabled);
-		UpdateRenderStateOnPressed(mKeyStates, renderMode, SDLK_F5, &RenderModeComponent::getIsDrawVisibleEntitiesEnabled, &RenderModeComponent::setIsDrawVisibleEntitiesEnabled);
-		UpdateRenderStateOnPressed(mKeyStates, renderMode, SDLK_F6, &RenderModeComponent::getIsDrawDebugCharacterInfoEnabled, &RenderModeComponent::setIsDrawDebugCharacterInfoEnabled);
-		UpdateRenderStateOnPressed(mKeyStates, renderMode, SDLK_F7, &RenderModeComponent::getIsDrawDebugPrimitivesEnabled, &RenderModeComponent::setIsDrawDebugPrimitivesEnabled);
-		UpdateRenderStateOnPressed(mKeyStates, renderMode, SDLK_F8, &RenderModeComponent::getIsDrawDebugCellInfoEnabled, &RenderModeComponent::setIsDrawDebugCellInfoEnabled);
 	}
+#endif // IMGUI_ENABLED
 
 	bool isRunPressed = mKeyStates.isPressed(SDLK_LSHIFT) || mKeyStates.isPressed(SDLK_RSHIFT);
 
@@ -114,5 +104,16 @@ void ControlSystem::update()
 
 			movement->setSightDirection(transform->getLocation() - mouseHeroPos);
 		}
+	}
+
+	if (auto [renderMode] = gameData.getGameComponents().getComponents<RenderModeComponent>(); renderMode)
+	{
+		UpdateRenderStateOnPressed(mKeyStates, SDLK_F2, renderMode->getIsDrawDebugCollisionsEnabledRef());
+		UpdateRenderStateOnPressed(mKeyStates, SDLK_F3, renderMode->getIsDrawDebugAiDataEnabledRef());
+		UpdateRenderStateOnPressed(mKeyStates, SDLK_F4, renderMode->getIsDrawLightsEnabledRef());
+		UpdateRenderStateOnPressed(mKeyStates, SDLK_F5, renderMode->getIsDrawVisibleEntitiesEnabledRef());
+		UpdateRenderStateOnPressed(mKeyStates, SDLK_F6, renderMode->getIsDrawDebugCharacterInfoEnabledRef());
+		UpdateRenderStateOnPressed(mKeyStates, SDLK_F7, renderMode->getIsDrawDebugPrimitivesEnabledRef());
+		UpdateRenderStateOnPressed(mKeyStates, SDLK_F8, renderMode->getIsDrawDebugCellInfoEnabledRef());
 	}
 }
