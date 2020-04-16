@@ -63,6 +63,7 @@ endif()
 # uncomment to enable specific debug features
 # add_definitions(-DDETECT_MEMORY_LEAKS)
 # add_definitions(-DDETECT_DOUBLE_DELETE)
+add_definitions(-DIMGUI_ENABLED)
 
 # code generation
 execute_process(
@@ -125,6 +126,19 @@ add_dependencies(${APP_NAME} Polypartition)
 include_directories(${EXTERNALS_DIR}/sources/polypartition/include)
 target_compile_options(Polypartition PRIVATE ${EXTERNALS_CXX_FLAGS})
 
+# imgui
+add_library(Imgui EXCLUDE_FROM_ALL
+	${EXTERNALS_DIR}/sources/imgui/imgui.cpp
+	${EXTERNALS_DIR}/sources/imgui/imgui_demo.cpp
+	${EXTERNALS_DIR}/sources/imgui/imgui_draw.cpp
+	${EXTERNALS_DIR}/sources/imgui/imgui_widgets.cpp
+	${EXTERNALS_DIR}/sources/imgui/examples/imgui_impl_opengl2.cpp
+	${EXTERNALS_DIR}/sources/imgui/examples/imgui_impl_sdl.cpp
+)
+add_dependencies(${APP_NAME} Imgui)
+include_directories(${EXTERNALS_DIR}/sources/imgui)
+target_compile_options(Imgui PRIVATE ${EXTERNALS_CXX_FLAGS})
+
 set(GENERAL_PROJECT_LIBS
 #	liblua52
 
@@ -137,6 +151,7 @@ set(GENERAL_PROJECT_LIBS
 
 	Detour
 	Polypartition
+	Imgui
 
 	SDL2
 	SDL2_image

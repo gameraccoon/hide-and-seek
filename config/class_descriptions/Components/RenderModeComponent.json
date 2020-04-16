@@ -3,6 +3,12 @@
 	"description": "Component that stores information about the current render mode",
 	"attributes": [
 		{
+			"name": "isDrawImguiEnabled",
+			"type": "bool",
+			"default": " = false",
+			"flags": ["transient"]
+		},
+		{
 			"name": "isDrawLightsEnabled",
 			"type": "bool",
 			"default": " = true",
@@ -12,12 +18,6 @@
 			"name": "isDrawVisibleEntitiesEnabled",
 			"type": "bool",
 			"default": " = true",
-			"flags": ["transient"]
-		},
-		{
-			"name": "isDrawDebugFpsEnabled",
-			"type": "bool",
-			"default": " = false",
 			"flags": ["transient"]
 		},
 		{

@@ -32,6 +32,7 @@ public:
 
 	void update();
 	void initResources();
+	void shutdown();
 
 	SystemsFrameTime getPreviousFrameTimeData();
 	std::vector<std::string> getSystemNames();

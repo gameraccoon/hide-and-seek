@@ -14,6 +14,7 @@ public:
 
 	virtual void update() = 0;
 	virtual void initResources() {}
+	virtual void shutdown() {}
 
 	// for debug purposes
 	virtual std::string getName() = 0;

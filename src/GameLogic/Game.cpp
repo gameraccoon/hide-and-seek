@@ -21,6 +21,10 @@
 #include "GameLogic/Systems/AnimationSystem.h"
 #include "GameLogic/Systems/CameraSystem.h"
 
+#ifdef IMGUI_ENABLED
+#include "GameLogic/Systems/ImguiSystem.h"
+#endif // IMGUI_ENABLED
+
 #include "GameLogic/ComponentsRegistration.h"
 #include "GameLogic/Initialization/StateMachines.h"
 
@@ -80,6 +84,9 @@ void Game::initSystems()
 	mSystemsManager.registerSystem<AnimationSystem>(mWorldHolder, mTime);
 	mSystemsManager.registerSystem<RenderSystem>(mWorldHolder, mTime, getEngine(), getResourceManager(), mJobsWorkerManager);
 	mSystemsManager.registerSystem<DebugDrawSystem>(mWorldHolder, mTime, getEngine(), getResourceManager());
+#ifdef IMGUI_ENABLED
+	mSystemsManager.registerSystem<ImguiSystem>(mWorldHolder, mTime, getEngine());
+#endif // IMGUI_ENABLED
 }
 
 void Game::initResources()
@@ -94,4 +101,5 @@ void Game::onGameShutdown()
 	{
 		mSystemFrameRecords.printToFile(mSystemsManager.getSystemNames(), mSystemProfileOutputPath);
 	}
+	mSystemsManager.shutdown();
 }

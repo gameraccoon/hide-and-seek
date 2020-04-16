@@ -5,6 +5,7 @@
 #include "GameData/Components/TransformComponent.generated.h"
 #include "GameData/Components/WorldCachedDataComponent.generated.h"
 #include "GameData/Components/MovementComponent.generated.h"
+#include "GameData/Components/RenderModeComponent.generated.h"
 #include "GameData/World.h"
 #include "GameData/GameData.h"
 
@@ -17,6 +18,14 @@ CameraSystem::CameraSystem(WorldHolder& worldHolder, HAL::Engine& engine)
 
 void CameraSystem::update()
 {
+	GameData& gameData = mWorldHolder.getGameData();
+
+	auto [renderMode] = gameData.getGameComponents().getComponents<RenderModeComponent>();
+	if (renderMode && renderMode->getIsDrawImguiEnabled())
+	{
+		return;
+	}
+
 	World& world = mWorldHolder.getWorld();
 
 	std::optional<std::pair<EntityView, CellPos>> controlledEntity = world.getTrackedSpatialEntity(STR_TO_ID("ControlledEntity"));

@@ -5,6 +5,9 @@
 #include "HAL/Graphics/Renderer.h"
 #include "HAL/Base/Types.h"
 
+struct SDL_Window;
+union SDL_Event;
+
 namespace HAL
 {
 	class IGame;
@@ -25,6 +28,11 @@ namespace HAL
 
 		int getWidth() const;
 		int getHeight() const;
+
+		// for debug tools such as imgui
+		SDL_Window* getRawWindow();
+		void* getRawGlContext();
+		SDL_Event& getLastEventRef();
 
 	private:
 		const int WindowWidth;

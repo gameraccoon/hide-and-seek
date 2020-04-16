@@ -39,6 +39,15 @@ void SystemsManager::initResources()
 	}
 }
 
+void SystemsManager::shutdown()
+{
+	for (std::unique_ptr<System>& system : mSystems)
+	{
+		system->shutdown();
+	}
+	mSystems.clear();
+}
+
 SystemsFrameTime SystemsManager::getPreviousFrameTimeData()
 {
 	return mPreviousFrameTime;
