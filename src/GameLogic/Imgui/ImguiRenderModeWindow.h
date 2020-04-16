@@ -1,11 +1,9 @@
 #pragma once
 
-class WorldHolder;
-
 class ImguiRenderModeWindow
 {
 public:
-	void update(WorldHolder& worldHolder);
+	void update(class ImguiDebugData& debugData);
 
 	bool isVisible = false;
 };

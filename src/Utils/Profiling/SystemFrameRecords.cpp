@@ -4,13 +4,33 @@
 
 #include <fstream>
 
-void SystemFrameRecords::printToFile(const std::vector<std::string>& systemNames, const std::string& fileName)
+void SystemFrameRecords::setRecordsLimit(unsigned int newLimit)
+{
+	mRecordsLimit = newLimit;
+}
+
+void SystemFrameRecords::addFrame(SystemsFrameTime&& frameTime)
+{
+	if (mRecordsLimit != 0 && mSystemFrameRecords.size() + 1 > mRecordsLimit)
+	{
+		mSystemFrameRecords.erase(mSystemFrameRecords.begin());
+	}
+
+	mSystemFrameRecords.emplace_back(std::move(frameTime));
+}
+
+std::vector<SystemsFrameTime>& SystemFrameRecords::getFramesRef()
+{
+	return mSystemFrameRecords;
+}
+
+void SystemFrameRecords::printToFile(const std::vector<std::string>& systemNames, const std::string& fileName) const
 {
 	std::ofstream outStream(fileName);
 	print(std::move(systemNames), outStream);
 }
 
-void SystemFrameRecords::print(const std::vector<std::string>& systemNames, std::ostream& outStream)
+void SystemFrameRecords::print(const std::vector<std::string>& systemNames, std::ostream& outStream) const
 {
 	// printing in CSV format
 	outStream << "\"Total\"";
@@ -23,7 +43,7 @@ void SystemFrameRecords::print(const std::vector<std::string>& systemNames, std:
 	for (const auto& frameRecord : mSystemFrameRecords)
 	{
 		outStream << frameRecord.frameTime.count();
-		for (const auto& systemTime : frameRecord.systemTime)
+		for (const auto& systemTime : frameRecord.systemsTime)
 		{
 			outStream << "," << systemTime.count();
 		}

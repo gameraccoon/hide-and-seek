@@ -8,14 +8,15 @@
 #include "GameData/Components/RenderModeComponent.generated.h"
 
 #include "GameLogic/SharedManagers/WorldHolder.h"
+#include "GameLogic/Imgui/ImguiDebugData.h"
 
-void ImguiRenderModeWindow::update(WorldHolder& worldHolder)
+void ImguiRenderModeWindow::update(ImguiDebugData& debugData)
 {
-	GameData& gameData = worldHolder.getGameData();
+	GameData& gameData = debugData.worldHolder.getGameData();
 
-	if (auto [renderMode] = gameData.getGameComponents().getComponents<RenderModeComponent>(); renderMode)
+	if (isVisible)
 	{
-		if (isVisible)
+		if (auto [renderMode] = gameData.getGameComponents().getComponents<RenderModeComponent>(); renderMode)
 		{
 			ImGui::Begin("Render modes", &isVisible);
 

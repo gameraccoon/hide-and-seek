@@ -6,7 +6,7 @@ void SystemsManager::update()
 {
 #ifdef PROFILE_SYSTEMS
 	mThisFrameTime.frameTime = std::chrono::microseconds::zero();
-	mThisFrameTime.systemTime.clear();
+	mThisFrameTime.systemsTime.clear();
 #endif // PROFILE_SYSTEMS
 
 	for (std::unique_ptr<System>& system : mSystems)
@@ -22,7 +22,7 @@ void SystemsManager::update()
 		std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
 		auto timeDiff = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
 		mThisFrameTime.frameTime += timeDiff;
-		mThisFrameTime.systemTime.push_back(timeDiff);
+		mThisFrameTime.systemsTime.push_back(timeDiff);
 #endif // PROFILE_SYSTEMS
 	}
 

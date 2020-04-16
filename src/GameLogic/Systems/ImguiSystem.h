@@ -10,6 +10,7 @@
 
 #include "GameLogic/SharedManagers/WorldHolder.h"
 #include "GameLogic/SharedManagers/TimeData.h"
+#include "GameLogic/Imgui/ImguiDebugData.h"
 
 #include "GameLogic/Imgui/ImguiMainMenu.h"
 
@@ -23,7 +24,7 @@ public:
 	using KeyStatesMap = std::unordered_map<int, bool>;
 
 public:
-	ImguiSystem(WorldHolder& worldHolder, const TimeData& timeData, HAL::Engine& engine);
+	ImguiSystem(ImguiDebugData& debugData, HAL::Engine& engine);
 	~ImguiSystem() override = default;
 
 	void update() override;
@@ -32,9 +33,8 @@ public:
 	std::string getName() override { return "ImguiSystem"; }
 
 private:
-	WorldHolder& mWorldHolder;
-	const TimeData& mTime;
 	HAL::Engine& mEngine;
+	ImguiDebugData& mDebugData;
 
 	ImguiMainMenu mImguiMainMenu;
 };

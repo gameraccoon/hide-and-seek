@@ -16,6 +16,10 @@
 #include "GameLogic/SharedManagers/TimeData.h"
 #include "GameLogic/SharedManagers/WorldHolder.h"
 
+#ifdef IMGUI_ENABLED
+#include "GameLogic/Imgui/ImguiDebugData.h"
+#endif
+
 class Game : public HAL::GameBase
 {
 public:
@@ -45,4 +49,8 @@ private:
 	bool mProfileSystems = false;
 	SystemFrameRecords mSystemFrameRecords;
 	std::string mSystemProfileOutputPath = "systemProfile.csv";
+
+#ifdef IMGUI_ENABLED
+	ImguiDebugData mImguiDebugData{mWorldHolder, mSystemFrameRecords, {}};
+#endif // IMGUI_ENABLED
 };

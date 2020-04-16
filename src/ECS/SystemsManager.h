@@ -14,7 +14,7 @@
 struct SystemsFrameTime
 {
 	std::chrono::microseconds frameTime;
-	std::vector<std::chrono::microseconds> systemTime;
+	std::vector<std::chrono::microseconds> systemsTime;
 };
 #endif // PROFILE_SYSTEMS
 

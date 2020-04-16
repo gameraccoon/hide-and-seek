@@ -5,8 +5,9 @@
 #include "imgui/imgui.h"
 
 #include "GameLogic/SharedManagers/WorldHolder.h"
+#include "GameLogic/Imgui/ImguiDebugData.h"
 
-void ImguiMainMenu::update(WorldHolder& worldHolder)
+void ImguiMainMenu::update(ImguiDebugData& debugData)
 {
 	ImGui::Begin("Debug Menu");
 
@@ -17,7 +18,13 @@ void ImguiMainMenu::update(WorldHolder& worldHolder)
 		mRenderModeWindow.isVisible = !mRenderModeWindow.isVisible;
 	}
 
+	if (ImGui::Button("Systems Time Report"))
+	{
+		mSystemsTimeReportWindow.isVisible = !mSystemsTimeReportWindow.isVisible;
+	}
+
 	ImGui::End();
 
-	mRenderModeWindow.update(worldHolder);
+	mRenderModeWindow.update(debugData);
+	mSystemsTimeReportWindow.update(debugData);
 }

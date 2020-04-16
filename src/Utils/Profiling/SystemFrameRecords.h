@@ -7,14 +7,15 @@
 class SystemFrameRecords
 {
 public:
-	void addFrame(SystemsFrameTime&& frameTime)
-	{
-		mSystemFrameRecords.emplace_back(std::forward<SystemsFrameTime>(frameTime));
-	}
+	void setRecordsLimit(unsigned int newLimit);
 
-	void printToFile(const std::vector<std::string>& systemNames, const std::string& fileName);
-	void print(const std::vector<std::string>& systemNames, std::ostream& stream);
+	void addFrame(SystemsFrameTime&& frameTime);
+	std::vector<SystemsFrameTime>& getFramesRef();
+
+	void printToFile(const std::vector<std::string>& systemNames, const std::string& fileName) const;
+	void print(const std::vector<std::string>& systemNames, std::ostream& stream) const;
 
 private:
 	std::vector<SystemsFrameTime> mSystemFrameRecords;
+	unsigned int mRecordsLimit = 0;
 };

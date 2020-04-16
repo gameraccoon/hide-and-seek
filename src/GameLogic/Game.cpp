@@ -43,6 +43,11 @@ void Game::start(ArgumentsParser& arguments)
 
 	mProfileSystems = arguments.hasArgument("profile-systems");
 	mSystemProfileOutputPath = arguments.getArgumentValue("profile-systems", mSystemProfileOutputPath);
+	mSystemFrameRecords.setRecordsLimit(mProfileSystems ? 0u : 100u);
+
+#ifdef IMGUI_ENABLED
+	mImguiDebugData.systemNames = mSystemsManager.getSystemNames();
+#endif // IMGUI_ENABLED
 
 	// start the main loop
 	getEngine().start(this);
@@ -66,10 +71,7 @@ void Game::update(float dt)
 	mSystemsManager.update();
 	mKeyStates.clearLastFrameState();
 
-	if (mProfileSystems)
-	{
-		mSystemFrameRecords.addFrame(mSystemsManager.getPreviousFrameTimeData());
-	}
+	mSystemFrameRecords.addFrame(mSystemsManager.getPreviousFrameTimeData());
 }
 
 void Game::initSystems()
@@ -85,7 +87,7 @@ void Game::initSystems()
 	mSystemsManager.registerSystem<RenderSystem>(mWorldHolder, mTime, getEngine(), getResourceManager(), mJobsWorkerManager);
 	mSystemsManager.registerSystem<DebugDrawSystem>(mWorldHolder, mTime, getEngine(), getResourceManager());
 #ifdef IMGUI_ENABLED
-	mSystemsManager.registerSystem<ImguiSystem>(mWorldHolder, mTime, getEngine());
+	mSystemsManager.registerSystem<ImguiSystem>(mImguiDebugData, getEngine());
 #endif // IMGUI_ENABLED
 }
 

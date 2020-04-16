@@ -16,16 +16,15 @@
 
 #include "HAL/Base/Engine.h"
 
-ImguiSystem::ImguiSystem(WorldHolder& worldHolder, const TimeData& timeData, HAL::Engine& engine)
-	: mWorldHolder(worldHolder)
-	, mTime(timeData)
-	, mEngine(engine)
+ImguiSystem::ImguiSystem(ImguiDebugData& debugData, HAL::Engine& engine)
+	: mEngine(engine)
+	, mDebugData(debugData)
 {
 }
 
 void ImguiSystem::update()
 {
-	GameData& gameData = mWorldHolder.getGameData();
+	GameData& gameData = mDebugData.worldHolder.getGameData();
 
 	// check if we need to render imgui
 	if (auto [imgui] = gameData.getGameComponents().getComponents<ImguiComponent>(); imgui)
@@ -48,7 +47,7 @@ void ImguiSystem::update()
 	ImGui::NewFrame();
 
 	// update the window hierarchy
-	mImguiMainMenu.update(mWorldHolder);
+	mImguiMainMenu.update(mDebugData);
 
 	// rendering imgui to the viewport
 	ImGui::Render();

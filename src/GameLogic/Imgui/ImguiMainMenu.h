@@ -1,14 +1,14 @@
 #pragma once
 
 #include "GameLogic/Imgui/ImguiRenderModeWindow.h"
-
-class WorldHolder;
+#include "GameLogic/Imgui/ImguiSystemsTimeReportWindow.h"
 
 class ImguiMainMenu
 {
 public:
-	void update(WorldHolder& worldHolder);
+	void update(class ImguiDebugData& debugData);
 
 private:
 	ImguiRenderModeWindow mRenderModeWindow;
+	ImguiSystemsTimeReportWindow mSystemsTimeReportWindow;
 };
