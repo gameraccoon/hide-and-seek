@@ -51,6 +51,6 @@ private:
 	std::string mSystemProfileOutputPath = "systemProfile.csv";
 
 #ifdef IMGUI_ENABLED
-	ImguiDebugData mImguiDebugData{mWorldHolder, mSystemFrameRecords, {}};
+	ImguiDebugData mImguiDebugData{mWorldHolder, mTime, mSystemFrameRecords, {}};
 #endif // IMGUI_ENABLED
 };

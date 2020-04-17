@@ -12,7 +12,7 @@ void SystemsManager::update()
 	for (std::unique_ptr<System>& system : mSystems)
 	{
 #ifdef PROFILE_SYSTEMS
-	std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
+		std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
 #endif // PROFILE_SYSTEMS
 
 		// real work is being done here

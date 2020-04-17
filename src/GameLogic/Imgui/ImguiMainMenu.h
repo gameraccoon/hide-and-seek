@@ -6,7 +6,7 @@
 class ImguiMainMenu
 {
 public:
-	void update(class ImguiDebugData& debugData);
+	void update(struct ImguiDebugData& debugData);
 
 private:
 	ImguiRenderModeWindow mRenderModeWindow;

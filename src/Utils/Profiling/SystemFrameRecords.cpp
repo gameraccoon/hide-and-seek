@@ -11,6 +11,11 @@ void SystemFrameRecords::setRecordsLimit(unsigned int newLimit)
 
 void SystemFrameRecords::addFrame(SystemsFrameTime&& frameTime)
 {
+	if (!mIsRecordingActive)
+	{
+		return;
+	}
+
 	if (mRecordsLimit != 0 && mSystemFrameRecords.size() + 1 > mRecordsLimit)
 	{
 		mSystemFrameRecords.erase(mSystemFrameRecords.begin());
@@ -24,10 +29,25 @@ std::vector<SystemsFrameTime>& SystemFrameRecords::getFramesRef()
 	return mSystemFrameRecords;
 }
 
+void SystemFrameRecords::pauseRecording()
+{
+	mIsRecordingActive = false;
+}
+
+void SystemFrameRecords::resumeRecording()
+{
+	mIsRecordingActive = true;
+}
+
+bool SystemFrameRecords::isRecordingActive() const
+{
+	return mIsRecordingActive;
+}
+
 void SystemFrameRecords::printToFile(const std::vector<std::string>& systemNames, const std::string& fileName) const
 {
 	std::ofstream outStream(fileName);
-	print(std::move(systemNames), outStream);
+	print(systemNames, outStream);
 }
 
 void SystemFrameRecords::print(const std::vector<std::string>& systemNames, std::ostream& outStream) const

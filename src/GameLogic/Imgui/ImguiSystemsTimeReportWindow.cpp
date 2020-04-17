@@ -53,8 +53,28 @@ void ImguiSystemsTimeReportWindow::update(ImguiDebugData& debugData)
 			ImVec2(0, 100)
 		);
 
+		// Button to Pause or Resume the recording
+		if (debugData.systemRecords.isRecordingActive())
+		{
+			if (ImGui::Button("Pause Recording"))
+			{
+				debugData.systemRecords.pauseRecording();
+			}
+		}
+		else
+		{
+			if (ImGui::Button("Resume recording"))
+			{
+				debugData.systemRecords.resumeRecording();
+			}
+		}
+
+		// Slider that tells what frame we investigate
+		ImGui::SliderInt("Frame", &mCurrentFrame, 0, records.size() - 1);
+
 		// Frame time by systems plot
-		SystemsFrameTime& frame = records.back();
+		mCurrentFrame = std::min(mCurrentFrame, static_cast<int>(records.size() - 1));
+		SystemsFrameTime& frame = records[mCurrentFrame];
 		mMaxSystemTimeMs = std::max(mMaxSystemTimeMs, static_cast<float>(std::max_element(frame.systemsTime.begin(), frame.systemsTime.end())->count()) * 0.001f);
 		sprintf(overlay, "peak %.2f ms", static_cast<double>(mMaxSystemTimeMs));
 		ImGui::PlotHistogram(
