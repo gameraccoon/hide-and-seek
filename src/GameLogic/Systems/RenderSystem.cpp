@@ -122,11 +122,18 @@ class VisibilityPolygonCalculationJob : public Jobs::BaseJob
 public:
 	struct Result
 	{
+		Result() = default;
+		Result(const std::vector<Vector2D>& polygon, SpatialPoint location)
+			: polygon(polygon)
+			, location(location)
+		{
+		}
+
 		std::vector<Vector2D> polygon;
 		SpatialPoint location;
 	};
 
-	using FinalizeFn = std::function<void(const std::vector<Result>&, Vector2D)>;
+	using FinalizeFn = std::function<void(std::vector<Result>&&)>;
 	using CollidableComponents = TupleVector<CollisionComponent*, TransformComponent*>;
 
 public:
@@ -149,18 +156,8 @@ public:
 		{
 			auto [light, transform] = componentsToProcess[i];
 
-			// find some object that got changed since we calculated them last time
-			auto it = std::find_if(std::begin(mCollidableComponents), std::end(mCollidableComponents), [lastUpdateTimestamp = light->getUpdateTimestamp()](const std::tuple<CollisionComponent*, TransformComponent*>& set)
-			{
-				GameplayTimestamp lightUpdateTimestamp = std::get<1>(set)->getUpdateTimestamp();
-				return lightUpdateTimestamp > lastUpdateTimestamp && std::get<0>(set)->getGeometry().type == HullType::Angular;
-			});
-
-			if (it != mCollidableComponents.end())
-			{
-				visibilityPolygonCalculator.calculateVisibilityPolygon(light->getCachedVisibilityPolygonRef(), mCollidableComponents, SpatialPoint(transform->getLocation(), transform->getCellPos()), mMaxFov);
-				light->setUpdateTimestamp(mTimestamp);
-			}
+			visibilityPolygonCalculator.calculateVisibilityPolygon(light->getCachedVisibilityPolygonRef(), mCollidableComponents, SpatialPoint(transform->getLocation(), transform->getCellPos()), mMaxFov);
+			light->setUpdateTimestamp(mTimestamp);
 
 			const std::vector<Vector2D>& visibilityPolygon = light->getCachedVisibilityPolygon();
 
@@ -179,7 +176,7 @@ public:
 	{
 		if (mFinalizeFn)
 		{
-			mFinalizeFn(mCalculationResults, mMaxFov);
+			mFinalizeFn(std::move(mCalculationResults));
 		}
 	}
 
@@ -216,48 +213,66 @@ void RenderSystem::drawLights(SpatialEntityManager& managerGroup, SpatialPoint p
 	{
 		return;
 	}
+
+	// get all the collidable components
 	TupleVector<CollisionComponent*, TransformComponent*> collidableComponents;
 	managerGroup.getComponents<CollisionComponent, TransformComponent>(collidableComponents);
 
-	TupleVector<LightComponent*, TransformComponent*> componentSets;
-	managerGroup.getComponents<LightComponent, TransformComponent>(componentSets);
+	// remove entities that can't cast shadows
+	collidableComponents.erase(
+		std::remove_if(
+			std::begin(collidableComponents),
+			std::end(collidableComponents),
+			[](auto& a){ return std::get<0>(a)->getGeometry().type != HullType::Angular; }
+		),
+		std::end(collidableComponents)
+	);
 
+	// get lights
+	TupleVector<LightComponent*, TransformComponent*> lightComponentSets;
+	managerGroup.getComponents<LightComponent, TransformComponent>(lightComponentSets);
+
+	// determine the borders of the location we're interested in
 	Vector2D emitterPositionBordersLT = playerSightPosition.pos - screenHalfSize - maxFov*0.5;
 	Vector2D emitterPositionBordersRB = playerSightPosition.pos + screenHalfSize + maxFov*0.5;
 
 	// exclude lights that are too far to be visible
-	componentSets.erase(
+	lightComponentSets.erase(
 		std::remove_if(
-			std::begin(componentSets),
-			std::end(componentSets),
+			std::begin(lightComponentSets),
+			std::end(lightComponentSets),
 			[emitterPositionBordersLT, emitterPositionBordersRB](auto& componentSet)
 			{
 				return !std::get<1>(componentSet)->getLocation().isInside(emitterPositionBordersLT, emitterPositionBordersRB);
 			}
 		),
-		std::end(componentSets)
+		std::end(lightComponentSets)
 	);
 
-	if (!componentSets.empty())
+	if (!lightComponentSets.empty())
 	{
+		// collect the results from all the threads to one vector
+		std::vector<VisibilityPolygonCalculationJob::Result> allResults;
+		allResults.reserve(lightComponentSets.size());
+
+		// prepare function that will collect the calculated data
+		auto finalizeFn = [&allResults](std::vector<VisibilityPolygonCalculationJob::Result>&& results)
+		{
+			std::move(results.begin(), results.end(), std::back_inserter(allResults));
+		};
+
+		// calculate how many threads we need
 		size_t threadsCount = mJobsWorkerManager.getThreadsCount();
 		AssertFatal(threadsCount != 0, "Jobs Worker Manager threads count can't be zero");
-
 		size_t chunksCount = GetJobDivisor(threadsCount + 1);
-		size_t chunkSize = std::max((componentSets.size() / chunksCount) + (componentSets.size() % chunksCount > 1 ? 1 : 0), static_cast<size_t>(1));
+		size_t componentsToRecalculate = lightComponentSets.size();
+		size_t chunkSize = std::max((componentsToRecalculate / chunksCount) + (componentsToRecalculate % chunksCount > 1 ? 1 : 0), 1ul);
 
 		std::vector<Jobs::BaseJob::UniquePtr> jobs;
 		size_t chunkItemIndex = 0;
 
-		VisibilityPolygonCalculationJob::FinalizeFn finalizeFn = [this, drawShift, &lightSprite, cellPos = playerSightPosition.cellPos](const std::vector<VisibilityPolygonCalculationJob::Result>& results, Vector2D maxFov)
-		{
-			for (auto& calcResult : results)
-			{
-				this->drawVisibilityPolygon(lightSprite, calcResult.polygon, maxFov, drawShift + calcResult.location.pos + SpatialWorldData::GetCellRealDistance(calcResult.location.cellPos - cellPos));
-			}
-		};
-
-		for (auto& set : componentSets)
+		// fill the jobs
+		for (const auto& lightData : lightComponentSets)
 		{
 			if (chunkItemIndex == 0)
 			{
@@ -266,7 +281,7 @@ void RenderSystem::drawLights(SpatialEntityManager& managerGroup, SpatialPoint p
 
 			VisibilityPolygonCalculationJob* jobData = static_cast<VisibilityPolygonCalculationJob*>(jobs.rbegin()->get());
 
-			jobData->componentsToProcess.emplace_back(set);
+			jobData->componentsToProcess.emplace_back(lightData);
 
 			++chunkItemIndex;
 			if (chunkItemIndex >= chunkSize)
@@ -275,7 +290,25 @@ void RenderSystem::drawLights(SpatialEntityManager& managerGroup, SpatialPoint p
 			}
 		}
 
+		// start heavy calculations
 		mJobsWorkerManager.runJobs(std::move(jobs));
+
+		// sort lights in some determined order
+		std::sort(allResults.begin(), allResults.end(), [](auto& a, auto& b)
+		{
+			return a.location.pos.x + a.location.pos.y < b.location.pos.x + b.location.pos.y;
+		});
+
+		// draw the results on screen
+		for (auto& result : allResults)
+		{
+			drawVisibilityPolygon(
+				lightSprite,
+				result.polygon,
+				maxFov,
+				drawShift + result.location.pos + SpatialWorldData::GetCellRealDistance(result.location.cellPos - playerSightPosition.cellPos)
+			);
+		}
 	}
 
 	// draw player visibility polygon
