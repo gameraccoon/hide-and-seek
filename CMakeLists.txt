@@ -9,7 +9,10 @@ project(${APP_NAME})
 set(EXECUTABLE_NAME Game)
 
 # parameters
-option(DEBUG_MODE "Debug?" ON)
+option(DEBUG_MODE "Enable debug features" ON)
+option(MEMLEAK_DETECTION "Enable memory leaks detection code (slow)" OFF)
+option(MEMLEAK_REDEFINE_NEW "Redefine default new (can conflict with some libs)" OFF)
+option(IMGUI_ENABLED "Enable imgui in the build" ON)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
@@ -60,10 +63,16 @@ else()
 	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_RELEASE} -O2")
 endif()
 
-# uncomment to enable specific debug features
-# add_definitions(-DDETECT_MEMORY_LEAKS)
-# add_definitions(-DDETECT_DOUBLE_DELETE)
-add_definitions(-DIMGUI_ENABLED)
+if(MEMLEAK_DETECTION)
+	add_definitions(-DDETECT_MEMORY_LEAKS)
+	if(MEMLEAK_REDEFINE_NEW)
+		add_definitions(-DREDEFINE_NEW)
+	endif()
+endif()
+
+if(IMGUI_ENABLED)
+	add_definitions(-DIMGUI_ENABLED)
+endif()
 
 # code generation
 execute_process(

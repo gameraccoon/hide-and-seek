@@ -1,8 +1,5 @@
 #pragma once
 
-// use these preprocessor definitions to enable leak detection features
-// DETECT_MEMORY_LEAKS, DETECT_DOUBLE_DELETE
-
 #ifdef DETECT_MEMORY_LEAKS
 
 #include <mutex>
@@ -13,268 +10,94 @@
 class LeakDetectorClass
 {
 public:
-    LeakDetectorClass()
-    {
-        const std::string LOG_FILE = std::string("./logs/").append("leaks_report.txt");
+	static LeakDetectorClass& Get()
+	{
+		static LeakDetectorClass instance;
+		return instance;
+	}
 
-        namespace fs = std::filesystem;
-        if (!fs::is_directory("./logs") || !fs::exists("./logs"))
-        {
-            fs::create_directory("logs");
-        }
+	~LeakDetectorClass();
 
-        mLogFileStream = std::ofstream(LOG_FILE, std::ios_base::trunc);
-        mLogFileStream << std::showbase;
-        writeLine("Memory leak report file created");
-    }
-
-    template<typename... Args>
-    void writeLine(Args... args)
-    {
-        if (mLogFileStream.is_open())
-        {
-            ((mLogFileStream << args), ...);
-            mLogFileStream << "\n";
-        }
-
-        ((std::clog << args), ...);
-        std::clog << "\n";
-    }
-
-    ~LeakDetectorClass()
-    {
-        PrintLeaked();
-
-        AllocatedPtr* item = allocatedList;
-        while (item != nullptr)
-        {
-            AllocatedPtr* next = item->next;
-            item->~AllocatedPtr();
-            free(item);
-            item = next;
-        }
-
-        item = freedList;
-        while (item != nullptr)
-        {
-            AllocatedPtr* next = item->next;
-            item->~AllocatedPtr();
-            free(item);
-            item = next;
-        }
-
-        writeLine("Memory leak report file closed");
-    }
-
-    void PrintLeaked() noexcept
-    {
-        std::lock_guard<std::mutex> g(mutex);
-
-        writeLine("Memory leak report started\n");
-
-        AllocatedPtr* item = allocatedList;
-        while (item != nullptr)
-        {
-            writeLine("Error: Leaked ", item->size, " bytes (", std::hex, item->pointer, std::dec, ") allocated in ", item->file, "(", item->line, ")");
-            item = item->next;
-        }
-        writeLine("\nMemory leak report finished");
-    }
-
-    void AddAllocated(void* p, size_t size, const char* file, int line) noexcept
-    {
-        std::lock_guard<std::mutex> g(mutex);
-
-        void* nextItemAddr = malloc(sizeof(AllocatedPtr));
-        AllocatedPtr* nextItem = new (nextItemAddr) AllocatedPtr(p, size, file, line, allocatedList);
-        allocatedList = nextItem;
-
-        if constexpr (detectDoubleDeletion)
-        {
-            clearFreedPointer(p);
-        }
-    }
-
-    void AddDeallocated(void* p, const char* file, int line) noexcept
-    {
-        std::lock_guard<std::mutex> g(mutex);
-
-        if (p == nullptr)
-        {
-            return;
-        }
-
-        if (allocatedList == nullptr)
-        {
-            exploreNotAllocatedPtr(p, file, line);
-            return;
-        }
-
-        if (allocatedList->pointer == p)
-        {
-            AllocatedPtr* item = allocatedList;
-            allocatedList = allocatedList->next;
-            freeAllocatedItem(item);
-            return;
-        }
-
-        AllocatedPtr* item = allocatedList;
-
-        while (item->next != nullptr)
-        {
-            AllocatedPtr* next = item->next;
-            if (next->pointer == p)
-            {
-                item->next = next->next;
-                freeAllocatedItem(next);
-                return;
-            }
-            item = next;
-        }
-
-        exploreNotAllocatedPtr(p, file, line);
-    }
+	void AddAllocated(void* p, size_t size, const char* file, int line) noexcept;
+	void AddDeallocated(void* p, const char* file, int line) noexcept;
 
 private:
+	// single-linked list node
     struct AllocatedPtr
     {
         AllocatedPtr(void* pointer, size_t size, const char* file, int line, AllocatedPtr* next)
-            : pointer(pointer), size(size), file(file), line(line), next(next) {}
+			: pointer(pointer), next(next), size(size), file(file), line(line) {}
 
         void* pointer;
+		AllocatedPtr* next;
         size_t size;
         const char* file;
         int line;
-        AllocatedPtr* next;
     };
 
-    void freeAllocatedItem(AllocatedPtr* item)
-    {
-        if constexpr (detectDoubleDeletion)
-        {
-            item->next = freedList;
-            freedList = item;
-        }
-        else
-        {
-            item->~AllocatedPtr();
-            free(item);
-        }
-    }
+	enum class IssueType
+	{
+		Leak,
+		DoubleDeallocation,
+		DeallocationNotAllocated
+	};
 
-    void exploreNotAllocatedPtr(void* p, const char* file, int line)
-    {
-        if constexpr (detectDoubleDeletion)
-        {
-            AllocatedPtr* item = freedList;
-            while (item != nullptr)
-            {
-                if (item->pointer == p)
-                {
-                    writeLine("Error: Detected a try to deallocate memory twice (", std::hex, p, std::dec, ") ", item->size, " bytes ", file, "(", line, ") allocated in ", item->file, "(", item->line, ")");
-                    return;
-                }
-                item = item->next;
-            }
-            writeLine("Error: Detected a try to deallocate not allocated pointer (", std::hex, p, std::dec, ") at", file, "(", line, ")");
-        }
-        else
-        {
-            writeLine("Error: Detected a try to deallocate not allocated pointer or deallocate memory twice (", std::hex, p, std::dec, ") at ", file, "(", line, ")");
-        }
-    }
+	// double-linked list node
+	struct MemoryIssue
+	{
+		MemoryIssue(void* pointer, IssueType type, size_t size, const char* file, int line, const char* file2, int line2)
+			: pointer(pointer), type(type), size(size), file(file), line(line), file2(file2), line2(line2) {}
 
-    void clearFreedPointer(void* p)
-    {
-        if (freedList != nullptr)
-        {
-            AllocatedPtr* item = freedList;
+		MemoryIssue* next = nullptr;
+		void* pointer;
+		IssueType type;
+		size_t size;
+		const char* file;
+		int line;
+		const char* file2;
+		int line2;
+	};
 
-            if (freedList->next == p)
-            {
-                freedList = item->next;
-                item->~AllocatedPtr();
-                free(item);
-                return;
-            }
+	void freeAllocatedItem(AllocatedPtr* item);
+	void clearFreedPointer(void* p);
 
-            while (item->next != nullptr)
-            {
-                AllocatedPtr* next = item->next;
-                if (next->pointer == p)
-                {
-                    item->next = next->next;
-                    break;
-                }
-                item = next;
-            }
-        }
-    }
+	void exploreNotAllocatedPtr(void* p, const char* file, int line);
 
-    AllocatedPtr* allocatedList = nullptr;
-    AllocatedPtr* freedList = nullptr;
+	void addIssue(void* pointer, IssueType type, size_t size, const char* file, int line, const char* file2 = nullptr, int line2 = 0);
+	void printIssues() noexcept;
 
-    std::mutex mutex;
+	void freeAllocatedList();
+	void freeFreedList();
+	void freeIssuesList(MemoryIssue* listBegin);
 
-    std::ofstream mLogFileStream;
+	AllocatedPtr* allocatedList = nullptr;
+	AllocatedPtr* freedList = nullptr;
 
-    constexpr static bool detectDoubleDeletion =
-#ifdef DETECT_DOUBLE_DELETE
-        true;
-#else
-        false;
-#endif // DETECT_DOUBLE_DELETE
+	MemoryIssue* memoryIssuesFirst = nullptr;
+	MemoryIssue* memoryIssuesLast = nullptr;
 
-} inline LeakDetector;
+	std::recursive_mutex mutex;
+};
 
-inline void* operator new(size_t size, const char* file, int line)
-{
-    void* p = malloc(size);
-    LeakDetector.AddAllocated(p, size, file, line);
-    return p;
-}
+void* operator new(size_t size, const char* file, int line);
+void* operator new[](size_t size, const char* file, int line);
+void operator delete(void* ptr, const char* file, int line) noexcept;
+void operator delete[](void* ptr, const char* file, int line) noexcept;
 
-inline void* operator new[](size_t size, const char* file, int line)
-{
-    void* p = malloc(size);
-    LeakDetector.AddAllocated(p, size, file, line);
-    return p;
-}
+void* operator new(size_t size);
+void* operator new[](size_t size);
 
-inline void operator delete(void* ptr, const char* file, int line)
-{
-    LeakDetector.AddDeallocated(ptr, file, line);
-    free(ptr);
-}
+void operator delete(void* p) noexcept;
+void operator delete(void* p, size_t /*size*/) noexcept;
 
-inline void operator delete[](void* ptr, const char* file, int line)
-{
-    LeakDetector.AddDeallocated(ptr, file, line);
-    free(ptr);
-}
-
-inline void* operator new(size_t size)
-{
-    return operator new(size, "<Unknown>", 0);
-}
-
-inline void* operator new[](size_t size)
-{
-    return operator new[](size, "<Unknown>", 0);
-}
-
-inline void operator delete(void* p)
-{
-    operator delete(p, "<Unknown>", 0);
-}
-
-inline void operator delete[](void* p)
-{
-    operator delete[](p, "<Unknown>", 0);
-}
+void operator delete[](void* p) noexcept;
+void operator delete[](void* p, size_t /*size*/) noexcept;
 
 #define DEBUG_NEW new(__FILE__, __LINE__)
+
+#ifdef REDEFINE_NEW
 #define new DEBUG_NEW
+#endif
 
 #define DEBUG_DELETE(p) operator delete(p, __FILE__, __LINE__)
 
