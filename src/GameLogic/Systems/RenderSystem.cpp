@@ -266,7 +266,7 @@ void RenderSystem::drawLights(SpatialEntityManager& managerGroup, SpatialPoint p
 		AssertFatal(threadsCount != 0, "Jobs Worker Manager threads count can't be zero");
 		size_t chunksCount = GetJobDivisor(threadsCount + 1);
 		size_t componentsToRecalculate = lightComponentSets.size();
-		size_t chunkSize = std::max((componentsToRecalculate / chunksCount) + (componentsToRecalculate % chunksCount > 1 ? 1 : 0), 1ul);
+		size_t chunkSize = std::max((componentsToRecalculate / chunksCount) + (componentsToRecalculate % chunksCount > 1 ? 1 : 0), static_cast<size_t>(1));
 
 		std::vector<Jobs::BaseJob::UniquePtr> jobs;
 		size_t chunkItemIndex = 0;
