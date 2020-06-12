@@ -4,8 +4,6 @@
 
 #include "Base/Types/TemplateAliases.h"
 
-#include "GameData/Spatial/SpatialPoint.h"
-
 class CollisionComponent;
 class TransformComponent;
 
@@ -20,7 +18,7 @@ public:
 	VisibilityPolygonCalculator() = default;
 
 	// returns reference to the calculated polygon
-	void calculateVisibilityPolygon(std::vector<Vector2D>& outVisibilityPolygon, const TupleVector<CollisionComponent*, TransformComponent*>& components, SpatialPoint sourcePos, const Vector2D& polygonMaxSize);
+	void calculateVisibilityPolygon(std::vector<Vector2D>& outVisibilityPolygon, const TupleVector<CollisionComponent*, TransformComponent*>& components, Vector2D sourcePos, Vector2D polygonMaxSize);
 
 	// copying objects of this class has a little sense and usually indicates a poor use
 	VisibilityPolygonCalculator(VisibilityPolygonCalculator const&) = delete;

@@ -71,7 +71,7 @@ void VisibilityPolygonCalculator::AddPotentiallyVisiblePoint(bool isVisible, boo
 	}
 }
 
-void VisibilityPolygonCalculator::calculateVisibilityPolygon(std::vector<Vector2D>& outVisibilityPolygon, const TupleVector<CollisionComponent*, TransformComponent*>& components, SpatialPoint sourcePos, const Vector2D& polygonMaxSize)
+void VisibilityPolygonCalculator::calculateVisibilityPolygon(std::vector<Vector2D>& outVisibilityPolygon, const TupleVector<CollisionComponent*, TransformComponent*>& components, Vector2D sourcePos, Vector2D polygonMaxSize)
 {
 	outVisibilityPolygon.clear();
 
@@ -101,7 +101,7 @@ void VisibilityPolygonCalculator::calculateVisibilityPolygon(std::vector<Vector2
 	// find borders that facing the light source and their points
 	for (const auto& [collision, transform] : components)
 	{
-		Vector2D shift = transform->getLocation() - sourcePos.pos + SpatialWorldData::GetCellRealDistance(transform->getCellPos() - sourcePos.cellPos);
+		Vector2D shift = transform->getLocation() - sourcePos;
 		const Hull& hull = collision->getGeometry();
 		bool isPreviousVisible = false;
 		bool isNotFirst = false;

@@ -35,13 +35,11 @@ void TestCircularUnitsSystem::update()
 	}
 
 	Vector2D targetLocation = playerTransform->getLocation();
-	CellPos targetCell = playerEntity->second;
 
 	SpatialEntityManager spatialManager = world.getSpatialData().getAllCellManagers();
-	spatialManager.forEachSpatialComponentSet<AiControllerComponent, TransformComponent, MovementComponent>([targetLocation, targetCell, dt](WorldCell* cell, AiControllerComponent* /*aiController*/, TransformComponent* transform, MovementComponent* movement)
+	spatialManager.forEachComponentSet<AiControllerComponent, TransformComponent, MovementComponent>([targetLocation, dt](AiControllerComponent* /*aiController*/, TransformComponent* transform, MovementComponent* movement)
 	{
-		Vector2D cellPosDiff = SpatialWorldData::GetCellRealDistance(targetCell - cell->getPos());
-		Vector2D nextStep = targetLocation - transform->getLocation() + cellPosDiff;
+		Vector2D nextStep = targetLocation - transform->getLocation();
 		movement->setMoveDirection(nextStep);
 		movement->setNextStep(nextStep * movement->getOriginalSpeed() * dt);
 		movement->setSpeed(movement->getOriginalSpeed());

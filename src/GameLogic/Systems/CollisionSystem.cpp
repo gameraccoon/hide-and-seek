@@ -45,17 +45,14 @@ void CollisionSystem::update()
 
 	world.getSpatialData().getAllCellManagers().forEachComponentSet<CollisionComponent, TransformComponent, MovementComponent>([&collidableComponentGroups](CollisionComponent* collisionComponent, TransformComponent* transformComponent, MovementComponent* movementComponent)
 	{
-		CellPos cellPos = transformComponent->getCellPos();
 		Vector2D resist = ZERO_VECTOR;
 		for (auto& pair : collidableComponentGroups)
 		{
-			Vector2D cellPosDiff = SpatialWorldData::GetCellRealDistance(pair.cell->getPos() - cellPos);
-
 			for (auto [entity, collision, transform] : pair.components)
 			{
 				if (collision != collisionComponent)
 				{
-					bool doCollide = Collide::DoCollide(collisionComponent, transformComponent->getLocation() - cellPosDiff + movementComponent->getNextStep(), collision, transform->getLocation(), resist);
+					bool doCollide = Collide::DoCollide(collisionComponent, transformComponent->getLocation() + movementComponent->getNextStep(), collision, transform->getLocation(), resist);
 
 					if (doCollide)
 					{

@@ -50,9 +50,7 @@ void CameraSystem::update()
 
 			auto [controledEntityTransform] = controlledEntity->first.getComponents<TransformComponent>();
 
-			Vector2D cameraCellShift = SpatialWorldData::GetCellRealDistance(controlledEntity->second - mainCamera->second);
-
-			Vector2D cameraNewPos = controledEntityTransform->getLocation() + cameraCellShift + (mouseScreenPos - screenHalfSize) * cameraMobilityRate;
+			Vector2D cameraNewPos = controledEntityTransform->getLocation() + (mouseScreenPos - screenHalfSize) * cameraMobilityRate;
 			Vector2D cameraMove = cameraNewPos - cameraTransform->getLocation();
 
 			cameraMovement->setNextStep(cameraMove);
@@ -64,7 +62,6 @@ void CameraSystem::update()
 				std::tie(worldCachedData) = world.getWorldComponents().getComponents<WorldCachedDataComponent>();
 			}
 			worldCachedData->setCameraPos(cameraNewPos);
-			worldCachedData->setCameraCellPos(mainCamera->second);
 			worldCachedData->setScreenSize(screenSize);
 		}
 	}

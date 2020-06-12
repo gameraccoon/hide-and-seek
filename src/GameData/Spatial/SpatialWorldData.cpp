@@ -158,7 +158,6 @@ static void RedistributeSpatialEntitiesBetweenCells(SpatialWorldData& spatialDat
 		for (auto [entity, transform] : cellData.entities)
 		{
 			std::pair<CellPos, Vector2D> newPos = SpatialWorldData::TransformCellFromOldSize(transform->getLocation(), cellData.cell.getPos(), oldSize);
-			transform->setCellPos(newPos.first);
 			transform->setLocation(newPos.second);
 			if (cellData.cell.getPos() != newPos.first)
 			{
@@ -167,14 +166,6 @@ static void RedistributeSpatialEntitiesBetweenCells(SpatialWorldData& spatialDat
 			}
 		}
 	}
-}
-
-static void UpdateCachedSpatialPos(SpatialWorldData& spatialData)
-{
-	SpatialEntityManager spatialEntityManager = spatialData.getAllCellManagers();
-	spatialEntityManager.forEachSpatialComponentSet<TransformComponent>([](WorldCell* cell, TransformComponent* transform){
-		transform->setCellPos(cell->getPos());
-	});
 }
 
 void SpatialWorldData::fromJson(const nlohmann::json& json, const ComponentFactory& componentFactory)
@@ -193,5 +184,15 @@ void SpatialWorldData::fromJson(const nlohmann::json& json, const ComponentFacto
 		RedistributeSpatialEntitiesBetweenCells(*this, static_cast<float>(cellSize));
 	}
 
-	UpdateCachedSpatialPos(*this);
+	initAbsoluteLocations();
+}
+
+void SpatialWorldData::initAbsoluteLocations()
+{
+	getAllCellManagers().forEachSpatialComponentSet<TransformComponent>([](WorldCell* cell, TransformComponent* transform)
+	{
+		CellPos cellPos = cell->getPos();
+		Vector2D relativeLocation = transform->getLocation();
+		transform->setLocation(Vector2D(cellPos.x * CellSize + relativeLocation.x, cellPos.y * CellSize + relativeLocation.y));
+	});
 }

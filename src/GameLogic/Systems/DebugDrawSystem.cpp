@@ -88,9 +88,9 @@ void DebugDrawSystem::update()
 	{
 		const Graphics::Sprite& collisionSprite = mResourceManager.getResource<Graphics::Sprite>(mCollisionSpriteHandle);
 		Graphics::QuadUV quadUV = collisionSprite.getUV();
-		spatialManager.forEachSpatialComponentSet<CollisionComponent, TransformComponent>([&collisionSprite, &quadUV, drawShift, &renderer, cameraCell](WorldCell* cell, CollisionComponent* collision, TransformComponent* transform)
+		spatialManager.forEachComponentSet<CollisionComponent, TransformComponent>([&collisionSprite, &quadUV, drawShift, &renderer, cameraCell](CollisionComponent* collision, TransformComponent* transform)
 		{
-			Vector2D location = SpatialWorldData::GetRelativeLocation(cameraCell, cell->getPos(), transform->getLocation() + drawShift);
+			Vector2D location = transform->getLocation() + drawShift;
 			renderer.render(*collisionSprite.getSurface(),
 				Vector2D(collision->getBoundingBox().minX + location.x, collision->getBoundingBox().minY + location.y),
 				Vector2D(collision->getBoundingBox().maxX-collision->getBoundingBox().minX,
@@ -213,9 +213,9 @@ void DebugDrawSystem::update()
 	if (renderMode && renderMode->getIsDrawDebugCharacterInfoEnabled())
 	{
 		const Graphics::Font& font = mResourceManager.getResource<Graphics::Font>(mFontHandle);
-		spatialManager.forEachSpatialComponentSet<CharacterStateComponent, TransformComponent>([&renderer, &font, drawShift, cameraCell](WorldCell* cell, CharacterStateComponent* characterState, TransformComponent* transform)
+		spatialManager.forEachComponentSet<CharacterStateComponent, TransformComponent>([&renderer, &font, drawShift, cameraCell](CharacterStateComponent* characterState, TransformComponent* transform)
 		{
-			Vector2D location = SpatialWorldData::GetRelativeLocation(cameraCell, cell->getPos(), transform->getLocation() + drawShift);
+			Vector2D location = transform->getLocation() + drawShift;
 			renderer.renderText(font, location, {255, 255, 255, 255}, ID_TO_STR(enum_to_string(characterState->getState())).c_str());
 		});
 	}

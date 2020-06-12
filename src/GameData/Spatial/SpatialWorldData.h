@@ -41,6 +41,9 @@ public:
 	nlohmann::json toJson(const ComponentFactory& componentFactory) const;
 	void fromJson(const nlohmann::json& json, const ComponentFactory& componentFactory);
 
+private:
+	void initAbsoluteLocations();
+
 public:
 	static constexpr int CellSizeInt = 200;
 	static constexpr float CellSize = static_cast<float>(CellSizeInt);

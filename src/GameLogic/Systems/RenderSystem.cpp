@@ -60,14 +60,14 @@ void RenderSystem::update()
 
 	if (!renderMode || renderMode->getIsDrawLightsEnabled())
 	{
-		drawLights(spatialManager, SpatialPoint(cameraLocation, cameraCell), drawShift, maxFov, screenHalfSize);
+		drawLights(spatialManager, cameraLocation, drawShift, maxFov, screenHalfSize);
 	}
 
 	if (!renderMode || renderMode->getIsDrawVisibleEntitiesEnabled())
 	{
-		spatialManager.forEachSpatialComponentSet<RenderComponent, TransformComponent>([&drawShift, &resourceManager = mResourceManager, &renderer, cameraCell](WorldCell* cell, RenderComponent* render, TransformComponent* transform)
+		spatialManager.forEachComponentSet<RenderComponent, TransformComponent>([&drawShift, &resourceManager = mResourceManager, &renderer, cameraCell](RenderComponent* render, TransformComponent* transform)
 		{
-			Vector2D location = SpatialWorldData::GetRelativeLocation(cameraCell, cell->getPos(), transform->getLocation() + drawShift);
+			Vector2D location = transform->getLocation() + drawShift;
 			float rotation = transform->getRotation().getValue();
 			for (const auto& data : render->getSpriteDatas())
 			{
@@ -123,14 +123,14 @@ public:
 	struct Result
 	{
 		Result() = default;
-		Result(const std::vector<Vector2D>& polygon, SpatialPoint location)
+		Result(const std::vector<Vector2D>& polygon, Vector2D location)
 			: polygon(polygon)
 			, location(location)
 		{
 		}
 
 		std::vector<Vector2D> polygon;
-		SpatialPoint location;
+		Vector2D location;
 	};
 
 	using FinalizeFn = std::function<void(std::vector<Result>&&)>;
@@ -156,7 +156,7 @@ public:
 		{
 			auto [light, transform] = componentsToProcess[i];
 
-			visibilityPolygonCalculator.calculateVisibilityPolygon(light->getCachedVisibilityPolygonRef(), mCollidableComponents, SpatialPoint(transform->getLocation(), transform->getCellPos()), mMaxFov);
+			visibilityPolygonCalculator.calculateVisibilityPolygon(light->getCachedVisibilityPolygonRef(), mCollidableComponents, transform->getLocation(), mMaxFov);
 			light->setUpdateTimestamp(mTimestamp);
 
 			const std::vector<Vector2D>& visibilityPolygon = light->getCachedVisibilityPolygon();
@@ -167,8 +167,7 @@ public:
 				std::end(visibilityPolygon),
 				std::begin(mCalculationResults[i].polygon)
 			);
-			mCalculationResults[i].location.pos = transform->getLocation();
-			mCalculationResults[i].location.cellPos = transform->getCellPos();
+			mCalculationResults[i].location = transform->getLocation();
 		}
 	}
 
@@ -204,7 +203,7 @@ static size_t GetJobDivisor(size_t maxThreadsCount)
 	return maxThreadsCount * 3 - 1;
 }
 
-void RenderSystem::drawLights(SpatialEntityManager& managerGroup, SpatialPoint playerSightPosition, const Vector2D& drawShift, const Vector2D& maxFov, const Vector2D& screenHalfSize)
+void RenderSystem::drawLights(SpatialEntityManager& managerGroup, Vector2D playerSightPosition, Vector2D drawShift, Vector2D maxFov, Vector2D screenHalfSize)
 {
 	const GameplayTimestamp timestampNow = mTime.currentTimestamp;
 
@@ -233,8 +232,8 @@ void RenderSystem::drawLights(SpatialEntityManager& managerGroup, SpatialPoint p
 	managerGroup.getComponents<LightComponent, TransformComponent>(lightComponentSets);
 
 	// determine the borders of the location we're interested in
-	Vector2D emitterPositionBordersLT = playerSightPosition.pos - screenHalfSize - maxFov*0.5;
-	Vector2D emitterPositionBordersRB = playerSightPosition.pos + screenHalfSize + maxFov*0.5;
+	Vector2D emitterPositionBordersLT = playerSightPosition - screenHalfSize - maxFov*0.5;
+	Vector2D emitterPositionBordersRB = playerSightPosition + screenHalfSize + maxFov*0.5;
 
 	// exclude lights that are too far to be visible
 	lightComponentSets.erase(
@@ -296,7 +295,7 @@ void RenderSystem::drawLights(SpatialEntityManager& managerGroup, SpatialPoint p
 		// sort lights in some determined order
 		std::sort(allResults.begin(), allResults.end(), [](auto& a, auto& b)
 		{
-			return a.location.pos.x + a.location.pos.y < b.location.pos.x + b.location.pos.y;
+			return a.location.x + a.location.y < b.location.x + b.location.y;
 		});
 
 		// draw the results on screen
@@ -306,7 +305,7 @@ void RenderSystem::drawLights(SpatialEntityManager& managerGroup, SpatialPoint p
 				lightSprite,
 				result.polygon,
 				maxFov,
-				drawShift + result.location.pos + SpatialWorldData::GetCellRealDistance(result.location.cellPos - playerSightPosition.cellPos)
+				drawShift + result.location
 			);
 		}
 	}
