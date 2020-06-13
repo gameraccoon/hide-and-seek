@@ -36,7 +36,7 @@ void ResourceStreamingSystem::update()
 	Vector2D workingRect = worldCachedData->getScreenSize();
 
 	// load sprites
-	SpatialEntityManager spatialManager = world.getSpatialData().getCellManagersAround(worldCachedData->getCameraCellPos(), worldCachedData->getCameraPos(), workingRect);
+	SpatialEntityManager spatialManager = world.getSpatialData().getCellManagersAround(worldCachedData->getCameraPos(), workingRect);
 	spatialManager.forEachSpatialComponentSetWithEntity<SpriteCreatorComponent>([&resourceManager = mResourceManager](Entity entity, WorldCell* cell, SpriteCreatorComponent* spriteCreator)
 	{
 		EntityView entitiyView{ entity, cell->getEntityManager() };

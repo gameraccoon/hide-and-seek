@@ -22,8 +22,9 @@ void ChangeEntityGroupLocationCommand::doCommand(World* world)
 			auto [component] = cell->getEntityManager().getEntityComponents<TransformComponent>(spatialEntity.entity.getEntity());
 			if (component)
 			{
-				auto [newCellPos, newLocation] = SpatialWorldData::GetTransformedCellPos(spatialEntity.cell, component->getLocation() + mShift);
-				component->setLocation(newLocation);
+				Vector2D newPos = component->getLocation() + mShift;
+				CellPos newCellPos = SpatialWorldData::GetCellForPos(newPos);
+				component->setLocation(newPos);
 
 				if (newCellPos != spatialEntity.cell)
 				{

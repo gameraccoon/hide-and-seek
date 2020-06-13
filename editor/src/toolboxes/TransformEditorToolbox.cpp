@@ -339,7 +339,7 @@ void TransformEditorWidget::paintEvent(QPaintEvent*)
 		cell->getEntityManager().forEachComponentSetWithEntity<TransformComponent>([&painter, cell, this](Entity entity, TransformComponent* transform)
 		{
 			CellPos cellPos = cell->getPos();
-			Vector2D location = transform->getLocation() + Vector2D(cellPos.x * SpatialWorldData::CellSize, cellPos.y * SpatialWorldData::CellSize);
+			Vector2D location = transform->getLocation();
 
 			auto [collision] = cell->getEntityManager().getEntityComponents<CollisionComponent>(entity);
 
@@ -468,11 +468,9 @@ void TransformEditorWidget::onClick(const QPoint& pos)
 
 std::vector<WorldCell*> TransformEditorWidget::getCellsOnScreen()
 {
-	CellPos screenCenterCellPos{0, 0};
 	Vector2D screenSize = Vector2D(size().width(), size().height());
-	Vector2D screenCenterPos = screenSize*0.5f - Vector2D(mPosShift.x(), mPosShift.y());
-	SpatialWorldData::TransformCellPos(screenCenterCellPos, screenCenterPos);
-	return mWorld->getSpatialData().getCellsAround(screenCenterCellPos, screenCenterPos, screenSize);
+	Vector2D screenCenterPos = screenSize*0.5f - Vector2D(mPosShift.x(), mPosShift.y());;
+	return mWorld->getSpatialData().getCellsAround(screenCenterPos, screenSize);
 }
 
 SpatialEntity TransformEditorWidget::getEntityUnderPoint(const QPoint& pos)
@@ -488,7 +486,7 @@ SpatialEntity TransformEditorWidget::getEntityUnderPoint(const QPoint& pos)
 		{
 			cell->getEntityManager().forEachComponentSetWithEntity<TransformComponent>([worldPos, cellPos = cell->getPos(), &findResult](Entity entity, TransformComponent* transform)
 			{
-				Vector2D location = transform->getLocation() + Vector2D(cellPos.x * SpatialWorldData::CellSize, cellPos.y * SpatialWorldData::CellSize);
+				Vector2D location = transform->getLocation();
 				if (location.x - 10 < worldPos.x && location.x + 10 > worldPos.x
 					&&
 					location.y - 10 < worldPos.y && location.y + 10 > worldPos.y)
@@ -537,7 +535,7 @@ void TransformEditorWidget::addEntitiesInRectToSelection(const Vector2D& start, 
 		{
 			cell->getEntityManager().forEachComponentSetWithEntity<TransformComponent>([this, lt, rd, cellPos = cell->getPos()](Entity entity, TransformComponent* transform)
 			{
-				Vector2D location = transform->getLocation() + Vector2D(cellPos.x * SpatialWorldData::CellSize, cellPos.y * SpatialWorldData::CellSize);
+				Vector2D location = transform->getLocation();
 				if (lt.x < location.x && location.x < rd.x && lt.y < location.y && location.y < rd.y)
 				{
 					auto it = std::find(mSelectedEntities.begin(), mSelectedEntities.end(), SpatialEntity(entity, cellPos));
@@ -565,14 +563,15 @@ Vector2D TransformEditorWidget::deprojectAbsolute(const QVector2D &screenPos) co
 	return Vector2D(worldPos.x(), worldPos.y());
 }
 
-QVector2D TransformEditorWidget::project(const CellPos& cellPos, const Vector2D& pos) const
+QVector2D TransformEditorWidget::project(const Vector2D& pos) const
 {
-	Vector2D absoluteWorldPos = pos + Vector2D(cellPos.x * SpatialWorldData::CellSize, cellPos.y * SpatialWorldData::CellSize);
+	Vector2D absoluteWorldPos = pos;
 	return mScale * (QVector2D(absoluteWorldPos.x, absoluteWorldPos.y) + mPosShift);
 }
 
 std::pair<CellPos, Vector2D> TransformEditorWidget::deproject(const QVector2D& screenPos) const
 {
-	QVector2D worldPos = screenPos / mScale - mPosShift;
-	return SpatialWorldData::GetTransformedCellPos(CellPos{0, 0}, Vector2D(worldPos.x(), worldPos.y()));
+	QVector2D worldPosQt = screenPos / mScale - mPosShift;
+	Vector2D worldPos(worldPosQt.x(), worldPosQt.y());
+	return std::make_pair(SpatialWorldData::GetCellForPos(worldPos), worldPos);
 }

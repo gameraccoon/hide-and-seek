@@ -8,16 +8,16 @@
 
 #include "GameData/Components/TransformComponent.generated.h"
 
-std::vector<WorldCell*> SpatialWorldData::getCellsAround(const CellPos& baseCell, const Vector2D& centerPosition, const Vector2D& rect)
+std::vector<WorldCell*> SpatialWorldData::getCellsAround(const Vector2D& centerPosition, const Vector2D& rect)
 {
 	CellPos ltCell = CellPos(
-		baseCell.x + static_cast<int>((centerPosition.x - rect.x * 0.5f - MaxObjectSize) / CellSize - 1),
-		baseCell.y + static_cast<int>((centerPosition.y - rect.y * 0.5f - MaxObjectSize) / CellSize - 1)
+		static_cast<int>((centerPosition.x - rect.x * 0.5f - MaxObjectSize) / CellSize - 1),
+		static_cast<int>((centerPosition.y - rect.y * 0.5f - MaxObjectSize) / CellSize - 1)
 	);
 
 	CellPos rbCell = CellPos(
-		baseCell.x + static_cast<int>((centerPosition.x + rect.x * 0.5f + MaxObjectSize) / CellSize),
-		baseCell.y + static_cast<int>((centerPosition.y + rect.y * 0.5f + MaxObjectSize) / CellSize)
+		static_cast<int>((centerPosition.x + rect.x * 0.5f + MaxObjectSize) / CellSize),
+		static_cast<int>((centerPosition.y + rect.y * 0.5f + MaxObjectSize) / CellSize)
 	);
 
 	std::vector<WorldCell*> result;
@@ -38,9 +38,9 @@ std::vector<WorldCell*> SpatialWorldData::getCellsAround(const CellPos& baseCell
 	return result;
 }
 
-SpatialEntityManager SpatialWorldData::getCellManagersAround(const CellPos& baseCell, const Vector2D& centerPosition, const Vector2D& rect)
+SpatialEntityManager SpatialWorldData::getCellManagersAround(const Vector2D& centerPosition, const Vector2D& rect)
 {
-	return SpatialEntityManager(getCellsAround(baseCell, centerPosition, rect));
+	return SpatialEntityManager(getCellsAround(centerPosition, rect));
 }
 
 WorldCell* SpatialWorldData::getCell(const CellPos& pos)
@@ -100,6 +100,21 @@ std::pair<CellPos, Vector2D> SpatialWorldData::GetTransformedCellPos(const CellP
 	auto result = std::make_pair(oldCellPos, oldPos);
 	TransformCellPos(result.first, result.second);
 	return result;
+}
+
+CellPos SpatialWorldData::GetCellForPos(const Vector2D& pos)
+{
+	return CellPos(
+		static_cast<int>(std::floor(pos.x / CellSize)),
+		static_cast<int>(std::floor(pos.y / CellSize))
+	);
+}
+
+bool SpatialWorldData::TransformCellForPos(CellPos& inOutCellPos, const Vector2D& pos)
+{
+	CellPos oldPos = inOutCellPos;
+	inOutCellPos = GetCellForPos(pos);
+	return inOutCellPos == oldPos;
 }
 
 std::pair<CellPos, Vector2D> SpatialWorldData::TransformCellFromOldSize(const Vector2D& pos, const CellPos& oldPos, const Vector2D& oldSize)
@@ -183,16 +198,4 @@ void SpatialWorldData::fromJson(const nlohmann::json& json, const ComponentFacto
 	{
 		RedistributeSpatialEntitiesBetweenCells(*this, static_cast<float>(cellSize));
 	}
-
-	initAbsoluteLocations();
-}
-
-void SpatialWorldData::initAbsoluteLocations()
-{
-	getAllCellManagers().forEachSpatialComponentSet<TransformComponent>([](WorldCell* cell, TransformComponent* transform)
-	{
-		CellPos cellPos = cell->getPos();
-		Vector2D relativeLocation = transform->getLocation();
-		transform->setLocation(Vector2D(cellPos.x * CellSize + relativeLocation.x, cellPos.y * CellSize + relativeLocation.y));
-	});
 }

@@ -56,7 +56,7 @@ void RenderSystem::update()
 
 	Vector2D drawShift = screenHalfSize - cameraLocation;
 
-	SpatialEntityManager spatialManager = world.getSpatialData().getCellManagersAround(worldCachedData->getCameraCellPos(), cameraLocation, workingRect);
+	SpatialEntityManager spatialManager = world.getSpatialData().getCellManagersAround(cameraLocation, workingRect);
 
 	if (!renderMode || renderMode->getIsDrawLightsEnabled())
 	{

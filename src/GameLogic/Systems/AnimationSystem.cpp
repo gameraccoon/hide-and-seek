@@ -30,7 +30,7 @@ void AnimationSystem::update()
 	Vector2D workingRect = worldCachedData->getScreenSize();
 	Vector2D cameraLocation = worldCachedData->getCameraPos();
 
-	SpatialEntityManager spatialManager = world.getSpatialData().getCellManagersAround(worldCachedData->getCameraCellPos(), cameraLocation, workingRect);
+	SpatialEntityManager spatialManager = world.getSpatialData().getCellManagersAround(cameraLocation, workingRect);
 
 	// update animation clip from FSM
 	spatialManager.forEachComponentSet<AnimationGroupsComponent, AnimationClipsComponent>([dt, stateMachines](AnimationGroupsComponent* animationGroups, AnimationClipsComponent* animationClips)

@@ -43,7 +43,7 @@ public:
 
 	QVector2D projectAbsolute(const Vector2D& worldPos) const;
 	Vector2D deprojectAbsolute(const QVector2D& screenPos) const;
-	QVector2D project(const CellPos& cellPos, const Vector2D& pos) const;
+	QVector2D project(const Vector2D& pos) const;
 	std::pair<CellPos, Vector2D> deproject(const QVector2D& screenPos) const;
 
 	class World* mWorld = nullptr;
