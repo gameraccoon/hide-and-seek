@@ -232,8 +232,8 @@ void RenderSystem::drawLights(SpatialEntityManager& managerGroup, Vector2D playe
 	managerGroup.getComponents<LightComponent, TransformComponent>(lightComponentSets);
 
 	// determine the borders of the location we're interested in
-	Vector2D emitterPositionBordersLT = playerSightPosition - screenHalfSize - maxFov*0.5;
-	Vector2D emitterPositionBordersRB = playerSightPosition + screenHalfSize + maxFov*0.5;
+	Vector2D emitterPositionBordersLT = playerSightPosition - screenHalfSize - maxFov;
+	Vector2D emitterPositionBordersRB = playerSightPosition + screenHalfSize + maxFov;
 
 	// exclude lights that are too far to be visible
 	lightComponentSets.erase(
