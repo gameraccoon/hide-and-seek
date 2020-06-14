@@ -56,32 +56,32 @@ namespace FSM
 		/**
 		 * Link that will be followed if a blackboard variable have a specific value
 		 */
-		template<typename BlackboardKeyType, typename T>
+		template<typename BlackboardKeyType, typename ValueType>
 		class VariableEqualLink : public LinkRule<BlackboardKeyType>
 		{
 		public:
 			using BlackboardType = Blackboard<BlackboardKeyType>;
 
 		public:
-			VariableEqualLink(BlackboardKeyType name, T expectedValue)
+			VariableEqualLink(BlackboardKeyType name, ValueType expectedValue)
 				: mName(std::forward<BlackboardKeyType>(name))
-				, mExpectedValue(std::forward<T>(expectedValue))
+				, mExpectedValue(std::forward<ValueType>(expectedValue))
 			{
 			}
 
 			bool canFollow(const BlackboardType& blackboard) const override
 			{
-				return blackboard.template getValue<T>(mName) == mExpectedValue;
+				return blackboard.template getValue<ValueType>(mName) == mExpectedValue;
 			}
 
 			std::unique_ptr<LinkRule<BlackboardKeyType>> makeCopy() const override
 			{
-				return std::make_unique<VariableEqualLink<BlackboardKeyType, T>>(mName, mExpectedValue);
+				return std::make_unique<VariableEqualLink<BlackboardKeyType, ValueType>>(mName, mExpectedValue);
 			}
 
 		private:
 			BlackboardKeyType mName;
-			T mExpectedValue;
+			ValueType mExpectedValue;
 		};
 	}
 }

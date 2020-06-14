@@ -61,16 +61,17 @@ namespace StateMachines
 			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, StringID>(STR_TO_ID("idle"), STR_TO_ID("charState"), enum_to_string(CharacterState::Idle));
 			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, StringID>(STR_TO_ID("reload"), STR_TO_ID("charState"), enum_to_string(CharacterState::Reload));
 			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, StringID>(STR_TO_ID("shoot"), STR_TO_ID("charState"), enum_to_string(CharacterState::Shoot));
+			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, StringID>(STR_TO_ID("shoot"), STR_TO_ID("charState"), enum_to_string(CharacterState::WalkAndShoot));
 			sm.addState(STR_TO_ID("move"), std::move(rules));
 		}
 		{
 			FSMType::StateLinkRules rules;
-			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(STR_TO_ID("idle"), enum_to_string(CharacterStateBlackboardKeys::Reloading), false);
+			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, StringID>(STR_TO_ID("idle"), STR_TO_ID("charState"), enum_to_string(CharacterState::Idle));
 			sm.addState(STR_TO_ID("reload"), std::move(rules));
 		}
 		{
 			FSMType::StateLinkRules rules;
-			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, bool>(STR_TO_ID("idle"), enum_to_string(CharacterStateBlackboardKeys::TryingToShoot), false);
+			rules.emplaceLink<FSM::LinkRules::VariableEqualLink, StringID>(STR_TO_ID("idle"), STR_TO_ID("charState"), enum_to_string(CharacterState::Idle));
 			sm.addState(STR_TO_ID("shoot"), std::move(rules));
 		}
 	}

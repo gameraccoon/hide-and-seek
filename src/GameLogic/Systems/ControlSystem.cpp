@@ -3,6 +3,7 @@
 #include "GameLogic/Systems/ControlSystem.h"
 
 #include <sdl/SDL_keycode.h>
+#include <sdl/SDL_mouse.h>
 
 #include "GameData/Components/TransformComponent.generated.h"
 #include "GameData/Components/MovementComponent.generated.h"
@@ -65,6 +66,7 @@ void ControlSystem::update()
 void ControlSystem::processPlayerInput()
 {
 	const HAL::KeyStatesMap& keyStates = mInputData.KeyboardKeyStates;
+	const HAL::KeyStatesMap& mouseKeyStates = mInputData.MouseKeyStates;
 	World& world = mWorldHolder.getWorld();
 
 	std::optional<std::pair<EntityView, CellPos>> controlledEntity = world.getTrackedSpatialEntity(STR_TO_ID("ControlledEntity"));
@@ -75,6 +77,8 @@ void ControlSystem::processPlayerInput()
 	}
 
 	bool isRunPressed = keyStates.isPressed(SDLK_LSHIFT) || keyStates.isPressed(SDLK_RSHIFT);
+
+	bool isShootPressed = mouseKeyStates.isPressed(SDL_BUTTON_LEFT) || keyStates.isPressed(SDLK_RCTRL);
 
 	Vector2D movementDirection(0.0f, 0.0f);
 	if (keyStates.isPressed(SDLK_LEFT) || keyStates.isPressed(SDLK_a))
@@ -101,6 +105,7 @@ void ControlSystem::processPlayerInput()
 	{
 		characterState->getBlackboardRef().setValue<bool>(CharacterStateBlackboardKeys::TryingToMove, !movementDirection.isZeroLength());
 		characterState->getBlackboardRef().setValue<bool>(CharacterStateBlackboardKeys::ReadyToRun, isRunPressed);
+		characterState->getBlackboardRef().setValue<bool>(CharacterStateBlackboardKeys::TryingToShoot, isShootPressed);
 	}
 
 	auto [transform, movement] = controlledEntity->first.getComponents<TransformComponent, MovementComponent>();
