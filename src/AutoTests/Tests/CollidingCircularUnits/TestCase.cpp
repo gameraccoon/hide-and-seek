@@ -6,6 +6,8 @@
 
 #include "HAL/Base/Engine.h"
 
+#include "GameData/Spatial/SpatialWorldData.h"
+
 #include "GameData/Components/SpriteCreatorComponent.generated.h"
 #include "GameData/Components/CollisionComponent.generated.h"
 #include "GameData/Components/TransformComponent.generated.h"
@@ -35,10 +37,11 @@ void CollidingCircularUnitsTestCase::initTestCase(const ArgumentsParser& /*argum
 	mSystemsManager.registerSystem<ResourceStreamingSystem>(mWorldHolder, getResourceManager());
 	mSystemsManager.registerSystem<RenderSystem>(mWorldHolder, mTime, getEngine(), getResourceManager(), mWorkerManager);
 
-	EntityView playerEntity = mWorld.createTrackedSpatialEntity(STR_TO_ID("ControlledEntity"), CellPos(0, 0));
+	Vector2D playerPos{ZERO_VECTOR};
+	EntityView playerEntity = mWorld.createTrackedSpatialEntity(STR_TO_ID("ControlledEntity"), SpatialWorldData::GetCellForPos(playerPos));
 	{
 		TransformComponent* transform = playerEntity.addComponent<TransformComponent>();
-		transform->setLocation(Vector2D(0.0f, 0.0f));
+		transform->setLocation(playerPos);
 	}
 	{
 		SpriteCreatorComponent* sprite = playerEntity.addComponent<SpriteCreatorComponent>();
@@ -55,8 +58,12 @@ void CollidingCircularUnitsTestCase::initTestCase(const ArgumentsParser& /*argum
 	}
 	playerEntity.addComponent<MovementComponent>();
 
-	EntityView camera = mWorld.createTrackedSpatialEntity(STR_TO_ID("CameraEntity"), CellPos(0, 0));
-	camera.addComponent<TransformComponent>();
+	Vector2D cameraPos{ZERO_VECTOR};
+	EntityView camera = mWorld.createTrackedSpatialEntity(STR_TO_ID("CameraEntity"), SpatialWorldData::GetCellForPos(cameraPos));
+	{
+		TransformComponent* transform = camera.addComponent<TransformComponent>();
+		transform->setLocation(cameraPos);
+	}
 	camera.addComponent<MovementComponent>();
 
 	mWorld.getWorldComponents().addComponent<StateMachineComponent>();

@@ -47,9 +47,7 @@ void MovementSystem::update()
 			transform->setLocation(pos);
 
 			CellPos cellPos = cell->getPos();
-			pos.x -= cellPos.x * SpatialWorldData::CellSize;
-			pos.y -= cellPos.y * SpatialWorldData::CellSize;
-			bool isCellChanged = SpatialWorldData::TransformCellPos(cellPos, pos);
+			bool isCellChanged = SpatialWorldData::TransformCellForPos(cellPos, pos);
 			if (isCellChanged)
 			{
 				transfers.emplace_back(cellPos, entitiyView);

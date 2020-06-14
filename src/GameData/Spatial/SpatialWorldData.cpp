@@ -95,13 +95,6 @@ bool SpatialWorldData::TransformCellPos(CellPos& inOutCellPos, Vector2D& inOutPo
 	return true;
 }
 
-std::pair<CellPos, Vector2D> SpatialWorldData::GetTransformedCellPos(const CellPos& oldCellPos, const Vector2D& oldPos)
-{
-	auto result = std::make_pair(oldCellPos, oldPos);
-	TransformCellPos(result.first, result.second);
-	return result;
-}
-
 CellPos SpatialWorldData::GetCellForPos(const Vector2D& pos)
 {
 	return CellPos(
@@ -114,7 +107,7 @@ bool SpatialWorldData::TransformCellForPos(CellPos& inOutCellPos, const Vector2D
 {
 	CellPos oldPos = inOutCellPos;
 	inOutCellPos = GetCellForPos(pos);
-	return inOutCellPos == oldPos;
+	return inOutCellPos != oldPos;
 }
 
 std::pair<CellPos, Vector2D> SpatialWorldData::TransformCellFromOldSize(const Vector2D& pos, const CellPos& oldPos, const Vector2D& oldSize)

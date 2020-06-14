@@ -225,6 +225,8 @@ void EntityManager::applyPrefabToExistentEntity(const nlohmann::json& json, Enti
 
 void EntityManager::transferEntityTo(EntityManager& otherManager, Entity entity)
 {
+	AssertFatal(this != &otherManager, "Transferring entity to the same manager. This should never hapen");
+
 	auto entityIdxItr = mEntityIndexMap.find(entity.getID());
 	if (entityIdxItr == mEntityIndexMap.end())
 	{

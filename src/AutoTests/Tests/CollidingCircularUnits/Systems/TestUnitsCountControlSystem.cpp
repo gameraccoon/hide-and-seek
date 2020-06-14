@@ -59,8 +59,8 @@ static void spawnJitteredUnit(const Vector2D& pos, const Vector2D& centerShifted
 {
 	Vector2D jitter = Vector2D((Random::GlobalGenerator() % jitterRand) / jitterDivider - halfJitterMax, ((Random::GlobalGenerator() % jitterRand) / jitterDivider - halfJitterMax));
 	Vector2D newPos = centerShifted + pos + jitter;
-	std::pair<CellPos, Vector2D> transformedPos = SpatialWorldData::GetTransformedCellPos(CellPos(0, 0), newPos);
-	spawnUnit(spatialData.getOrCreateCell(transformedPos.first).getEntityManager(), transformedPos.second);
+	CellPos cellPos = SpatialWorldData::GetCellForPos(newPos);
+	spawnUnit(spatialData.getOrCreateCell(cellPos).getEntityManager(), newPos);
 }
 
 static void spawnUnits(SpatialWorldData& spatialData, int count, Vector2D pos)

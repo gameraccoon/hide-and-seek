@@ -28,7 +28,6 @@ public:
 
 	// returns true if cell changed
 	static bool TransformCellPos(CellPos& inOutCellPos, Vector2D& inOutPos);
-	static std::pair<CellPos, Vector2D> GetTransformedCellPos(const CellPos& oldCellPos, const Vector2D& oldPos);
 	static CellPos GetCellForPos(const Vector2D& pos);
 	// returns true if cell changed
 	static bool TransformCellForPos(CellPos& inOutCellPos, const Vector2D& pos);
