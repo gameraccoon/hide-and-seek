@@ -18,16 +18,14 @@ namespace HAL
 		Engine(int windowWidth, int windowHeight);
 		~Engine();
 
-		float getMouseX() const;
-		float getMouseY() const;
+		Vector2D getMousePos() const;
 
 		void start(IGame* game);
 		void quit();
 
 		Graphics::Renderer& getRenderer();
 
-		int getWidth() const;
-		int getHeight() const;
+		Vector2D getWindowSize() const;
 
 		// for debug tools such as imgui
 		SDL_Window* getRawWindow();

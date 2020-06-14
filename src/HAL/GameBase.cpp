@@ -14,12 +14,12 @@ namespace HAL
 
 	GameBase::~GameBase() = default;
 
-	Engine&GameBase::getEngine()
+	Engine& GameBase::getEngine()
 	{
 		return *mEngine.get();
 	}
 
-	ResourceManager&GameBase::getResourceManager()
+	ResourceManager& GameBase::getResourceManager()
 	{
 		return *mResourceManager.get();
 	}

@@ -31,7 +31,7 @@ void CollidingCircularUnitsTestCase::initTestCase(const ArgumentsParser& /*argum
 	mSystemsManager.registerSystem<TestUnitsCountControlSystem>(mWorldHolder);
 	mSystemsManager.registerSystem<TestCircularUnitsSystem>(mWorldHolder, mTime);
 	mSystemsManager.registerSystem<CollisionSystem>(mWorldHolder);
-	mSystemsManager.registerSystem<CameraSystem>(mWorldHolder, getEngine());
+	mSystemsManager.registerSystem<CameraSystem>(mWorldHolder, mInputData);
 	mSystemsManager.registerSystem<MovementSystem>(mWorldHolder, mTime);
 	mSystemsManager.registerSystem<CharacterStateSystem>(mWorldHolder, mTime);
 	mSystemsManager.registerSystem<ResourceStreamingSystem>(mWorldHolder, getResourceManager());
@@ -67,4 +67,7 @@ void CollidingCircularUnitsTestCase::initTestCase(const ArgumentsParser& /*argum
 	camera.addComponent<MovementComponent>();
 
 	mWorld.getWorldComponents().addComponent<StateMachineComponent>();
+
+	mInputData.WindowSize = getEngine().getWindowSize();
+	mInputData.MousePos = mInputData.WindowSize * 0.5f;
 }

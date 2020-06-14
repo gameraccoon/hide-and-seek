@@ -10,9 +10,9 @@ namespace HAL
 	public:
 		void updateState(int key, bool isPressed);
 		void clearLastFrameState();
-		bool isPressed(int key);
-		bool isJustPressed(int key);
-		bool isJustReleased(int key);
+		bool isPressed(int key) const;
+		bool isJustPressed(int key) const;
+		bool isJustReleased(int key) const;
 
 	private:
 		std::unordered_set<int> mPressedKeys;

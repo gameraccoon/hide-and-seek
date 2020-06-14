@@ -2,8 +2,6 @@
 
 #include "GameLogic/Game.h"
 
-#include <memory>
-
 #include "GameData/Components/StateMachineComponent.generated.h"
 
 #include "HAL/Base/Engine.h"
@@ -57,29 +55,32 @@ void Game::start(ArgumentsParser& arguments)
 
 void Game::setKeyboardKeyState(int key, bool isPressed)
 {
-	mKeyStates.updateState(key, isPressed);
+	mInputData.KeyboardKeyStates.updateState(key, isPressed);
 }
 
-void Game::setMouseKeyState(int /*key*/, bool /*isPressed*/)
+void Game::setMouseKeyState(int key, bool isPressed)
 {
-
+	mInputData.MouseKeyStates.updateState(key, isPressed);
 }
 
 void Game::update(float dt)
 {
+	mInputData.WindowSize = getEngine().getWindowSize();
+	mInputData.MousePos = getEngine().getMousePos();
+
 	mTime.update(dt);
 	mSystemsManager.update();
-	mKeyStates.clearLastFrameState();
+	mInputData.clearAfterFrame();
 
 	mSystemFrameRecords.addFrame(mSystemsManager.getPreviousFrameTimeData());
 }
 
 void Game::initSystems()
 {
-	mSystemsManager.registerSystem<ControlSystem>(mWorldHolder, getEngine(), mKeyStates);
+	mSystemsManager.registerSystem<ControlSystem>(mWorldHolder, mInputData);
 	mSystemsManager.registerSystem<AiSystem>(mWorldHolder, mTime);
 	mSystemsManager.registerSystem<CollisionSystem>(mWorldHolder);
-	mSystemsManager.registerSystem<CameraSystem>(mWorldHolder, getEngine());
+	mSystemsManager.registerSystem<CameraSystem>(mWorldHolder, mInputData);
 	mSystemsManager.registerSystem<MovementSystem>(mWorldHolder, mTime);
 	mSystemsManager.registerSystem<CharacterStateSystem>(mWorldHolder, mTime);
 	mSystemsManager.registerSystem<ResourceStreamingSystem>(mWorldHolder, getResourceManager());

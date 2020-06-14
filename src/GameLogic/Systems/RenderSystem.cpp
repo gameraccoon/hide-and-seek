@@ -51,8 +51,7 @@ void RenderSystem::update()
 
 	auto [renderMode] = gameData.getGameComponents().getComponents<RenderModeComponent>();
 
-	Vector2D mouseScreenPos(mEngine.getMouseX(), mEngine.getMouseY());
-	Vector2D screenHalfSize = Vector2D(static_cast<float>(mEngine.getWidth()), static_cast<float>(mEngine.getHeight())) * 0.5f;
+	Vector2D screenHalfSize = mEngine.getWindowSize() * 0.5f;
 
 	Vector2D drawShift = screenHalfSize - cameraLocation;
 

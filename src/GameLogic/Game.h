@@ -11,10 +11,10 @@
 #include "Utils/Jobs/WorkerManager.h"
 
 #include "HAL/GameBase.h"
-#include "HAL/KeyStatesMap.h"
 
 #include "GameLogic/SharedManagers/TimeData.h"
 #include "GameLogic/SharedManagers/WorldHolder.h"
+#include "GameLogic/SharedManagers/InputData.h"
 
 #ifdef IMGUI_ENABLED
 #include "GameLogic/Imgui/ImguiDebugData.h"
@@ -40,7 +40,8 @@ private:
 	GameData mGameData;
 	WorldHolder mWorldHolder {&mWorld, mGameData};
 
-	HAL::KeyStatesMap mKeyStates;
+	InputData mInputData;
+
 	SystemsManager mSystemsManager;
 	ComponentFactory mComponentFactory;
 	Jobs::WorkerManager mJobsWorkerManager{Jobs::GetAvailableThreadsCount()};

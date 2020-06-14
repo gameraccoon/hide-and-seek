@@ -87,14 +87,9 @@ namespace HAL
 		TTF_Quit();
 	}
 
-	float Engine::getMouseX() const
+	Vector2D Engine::getMousePos() const
 	{
-		return mPimpl->mMouseX;
-	}
-
-	float Engine::getMouseY() const
-	{
-		return mPimpl->mMouseY;
+		return Vector2D(mPimpl->mMouseX, mPimpl->mMouseY);
 	}
 
 	void Engine::quit()
@@ -115,14 +110,9 @@ namespace HAL
 		return mPimpl->mRenderer;
 	}
 
-	int Engine::getWidth() const
+	Vector2D Engine::getWindowSize() const
 	{
-		return WindowWidth;
-	}
-
-	int Engine::getHeight() const
-	{
-		return WindowHeight;
+		return Vector2D(static_cast<float>(WindowWidth), static_cast<float>(WindowHeight));
 	}
 
 	SDL_Window* Engine::getRawWindow()

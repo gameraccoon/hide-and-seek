@@ -4,9 +4,8 @@
 
 #include "ECS/System.h"
 
-#include "HAL/Base/Engine.h"
-
 #include "GameLogic/SharedManagers/WorldHolder.h"
+#include "GameLogic/SharedManagers/InputData.h"
 
 /**
  * System that handles camera position
@@ -14,7 +13,7 @@
 class CameraSystem : public System
 {
 public:
-	CameraSystem(WorldHolder& worldHolder, HAL::Engine& engine);
+	CameraSystem(WorldHolder& worldHolder, const InputData& inputData);
 	~CameraSystem() override = default;
 
 	void update() override;
@@ -22,5 +21,5 @@ public:
 
 private:
 	WorldHolder& mWorldHolder;
-	HAL::Engine& mEngine;
+	const InputData& mInputData;
 };

@@ -26,17 +26,17 @@ namespace HAL
 		mLastFrameReleasedKeys.clear();
 	}
 
-	bool KeyStatesMap::isPressed(int key)
+	bool KeyStatesMap::isPressed(int key) const
 	{
 		return mPressedKeys.find(key) != mPressedKeys.end();
 	}
 
-	bool KeyStatesMap::isJustPressed(int key)
+	bool KeyStatesMap::isJustPressed(int key) const
 	{
 		return std::find(mLastFramePressedKeys.begin(), mLastFramePressedKeys.end(), key) != mLastFramePressedKeys.end();
 	}
 
-	bool KeyStatesMap::isJustReleased(int key)
+	bool KeyStatesMap::isJustReleased(int key) const
 	{
 		return std::find(mLastFrameReleasedKeys.begin(), mLastFrameReleasedKeys.end(), key) != mLastFrameReleasedKeys.end();
 	}

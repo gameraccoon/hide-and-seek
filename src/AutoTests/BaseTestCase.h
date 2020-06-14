@@ -11,10 +11,10 @@
 #include "Utils/Jobs/WorkerManager.h"
 
 #include "HAL/GameBase.h"
-#include "HAL/KeyStatesMap.h"
 
 #include "GameLogic/SharedManagers/TimeData.h"
 #include "GameLogic/SharedManagers/WorldHolder.h"
+#include "GameLogic/SharedManagers/InputData.h"
 
 class BaseTestCase : public HAL::GameBase
 {
@@ -38,7 +38,7 @@ protected:
 	SystemsManager mSystemsManager;
 	Jobs::WorkerManager mWorkerManager{1};
 	TimeData mTime;
-	HAL::KeyStatesMap mKeyStates;
+	InputData mInputData;
 
 private:
 	static const int mTicksToFinish = 100;

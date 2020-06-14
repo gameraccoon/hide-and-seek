@@ -45,7 +45,6 @@ void BaseTestCase::update(float)
 		finalizeTestCase();
 		getEngine().quit();
 	}
-	mKeyStates.clearLastFrameState();
 }
 
 void BaseTestCase::initResources()

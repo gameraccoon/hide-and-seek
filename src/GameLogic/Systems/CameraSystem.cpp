@@ -10,9 +10,9 @@
 #include "GameData/GameData.h"
 
 
-CameraSystem::CameraSystem(WorldHolder& worldHolder, HAL::Engine& engine)
+CameraSystem::CameraSystem(WorldHolder& worldHolder, const InputData& inputData)
 	: mWorldHolder(worldHolder)
-	, mEngine(engine)
+	, mInputData(inputData)
 {
 }
 
@@ -42,9 +42,9 @@ void CameraSystem::update()
 				return;
 			}
 
-			Vector2D screenSize = Vector2D(static_cast<float>(mEngine.getWidth()), static_cast<float>(mEngine.getHeight()));
+			Vector2D screenSize = mInputData.WindowSize;
 			Vector2D screenHalfSize = screenSize * 0.5f;
-			Vector2D mouseScreenPos(mEngine.getMouseX(), mEngine.getMouseY());
+			Vector2D mouseScreenPos = mInputData.MousePos;
 
 			const float cameraMobilityRate = 0.7f;
 
