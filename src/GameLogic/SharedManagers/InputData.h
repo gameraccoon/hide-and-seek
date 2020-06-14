@@ -7,13 +7,13 @@ class InputData
 public:
 	void clearAfterFrame()
 	{
-		KeyboardKeyStates.clearLastFrameState();
-		MouseKeyStates.clearLastFrameState();
+		keyboardKeyStates.clearLastFrameState();
+		mouseKeyStates.clearLastFrameState();
 	}
 
 public:
-	HAL::KeyStatesMap KeyboardKeyStates;
-	HAL::KeyStatesMap MouseKeyStates;
-	Vector2D MousePos = ZERO_VECTOR;
-	Vector2D WindowSize = ZERO_VECTOR;
+	HAL::KeyStatesMap keyboardKeyStates;
+	HAL::KeyStatesMap mouseKeyStates;
+	Vector2D mousePos = ZERO_VECTOR;
+	Vector2D windowSize = ZERO_VECTOR;
 };

@@ -35,7 +35,7 @@ void ControlSystem::update()
 {
 	GameData& gameData = mWorldHolder.getGameData();
 
-	const HAL::KeyStatesMap& keyStates = mInputData.KeyboardKeyStates;
+	const HAL::KeyStatesMap& keyStates = mInputData.keyboardKeyStates;
 
 #ifdef IMGUI_ENABLED
 	if (auto [imgui] = gameData.getGameComponents().getComponents<ImguiComponent>(); imgui)
@@ -65,8 +65,8 @@ void ControlSystem::update()
 
 void ControlSystem::processPlayerInput()
 {
-	const HAL::KeyStatesMap& keyStates = mInputData.KeyboardKeyStates;
-	const HAL::KeyStatesMap& mouseKeyStates = mInputData.MouseKeyStates;
+	const HAL::KeyStatesMap& keyStates = mInputData.keyboardKeyStates;
+	const HAL::KeyStatesMap& mouseKeyStates = mInputData.mouseKeyStates;
 	World& world = mWorldHolder.getWorld();
 
 	std::optional<std::pair<EntityView, CellPos>> controlledEntity = world.getTrackedSpatialEntity(STR_TO_ID("ControlledEntity"));
@@ -121,9 +121,9 @@ void ControlSystem::processPlayerInput()
 			return;
 		}
 
-		Vector2D screenSize = mInputData.WindowSize;
+		Vector2D screenSize = mInputData.windowSize;
 		Vector2D screenHalfSize = screenSize * 0.5f;
-		Vector2D mouseScreenPos = mInputData.MousePos;
+		Vector2D mouseScreenPos = mInputData.mousePos;
 
 		Vector2D mouseHeroPos = -mouseScreenPos + screenHalfSize + cameraTransform->getLocation();
 

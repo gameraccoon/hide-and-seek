@@ -7,29 +7,29 @@ class WorldHolder
 {
 public:
 	WorldHolder(World* world, GameData& gameData)
-		: world(world)
-		, gameData(gameData)
+		: mWorld(world)
+		, mGameData(gameData)
 	{
-		AssertFatal(world, "World is not set");
+		AssertFatal(mWorld, "World is not set");
 	}
 
 	void setWorld(World* newWorld)
 	{
 		AssertFatal(newWorld, "World is not set");
-		world = newWorld;
+		mWorld = newWorld;
 	}
 
 	World& getWorld()
 	{
-		return *world;
+		return *mWorld;
 	}
 
 	GameData& getGameData()
 	{
-		return gameData;
+		return mGameData;
 	}
 
 private:
-	World* world;
-	GameData& gameData;
+	World* mWorld;
+	GameData& mGameData;
 };

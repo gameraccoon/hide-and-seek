@@ -18,6 +18,7 @@
 #include "GameLogic/Systems/MovementSystem.h"
 #include "GameLogic/Systems/AnimationSystem.h"
 #include "GameLogic/Systems/CameraSystem.h"
+#include "GameLogic/Systems/WeaponSystem.h"
 
 #ifdef IMGUI_ENABLED
 #include "GameLogic/Systems/ImguiSystem.h"
@@ -55,18 +56,18 @@ void Game::start(ArgumentsParser& arguments)
 
 void Game::setKeyboardKeyState(int key, bool isPressed)
 {
-	mInputData.KeyboardKeyStates.updateState(key, isPressed);
+	mInputData.keyboardKeyStates.updateState(key, isPressed);
 }
 
 void Game::setMouseKeyState(int key, bool isPressed)
 {
-	mInputData.MouseKeyStates.updateState(key, isPressed);
+	mInputData.mouseKeyStates.updateState(key, isPressed);
 }
 
 void Game::update(float dt)
 {
-	mInputData.WindowSize = getEngine().getWindowSize();
-	mInputData.MousePos = getEngine().getMousePos();
+	mInputData.windowSize = getEngine().getWindowSize();
+	mInputData.mousePos = getEngine().getMousePos();
 
 	mTime.update(dt);
 	mSystemsManager.update();
@@ -79,6 +80,7 @@ void Game::initSystems()
 {
 	mSystemsManager.registerSystem<ControlSystem>(mWorldHolder, mInputData);
 	mSystemsManager.registerSystem<AiSystem>(mWorldHolder, mTime);
+	mSystemsManager.registerSystem<WeaponSystem>(mWorldHolder, mTime);
 	mSystemsManager.registerSystem<CollisionSystem>(mWorldHolder);
 	mSystemsManager.registerSystem<CameraSystem>(mWorldHolder, mInputData);
 	mSystemsManager.registerSystem<MovementSystem>(mWorldHolder, mTime);

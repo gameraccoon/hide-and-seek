@@ -13,7 +13,7 @@ public:
 	GameplayTimestamp() = default;
 	explicit GameplayTimestamp(TimeValueType time) : mTimestamp(time) {}
 
-	bool isUnitialized() const;
+	bool isInitialized() const;
 
 	bool operator==(GameplayTimestamp other) const;
 	bool operator!=(GameplayTimestamp other) const;
@@ -22,15 +22,16 @@ public:
 	bool operator>(GameplayTimestamp other) const;
 	bool operator>=(GameplayTimestamp other) const;
 
-	GameplayTimestamp operator+(TimeValueType delta) const;
-	GameplayTimestamp operator+=(TimeValueType delta);
-	GameplayTimestamp operator-(TimeValueType delta) const;
-	GameplayTimestamp operator-=(TimeValueType delta);
+	void increaseByFloatTime(float passedTime);
+	GameplayTimestamp getIncreasedByFloatTime(float passedTime) const;
 
 	friend void to_json(nlohmann::json& outJson, const GameplayTimestamp timestamp);
 	friend void from_json(const nlohmann::json& json, GameplayTimestamp& outTimestamp);
 
+public:
+	static constexpr float TimeMultiplier = 300.0f;
+
 private:
-	static const TimeValueType UNINITIALIZED_TIME = 0;
+	static const TimeValueType UNINITIALIZED_TIME = std::numeric_limits<TimeValueType>::max();
 	TimeValueType mTimestamp = UNINITIALIZED_TIME;
 };

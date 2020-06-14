@@ -9,5 +9,5 @@ public:
 
 public:
 	float dt = 0.0f;
-	GameplayTimestamp currentTimestamp;
+	GameplayTimestamp currentTimestamp{0};
 };

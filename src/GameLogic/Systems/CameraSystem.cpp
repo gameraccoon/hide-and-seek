@@ -42,9 +42,9 @@ void CameraSystem::update()
 				return;
 			}
 
-			Vector2D screenSize = mInputData.WindowSize;
+			Vector2D screenSize = mInputData.windowSize;
 			Vector2D screenHalfSize = screenSize * 0.5f;
-			Vector2D mouseScreenPos = mInputData.MousePos;
+			Vector2D mouseScreenPos = mInputData.mousePos;
 
 			const float cameraMobilityRate = 0.7f;
 

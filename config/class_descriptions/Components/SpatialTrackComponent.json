@@ -4,8 +4,7 @@
 	"attributes": [
 		{
 			"name": "id",
-			"type": "StringID",
-			"includes": []
+			"type": "StringID"
 		}
 	]
 }

@@ -5,59 +5,75 @@
 #include <type_traits>
 #include <nlohmann/json.hpp>
 
-bool GameplayTimestamp::isUnitialized() const
+static auto PositiveRoundFunc(float toRound)
 {
-	return mTimestamp == UNINITIALIZED_TIME;
+	using namespace std; // to compile on both msvc and clang/gcc
+	Assert(toRound >= 0.0f, "PositiveRoundFunc works only with positive values");
+	return floor(toRound - 0.5);
+}
+
+GameplayTimestamp::TimeValueType GetConvertedPassedTime(float passedTime)
+{
+	return static_cast<GameplayTimestamp::TimeValueType>(PositiveRoundFunc(passedTime * GameplayTimestamp::TimeMultiplier));
+}
+
+bool GameplayTimestamp::isInitialized() const
+{
+	return mTimestamp != UNINITIALIZED_TIME;
 }
 
 bool GameplayTimestamp::operator==(GameplayTimestamp other) const
 {
+	Assert(isInitialized(), "Timestamp should be initialized before being used");
+	Assert(other.isInitialized(), "Timestamp should be initialized before being used");
 	return mTimestamp == other.mTimestamp;
 }
 
 bool GameplayTimestamp::operator!=(GameplayTimestamp other) const
 {
+	Assert(isInitialized(), "Timestamp should be initialized before being used");
+	Assert(other.isInitialized(), "Timestamp should be initialized before being used");
 	return mTimestamp != other.mTimestamp;
 }
 
 bool GameplayTimestamp::operator<(GameplayTimestamp other) const
 {
+	Assert(isInitialized(), "Timestamp should be initialized before being used");
+	Assert(other.isInitialized(), "Timestamp should be initialized before being used");
 	return mTimestamp < other.mTimestamp;
 }
 
 bool GameplayTimestamp::operator<=(GameplayTimestamp other) const
 {
+	Assert(isInitialized(), "Timestamp should be initialized before being used");
+	Assert(other.isInitialized(), "Timestamp should be initialized before being used");
 	return mTimestamp <= other.mTimestamp;
 }
 
 bool GameplayTimestamp::operator>(GameplayTimestamp other) const
 {
+	Assert(isInitialized(), "Timestamp should be initialized before being used");
+	Assert(other.isInitialized(), "Timestamp should be initialized before being used");
 	return mTimestamp > other.mTimestamp;
 }
 
 bool GameplayTimestamp::operator>=(GameplayTimestamp other) const
 {
+	Assert(isInitialized(), "Timestamp should be initialized before being used");
+	Assert(other.isInitialized(), "Timestamp should be initialized before being used");
 	return mTimestamp >= other.mTimestamp;
 }
 
-GameplayTimestamp GameplayTimestamp::operator+(TimeValueType delta) const
+void GameplayTimestamp::increaseByFloatTime(float passedTime)
 {
-	return GameplayTimestamp(mTimestamp + delta);
+	Assert(isInitialized(), "Timestamp should be initialized before being used");
+	mTimestamp += GetConvertedPassedTime(passedTime);
 }
 
-GameplayTimestamp GameplayTimestamp::operator+=(TimeValueType delta)
+GameplayTimestamp GameplayTimestamp::getIncreasedByFloatTime(float passedTime) const
 {
-	return GameplayTimestamp(mTimestamp += delta);
-}
-
-GameplayTimestamp GameplayTimestamp::operator-(TimeValueType delta) const
-{
-	return GameplayTimestamp(mTimestamp - delta);
-}
-
-GameplayTimestamp GameplayTimestamp::operator-=(TimeValueType delta)
-{
-	return GameplayTimestamp(mTimestamp -= delta);
+	Assert(isInitialized(), "Timestamp should be initialized before being used");
+	return GameplayTimestamp(mTimestamp + GetConvertedPassedTime(passedTime));
 }
 
 void to_json(nlohmann::json& outJson, const GameplayTimestamp timestamp)
