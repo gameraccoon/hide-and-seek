@@ -141,19 +141,45 @@ namespace RayTrace
 			{
 				const Hull& hull = collision->getGeometry();
 
-				// for each border
-				for (auto& border : hull.borders)
+				if (hull.type == HullType::Angular)
 				{
-					// if ray have opposite direction with normal
-					if (abs((border.getNormal().rotation() - (transformedEndPoint - transformedStartPoint).rotation()).getValue()) <= PI/2)
+					// for each border
+					for (auto& border : hull.borders)
 					{
-						continue;
-					}
+						// if ray have opposite direction with normal
+						if (abs((border.getNormal().rotation() - (transformedEndPoint - transformedStartPoint).rotation()).getValue()) <= PI/2)
+						{
+							continue;
+						}
 
-					// if the raytrace intersects with this border
-					if (RayTrace::AreLinesIntersect(border.getA(), border.getB(), transformedStartPoint, transformedEndPoint))
+						// if the raytrace intersects with this border
+						if (RayTrace::AreLinesIntersect(border.getA(), border.getB(), transformedStartPoint, transformedEndPoint))
+						{
+							return true;
+						}
+					}
+				}
+				else
+				{
+					Vector2D d = endPoint - startPoint;
+					Vector2D f = startPoint - transform->getLocation();
+					float r = hull.getRadius();
+
+					float a = DotProduct(d, d);
+					float b = 2.0f * DotProduct(f, d);
+					float c = DotProduct(f, f) - r * r;
+
+					float discriminant = b * b - 4 * a * c;
+					if (discriminant >= 0)
 					{
-						return true;
+						discriminant = sqrt(discriminant);
+
+						float t1 = (-b - discriminant) / (2.0f * a);
+
+						if (t1 >= 0 && t1 <= 1)
+						{
+							return true;
+						}
 					}
 				}
 			}
@@ -195,35 +221,71 @@ namespace RayTrace
 			{
 				const Hull& hull = collision->getGeometry();
 
-				// for each border
-				for (auto& border : hull.borders)
+				if (hull.type == HullType::Angular)
 				{
-					// if ray have opposite direction with normal
-					if (abs((border.getNormal().rotation() - (transformedEndPoint - transformedStartPoint).rotation()).getValue()) <= PI/2)
+					// for each border
+					for (auto& border : hull.borders)
 					{
-						continue;
+						// if ray have opposite direction with normal
+						if (abs((border.getNormal().rotation() - (transformedEndPoint - transformedStartPoint).rotation()).getValue()) <= PI/2)
+						{
+							continue;
+						}
+
+						// if the raytrace intersects with this border
+						if (!RayTrace::AreLinesIntersect(border.getA(), border.getB(), transformedStartPoint, transformedEndPoint))
+						{
+							continue;
+						}
+
+						Vector2D hitLocation = RayTrace::GetPointIntersect2Lines(border.getA(), border.getB(),
+							transformedStartPoint, transformedEndPoint);
+
+						float rayQLength = (transformedStartPoint - hitLocation).qSize();
+
+						// if currentActor closer than the previous one
+						if (rayQLength < minRayQLength)
+						{
+							minRayQLength = rayQLength;
+							result.hasHit = true;
+							result.hitEntity.entity = entity;
+							result.hitEntity.cell = cell->getPos();
+							result.hitPoint = transform->getLocation() + hitLocation;
+							result.hitBorderNormal = border.getNormal();
+						}
 					}
+				}
+				else
+				{
+					Vector2D d = endPoint - startPoint;
+					Vector2D f = startPoint - transform->getLocation();
+					float r = hull.getRadius();
 
-					// if the raytrace intersects with this border
-					if (!RayTrace::AreLinesIntersect(border.getA(), border.getB(), transformedStartPoint, transformedEndPoint))
+					float a = DotProduct(d, d);
+					float b = 2.0f * DotProduct(f, d);
+					float c = DotProduct(f, f) - r * r;
+
+					float discriminant = b * b - 4 * a * c;
+					if (discriminant >= 0)
 					{
-						continue;
-					}
+						discriminant = sqrt(discriminant);
 
-					Vector2D hitLocation = RayTrace::GetPointIntersect2Lines(border.getA(), border.getB(),
-						transformedStartPoint, transformedEndPoint);
+						float t1 = (-b - discriminant) / (2.0f * a);
 
-					float rayQLength = (transformedStartPoint - hitLocation).qSize();
-
-					// if currentActor closer than the previous one
-					if (rayQLength < minRayQLength)
-					{
-						minRayQLength = rayQLength;
-						result.hasHit = true;
-						result.hitEntity.entity = entity;
-						result.hitEntity.cell = cell->getPos();
-						result.hitPoint = hitLocation + transform->getLocation();
-						result.hitBorderNormal = border.getNormal();
+						if (t1 >= 0 && t1 <= 1)
+						{
+							float rayLength = d.size() * t1;
+							float rayQLength = rayLength * rayLength;
+							if (rayQLength < minRayQLength)
+							{
+								minRayQLength = rayQLength;
+								result.hasHit = true;
+								result.hitEntity.entity = entity;
+								result.hitEntity.cell = cell->getPos();
+								result.hitPoint = d * sqrt(minRayQLength);
+								result.hitBorderNormal = (result.hitPoint - transform->getLocation()).unit();
+							}
+						}
 					}
 				}
 			}
