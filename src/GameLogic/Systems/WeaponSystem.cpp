@@ -9,6 +9,7 @@
 #include "GameData/Components/CharacterStateComponent.generated.h"
 #include "GameData/Components/TransformComponent.generated.h"
 #include "GameData/Components/HealthComponent.generated.h"
+#include "GameData/Components/DeathComponent.generated.h"
 #include "GameData/Spatial/SpatialEntity.h"
 
 #include "Utils/Geometry/RayTrace.h"
@@ -105,7 +106,7 @@ void WeaponSystem::update()
 		health->setHealthValue(healthValue);
 		if (healthValue < 0.0f)
 		{
-			cell->getEntityManager().removeEntity(hit.hitEntity.entity.getEntity());
+			cell->getEntityManager().addComponent<DeathComponent>(hit.hitEntity.entity.getEntity());
 		}
 	}
 }

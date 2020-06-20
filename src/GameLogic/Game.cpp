@@ -19,6 +19,7 @@
 #include "GameLogic/Systems/AnimationSystem.h"
 #include "GameLogic/Systems/CameraSystem.h"
 #include "GameLogic/Systems/WeaponSystem.h"
+#include "GameLogic/Systems/DeadEntitiesDestructionSystem.h"
 
 #ifdef IMGUI_ENABLED
 #include "GameLogic/Systems/ImguiSystem.h"
@@ -81,6 +82,7 @@ void Game::initSystems()
 	mSystemsManager.registerSystem<ControlSystem>(mWorldHolder, mInputData);
 	mSystemsManager.registerSystem<AiSystem>(mWorldHolder, mTime);
 	mSystemsManager.registerSystem<WeaponSystem>(mWorldHolder, mTime);
+	mSystemsManager.registerSystem<DeadEntitiesDestructionSystem>(mWorldHolder);
 	mSystemsManager.registerSystem<CollisionSystem>(mWorldHolder);
 	mSystemsManager.registerSystem<CameraSystem>(mWorldHolder, mInputData);
 	mSystemsManager.registerSystem<MovementSystem>(mWorldHolder, mTime);
