@@ -35,7 +35,13 @@
 	{
 		"name": "attributes_json_deserialization",
 		"params": [],
-		"blacklist": ["transient"]
+		"blacklist": ["transient", "defaulted"]
+	},
+	{
+		"name": "attributes_json_deserialization_defaulted",
+		"params": [],
+		"blacklist": ["transient"],
+		"whitelist": ["defaulted"]
 	},
 	{
 		"name": "editor/attribute_edit_fields",

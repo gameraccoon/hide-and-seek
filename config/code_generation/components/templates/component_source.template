@@ -25,4 +25,5 @@ void to_json(nlohmann::json& outJson, MAYBE_UNUSED const {class_name}& {componen
 void from_json(MAYBE_UNUSED const nlohmann::json& json, MAYBE_UNUSED {class_name}& out{component_name_capital})
 {{
 	{attributes_json_deserialization}
+	{attributes_json_deserialization_defaulted}
 }}
