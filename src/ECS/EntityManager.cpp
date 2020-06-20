@@ -282,8 +282,17 @@ void EntityManager::transferEntityTo(EntityManager& otherManager, Entity entity)
 
 nlohmann::json EntityManager::toJson(const ComponentFactory& componentFactory) const
 {
+	std::vector<std::pair<Entity::EntityID, EntityIndex>> sortedEntityIndexMap;
+	sortedEntityIndexMap.reserve(mEntityIndexMap.size());
+	for (const auto& indexPair : mEntityIndexMap)
+	{
+		sortedEntityIndexMap.push_back(indexPair);
+	}
+
+	std::sort(sortedEntityIndexMap.begin(), sortedEntityIndexMap.end());
+
 	nlohmann::json outJson{
-		{"entityIndexMap", mEntityIndexMap}
+		{"entityIndexMap", sortedEntityIndexMap}
 	};
 
 	auto components = nlohmann::json{};

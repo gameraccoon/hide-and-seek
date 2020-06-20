@@ -125,11 +125,27 @@ Vector2D SpatialWorldData::GetCellRealDistance(const CellPosDiff& cellDiff)
 nlohmann::json SpatialWorldData::toJson(const ComponentFactory& componentFactory) const
 {
 	nlohmann::json cellsJson;
-	for (auto& cell : mCells)
+
+	std::vector<std::pair<CellPos, const WorldCell*>> sortedCells;
+	sortedCells.reserve(mCells.size());
+	for (const auto& cell : mCells)
+	{
+		sortedCells.emplace_back(cell.first, &cell.second);
+	}
+
+	std::sort(sortedCells.begin(), sortedCells.end(), [](const auto& cellPairA, const auto& cellPairB) -> bool {
+		return (
+			cellPairA.first.x < cellPairB.first.x
+			||
+			(cellPairA.first.x == cellPairB.first.x && cellPairA.first.y < cellPairB.first.y)
+		);
+	});
+
+	for (const auto& cell : sortedCells)
 	{
 		cellsJson.push_back({
 			{"pos", cell.first},
-			{"cell", cell.second.toJson(componentFactory)}
+			{"cell", cell.second->toJson(componentFactory)}
 		});
 	}
 

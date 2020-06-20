@@ -291,10 +291,14 @@ void RenderSystem::drawLights(SpatialEntityManager& managerGroup, Vector2D playe
 		// start heavy calculations
 		mJobsWorkerManager.runJobs(std::move(jobs));
 
-		// sort lights in some determined order
+		// sort lights in some deterministic order
 		std::sort(allResults.begin(), allResults.end(), [](auto& a, auto& b)
 		{
-			return a.location.x + a.location.y < b.location.x + b.location.y;
+			return (
+				a.location.x < b.location.x
+				||
+				(a.location.x == b.location.x && a.location.y < b.location.y)
+			);
 		});
 
 		// draw the results on screen
