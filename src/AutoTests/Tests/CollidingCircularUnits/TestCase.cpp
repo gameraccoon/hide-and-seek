@@ -68,6 +68,6 @@ void CollidingCircularUnitsTestCase::initTestCase(const ArgumentsParser& /*argum
 
 	mWorld.getWorldComponents().addComponent<StateMachineComponent>();
 
-	mInputData.WindowSize = getEngine().getWindowSize();
-	mInputData.MousePos = mInputData.WindowSize * 0.5f;
+	mInputData.windowSize = getEngine().getWindowSize();
+	mInputData.mousePos = mInputData.windowSize * 0.5f;
 }
