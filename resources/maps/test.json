@@ -13946,6 +13946,16 @@
                                         }
                                     }
                                 ],
+                                "HealthComponent": [
+                                    null,
+                                    {
+                                        "healthValue": 100.0
+                                    },
+                                    null,
+                                    {
+                                        "healthValue": 100.0
+                                    }
+                                ],
                                 "MovementComponent": [
                                     null,
                                     {
@@ -14059,6 +14069,8 @@
                                 "WeaponComponent": [
                                     null,
                                     {
+                                        "damageValue": 10.0,
+                                        "shotDistance": 400.0,
                                         "shotPeriod": 0.5
                                     }
                                 ]

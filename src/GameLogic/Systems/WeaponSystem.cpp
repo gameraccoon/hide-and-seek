@@ -8,6 +8,7 @@
 #include "GameData/Components/WeaponComponent.generated.h"
 #include "GameData/Components/CharacterStateComponent.generated.h"
 #include "GameData/Components/TransformComponent.generated.h"
+#include "GameData/Components/HealthComponent.generated.h"
 #include "GameData/Spatial/SpatialEntity.h"
 
 #include "Utils/Geometry/RayTrace.h"
@@ -21,8 +22,23 @@ WeaponSystem::WeaponSystem(WorldHolder& worldHolder, const TimeData& timeData)
 
 struct ShotInfo
 {
+	ShotInfo(Entity instigator) : instigator(instigator) {}
+
 	Entity instigator;
 	WorldCell* instigatorCell;
+	float distance;
+	float damage;
+};
+
+struct HitInfo
+{
+	HitInfo(Entity instigator) : instigator(instigator) {}
+
+	Entity instigator;
+	WorldCell* instigatorCell;
+	SpatialEntity hitEntity;
+	Vector2D impulse;
+	float damageValue;
 };
 
 void WeaponSystem::update()
@@ -31,40 +47,65 @@ void WeaponSystem::update()
 	GameplayTimestamp currentTime = mTime.currentTimestamp;
 
 	std::vector<ShotInfo> shotsToMake;
-
-	// for tests
-	float traceSize = 500.0f;
-
-	world.getSpatialData().getAllCellManagers().forEachSpatialComponentSetWithEntity<WeaponComponent, CharacterStateComponent>([currentTime, &shotsToMake](Entity entity, WorldCell* cell, WeaponComponent* weaponComponent, CharacterStateComponent* characterState)
+	world.getSpatialData().getAllCellManagers().forEachSpatialComponentSetWithEntity<WeaponComponent, CharacterStateComponent>([currentTime, &shotsToMake](Entity entity, WorldCell* cell, WeaponComponent* weapon, CharacterStateComponent* characterState)
 	{
 		if (characterState->getState() == CharacterState::Shoot || characterState->getState() == CharacterState::WalkAndShoot)
 		{
-			if (currentTime > weaponComponent->getShotFinishTimestamp())
+			if (currentTime > weapon->getShotFinishTimestamp())
 			{
-				shotsToMake.push_back({entity, cell});
+				ShotInfo shot(entity);
+				shot.instigatorCell = cell;
+				shot.distance = weapon->getShotDistance();
+				shot.damage = weapon->getDamageValue();
+				shotsToMake.push_back(std::move(shot));
 
-				weaponComponent->setShotFinishTimestamp(currentTime.getIncreasedByFloatTime(weaponComponent->getShotPeriod()));
+				weapon->setShotFinishTimestamp(currentTime.getIncreasedByFloatTime(weapon->getShotPeriod()));
 			}
 		}
 	});
 
-	for (auto& shotInfo : shotsToMake)
+	std::vector<HitInfo> hitsDone;
+	for (const ShotInfo& shotInfo : shotsToMake)
 	{
 		auto [transform] = shotInfo.instigatorCell->getEntityManager().getEntityComponents<TransformComponent>(shotInfo.instigator);
 		if (transform)
 		{
+			Vector2D traceEndPoint = transform->getLocation() + Vector2D(transform->getRotation()) * shotInfo.distance;
 			RayTrace::TraceResult result = RayTrace::Trace(
 				world,
 				transform->getLocation(),
-				transform->getLocation() + Vector2D(transform->getRotation()) * traceSize
+				traceEndPoint
 			);
 
 			if (result.hasHit)
 			{
-				WorldCell* cell = world.getSpatialData().getCell(result.hitEntity.cell);
-				AssertFatal(cell != nullptr, "Cell of the hit object is not found");
-				cell->getEntityManager().removeEntity(result.hitEntity.entity.getEntity());
+				HitInfo hitInfo(shotInfo.instigator);
+				hitInfo.instigatorCell = shotInfo.instigatorCell;
+				hitInfo.hitEntity = result.hitEntity;
+				hitInfo.impulse = traceEndPoint - transform->getLocation();
+				hitInfo.damageValue = shotInfo.damage;
+				hitsDone.push_back(std::move(hitInfo));
 			}
+		}
+	}
+
+	for (const HitInfo& hit : hitsDone)
+	{
+		WorldCell* cell = world.getSpatialData().getCell(hit.hitEntity.cell);
+		AssertFatal(cell != nullptr, "Cell of the hit object is not found");
+
+		auto [health] = cell->getEntityManager().getEntityComponents<HealthComponent>(hit.hitEntity.entity.getEntity());
+		if (health == nullptr)
+		{
+			// entity doesn't have health
+			continue;
+		}
+
+		float healthValue = health->getHealthValue() - hit.damageValue;
+		health->setHealthValue(healthValue);
+		if (healthValue < 0.0f)
+		{
+			cell->getEntityManager().removeEntity(hit.hitEntity.entity.getEntity());
 		}
 	}
 }
