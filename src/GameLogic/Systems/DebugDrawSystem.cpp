@@ -38,6 +38,19 @@ DebugDrawSystem::DebugDrawSystem(WorldHolder& worldHolder, const TimeData& timeD
 {
 }
 
+template<typename T>
+void RemoveOldDrawElement(std::vector<T>& vector, GameplayTimestamp now)
+{
+	vector.erase(
+		std::remove_if(
+			vector.begin(),
+			vector.end(),
+			[now](const T& val){ return val.isLifeTimeExceeded(now); }
+		),
+		vector.end()
+	);
+}
+
 void DebugDrawSystem::update()
 {
 	World& world = mWorldHolder.getWorld();
@@ -187,8 +200,9 @@ void DebugDrawSystem::update()
 		{
 			Vector2D pointSize(6, 6);
 			const Graphics::Sprite& pointSprite = mResourceManager.getResource<Graphics::Sprite>(mPointTextureHandle);
+			const Graphics::Sprite& lineSprite = mResourceManager.getResource<Graphics::Sprite>(mLineTextureHandle);
 			const Graphics::Font& font = mResourceManager.getResource<Graphics::Font>(mFontHandle);
-			for (auto& screenPoint : debugDraw->getFrameScreenPoints())
+			for (const auto& screenPoint : debugDraw->getScreenPoints())
 			{
 				renderer.render(*pointSprite.getSurface(), screenPoint.screenPos, pointSize);
 				if (!screenPoint.name.empty())
@@ -197,14 +211,29 @@ void DebugDrawSystem::update()
 				}
 			}
 
-			for (auto& worldPoint : debugDraw->getFrameWorldPoints())
+			for (const auto& worldPoint : debugDraw->getWorldPoints())
 			{
-				Vector2D screenPos = worldPoint.pos + SpatialWorldData::GetCellRealDistance(worldPoint.cellPos - cameraCell) - cameraLocation + screenHalfSize;
+				Vector2D screenPos = worldPoint.pos - cameraLocation + screenHalfSize;
 				renderer.render(*pointSprite.getSurface(), screenPos, pointSize);
 				if (!worldPoint.name.empty())
 				{
 					renderer.renderText(font, screenPos, {255, 255, 255, 255}, worldPoint.name.c_str());
 				}
+			}
+
+			for (const auto& worldLineSegment : debugDraw->getWorldLineSegments())
+			{
+				Vector2D screenPosStart = worldLineSegment.startPos - cameraLocation + screenHalfSize;
+				Vector2D screenPosEnd = worldLineSegment.endPos - cameraLocation + screenHalfSize;
+				Vector2D diff = screenPosEnd - screenPosStart;
+				renderer.render(
+					*lineSprite.getSurface(),
+					(screenPosStart + screenPosEnd) * 0.5f,
+					Vector2D(diff.size(), pointSize.y),
+					Vector2D(0.5f, 0.5f),
+					diff.rotation().getValue(),
+					lineSprite.getUV()
+				);
 			}
 		}
 	}
@@ -222,8 +251,9 @@ void DebugDrawSystem::update()
 	auto [debugDraw] = gameData.getGameComponents().getComponents<DebugDrawComponent>();
 	if (debugDraw != nullptr)
 	{
-		debugDraw->getFrameWorldPointsRef().clear();
-		debugDraw->getFrameScreenPointsRef().clear();
+		RemoveOldDrawElement(debugDraw->getWorldPointsRef(), mTime.currentTimestamp);
+		RemoveOldDrawElement(debugDraw->getScreenPointsRef(), mTime.currentTimestamp);
+		RemoveOldDrawElement(debugDraw->getWorldLineSegmentsRef(), mTime.currentTimestamp);
 	}
 }
 
@@ -232,5 +262,6 @@ void DebugDrawSystem::initResources()
 	mCollisionSpriteHandle = mResourceManager.lockSprite("resources/textures/collision.png");
 	mNavmeshSpriteHandle = mResourceManager.lockSprite("resources/textures/testTexture.png");
 	mPointTextureHandle = mResourceManager.lockSprite("resources/textures/collision.png");
+	mLineTextureHandle = mResourceManager.lockSprite("resources/textures/testTexture.png");
 	mFontHandle = mResourceManager.lockFont("resources/fonts/prstart.ttf", 16);
 }

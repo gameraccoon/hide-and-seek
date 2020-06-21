@@ -46,4 +46,5 @@ private:
 	ResourceHandle mNavmeshSpriteHandle;
 	ResourceHandle mFontHandle;
 	ResourceHandle mPointTextureHandle;
+	ResourceHandle mLineTextureHandle;
 };

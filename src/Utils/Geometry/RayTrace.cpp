@@ -282,7 +282,7 @@ namespace RayTrace
 								result.hasHit = true;
 								result.hitEntity.entity = entity;
 								result.hitEntity.cell = cell->getPos();
-								result.hitPoint = d * sqrt(minRayQLength);
+								result.hitPoint = startPoint + d * t1;
 								result.hitBorderNormal = (result.hitPoint - transform->getLocation()).unit();
 							}
 						}
