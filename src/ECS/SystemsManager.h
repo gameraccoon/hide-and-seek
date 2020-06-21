@@ -10,13 +10,11 @@
 	#define PROFILE_SYSTEMS
 #endif // DEBUG
 
-#ifdef PROFILE_SYSTEMS
 struct SystemsFrameTime
 {
 	std::chrono::microseconds frameTime;
 	std::vector<std::chrono::microseconds> systemsTime;
 };
-#endif // PROFILE_SYSTEMS
 
 /**
  * Manager for game systems
@@ -34,11 +32,15 @@ public:
 	void initResources();
 	void shutdown();
 
+#ifdef PROFILE_SYSTEMS
 	SystemsFrameTime getPreviousFrameTimeData();
+#endif // PROFILE_SYSTEMS
 	std::vector<std::string> getSystemNames();
 
 private:
 	std::vector<std::unique_ptr<System>> mSystems;
+#ifdef PROFILE_SYSTEMS
 	SystemsFrameTime mThisFrameTime;
 	SystemsFrameTime mPreviousFrameTime;
+#endif // PROFILE_SYSTEMS
 };

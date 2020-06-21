@@ -234,7 +234,7 @@ void EntityManager::transferEntityTo(EntityManager& otherManager, Entity entity)
 	}
 
 	// ToDo use global entity ID collision detection
-	auto insertionResult = otherManager.mEntityIndexMap.try_emplace(entity.getID(), otherManager.mNextEntityIndex);
+	MAYBE_UNUSED auto insertionResult = otherManager.mEntityIndexMap.try_emplace(entity.getID(), otherManager.mNextEntityIndex);
 	AssertFatal(insertionResult.second, "EntityID is not unique, two entities have just collided");
 	otherManager.mIndexEntityMap.emplace(otherManager.mNextEntityIndex, entity.getID());
 	++otherManager.mNextEntityIndex;

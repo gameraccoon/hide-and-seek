@@ -41,9 +41,11 @@ void Game::start(ArgumentsParser& arguments)
 	auto [sm] = mGameData.getGameComponents().getComponents<StateMachineComponent>();
 	StateMachines::RegisterStateMachines(sm);
 
+#ifdef PROFILE_SYSTEMS
 	mProfileSystems = arguments.hasArgument("profile-systems");
 	mSystemProfileOutputPath = arguments.getArgumentValue("profile-systems", mSystemProfileOutputPath);
 	mSystemFrameRecords.setRecordsLimit(mProfileSystems ? 0u : 100u);
+#endif // PROFILE_SYSTEMS
 
 #ifdef IMGUI_ENABLED
 	mImguiDebugData.systemNames = mSystemsManager.getSystemNames();
@@ -74,7 +76,9 @@ void Game::update(float dt)
 	mSystemsManager.update();
 	mInputData.clearAfterFrame();
 
+#ifdef PROFILE_SYSTEMS
 	mSystemFrameRecords.addFrame(mSystemsManager.getPreviousFrameTimeData());
+#endif
 }
 
 void Game::initSystems()
@@ -104,9 +108,11 @@ void Game::initResources()
 
 void Game::onGameShutdown()
 {
+#ifdef PROFILE_SYSTEMS
 	if (mProfileSystems)
 	{
 		mSystemFrameRecords.printToFile(mSystemsManager.getSystemNames(), mSystemProfileOutputPath);
 	}
+#endif // PROFILE_SYSTEMS
 	mSystemsManager.shutdown();
 }

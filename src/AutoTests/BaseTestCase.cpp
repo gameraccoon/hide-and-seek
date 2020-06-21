@@ -34,11 +34,12 @@ void BaseTestCase::update(float)
 		mTime.update(fixedDt);
 		mSystemsManager.update();
 		++mTicksCount;
-
+#ifdef PROFILE_SYSTEMS
 		if (mProfileSystems)
 		{
 			mSystemFrameRecords.addFrame(mSystemsManager.getPreviousFrameTimeData());
 		}
+#endif // PROFILE_SYSTEMS
 	}
 	while (mOneFrame && mTicksCount < mTicksToFinish);
 

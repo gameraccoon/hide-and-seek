@@ -48,10 +48,12 @@ void SystemsManager::shutdown()
 	mSystems.clear();
 }
 
+#ifdef PROFILE_SYSTEMS
 SystemsFrameTime SystemsManager::getPreviousFrameTimeData()
 {
 	return mPreviousFrameTime;
 }
+#endif // PROFILE_SYSTEMS
 
 std::vector<std::string> SystemsManager::getSystemNames()
 {

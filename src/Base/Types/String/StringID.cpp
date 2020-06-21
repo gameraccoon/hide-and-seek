@@ -31,7 +31,7 @@ StringID StringIDManager::stringToID(const std::string& stringValue)
 {
 	const StringID::KeyType hash = hash_64_fnv1a_const(stringValue.c_str());
 	AssertFatal(hash != 0UL, "String hashing result should not be 0: '%s'", stringValue);
-	auto [it, hasInserted] = mStringIDsToStringsMap.emplace(hash, stringValue);
+	MAYBE_UNUSED auto [it, hasInserted] = mStringIDsToStringsMap.emplace(hash, stringValue);
 	AssertFatal(hasInserted || it->second == stringValue, "Hash collision for '%s' and '%s'", stringValue.c_str(), it->second.c_str());
 	return StringID(hash);
 }

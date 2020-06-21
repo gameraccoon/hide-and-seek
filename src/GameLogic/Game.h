@@ -47,9 +47,11 @@ private:
 	Jobs::WorkerManager mJobsWorkerManager{Jobs::GetAvailableThreadsCount()};
 	TimeData mTime;
 
+#ifdef PROFILE_SYSTEMS
 	bool mProfileSystems = false;
 	SystemFrameRecords mSystemFrameRecords;
 	std::string mSystemProfileOutputPath = "systemProfile.csv";
+#endif // PROFILE_SYSTEMS
 
 #ifdef IMGUI_ENABLED
 	ImguiDebugData mImguiDebugData{mWorldHolder, mTime, mSystemFrameRecords, {}};
