@@ -1,6 +1,6 @@
 #include "Base/precomp.h"
 
-#include "AutoTests/Tests/CollidingCircularUnits/TestCase.h"
+#include "AutoTests/Tests/WeaponShooting/TestCase.h"
 
 #include <memory>
 
@@ -13,6 +13,8 @@
 #include "GameData/Components/TransformComponent.generated.h"
 #include "GameData/Components/StateMachineComponent.generated.h"
 #include "GameData/Components/MovementComponent.generated.h"
+#include "GameData/Components/WeaponComponent.generated.h"
+#include "GameData/Components/CharacterStateComponent.generated.h"
 
 #include "GameLogic/Systems/RenderSystem.h"
 #include "GameLogic/Systems/CollisionSystem.h"
@@ -20,16 +22,27 @@
 #include "GameLogic/Systems/MovementSystem.h"
 #include "GameLogic/Systems/CharacterStateSystem.h"
 #include "GameLogic/Systems/CameraSystem.h"
+#include "GameLogic/Systems/WeaponSystem.h"
+#include "GameLogic/Systems/DeadEntitiesDestructionSystem.h"
 
-#include "AutoTests/Tests/CollidingCircularUnits/Systems/TestCircularUnitsSystem.h"
-#include "AutoTests/Tests/CollidingCircularUnits/Systems/TestUnitsCountControlSystem.h"
+#include "GameLogic/Initialization/StateMachines.h"
 
-void CollidingCircularUnitsTestCase::initTestCase(const ArgumentsParser& /*arguments*/)
+#include "AutoTests/Tests/WeaponShooting/Systems/TestShootingControlSystem.h"
+#include "AutoTests/Tests/WeaponShooting/Systems/TestSpawnShootableUnitsSystem.h"
+#include "AutoTests/Tests/WeaponShooting/Systems/TestDestroyedEntitiesRegistrationSystem.h"
+
+void WeaponShootingTestCase::initTestCase(const ArgumentsParser& /*arguments*/)
 {
 	getResourceManager().loadAtlasesData("resources/atlas/atlas-list.json");
 
-	mSystemsManager.registerSystem<TestUnitsCountControlSystem>(mWorldHolder);
-	mSystemsManager.registerSystem<TestCircularUnitsSystem>(mWorldHolder, mTime);
+	mTestChecklist.checks.emplace("destroyedEntities", std::make_unique<DestroyedEntitiesTestCheck>(100));
+	DestroyedEntitiesTestCheck& destroyedEntitiesTestCheck = *static_cast<DestroyedEntitiesTestCheck*>(mTestChecklist.checks["destroyedEntities"].get());
+
+	mSystemsManager.registerSystem<TestSpawnShootableUnitsSystem>(mWorldHolder);
+	mSystemsManager.registerSystem<TestShootingControlSystem>(mWorldHolder, mTime);
+	mSystemsManager.registerSystem<WeaponSystem>(mWorldHolder, mTime);
+	mSystemsManager.registerSystem<TestDestroyedEntitiesRegistrationSystem>(mWorldHolder, destroyedEntitiesTestCheck);
+	mSystemsManager.registerSystem<DeadEntitiesDestructionSystem>(mWorldHolder);
 	mSystemsManager.registerSystem<CollisionSystem>(mWorldHolder);
 	mSystemsManager.registerSystem<CameraSystem>(mWorldHolder, mInputData);
 	mSystemsManager.registerSystem<MovementSystem>(mWorldHolder, mTime);
@@ -57,6 +70,13 @@ void CollidingCircularUnitsTestCase::initTestCase(const ArgumentsParser& /*argum
 		hull.setRadius(15.0f);
 	}
 	playerEntity.addComponent<MovementComponent>();
+	{
+		WeaponComponent* weapon = playerEntity.addComponent<WeaponComponent>();
+		weapon->setShotDistance(1000.0f);
+		weapon->setDamageValue(70.0f);
+		weapon->setShotPeriod(0.0001f);
+	}
+	playerEntity.addComponent<CharacterStateComponent>();
 
 	Vector2D cameraPos{ZERO_VECTOR};
 	EntityView camera = mWorld.createTrackedSpatialEntity(STR_TO_ID("CameraEntity"), SpatialWorldData::GetCellForPos(cameraPos));
@@ -66,8 +86,13 @@ void CollidingCircularUnitsTestCase::initTestCase(const ArgumentsParser& /*argum
 	}
 	camera.addComponent<MovementComponent>();
 
-	mGameData.getGameComponents().addComponent<StateMachineComponent>();
+	{
+		StateMachineComponent* stateMachine = mGameData.getGameComponents().addComponent<StateMachineComponent>();
+		StateMachines::RegisterStateMachines(stateMachine);
+	}
 
 	mInputData.windowSize = getEngine().getWindowSize();
 	mInputData.mousePos = mInputData.windowSize * 0.5f;
+
+	mTicksToFinish = 300;
 }

@@ -17,5 +17,5 @@ public:
 private:
 private:
 	WorldHolder& mWorldHolder;
-	int ticksPassed = 0;
+	int mTicksPassed = 0;
 };

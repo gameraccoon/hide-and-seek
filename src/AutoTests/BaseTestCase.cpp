@@ -8,7 +8,7 @@
 
 #include "GameLogic/ComponentsRegistration.h"
 
-void BaseTestCase::start(const ArgumentsParser& arguments)
+TestChecklist BaseTestCase::start(const ArgumentsParser& arguments)
 {
 	ComponentsRegistration::RegisterComponents(mComponentFactory);
 
@@ -21,6 +21,8 @@ void BaseTestCase::start(const ArgumentsParser& arguments)
 
 	// start the main loop
 	getEngine().start(this);
+
+	return std::move(mTestChecklist);
 }
 
 void BaseTestCase::update(float)

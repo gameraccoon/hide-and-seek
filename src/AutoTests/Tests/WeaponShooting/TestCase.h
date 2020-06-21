@@ -12,8 +12,9 @@
 #include "GameLogic/SharedManagers/WorldHolder.h"
 
 #include "AutoTests/BaseTestCase.h"
+#include "AutoTests/Tests/WeaponShooting/DestroyedEntitiesTestCheck.h"
 
-class CollidingCircularUnitsTestCase : public BaseTestCase
+class WeaponShootingTestCase : public BaseTestCase
 {
 public:
 	using BaseTestCase::BaseTestCase;

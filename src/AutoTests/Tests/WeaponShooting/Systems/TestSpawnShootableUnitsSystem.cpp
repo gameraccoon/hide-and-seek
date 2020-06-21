@@ -1,15 +1,15 @@
 #include "Base/precomp.h"
 
-#include "AutoTests/Tests/CollidingCircularUnits/Systems/TestUnitsCountControlSystem.h"
+#include "AutoTests/Tests/WeaponShooting/Systems/TestSpawnShootableUnitsSystem.h"
 
 #include "Base/Random/Random.h"
 
+#include <sdl/SDL_keycode.h>
+
 #include "GameData/Components/SpriteCreatorComponent.generated.h"
 #include "GameData/Components/TransformComponent.generated.h"
-#include "GameData/Components/MovementComponent.generated.h"
 #include "GameData/Components/CollisionComponent.generated.h"
-#include "GameData/Components/AiControllerComponent.generated.h"
-#include "GameData/Components/CharacterStateComponent.generated.h"
+#include "GameData/Components/HealthComponent.generated.h"
 
 #include "GameData/World.h"
 #include "GameData/Spatial/SpatialWorldData.h"
@@ -20,7 +20,7 @@ static const float halfJitterMax = jitterMax / 2.0f;
 static const float jitterDivider = jitterRand / jitterMax;
 static const float distance = 50.0f;
 
-TestUnitsCountControlSystem::TestUnitsCountControlSystem(WorldHolder& worldHolder)
+TestSpawnShootableUnitsSystem::TestSpawnShootableUnitsSystem(WorldHolder& worldHolder)
 	: mWorldHolder(worldHolder)
 {
 }
@@ -31,10 +31,6 @@ static void spawnUnit(EntityManager& entityManager, Vector2D pos)
 	{
 		TransformComponent* transform = entityManager.addComponent<TransformComponent>(entity);
 		transform->setLocation(pos);
-	}
-	{
-		MovementComponent* movement = entityManager.addComponent<MovementComponent>(entity);
-		movement->setOriginalSpeed(2.0f);
 	}
 	{
 		SpriteCreatorComponent* sprite = entityManager.addComponent<SpriteCreatorComponent>(entity);
@@ -49,8 +45,10 @@ static void spawnUnit(EntityManager& entityManager, Vector2D pos)
 		hull.type = HullType::Circular;
 		hull.setRadius(10.0f);
 	}
-	entityManager.addComponent<AiControllerComponent>(entity);
-	entityManager.addComponent<CharacterStateComponent>(entity);
+	{
+		HealthComponent* health = entityManager.addComponent<HealthComponent>(entity);
+		health->setHealthValue(100.0f);
+	}
 }
 
 static void spawnJitteredUnit(const Vector2D& pos, const Vector2D& centerShifted, SpatialWorldData& spatialData)
@@ -84,14 +82,14 @@ static void spawnUnits(SpatialWorldData& spatialData, int count, Vector2D pos)
 	}
 }
 
-void TestUnitsCountControlSystem::update()
+void TestSpawnShootableUnitsSystem::update()
 {
 	World& world = mWorldHolder.getWorld();
 
-	if (mTicksPassed == 5)
+	if (ticksPassed == 5)
 	{
-		spawnUnits(world.getSpatialData(), 500, Vector2D(-400.0f, 0.0f));
+		spawnUnits(world.getSpatialData(), 100, Vector2D(-100.0f, 0.0f));
 	}
 
-	++mTicksPassed;
+	++ticksPassed;
 }

@@ -40,12 +40,18 @@ void CharacterStateSystem::update()
 
 	if (stateMachine)
 	{
-		world.getSpatialData().getAllCellManagers().forEachComponentSet<CharacterStateComponent, MovementComponent, AnimationGroupsComponent>([stateMachine, dt](CharacterStateComponent* characterState, MovementComponent* movement, AnimationGroupsComponent* animationGroups)
+		// update states
+		world.getSpatialData().getAllCellManagers().forEachComponentSet<CharacterStateComponent>([stateMachine, dt](CharacterStateComponent* characterState)
 		{
 			// calculate state
 			CharacterState state = stateMachine->getCharacterSM().getNextState(characterState->getBlackboard(), characterState->getState());
 			characterState->setState(state);
+		});
 
+		// update movements
+		world.getSpatialData().getAllCellManagers().forEachComponentSet<CharacterStateComponent, MovementComponent>([stateMachine, dt](CharacterStateComponent* characterState, MovementComponent* movement)
+		{
+			CharacterState state = characterState->getState();
 			// allow movement
 			if (!CanMove(state))
 			{
@@ -55,8 +61,13 @@ void CharacterStateSystem::update()
 			}
 			movement->setSpeed(IsRunning(state) ? movement->getOriginalSpeed() * 2.0f : movement->getOriginalSpeed());
 			movement->setNextStep(movement->getMoveDirection() * movement->getSpeed() * dt);
+		});
 
-			// update animation blackboard
+		// update animation
+		world.getSpatialData().getAllCellManagers().forEachComponentSet<CharacterStateComponent, MovementComponent, AnimationGroupsComponent>([stateMachine, dt](CharacterStateComponent* characterState, MovementComponent* movement, AnimationGroupsComponent* animationGroups)
+		{
+			CharacterState state = characterState->getState();
+
 			auto& animBlackboard = animationGroups->getBlackboardRef();
 			animBlackboard.setValue<StringID>(STR_TO_ID("charState"), enum_to_string(state));
 

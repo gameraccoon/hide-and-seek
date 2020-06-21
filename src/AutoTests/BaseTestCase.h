@@ -16,12 +16,14 @@
 #include "GameLogic/SharedManagers/WorldHolder.h"
 #include "GameLogic/SharedManagers/InputData.h"
 
+#include "AutoTests/TestChecklist.h"
+
 class BaseTestCase : public HAL::GameBase
 {
 public:
 	using HAL::GameBase::GameBase;
 
-	void start(const ArgumentsParser& arguments);
+	TestChecklist start(const ArgumentsParser& arguments);
 	void update(float dt) final;
 	void initResources() override;
 	void setKeyboardKeyState(int, bool) override {}
@@ -40,8 +42,11 @@ protected:
 	TimeData mTime;
 	InputData mInputData;
 
+	TestChecklist mTestChecklist;
+
+	int mTicksToFinish = 100;
+
 private:
-	static const int mTicksToFinish = 100;
 	int mTicksCount = 0;
 	ComponentFactory mComponentFactory;
 	bool mOneFrame = false;

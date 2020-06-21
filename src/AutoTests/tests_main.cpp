@@ -7,21 +7,43 @@
 #include "Utils/Application/ArgumentsParser.h"
 
 #include "AutoTests/Tests/CollidingCircularUnits/TestCase.h"
+#include "AutoTests/Tests/WeaponShooting/TestCase.h"
+#include "AutoTests/TestChecklist.h"
 
-using CasesMap = std::map<std::string, std::function<void(const ArgumentsParser& arguments)>>;
+using CasesMap = std::map<std::string, std::function<std::unique_ptr<BaseTestCase>()>>;
 
 CasesMap getCases()
 {
 	return CasesMap
 	({
 		{
-			"CollidingCircularUnits", [](const ArgumentsParser& args)
+			"CollidingCircularUnits", []()
 			{
-				 CollidingCircularUnitsTestCase testCase(800, 600);
-				 testCase.start(args);
+				return std::make_unique<CollidingCircularUnitsTestCase>(800, 600);
+			}
+		},
+		{
+			"WeaponShooting", []()
+			{
+				return std::make_unique<WeaponShootingTestCase>(800, 600);
 			}
 		}
 	});
+}
+
+bool ValidateChecklist(const TestChecklist& checklist)
+{
+	bool result = true;
+	for(const auto& checkPair : checklist.checks)
+	{
+		if (!checkPair.second->isPassed())
+		{
+			LogInfo("Test check failed: %s. %s", checkPair.first, checkPair.second->describe());
+			result = false;
+			continue;
+		}
+	}
+	return result;
 }
 
 int main(int argc, char** argv)
@@ -57,13 +79,14 @@ int main(int argc, char** argv)
 	auto caseIt = cases.find(arguments.getArgumentValue("case"));
 	if (caseIt != cases.end())
 	{
-		caseIt->second(arguments);
+		std::unique_ptr<BaseTestCase> testCase = caseIt->second();
+		TestChecklist checklist = testCase->start(arguments);
+		bool isSuccessfull = ValidateChecklist(checklist);
+		return isSuccessfull ? 0 : 1;
 	}
 	else
 	{
 		LogError("Unknown test " + arguments.getArgumentValue("case"));
 		return 1;
 	}
-
-	return 0;
 }
