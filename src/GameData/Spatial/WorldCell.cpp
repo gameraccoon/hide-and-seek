@@ -9,16 +9,16 @@ WorldCell::WorldCell(const CellPos& pos)
 {
 }
 
-nlohmann::json WorldCell::toJson(const ComponentFactory& componentFactory) const
+nlohmann::json WorldCell::toJson(const ComponentSerializersHolder& componentSerializers) const
 {
 	return nlohmann::json{
-		{"entity_manager", mEntityManager.toJson(componentFactory)},
-		{"cell_components", mCellComponents.toJson(componentFactory)},
+		{"entity_manager", mEntityManager.toJson(componentSerializers)},
+		{"cell_components", mCellComponents.toJson(componentSerializers)},
 	};
 }
 
-void WorldCell::fromJson(const nlohmann::json& json, const ComponentFactory& componentFactory)
+void WorldCell::fromJson(const nlohmann::json& json, const ComponentSerializersHolder& componentSerializers)
 {
-	mEntityManager.fromJson(json.at("entity_manager"), componentFactory);
-	mCellComponents.fromJson(json.at("cell_components"), componentFactory);
+	mEntityManager.fromJson(json.at("entity_manager"), componentSerializers);
+	mCellComponents.fromJson(json.at("cell_components"), componentSerializers);
 }

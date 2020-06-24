@@ -10,7 +10,8 @@
 #include "ECS/Entity.h"
 #include "ECS/Delegates.h"
 
-class ComponentFactory;
+class ComponentSerializersHolder;
+class JsonComponentSerializationHolder;
 
 class EntityManager
 {
@@ -261,14 +262,14 @@ public:
 		return result;
 	}
 
-	void getPrefabFromEntity(nlohmann::json& json, Entity entity);
-	Entity createPrefabInstance(const nlohmann::json& json, const ComponentFactory& componentFactory);
-	void applyPrefabToExistentEntity(const nlohmann::json& json, Entity entity, const ComponentFactory& componentFactory);
+	void getPrefabFromEntity(nlohmann::json& json, Entity entity, const JsonComponentSerializationHolder& jsonSerializationHolder);
+	Entity createPrefabInstance(const nlohmann::json& json, const ComponentSerializersHolder& componentSerializers);
+	void applyPrefabToExistentEntity(const nlohmann::json& json, Entity entity, const ComponentSerializersHolder& componentSerializers);
 
 	void transferEntityTo(EntityManager& otherManager, Entity entity);
 
-	nlohmann::json toJson(const class ComponentFactory& componentFactory) const;
-	void fromJson(const nlohmann::json& json, const class ComponentFactory& componentFactory);
+	nlohmann::json toJson(const ComponentSerializersHolder& componentSerializers) const;
+	void fromJson(const nlohmann::json& json, const ComponentSerializersHolder& componentSerializers);
 
 public:
 	MulticastDelegate<> OnEntityAdded;

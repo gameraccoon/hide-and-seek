@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ECS/SystemsManager.h"
-#include "ECS/ComponentFactory.h"
+#include "ECS/Serialization/ComponentSerializersHolder.h"
 
 #include "GameData/World.h"
 #include "GameData/GameData.h"
@@ -43,7 +43,7 @@ private:
 	InputData mInputData;
 
 	SystemsManager mSystemsManager;
-	ComponentFactory mComponentFactory;
+	ComponentSerializersHolder mComponentSerializers;
 	Jobs::WorkerManager mJobsWorkerManager{Jobs::GetAvailableThreadsCount()};
 	TimeData mTime;
 

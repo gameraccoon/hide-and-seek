@@ -1,6 +1,6 @@
 #pragma once
 
-#include <map>
+#include <unordered_map>
 #include <functional>
 #include <optional>
 #include <typeindex>
@@ -19,20 +19,30 @@ public:
 			return new T();
 		};
 		StringID className = T::GetClassName();
-		mStringToTypeID.emplace(className, typeid(T));
-		mTypeIDToString.emplace(typeid(T), className);
+		mClassNameToTypeID.emplace(className, typeid(T));
+		mTypeIDToClassName.emplace(typeid(T), className);
 	}
 
 	CreationFn getCreationFn(StringID typeName) const;
-	std::optional<std::type_index> getTypeIDFromString(StringID typeName) const;
-	StringID getStringFromTypeID(const std::type_index& typeID) const;
+	std::optional<std::type_index> getTypeIDFromClassName(StringID className) const;
+	StringID getClassNameFromTypeID(const std::type_index& typeID) const;
 
 	BaseComponent* createComponent(StringID typeName) const;
 
-	void forEachComponentType(std::function<void(std::type_index, StringID)> fn) const;
+	template<typename F>
+	void forEachComponentType(F fn) const
+	{
+		if (fn)
+		{
+			for (auto [typeID, name] : mTypeIDToClassName)
+			{
+				fn(typeID, name);
+			}
+		}
+	}
 
 private:
-	std::map<StringID, CreationFn> mComponentCreators;
-	std::map<StringID, std::type_index> mStringToTypeID;
-	std::map<std::type_index, StringID> mTypeIDToString;
+	std::unordered_map<StringID, CreationFn> mComponentCreators;
+	std::unordered_map<StringID, std::type_index> mClassNameToTypeID;
+	std::unordered_map<std::type_index, StringID> mTypeIDToClassName;
 };

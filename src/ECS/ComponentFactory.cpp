@@ -2,34 +2,34 @@
 
 #include "ECS/ComponentFactory.h"
 
-ComponentFactory::CreationFn ComponentFactory::getCreationFn(StringID typeName) const
+ComponentFactory::CreationFn ComponentFactory::getCreationFn(StringID className) const
 {
-	const auto& it = mComponentCreators.find(typeName);
+	const auto& it = mComponentCreators.find(className);
 	if (it != mComponentCreators.cend())
 	{
 		return it->second;
 	}
 
-	ReportFatalError("Unknown component type: '%s'", typeName);
+	ReportFatalError("Unknown component type: '%s'", className);
 	return nullptr;
 }
 
-std::optional<std::type_index> ComponentFactory::getTypeIDFromString(StringID typeName) const
+std::optional<std::type_index> ComponentFactory::getTypeIDFromClassName(StringID className) const
 {
-	const auto& it = mStringToTypeID.find(typeName);
-	if (it != mStringToTypeID.end())
+	const auto& it = mClassNameToTypeID.find(className);
+	if (it != mClassNameToTypeID.end())
 	{
 		return it->second;
 	}
 
-	ReportFatalError("Unknown component type: '%s'", typeName);
+	ReportFatalError("Unknown component type: '%s'", className);
 	return std::nullopt;
 }
 
-StringID ComponentFactory::getStringFromTypeID(const std::type_index& typeID) const
+StringID ComponentFactory::getClassNameFromTypeID(const std::type_index& typeID) const
 {
-	const auto& it = mTypeIDToString.find(typeID);
-	if (it != mTypeIDToString.end())
+	const auto& it = mTypeIDToClassName.find(typeID);
+	if (it != mTypeIDToClassName.end())
 	{
 		return it->second;
 	}
@@ -47,15 +47,4 @@ BaseComponent* ComponentFactory::createComponent(StringID typeName) const
 	}
 
 	return nullptr;
-}
-
-void ComponentFactory::forEachComponentType(std::function<void (std::type_index, StringID)> fn) const
-{
-	if (fn)
-	{
-		for (auto [typeID, name] : mTypeIDToString)
-		{
-			fn(typeID, name);
-		}
-	}
 }

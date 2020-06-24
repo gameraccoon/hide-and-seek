@@ -25,17 +25,19 @@
 #include "GameLogic/Systems/ImguiSystem.h"
 #endif // IMGUI_ENABLED
 
-#include "GameLogic/ComponentsRegistration.h"
+#include "GameLogic/ComponentFactoryRegistration.h"
+#include "GameLogic/ComponentJsonSerializerRegistration.h"
 #include "GameLogic/Initialization/StateMachines.h"
 
 void Game::start(ArgumentsParser& arguments)
 {
 	initSystems();
 
-	ComponentsRegistration::RegisterComponents(mComponentFactory);
+	ComponentsRegistration::RegisterComponents(mComponentSerializers.factory);
+	ComponentsRegistration::RegisterJsonSerializers(mComponentSerializers.jsonSerializer);
 
-	GameDataLoader::LoadWorld(mWorld, arguments.getArgumentValue("world", "test"), mComponentFactory);
-	GameDataLoader::LoadGameData(mGameData, arguments.getArgumentValue("gameData", "gameData"), mComponentFactory);
+	GameDataLoader::LoadWorld(mWorld, arguments.getArgumentValue("world", "test"), mComponentSerializers);
+	GameDataLoader::LoadGameData(mGameData, arguments.getArgumentValue("gameData", "gameData"), mComponentSerializers);
 
 	// ToDo: make an editor not to hardcode SM data
 	auto [sm] = mGameData.getGameComponents().getComponents<StateMachineComponent>();

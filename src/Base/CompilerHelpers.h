@@ -32,9 +32,9 @@
 #endif
 #ifndef MAYBE_UNUSED
 	#ifdef WIN32
-	    #define MAYBE_UNUSED
+		#define MAYBE_UNUSED
 	#else
-	    #define MAYBE_UNUSED __attribute__((unused))
+		#define MAYBE_UNUSED __attribute__((unused))
 	#endif
 #endif
 

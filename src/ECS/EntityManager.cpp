@@ -1,14 +1,15 @@
 #include "Base/precomp.h"
 
-#include "Base/Random/Random.h"
-
 #include "ECS/EntityManager.h"
 
 #include <algorithm>
 
 #include <nlohmann/json.hpp>
 
+#include "Base/Random/Random.h"
+
 #include "ECS/ComponentFactory.h"
+#include "ECS/Serialization/ComponentSerializersHolder.h"
 
 static const int EntityInsertionTrialsLimit = 10;
 
@@ -186,39 +187,41 @@ void EntityManager::executeScheduledActions()
 	mScheduledComponentRemovements.clear();
 }
 
-void EntityManager::getPrefabFromEntity(nlohmann::json& json, Entity entity)
+void EntityManager::getPrefabFromEntity(nlohmann::json& json, Entity entity, const JsonComponentSerializationHolder& jsonSerializationHolder)
 {
 	std::vector<BaseComponent*> components = getAllEntityComponents(entity);
 
 	for (BaseComponent* component : components)
 	{
-		auto componenObj = nlohmann::json{};
+		auto componentObj = nlohmann::json{};
 		StringID componentTypeName = component->getComponentTypeName();
-		component->toJson(componenObj);
-		json[ID_TO_STR(componentTypeName)] = componenObj;
+		jsonSerializationHolder.getComponentSerializerFromClassName(componentTypeName)->toJson(componentObj, component);
+		json[ID_TO_STR(componentTypeName)] = componentObj;
 	}
 }
 
-Entity EntityManager::createPrefabInstance(const nlohmann::json& json, const ComponentFactory& componentFactory)
+Entity EntityManager::createPrefabInstance(const nlohmann::json& json, const ComponentSerializersHolder& componentSerializers)
 {
 	Entity entity = addEntity();
-	applyPrefabToExistentEntity(json, entity, componentFactory);
+	applyPrefabToExistentEntity(json, entity, componentSerializers);
 	return entity;
 }
 
-void EntityManager::applyPrefabToExistentEntity(const nlohmann::json& json, Entity entity, const ComponentFactory& componentFactory)
+void EntityManager::applyPrefabToExistentEntity(const nlohmann::json& json, Entity entity, const ComponentSerializersHolder& componentSerializers)
 {
 	for (const auto& [componentTypeNameStr, componentObj] : json.items())
 	{
 		StringID componentTypeName = STR_TO_ID(componentTypeNameStr);
-		BaseComponent* component = componentFactory.createComponent(componentTypeName);
+		BaseComponent* component = componentSerializers.factory.createComponent(componentTypeName);
 
-		component->fromJson(componentObj);
+		std::type_index typeID = componentSerializers.factory.getTypeIDFromClassName(componentTypeName).value();
+
+		componentSerializers.jsonSerializer.getComponentSerializerFromTypeID(typeID)->fromJson(componentObj, component);
 
 		addComponent(
 			entity,
 			component,
-			componentFactory.getTypeIDFromString(componentTypeName).value()
+			typeID
 		);
 	}
 }
@@ -280,7 +283,7 @@ void EntityManager::transferEntityTo(EntityManager& otherManager, Entity entity)
 	mIndexEntityMap.erase(mNextEntityIndex);
 }
 
-nlohmann::json EntityManager::toJson(const ComponentFactory& componentFactory) const
+nlohmann::json EntityManager::toJson(const ComponentSerializersHolder& componentSerializers) const
 {
 	std::vector<std::pair<Entity::EntityID, EntityIndex>> sortedEntityIndexMap;
 	sortedEntityIndexMap.reserve(mEntityIndexMap.size());
@@ -300,23 +303,24 @@ nlohmann::json EntityManager::toJson(const ComponentFactory& componentFactory) c
 	for (auto& componentArray : mComponents)
 	{
 		auto componentArrayObject = nlohmann::json::array();
+		const JsonComponentSerializer* jsonSerializer = componentSerializers.jsonSerializer.getComponentSerializerFromTypeID(componentArray.first);
 		for (auto& component : componentArray.second)
 		{
 			auto componenObj = nlohmann::json{};
 			if (component != nullptr)
 			{
-				component->toJson(componenObj);
+				jsonSerializer->toJson(componenObj, component);
 			}
 			componentArrayObject.push_back(componenObj);
 		}
-		components[ID_TO_STR(componentFactory.getStringFromTypeID(componentArray.first))] = componentArrayObject;
+		components[ID_TO_STR(componentSerializers.factory.getClassNameFromTypeID(componentArray.first))] = componentArrayObject;
 	}
 	outJson["components"] = components;
 
 	return outJson;
 }
 
-void EntityManager::fromJson(const nlohmann::json& json, const ComponentFactory& componentFactory)
+void EntityManager::fromJson(const nlohmann::json& json, const ComponentSerializersHolder& componentSerializers)
 {
 	json.at("entityIndexMap").get_to(mEntityIndexMap);
 
@@ -339,10 +343,11 @@ void EntityManager::fromJson(const nlohmann::json& json, const ComponentFactory&
 	for (const auto& [typeStr, vector] : components.items())
 	{
 		StringID type = STR_TO_ID(typeStr);
-		std::optional<std::type_index> typeIndex = componentFactory.getTypeIDFromString(type);
-		ComponentFactory::CreationFn componentCreateFn = componentFactory.getCreationFn(type);
+		std::optional<std::type_index> typeIndex = componentSerializers.factory.getTypeIDFromClassName(type);
+		ComponentFactory::CreationFn componentCreateFn = componentSerializers.factory.getCreationFn(type);
 		if (typeIndex.has_value() && componentCreateFn != nullptr)
 		{
+			const JsonComponentSerializer* jsonSerializer = componentSerializers.jsonSerializer.getComponentSerializerFromTypeID(typeIndex.value());
 			std::vector<BaseComponent*>& componentsVector = mComponents[typeIndex.value()];
 			componentsVector.reserve(vector.size());
 			for (const auto& componentData : vector)
@@ -350,7 +355,7 @@ void EntityManager::fromJson(const nlohmann::json& json, const ComponentFactory&
 				if (!componentData.is_null())
 				{
 					BaseComponent* component = componentCreateFn();
-					component->fromJson(componentData);
+					jsonSerializer->fromJson(componentData, component);
 					componentsVector.push_back(component);
 				}
 				else

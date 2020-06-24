@@ -6,6 +6,8 @@
 #include "GameData/Core/Vector2D.h"
 #include "GameData/Spatial/CellPos.h"
 
+class ComponentSerializersHolder;
+
 class WorldCell
 {
 public:
@@ -16,8 +18,8 @@ public:
 
 	CellPos getPos() const { return mPos; }
 
-	nlohmann::json toJson(const ComponentFactory& componentFactory) const;
-	void fromJson(const nlohmann::json& json, const ComponentFactory& componentFactory);
+	nlohmann::json toJson(const ComponentSerializersHolder& componentSerializers) const;
+	void fromJson(const nlohmann::json& json, const ComponentSerializersHolder& componentSerializers);
 
 private:
 	EntityManager mEntityManager;

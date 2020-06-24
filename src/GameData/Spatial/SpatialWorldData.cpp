@@ -122,7 +122,7 @@ Vector2D SpatialWorldData::GetCellRealDistance(const CellPosDiff& cellDiff)
 	return Vector2D(cellDiff.x * CellSize, cellDiff.y * CellSize);
 }
 
-nlohmann::json SpatialWorldData::toJson(const ComponentFactory& componentFactory) const
+nlohmann::json SpatialWorldData::toJson(const ComponentSerializersHolder& componentSerializers) const
 {
 	nlohmann::json cellsJson;
 
@@ -145,7 +145,7 @@ nlohmann::json SpatialWorldData::toJson(const ComponentFactory& componentFactory
 	{
 		cellsJson.push_back({
 			{"pos", cell.first},
-			{"cell", cell.second->toJson(componentFactory)}
+			{"cell", cell.second->toJson(componentSerializers)}
 		});
 	}
 
@@ -192,14 +192,14 @@ static void RedistributeSpatialEntitiesBetweenCells(SpatialWorldData& spatialDat
 	}
 }
 
-void SpatialWorldData::fromJson(const nlohmann::json& json, const ComponentFactory& componentFactory)
+void SpatialWorldData::fromJson(const nlohmann::json& json, const ComponentSerializersHolder& componentSerializers)
 {
 	const auto& cellsJson = json.at("cells");
 	for (const auto& cellJson : cellsJson)
 	{
 		CellPos pos = cellJson.at("pos");
 		auto res = mCells.emplace(pos, pos);
-		res.first->second.fromJson(cellJson.at("cell"), componentFactory);
+		res.first->second.fromJson(cellJson.at("cell"), componentSerializers);
 	}
 
 	int cellSize = json.at("cell_size");

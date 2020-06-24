@@ -8,6 +8,8 @@
 #include "Component.h"
 #include "Delegates.h"
 
+class ComponentSerializersHolder;
+
 /**
  * Use this class to store components specific for some non-entity object (e.g. for a World)
  */
@@ -47,8 +49,8 @@ public:
 		return std::make_tuple(static_cast<Components*>(mComponents[typeid(Components)])...);
 	}
 
-	nlohmann::json toJson(const class ComponentFactory& componentFactory) const;
-	void fromJson(const nlohmann::json& json, const class ComponentFactory& componentFactory);
+	nlohmann::json toJson(const ComponentSerializersHolder& componentSerializers) const;
+	void fromJson(const nlohmann::json& json, const ComponentSerializersHolder& componentSerializers);
 
 private:
 	std::map<std::type_index, BaseComponent*> mComponents;

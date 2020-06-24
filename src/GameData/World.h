@@ -8,7 +8,7 @@
 
 #include "GameData/Spatial/SpatialWorldData.h"
 
-class ComponentFactory;
+class ComponentSerializersHolder;
 
 class World
 {
@@ -17,8 +17,8 @@ public:
 	ComponentSetHolder& getWorldComponents() { return mWorldComponents; }
 	SpatialWorldData& getSpatialData() { return mSpatialData; }
 
-	nlohmann::json toJson(const ComponentFactory& componentFactory) const;
-	void fromJson(const nlohmann::json& json, const ComponentFactory& componentFactory);
+	nlohmann::json toJson(const ComponentSerializersHolder& componentSerializers) const;
+	void fromJson(const nlohmann::json& json, const ComponentSerializersHolder& componentSerializers);
 
 	std::optional<std::pair<EntityView, CellPos>> getTrackedSpatialEntity(StringID entityStringID);
 	EntityView createTrackedSpatialEntity(StringID entityStringID, CellPos pos);

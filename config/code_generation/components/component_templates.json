@@ -3,7 +3,13 @@
 		"name": "component_includes"
 	},
 	{
+		"name": "component_json_serializer_includes"
+	},
+	{
 		"name": "component_factory_register"
+	},
+	{
+		"name": "component_json_serializer_register"
 	},
 	{
 		"name": "editor/component_edit_factory_includes"

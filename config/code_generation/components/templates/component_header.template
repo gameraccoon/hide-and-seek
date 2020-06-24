@@ -19,14 +19,10 @@ public:
 public:
 	static StringID GetClassName() {{ return STR_TO_ID("{class_name}"); }}
 
-	void toJson(nlohmann::json& outJson) const override;
-	void fromJson(const nlohmann::json& json) override;
-
-	friend void to_json(nlohmann::json& outJson, const {class_name}& {component_name});
-	friend void from_json(const nlohmann::json& json, {class_name}& out{component_name_capital});
-
 	StringID getComponentTypeName() const override {{ return GetClassName(); }}
 
 private:
 	{attribute_fields}
+
+	friend class {class_name}JsonSerializer;
 }};

@@ -4,15 +4,17 @@
 
 #include <nlohmann/json.hpp>
 
+#include "ECS/Serialization/ComponentSerializersHolder.h"
+
 #include "GameData/Components/TrackedSpatialEntitiesComponent.generated.h"
 #include "GameData/Components/SpatialTrackComponent.generated.h"
 
-nlohmann::json World::toJson(const ComponentFactory& componentFactory) const
+nlohmann::json World::toJson(const ComponentSerializersHolder& componentSerializers) const
 {
 	return nlohmann::json{
-		{"entity_manager", mEntityManager.toJson(componentFactory)},
-		{"world_components", mWorldComponents.toJson(componentFactory)},
-		{"spatial_data", mSpatialData.toJson(componentFactory)}
+		{"entity_manager", mEntityManager.toJson(componentSerializers)},
+		{"world_components", mWorldComponents.toJson(componentSerializers)},
+		{"spatial_data", mSpatialData.toJson(componentSerializers)}
 	};
 }
 
@@ -34,11 +36,11 @@ static void InitSpatialTrackedEntities(SpatialWorldData& spatialData, ComponentS
 	});
 }
 
-void World::fromJson(const nlohmann::json& json, const ComponentFactory& componentFactory)
+void World::fromJson(const nlohmann::json& json, const ComponentSerializersHolder& componentSerializers)
 {
-	mEntityManager.fromJson(json.at("entity_manager"), componentFactory);
-	mWorldComponents.fromJson(json.at("world_components"), componentFactory);
-	mSpatialData.fromJson(json.at("spatial_data"), componentFactory);
+	mEntityManager.fromJson(json.at("entity_manager"), componentSerializers);
+	mWorldComponents.fromJson(json.at("world_components"), componentSerializers);
+	mSpatialData.fromJson(json.at("spatial_data"), componentSerializers);
 
 	InitSpatialTrackedEntities(mSpatialData, mWorldComponents);
 }

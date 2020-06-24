@@ -5,9 +5,14 @@
 		"output_dir": "src/GameData/Components/"
 	},
 	{
-		"name_template": "{class_name}.generated.cpp",
-		"template": "component_source",
-		"output_dir": "src/GameData/Components/"
+		"name_template": "{class_name}JsonSerializer.generated.h",
+		"template": "component_json_serializer_header",
+		"output_dir": "src/GameData/Serialization/Json/"
+	},
+	{
+		"name_template": "{class_name}JsonSerializer.generated.cpp",
+		"template": "component_json_serializer_source",
+		"output_dir": "src/GameData/Serialization/Json/"
 	},
 	{
 		"name_template": "{class_name}EditFactory.generated.h",
@@ -34,8 +39,14 @@
 		"blacklist": ["transient", "custom_editor"]
 	},
 	{
-		"name_template": "ComponentsRegistration.generated.cpp",
-		"template": "components_registration_source",
+		"name_template": "ComponentFactoryRegistration.generated.cpp",
+		"template": "components_factory_registration_source",
+		"output_dir": "src/GameLogic/",
+		"flags": ["list"]
+	},
+	{
+		"name_template": "ComponentJsonSerializerRegistration.generated.cpp",
+		"template": "components_json_serializer_registration_source",
 		"output_dir": "src/GameLogic/",
 		"flags": ["list"]
 	},

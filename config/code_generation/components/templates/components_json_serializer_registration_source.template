@@ -1,0 +1,15 @@
+#include "Base/precomp.h"
+
+#include "GameLogic/ComponentJsonSerializerRegistration.h"
+
+{component_includes}
+
+{component_json_serializer_includes}
+
+namespace ComponentsRegistration
+{{
+	void RegisterJsonSerializers(JsonComponentSerializationHolder& jsonSerializerHolder)
+	{{
+		{component_json_serializer_register}
+	}}
+}}

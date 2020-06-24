@@ -4,7 +4,7 @@
 
 #include <nlohmann/json.hpp>
 
-#include "ComponentFactory.h"
+#include "ECS/Serialization/ComponentSerializersHolder.h"
 
 ComponentSetHolder::~ComponentSetHolder()
 {
@@ -43,7 +43,7 @@ void ComponentSetHolder::removeComponent(std::type_index typeID)
 	}
 }
 
-nlohmann::json ComponentSetHolder::toJson(const ComponentFactory& componentFactory) const
+nlohmann::json ComponentSetHolder::toJson(const ComponentSerializersHolder& componentSerializers) const
 {
 	nlohmann::json outJson;
 
@@ -52,28 +52,28 @@ nlohmann::json ComponentSetHolder::toJson(const ComponentFactory& componentFacto
 	for (auto component : mComponents)
 	{
 		auto componenObj = nlohmann::json{};
-		component.second->toJson(componenObj);
-		components[ID_TO_STR(componentFactory.getStringFromTypeID(component.first))] = componenObj;
+		componentSerializers.jsonSerializer.getComponentSerializerFromTypeID(component.first)->toJson(componenObj, component.second);
+		components[ID_TO_STR(componentSerializers.factory.getClassNameFromTypeID(component.first))] = componenObj;
 	}
 	outJson["components"] = components;
 
 	return outJson;
 }
 
-void ComponentSetHolder::fromJson(const nlohmann::json& json, const ComponentFactory& componentFactory)
+void ComponentSetHolder::fromJson(const nlohmann::json& json, const ComponentSerializersHolder& componentSerializers)
 {
 	const auto& components = json.at("components");
 	for (const auto& [stringType, componentData] : components.items())
 	{
-		StringID type = STR_TO_ID(stringType);
-		std::optional<std::type_index> typeIndex = componentFactory.getTypeIDFromString(type);
-		ComponentFactory::CreationFn componentCreateFn = componentFactory.getCreationFn(type);
+		StringID className = STR_TO_ID(stringType);
+		std::optional<std::type_index> typeIndex = componentSerializers.factory.getTypeIDFromClassName(className);
+		ComponentFactory::CreationFn componentCreateFn = componentSerializers.factory.getCreationFn(className);
 		if (typeIndex.has_value() && componentCreateFn != nullptr)
 		{
 			if (!componentData.is_null())
 			{
 				BaseComponent* component = componentCreateFn();
-				component->fromJson(componentData);
+				componentSerializers.jsonSerializer.getComponentSerializerFromClassName(className)->fromJson(componentData, component);
 				mComponents[typeIndex.value()] = component;
 			}
 		}

@@ -4,13 +4,15 @@
 
 #include "ECS/ComponentSetHolder.h"
 
+class ComponentSerializersHolder;
+
 class GameData
 {
 public:
 	ComponentSetHolder& getGameComponents() { return mGameComponents; }
 
-	nlohmann::json toJson(const ComponentFactory& componentFactory) const;
-	void fromJson(const nlohmann::json& json, const ComponentFactory& componentFactory);
+	nlohmann::json toJson(const ComponentSerializersHolder& componentSerializers) const;
+	void fromJson(const nlohmann::json& json, const ComponentSerializersHolder& componentSerializers);
 
 private:
 	ComponentSetHolder mGameComponents;

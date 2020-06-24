@@ -8,6 +8,8 @@
 #include "GameData/Spatial/CellPos.h"
 #include "GameData/Core/Vector2D.h"
 
+class ComponentSerializersHolder;
+
 class SpatialWorldData
 {
 public:
@@ -39,8 +41,8 @@ public:
 
 	static Vector2D GetCellRealDistance(const CellPosDiff& cellDiff);
 
-	nlohmann::json toJson(const ComponentFactory& componentFactory) const;
-	void fromJson(const nlohmann::json& json, const ComponentFactory& componentFactory);
+	nlohmann::json toJson(const ComponentSerializersHolder& componentSerializers) const;
+	void fromJson(const nlohmann::json& json, const ComponentSerializersHolder& componentSerializers);
 
 public:
 	static constexpr int CellSizeInt = 200;
