@@ -9,12 +9,12 @@
 #include "src/editorutils/componentreference.h"
 
 class World;
-class ComponentFactory;
+class ComponentSerializersHolder;
 
 class RemoveComponentCommand : public EditorCommand
 {
 public:
-	RemoveComponentCommand(const ComponentSourceReference& source, StringID typeName, ComponentFactory* factory);
+	RemoveComponentCommand(const ComponentSourceReference& source, StringID typeName, const ComponentSerializersHolder& serializerHolder);
 
 	void doCommand(World* world) override;
 	void undoCommand(World* world) override;
@@ -22,6 +22,6 @@ public:
 private:
 	ComponentSourceReference mSource;
 	StringID mComponentTypeName;
-	ComponentFactory* mComponentFactory;
+	const ComponentSerializersHolder& mComponentSerializerHolder;
 	nlohmann::json mSerializedComponent;
 };

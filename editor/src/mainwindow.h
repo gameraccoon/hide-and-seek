@@ -10,7 +10,7 @@
 #include "componenteditcontent/componentcontentfactory.h"
 
 #include "ECS/Delegates.h"
-#include "ECS/ComponentFactory.h"
+#include "ECS/Serialization/ComponentSerializersHolder.h"
 
 #include "GameData/Spatial/SpatialEntity.h"
 
@@ -42,7 +42,7 @@ public:
 	~MainWindow();
 
 	World* getCurrentWorld() { return mCurrentWorld.get(); }
-	ComponentFactory& getComponentFactory() { return mComponentFactory; }
+	const ComponentSerializersHolder& getComponentSerializationHolder() const { return mComponentSerializationHolder; }
 	ComponentContentFactory& getComponentContentFactory() { return mComponentContentFactory; }
 	EditorCommandsStack& getCommandStack() { return mCommandStack; }
 	PrefabListToolbox* getPrefabToolbox() { return mPrefabListToolbox.get(); }
@@ -96,7 +96,7 @@ private:
 	Ui::mainwindow* ui;
 	std::unique_ptr<ads::CDockManager> mDockManager;
 	std::unique_ptr<class World> mCurrentWorld;
-	ComponentFactory mComponentFactory;
+	ComponentSerializersHolder mComponentSerializationHolder;
 	ComponentContentFactory mComponentContentFactory;
 	std::string mOpenedWorldPath;
 	EditorCommandsStack mCommandStack;

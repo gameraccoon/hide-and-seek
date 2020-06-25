@@ -43,17 +43,19 @@ public:
 		mFunction = nullptr;
 	}
 
-	void callSafe(Args... args)
+	template<typename... CallArgs>
+	void callSafe(CallArgs&&... args)
 	{
 		if (mFunction)
 		{
-			mFunction(std::forward<Args>(args)...);
+			mFunction(std::forward<CallArgs>(args)...);
 		}
 	}
 
-	void callUnsafe(Args... args)
+	template<typename... CallArgs>
+	void callUnsafe(CallArgs&&... args)
 	{
-		mFunction(std::forward<Args>(args)...);
+		mFunction(std::forward<CallArgs>(args)...);
 	}
 
 private:
@@ -139,11 +141,12 @@ public:
 		);
 	}
 
-	void broadcast(Args... args)
+	template<typename... CallArgs>
+	void broadcast(CallArgs&&... args)
 	{
 		for (auto fnData : mFunctions)
 		{
-			fnData.fn(std::forward<Args>(args)...);
+			fnData.fn(std::forward<CallArgs>(args)...);
 		}
 	}
 

@@ -198,7 +198,7 @@ void EntitiesListToolbox::removeSelectedEntity()
 	mMainWindow->getCommandStack().executeNewCommand<RemoveEntityCommand>(
 		currentWorld,
 		Entity(currentItem->text().toUInt()),
-		&mMainWindow->getComponentFactory()
+		mMainWindow->getComponentSerializationHolder()
 	);
 }
 

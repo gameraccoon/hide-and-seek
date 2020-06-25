@@ -15,6 +15,10 @@ public:
 class JsonComponentSerializationHolder
 {
 public:
+	JsonComponentSerializationHolder() = default;
+	JsonComponentSerializationHolder(JsonComponentSerializationHolder&) = delete;
+	JsonComponentSerializationHolder& operator=(JsonComponentSerializationHolder&) = delete;
+
 	const JsonComponentSerializer* getComponentSerializerFromTypeID(std::type_index typeID) const
 	{
 		const auto& it = mTypeIDToSerializer.find(typeID);

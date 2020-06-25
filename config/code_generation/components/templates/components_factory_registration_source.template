@@ -1,6 +1,6 @@
 #include "Base/precomp.h"
 
-#include "GameLogic/ComponentFactoryRegistration.h"
+#include "GameData/ComponentRegistration/ComponentFactoryRegistration.h"
 
 {component_includes}
 

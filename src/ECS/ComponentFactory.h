@@ -12,6 +12,10 @@ class ComponentFactory
 public:
 	using CreationFn = std::function<BaseComponent*()>;
 
+	ComponentFactory() = default;
+	ComponentFactory(ComponentFactory&) = delete;
+	ComponentFactory& operator=(ComponentFactory&) = delete;
+
 	template<typename T>
 	void registerComponent()
 	{
@@ -32,12 +36,9 @@ public:
 	template<typename F>
 	void forEachComponentType(F fn) const
 	{
-		if (fn)
+		for (auto [typeID, name] : mTypeIDToClassName)
 		{
-			for (auto [typeID, name] : mTypeIDToClassName)
-			{
-				fn(typeID, name);
-			}
+			fn(typeID, name);
 		}
 	}
 

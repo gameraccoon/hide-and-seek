@@ -36,7 +36,7 @@ namespace Utils
 		return std::vector<BaseComponent*>();
 	}
 
-	void AddComponent(const ComponentSourceReference& source, BaseComponent* component, World* world, ComponentFactory& componentFactory)
+	void AddComponent(const ComponentSourceReference& source, BaseComponent* component, World* world, const ComponentFactory& componentFactory)
 	{
 		if (world)
 		{
@@ -46,20 +46,20 @@ namespace Utils
 				(*entityManager)->addComponent(
 					*source.entity,
 					component,
-					componentFactory.getTypeIDFromString(component->getComponentTypeName()).value()
+					componentFactory.getTypeIDFromClassName(component->getComponentTypeName()).value()
 				);
 			}
 			else if (auto componentHolder = std::get_if<ComponentSetHolder*>(&componentHolderOrEntityManager))
 			{
 				(*componentHolder)->addComponent(
 					component,
-					componentFactory.getTypeIDFromString(component->getComponentTypeName()).value()
+					componentFactory.getTypeIDFromClassName(component->getComponentTypeName()).value()
 				);
 			}
 		}
 	}
 
-	void RemoveComponent(const ComponentSourceReference& source, StringID componentTypeName, World* world, ComponentFactory& componentFactory)
+	void RemoveComponent(const ComponentSourceReference& source, StringID componentTypeName, World* world, const ComponentFactory& componentFactory)
 	{
 		if (world)
 		{
@@ -68,13 +68,13 @@ namespace Utils
 			{
 				(*entityManager)->removeComponent(
 					*source.entity,
-					componentFactory.getTypeIDFromString(componentTypeName).value()
+					componentFactory.getTypeIDFromClassName(componentTypeName).value()
 				);
 			}
 			else if (auto componentHolder = std::get_if<ComponentSetHolder*>(&componentHolderOrEntityManager))
 			{
 				(*componentHolder)->removeComponent(
-					componentFactory.getTypeIDFromString(componentTypeName).value()
+					componentFactory.getTypeIDFromClassName(componentTypeName).value()
 				);
 			}
 		}

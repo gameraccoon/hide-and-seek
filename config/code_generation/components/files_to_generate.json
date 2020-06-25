@@ -41,13 +41,13 @@
 	{
 		"name_template": "ComponentFactoryRegistration.generated.cpp",
 		"template": "components_factory_registration_source",
-		"output_dir": "src/GameLogic/",
+		"output_dir": "src/GameData/ComponentRegistration/",
 		"flags": ["list"]
 	},
 	{
 		"name_template": "ComponentJsonSerializerRegistration.generated.cpp",
 		"template": "components_json_serializer_registration_source",
-		"output_dir": "src/GameLogic/",
+		"output_dir": "src/GameData/ComponentRegistration/",
 		"flags": ["list"]
 	},
 	{

@@ -6,7 +6,7 @@
 
 #include "src/editorutils/componentreferenceutils.h"
 
-AddComponentCommand::AddComponentCommand(const ComponentSourceReference& source, StringID typeName, ComponentFactory* factory)
+AddComponentCommand::AddComponentCommand(const ComponentSourceReference& source, StringID typeName, const ComponentFactory& factory)
 	: EditorCommand(EffectType::Components)
 	, mSource(source)
 	, mComponentTypeName(typeName)
@@ -18,9 +18,9 @@ void AddComponentCommand::doCommand(World* world)
 {
 	Utils::AddComponent(
 		mSource,
-		mComponentFactory->createComponent(mComponentTypeName),
+		mComponentFactory.createComponent(mComponentTypeName),
 		world,
-		*mComponentFactory
+		mComponentFactory
 	);
 }
 
@@ -30,7 +30,7 @@ void AddComponentCommand::undoCommand(World* world)
 		mSource,
 		mComponentTypeName,
 		world,
-		*mComponentFactory
+		mComponentFactory
 	);
 }
 

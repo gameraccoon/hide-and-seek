@@ -2,8 +2,6 @@
 
 #include "componentregistration.h"
 
-#include "ECS/ComponentFactory.h"
-
 {editor/component_edit_factory_includes}
 
 {component_includes}
@@ -11,9 +9,4 @@
 void ComponentRegistration::RegisterToEditFactory(std::map<StringID, std::unique_ptr<AbstractEditFactory>>& factories)
 {{
 	{editor/component_edit_factory_register}
-}}
-
-void ComponentRegistration::RegisterComponentFactory(ComponentFactory& componentFactory)
-{{
-	{editor/component_factory_register}
 }}

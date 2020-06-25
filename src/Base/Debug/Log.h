@@ -42,25 +42,25 @@ private:
 };
 
 template<typename... Args>
-void LogInit(const std::string& message, Args... args) noexcept
+void LogInit(const std::string& message, Args&&... args) noexcept
 {
 	Log::Instance().writeInit(FormatString(message, std::forward<Args>(args)...));
 }
 
 template<typename... Args>
-void LogInfo(const std::string& message, Args... args) noexcept
+void LogInfo(const std::string& message, Args&&... args) noexcept
 {
 	Log::Instance().writeLog(FormatString(message, std::forward<Args>(args)...));
 }
 
 template<typename... Args>
-void LogWarning(const std::string& message, Args... args) noexcept
+void LogWarning(const std::string& message, Args&&... args) noexcept
 {
 	Log::Instance().writeWarning(FormatString(message, std::forward<Args>(args)...));
 }
 
 template<typename... Args>
-void LogError(const std::string& message, Args... args) noexcept
+void LogError(const std::string& message, Args&&... args) noexcept
 {
 	Log::Instance().writeError(FormatString(message, std::forward<Args>(args)...));
 }

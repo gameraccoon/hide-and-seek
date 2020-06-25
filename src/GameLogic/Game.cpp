@@ -2,6 +2,9 @@
 
 #include "GameLogic/Game.h"
 
+#include "GameData/ComponentRegistration/ComponentFactoryRegistration.h"
+#include "GameData/ComponentRegistration/ComponentJsonSerializerRegistration.h"
+
 #include "GameData/Components/StateMachineComponent.generated.h"
 
 #include "HAL/Base/Engine.h"
@@ -25,8 +28,6 @@
 #include "GameLogic/Systems/ImguiSystem.h"
 #endif // IMGUI_ENABLED
 
-#include "GameLogic/ComponentFactoryRegistration.h"
-#include "GameLogic/ComponentJsonSerializerRegistration.h"
 #include "GameLogic/Initialization/StateMachines.h"
 
 void Game::start(ArgumentsParser& arguments)

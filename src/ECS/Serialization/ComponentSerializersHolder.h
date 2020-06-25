@@ -8,4 +8,8 @@ struct ComponentSerializersHolder
 {
 	ComponentFactory factory;
 	JsonComponentSerializationHolder jsonSerializer;
+
+	ComponentSerializersHolder() = default;
+	ComponentSerializersHolder(ComponentSerializersHolder&) = delete;
+	ComponentSerializersHolder& operator=(ComponentSerializersHolder&) = delete;
 };

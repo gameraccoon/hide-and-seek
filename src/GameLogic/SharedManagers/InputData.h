@@ -1,5 +1,7 @@
 #pragma once
 
+#include "GameData/Core/Vector2D.h"
+
 #include "HAL/KeyStatesMap.h"
 
 class InputData

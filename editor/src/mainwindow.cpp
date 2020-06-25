@@ -2,7 +2,6 @@
 #include "ui_mainwindow.h"
 
 #include "src/componenteditcontent/componentcontentfactory.h"
-#include "src/componenteditcontent/componentregistration.h"
 
 #include "src/editorcommands/addentitycommand.h"
 #include "src/editorcommands/addspatialentitycommand.h"
@@ -11,7 +10,10 @@
 #include "DockWidget.h"
 #include "DockAreaWidget.h"
 
+#include "GameData/ComponentRegistration/ComponentFactoryRegistration.h"
+#include "GameData/ComponentRegistration/ComponentJsonSerializerRegistration.h"
 #include "GameData/World.h"
+
 #include "Utils/World/GameDataLoader.h"
 
 #include "toolboxes/ComponentAttributesToolbox.h"
@@ -49,7 +51,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::registerFactories()
 {
-	ComponentRegistration::RegisterComponentFactory(mComponentFactory);
+	ComponentsRegistration::RegisterComponents(mComponentSerializationHolder.factory);
+	ComponentsRegistration::RegisterJsonSerializers(mComponentSerializationHolder.jsonSerializer);
 	mComponentContentFactory.registerComponents();
 }
 
@@ -187,7 +190,7 @@ void MainWindow::on_actionOpen_World_triggered()
 	}
 
 	createWorld();
-	GameDataLoader::LoadWorld(*mCurrentWorld.get(), fileName, mComponentFactory);
+	GameDataLoader::LoadWorld(*mCurrentWorld.get(), fileName, mComponentSerializationHolder);
 	mOpenedWorldPath = fileName;
 	ui->actionSave_World->setEnabled(true);
 	ui->actionCreate->setEnabled(true);
@@ -206,7 +209,7 @@ void MainWindow::on_actionSave_World_As_triggered()
 		return;
 	}
 
-	GameDataLoader::SaveWorld(*mCurrentWorld.get(), fileName, mComponentFactory);
+	GameDataLoader::SaveWorld(*mCurrentWorld.get(), fileName, mComponentSerializationHolder);
 	mOpenedWorldPath = fileName;
 	ui->actionSave_World->setEnabled(true);
 }
@@ -218,7 +221,7 @@ void MainWindow::on_actionSave_World_triggered()
 		return;
 	}
 
-	GameDataLoader::SaveWorld(*mCurrentWorld.get(), mOpenedWorldPath, mComponentFactory);
+	GameDataLoader::SaveWorld(*mCurrentWorld.get(), mOpenedWorldPath, mComponentSerializationHolder);
 }
 
 void MainWindow::on_actionRun_Game_triggered()
@@ -228,7 +231,7 @@ void MainWindow::on_actionRun_Game_triggered()
 		QDir().mkdir("./tmp");
 	}
 	static std::string tempWorldName = "./tmp/temp-editor-world.json";
-	GameDataLoader::SaveWorld(*mCurrentWorld.get(), tempWorldName, mComponentFactory);
+	GameDataLoader::SaveWorld(*mCurrentWorld.get(), tempWorldName, mComponentSerializationHolder);
 	QProcess::startDetached("./GameMain", {"--world", QString::fromStdString(tempWorldName)});
 }
 

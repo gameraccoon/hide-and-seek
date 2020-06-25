@@ -1,6 +1,6 @@
 #include "Base/precomp.h"
 
-#include "GameLogic/ComponentJsonSerializerRegistration.h"
+#include "GameData/ComponentRegistration/ComponentJsonSerializerRegistration.h"
 
 {component_includes}
 

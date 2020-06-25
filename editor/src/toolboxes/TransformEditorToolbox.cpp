@@ -184,12 +184,14 @@ void TransformEditorToolbox::onCopyCommand()
 		return;
 	}
 
+	const auto& jsonSerializationHolder = mMainWindow->getComponentSerializationHolder().jsonSerializer;
+
 	Vector2D center;
 	mCopiedObjects.clear();
 	for (SpatialEntity spatialEntity : mContent->mSelectedEntities)
 	{
 		nlohmann::json serializedEntity;
-		world->getEntityManager().getPrefabFromEntity(serializedEntity, spatialEntity.entity.getEntity());
+		world->getEntityManager().getPrefabFromEntity(serializedEntity, spatialEntity.entity.getEntity(), jsonSerializationHolder);
 		mCopiedObjects.push_back(serializedEntity);
 		auto [transform] = world->getEntityManager().getEntityComponents<TransformComponent>(spatialEntity.entity.getEntity());
 		if (transform)
@@ -222,11 +224,11 @@ void TransformEditorToolbox::onPasteCommand()
 		return;
 	}
 
-	ComponentFactory& factory = mMainWindow->getComponentFactory();
+	const ComponentSerializersHolder& serializationHolder = mMainWindow->getComponentSerializationHolder();
 
 	mMainWindow->getCommandStack().executeNewCommand<AddEntityGroupCommand>(world,
 		mCopiedObjects,
-		&factory,
+		serializationHolder,
 		mContent->deprojectAbsolute(getWidgetCenter()) - mCopiedGroupCenter);
 
 	mContent->repaint();

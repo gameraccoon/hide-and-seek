@@ -142,9 +142,11 @@ void PrefabListToolbox::createPrefabFromEntity(const QString& prefabName, Entity
 		return;
 	}
 
+	const auto& jsonSerializationHolder = mMainWindow->getComponentSerializationHolder().jsonSerializer;
+
 	PrefabData prefabData;
 	prefabData.name = prefabName;
-	currentWorld->getEntityManager().getPrefabFromEntity(prefabData.data, entity);
+	currentWorld->getEntityManager().getPrefabFromEntity(prefabData.data, entity, jsonSerializationHolder);
 	mPrefabs.push_back(prefabData);
 	updateContent();
 }
@@ -258,7 +260,7 @@ void PrefabListToolbox::createInstance()
 		return;
 	}
 
-	currentWorld->getEntityManager().createPrefabInstance(it->data, mMainWindow->getComponentFactory());
+	currentWorld->getEntityManager().createPrefabInstance(it->data, mMainWindow->getComponentSerializationHolder());
 }
 
 void to_json(nlohmann::json& outJson, const PrefabListToolbox::PrefabData& data)

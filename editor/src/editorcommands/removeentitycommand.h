@@ -6,17 +6,18 @@
 #include <nlohmann/json.hpp>
 
 class World;
+class ComponentSerializersHolder;
 
 class RemoveEntityCommand : public EditorCommand
 {
 public:
-	RemoveEntityCommand(Entity entity, ComponentFactory* factory);
+	RemoveEntityCommand(Entity entity, const ComponentSerializersHolder& serializerHolder);
 
 	void doCommand(World* world) override;
 	void undoCommand(World* world) override;
 
 private:
 	Entity mEntity;
-	ComponentFactory* mComponentFactory;
 	nlohmann::json mSerializedComponents;
+	const ComponentSerializersHolder& mComponentSerializerHolder;
 };

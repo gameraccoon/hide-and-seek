@@ -14,7 +14,7 @@ class World;
 class AddEntityGroupCommand : public EditorCommand
 {
 public:
-	AddEntityGroupCommand(const std::vector<nlohmann::json>& entities, ComponentFactory* factory, const Vector2D& shift);
+	AddEntityGroupCommand(const std::vector<nlohmann::json>& entities, const ComponentSerializersHolder& serializationHolder, const Vector2D& shift);
 
 	void doCommand(World* world) override;
 	void undoCommand(World* world) override;
@@ -22,6 +22,6 @@ public:
 private:
 	std::vector<nlohmann::json> mEntities;
 	std::vector<Entity> mCreatedEntities;
-	ComponentFactory* mComponentFactory;
+	const ComponentSerializersHolder& mSerializationHolder;
 	Vector2D mShift;
 };

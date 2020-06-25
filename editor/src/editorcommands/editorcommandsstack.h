@@ -10,7 +10,7 @@ public:
 
 public:
 	template<typename T, typename... Args>
-	void executeNewCommand(World* world, Args... args)
+	void executeNewCommand(World* world, Args&&... args)
 	{
 		// clear old redo commands
 		if (haveSomethingToRedo())
@@ -19,7 +19,7 @@ public:
 		}
 
 		// add and activate
-		mCommands.emplace_back(new T(std::forward<Args>(args)...));
+		mCommands.emplace_back(std::make_shared<T>(std::forward<Args>(args)...));
 		mCommands.back()->doCommand(world);
 		EditorCommand::EffectBitset effects = mCommands.back()->getEffects();
 		++mCurrentHeadIndex;

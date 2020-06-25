@@ -163,7 +163,7 @@ void ComponentsListToolbox::removeSelectedComponent()
 		currentWorld,
 		*mLastSelectedComponentSource,
 		STR_TO_ID(currentItem->text().toStdString()),
-		&mMainWindow->getComponentFactory()
+		mMainWindow->getComponentSerializationHolder()
 	);
 	updateContent();
 }
@@ -175,7 +175,7 @@ void ComponentsListToolbox::addComponentCommand()
 	dialog->setCancelButtonText("Cancel");
 	dialog->setComboBoxEditable(false);
 	QStringList items;
-	mMainWindow->getComponentFactory().forEachComponentType([&items](std::type_index, StringID name)
+	mMainWindow->getComponentSerializationHolder().factory.forEachComponentType([&items](std::type_index, StringID name)
 	{
 		items.append(QString::fromStdString(ID_TO_STR(name)));
 	});
@@ -204,7 +204,7 @@ void ComponentsListToolbox::addComponent(const QString& typeName)
 			currentWorld,
 			*mLastSelectedComponentSource,
 			STR_TO_ID(typeName.toStdString()),
-			&mMainWindow->getComponentFactory()
+			mMainWindow->getComponentSerializationHolder().factory
 		);
 	}
 	updateContent();
