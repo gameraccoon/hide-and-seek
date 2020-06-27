@@ -32,7 +32,7 @@ public:
 	Entity getNonExistentEntity();
 	void insertEntityUnsafe(Entity entity);
 
-	std::vector<BaseComponent*> getAllEntityComponents(Entity entity);
+	void getAllEntityComponents(Entity entity, std::vector<BaseComponent*>& outComponents);
 
 	template<typename ComponentType>
 	bool doesEntityHaveComponent(Entity entity)
@@ -226,42 +226,9 @@ public:
 		}
 	}
 
-	template<typename FirstComponent, typename... Components>
-	std::vector<Entity> getEntitiesHavingComponents()
-	{
-		std::vector<Entity> result;
-		auto& firstComponentVector = mComponents[typeid(FirstComponent)];
-		result.reserve(firstComponentVector.size());
+	void getEntitiesHavingComponents(const std::vector<std::type_index>& componentIndexes, std::vector<Entity>& inOutEntities) const;
 
-		auto componentVectors = std::make_tuple(firstComponentVector, mComponents[typeid(Components)]...);
-
-		constexpr unsigned componentsSize = sizeof...(Components);
-
-		for (auto& [entityID, entityIndex] : mEntityIndexMap)
-		{
-			if (entityIndex >= firstComponentVector.size())
-			{
-				continue;
-			}
-
-			auto& firstComponent = firstComponentVector[entityIndex];
-			if (firstComponent == nullptr)
-			{
-				continue;
-			}
-
-			auto components = getEntityComponentSet<FirstComponent, Components...>(entityIndex, componentVectors);
-
-			if (std::get<componentsSize>(components) == nullptr)
-			{
-				continue;
-			}
-
-			result.emplace_back(entityID);
-		}
-		return result;
-	}
-
+	// methods for the editor
 	void getPrefabFromEntity(nlohmann::json& json, Entity entity, const JsonComponentSerializationHolder& jsonSerializationHolder);
 	Entity createPrefabInstance(const nlohmann::json& json, const ComponentSerializersHolder& componentSerializers);
 	void applyPrefabToExistentEntity(const nlohmann::json& json, Entity entity, const ComponentSerializersHolder& componentSerializers);

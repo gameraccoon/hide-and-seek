@@ -116,9 +116,8 @@ void EntityManager::removeEntity(Entity entity)
 	OnEntityRemoved.broadcast();
 }
 
-std::vector<BaseComponent*> EntityManager::getAllEntityComponents(Entity entity)
+void EntityManager::getAllEntityComponents(Entity entity, std::vector<BaseComponent*>& outComponents)
 {
-	std::vector<BaseComponent*> components;
 	auto entityIdxItr = mEntityIndexMap.find(entity.getID());
 	if (entityIdxItr != mEntityIndexMap.end())
 	{
@@ -127,11 +126,10 @@ std::vector<BaseComponent*> EntityManager::getAllEntityComponents(Entity entity)
 		{
 			if (componentArray.second.size() > index && componentArray.second[index] != nullptr)
 			{
-				components.push_back(componentArray.second[index]);
+				outComponents.push_back(componentArray.second[index]);
 			}
 		}
 	}
-	return components;
 }
 
 void EntityManager::addComponent(Entity entity, BaseComponent* component, std::type_index typeID)
@@ -187,9 +185,48 @@ void EntityManager::executeScheduledActions()
 	mScheduledComponentRemovements.clear();
 }
 
+void EntityManager::getEntitiesHavingComponents(const std::vector<std::type_index>& componentIndexes, std::vector<Entity>& inOutEntities) const
+{
+	if (componentIndexes.empty())
+	{
+		return;
+	}
+
+	EntityIndex endIdx = std::numeric_limits<EntityIndex>::max();
+	std::vector<const std::vector<BaseComponent*>*> componentVectors;
+	componentVectors.reserve(componentIndexes.size());
+	for (std::type_index typeID : componentIndexes)
+	{
+		const auto& it = mComponents.find(typeID);
+		if (it == mComponents.end())
+		{
+			return;
+		}
+
+		endIdx = std::min(endIdx, it->second.size());
+
+		componentVectors.push_back(&it->second);
+	}
+
+	for (EntityIndex idx = 0; idx < endIdx; ++idx)
+	{
+		bool hasAllComponents = std::all_of(
+			componentVectors.cbegin(),
+			componentVectors.cend(),
+			[idx](const std::vector<BaseComponent*>* componentVector){ return (*componentVector)[idx] != nullptr; }
+		);
+
+		if (hasAllComponents)
+		{
+			inOutEntities.emplace_back(mIndexEntityMap.find(idx)->second);
+		}
+	}
+}
+
 void EntityManager::getPrefabFromEntity(nlohmann::json& json, Entity entity, const JsonComponentSerializationHolder& jsonSerializationHolder)
 {
-	std::vector<BaseComponent*> components = getAllEntityComponents(entity);
+	std::vector<BaseComponent*> components;
+	getAllEntityComponents(entity, components);
 
 	for (BaseComponent* component : components)
 	{

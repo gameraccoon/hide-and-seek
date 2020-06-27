@@ -14,6 +14,7 @@ public:
 	explicit WorldCell(const CellPos& pos);
 
 	EntityManager& getEntityManager() { return mEntityManager; }
+	const EntityManager& getEntityManager() const { return mEntityManager; }
 	ComponentSetHolder& getCellComponents() { return mCellComponents; }
 
 	CellPos getPos() const { return mPos; }

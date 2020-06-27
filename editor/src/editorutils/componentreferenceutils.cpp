@@ -26,7 +26,9 @@ namespace Utils
 			auto componentHolderOrEntityManager = GetBoundComponentHolderOrEntityManager(source, world);
 			if (auto entityManager = std::get_if<EntityManager*>(&componentHolderOrEntityManager))
 			{
-				return (*entityManager)->getAllEntityComponents(*source.entity);
+				std::vector<BaseComponent*> components;
+				(*entityManager)->getAllEntityComponents(*source.entity, components);
+				return components;
 			}
 			else if (auto componentHolder = std::get_if<ComponentSetHolder*>(&componentHolderOrEntityManager))
 			{

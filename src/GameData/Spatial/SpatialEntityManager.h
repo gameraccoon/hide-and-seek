@@ -68,6 +68,10 @@ public:
 
 	void executeScheduledActions();
 
+	void getAllEntityComponents(Entity entity, std::vector<BaseComponent*>& outComponents);
+
+	void getEntitiesHavingComponents(const std::vector<std::type_index>& componentIndexes, std::vector<Entity>& inOutEntities) const;
+
 private:
 	std::vector<WorldCell*> mCells;
 };

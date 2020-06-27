@@ -23,8 +23,24 @@ void ImguiMainMenu::update(ImguiDebugData& debugData)
 		mSystemsTimeReportWindow.isVisible = !mSystemsTimeReportWindow.isVisible;
 	}
 
+	if (ImGui::Button("Component Inspector"))
+	{
+		mComponentInspectorWindow.isVisible = !mComponentInspectorWindow.isVisible;
+	}
+
+	if (ImGui::Button("Dear ImGui Demo"))
+	{
+		mShowImguiDemoWindow = !mShowImguiDemoWindow;
+	}
+
 	ImGui::End();
 
 	mRenderModeWindow.update(debugData);
 	mSystemsTimeReportWindow.update(debugData);
+	mComponentInspectorWindow.update(debugData);
+
+	if (mShowImguiDemoWindow)
+	{
+		ImGui::ShowDemoWindow(&mShowImguiDemoWindow);
+	}
 }

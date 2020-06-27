@@ -54,6 +54,6 @@ private:
 #endif // PROFILE_SYSTEMS
 
 #ifdef IMGUI_ENABLED
-	ImguiDebugData mImguiDebugData{mWorldHolder, mTime, mSystemFrameRecords, {}};
+	ImguiDebugData mImguiDebugData{mWorldHolder, mTime, mSystemFrameRecords, mComponentSerializers.factory, {}};
 #endif // IMGUI_ENABLED
 };

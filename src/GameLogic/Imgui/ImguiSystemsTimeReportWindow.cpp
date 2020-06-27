@@ -5,7 +5,6 @@
 #include "imgui/imgui.h"
 
 #include "GameData/GameData.h"
-#include "GameData/Components/RenderModeComponent.generated.h"
 
 #include "GameLogic/Imgui/ImguiDebugData.h"
 #include "Utils/Profiling/SystemFrameRecords.h"
