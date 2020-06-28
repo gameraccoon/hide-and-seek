@@ -3,13 +3,19 @@
 		"name": "component_includes"
 	},
 	{
-		"name": "component_json_serializer_includes"
-	},
-	{
 		"name": "component_factory_register"
 	},
 	{
-		"name": "component_json_serializer_register"
+		"name": "imgui/component_inspector_window_includes"
+	},
+	{
+		"name": "imgui/component_inspector_window_register"
+	},
+	{
+		"name": "serialization/json/component_json_serializer_includes"
+	},
+	{
+		"name": "serialization/json/component_json_serializer_register"
 	},
 	{
 		"name": "editor/component_edit_factory_includes"

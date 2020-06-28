@@ -25,4 +25,5 @@ private:
 	{attribute_fields}
 
 	friend class {class_name}JsonSerializer;
+	friend class {class_name}ImguiWidget;
 }};

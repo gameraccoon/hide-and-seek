@@ -4,12 +4,12 @@
 
 {component_includes}
 
-{component_json_serializer_includes}
+{serialization/json/component_json_serializer_includes}
 
 namespace ComponentsRegistration
 {{
 	void RegisterJsonSerializers(JsonComponentSerializationHolder& jsonSerializerHolder)
 	{{
-		{component_json_serializer_register}
+		{serialization/json/component_json_serializer_register}
 	}}
 }}

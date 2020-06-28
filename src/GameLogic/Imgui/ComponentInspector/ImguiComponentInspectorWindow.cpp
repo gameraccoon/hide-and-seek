@@ -2,16 +2,40 @@
 
 #include "GameLogic/Imgui/ComponentInspector/ImguiComponentInspectorWindow.h"
 
+#include <cstring>
 #include <sstream>
 #include <string_view>
 #include <string.h>
 
 #include "imgui/imgui.h"
 
+#include "ECS/ComponentFactory.h"
+
 #include "GameData/GameData.h"
 #include "GameData/World.h"
 
 #include "GameLogic/Imgui/ImguiDebugData.h"
+#include "GameLogic/SharedManagers/WorldHolder.h"
+
+#include "GameLogic/Imgui/ComponentInspector/ComponentWidgetsRegistration.h"
+
+ImguiComponentInspectorWindow::ImguiComponentInspectorWindow()
+{
+	ComponentWidgetsRegistration::RegisterInspectWidgets(mComponentInspectWidgets);
+}
+
+static void HelpMarker(const char* desc)
+{
+	ImGui::TextDisabled("(?)");
+	if (ImGui::IsItemHovered())
+	{
+		ImGui::BeginTooltip();
+		ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+		ImGui::TextUnformatted(desc);
+		ImGui::PopTextWrapPos();
+		ImGui::EndTooltip();
+	}
+}
 
 void ImguiComponentInspectorWindow::update(ImguiDebugData& debugData)
 {
@@ -87,10 +111,21 @@ void ImguiComponentInspectorWindow::update(ImguiDebugData& debugData)
 				std::string name = FormatString("%s##ComponentInspection", ID_TO_STR(component->getComponentTypeName()).c_str());
 				if (ImGui::TreeNode(name.c_str()))
 				{
-					ImGui::Text("test");
+					auto it = mComponentInspectWidgets.find(component->getComponentTypeName());
+					if (it != mComponentInspectWidgets.end())
+					{
+						it->second->update(component);
+					}
+
 					ImGui::TreePop();
 					ImGui::Separator();
 				}
+			}
+
+			if (components.empty() && mEntityFilterBuffer[0] != '\0')
+			{
+				ImGui::Text("No inspectable entity with such ID found");
+				ImGui::SameLine(); HelpMarker("An entity without any components also can't be inspectable");
 			}
 		}
 

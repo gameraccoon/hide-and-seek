@@ -28,17 +28,21 @@
 		"params": []
 	},
 	{
-		"name": "attributes_json_serialization",
+		"name": "imgui/attributes_inspection",
+		"params": []
+	},
+	{
+		"name": "serialization/json/attributes_json_serialization",
 		"params": [],
 		"blacklist": ["transient"]
 	},
 	{
-		"name": "attributes_json_deserialization",
+		"name": "serialization/json/attributes_json_deserialization",
 		"params": [],
 		"blacklist": ["transient", "defaulted"]
 	},
 	{
-		"name": "attributes_json_deserialization_defaulted",
+		"name": "serialization/json/attributes_json_deserialization_defaulted",
 		"params": [],
 		"blacklist": ["transient"],
 		"whitelist": ["defaulted"]

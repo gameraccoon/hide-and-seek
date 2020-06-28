@@ -5,13 +5,23 @@
 		"output_dir": "src/GameData/Components/"
 	},
 	{
+		"name_template": "{class_name}ImguiWidget.generated.h",
+		"template": "imgui/component_inspector_window_header",
+		"output_dir": "src/GameLogic/Imgui/ComponentInspector/ComponentWidgets/"
+	},
+	{
+		"name_template": "{class_name}ImguiWidget.generated.cpp",
+		"template": "imgui/component_inspector_window_source",
+		"output_dir": "src/GameLogic/Imgui/ComponentInspector/ComponentWidgets/"
+	},
+	{
 		"name_template": "{class_name}JsonSerializer.generated.h",
-		"template": "component_json_serializer_header",
+		"template": "serialization/json/component_json_serializer_header",
 		"output_dir": "src/GameData/Serialization/Json/"
 	},
 	{
 		"name_template": "{class_name}JsonSerializer.generated.cpp",
-		"template": "component_json_serializer_source",
+		"template": "serialization/json/component_json_serializer_source",
 		"output_dir": "src/GameData/Serialization/Json/"
 	},
 	{
@@ -45,8 +55,14 @@
 		"flags": ["list"]
 	},
 	{
+		"name_template": "ComponentWidgetsRegistration.generated.cpp",
+		"template": "imgui/components_inspector_window_registration_source",
+		"output_dir": "src/GameLogic/Imgui/ComponentInspector/",
+		"flags": ["list"]
+	},
+	{
 		"name_template": "ComponentJsonSerializerRegistration.generated.cpp",
-		"template": "components_json_serializer_registration_source",
+		"template": "serialization/json/components_json_serializer_registration_source",
 		"output_dir": "src/GameData/ComponentRegistration/",
 		"flags": ["list"]
 	},
