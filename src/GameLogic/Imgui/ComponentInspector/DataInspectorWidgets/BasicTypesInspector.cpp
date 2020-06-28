@@ -1,5 +1,7 @@
 #include "Base/precomp.h"
 
+#include <cstring>
+
 #include "imgui.h"
 
 #include "Base/Types/String/StringID.h"
@@ -42,9 +44,23 @@ namespace ImguiDataInspection
 	}
 
 	template<>
+	void Inspector(const char* title, class Rotator& data)
+	{
+		float value = data.getValue();
+		if (ImGui::InputFloat(title, &value))
+		{
+			data = Rotator(value);
+		}
+	}
+
+	template<>
 	void Inspector(const char* title, class StringID& data)
 	{
-		ImGui::TextUnformatted(title);
-		ImGui::SameLine(); ImGui::TextUnformatted(ID_TO_STR(data).c_str());
+		char buffer[256];
+		std::strcpy(buffer, ID_TO_STR(data).c_str());
+		if (ImGui::InputText(title, buffer, sizeof(buffer)))
+		{
+			data = STR_TO_ID(std::string(buffer));
+		}
 	}
 }
