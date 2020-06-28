@@ -130,6 +130,7 @@ public:
 
 		std::vector<Vector2D> polygon;
 		Vector2D location;
+		Vector2D size;
 	};
 
 	using FinalizeFn = std::function<void(std::vector<Result>&&)>;
@@ -155,7 +156,7 @@ public:
 		{
 			auto [light, transform] = componentsToProcess[i];
 
-			visibilityPolygonCalculator.calculateVisibilityPolygon(light->getCachedVisibilityPolygonRef(), mCollidableComponents, transform->getLocation(), mMaxFov);
+			visibilityPolygonCalculator.calculateVisibilityPolygon(light->getCachedVisibilityPolygonRef(), mCollidableComponents, transform->getLocation(), mMaxFov * light->getBrightness());
 			light->setUpdateTimestamp(mTimestamp);
 
 			const std::vector<Vector2D>& visibilityPolygon = light->getCachedVisibilityPolygon();
@@ -167,6 +168,7 @@ public:
 				std::begin(mCalculationResults[i].polygon)
 			);
 			mCalculationResults[i].location = transform->getLocation();
+			mCalculationResults[i].size = mMaxFov * light->getBrightness();
 		}
 	}
 
@@ -307,7 +309,7 @@ void RenderSystem::drawLights(SpatialEntityManager& managerGroup, Vector2D playe
 			drawVisibilityPolygon(
 				lightSprite,
 				result.polygon,
-				maxFov,
+				result.size,
 				drawShift + result.location
 			);
 		}
