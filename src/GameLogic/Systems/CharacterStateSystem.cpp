@@ -60,7 +60,7 @@ void CharacterStateSystem::update()
 				movement->setNextStep(ZERO_VECTOR);
 			}
 			movement->setSpeed(IsRunning(state) ? movement->getOriginalSpeed() * 2.0f : movement->getOriginalSpeed());
-			movement->setNextStep(movement->getMoveDirection() * movement->getSpeed() * dt);
+			movement->setNextStep(movement->getMoveDirection().unit() * movement->getSpeed() * dt);
 		});
 
 		// update animation
