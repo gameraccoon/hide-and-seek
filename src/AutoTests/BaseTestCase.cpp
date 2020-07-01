@@ -6,7 +6,7 @@
 
 #include "HAL/Base/Engine.h"
 
-#include "GameLogic/ComponentsRegistration.h"
+#include "GameData/ComponentRegistration/ComponentFactoryRegistration.h"
 
 TestChecklist BaseTestCase::start(const ArgumentsParser& arguments)
 {
