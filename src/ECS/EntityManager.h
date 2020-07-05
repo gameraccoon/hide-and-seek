@@ -228,6 +228,8 @@ public:
 
 	void getEntitiesHavingComponents(const std::vector<std::type_index>& componentIndexes, std::vector<Entity>& inOutEntities) const;
 
+	bool hasEntity(Entity entity);
+
 	// methods for the editor
 	void getPrefabFromEntity(nlohmann::json& json, Entity entity, const JsonComponentSerializationHolder& jsonSerializationHolder);
 	Entity createPrefabInstance(const nlohmann::json& json, const ComponentSerializersHolder& componentSerializers);

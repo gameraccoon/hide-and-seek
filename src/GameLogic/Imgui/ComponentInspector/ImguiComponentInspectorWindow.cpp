@@ -48,17 +48,6 @@ void ImguiComponentInspectorWindow::filterByComponents(ImguiDebugData& debugData
 		});
 		ImGui::Columns(1);
 		ImGui::Separator();
-
-		std::vector<std::type_index> filteredComponents;
-		for (const auto [typeID, isEnabled] : mComponentFilters)
-		{
-			if (isEnabled) { filteredComponents.push_back(typeID); }
-		}
-
-		SpatialEntityManager allManagers = debugData.worldHolder.getWorld().getSpatialData().getAllCellManagers();
-
-		mFilteredEntities.clear();
-		allManagers.getEntitiesHavingComponents(filteredComponents, mFilteredEntities);
 	}
 }
 
@@ -66,11 +55,28 @@ void ImguiComponentInspectorWindow::filterByProperties(ImguiDebugData& /*debugDa
 {
 	if (ImGui::CollapsingHeader("Filter By Properties"))
 	{
-		ImGui::Text("test");
+		mPropertyFiltersWidget.update();
 	}
 }
 
-void ImguiComponentInspectorWindow::showEntityID()
+void ImguiComponentInspectorWindow::applyFilters(ImguiDebugData& debugData)
+{
+	std::vector<std::type_index> filteredComponents;
+	for (const auto [typeID, isEnabled] : mComponentFilters)
+	{
+		if (isEnabled) { filteredComponents.push_back(typeID); }
+	}
+	mPropertyFiltersWidget.appendFilteredComponentTypes(filteredComponents);
+
+	SpatialEntityManager allManagers = debugData.worldHolder.getWorld().getSpatialData().getAllCellManagers();
+
+	mFilteredEntities.clear();
+	allManagers.getSpatialEntitiesHavingComponents(filteredComponents, mFilteredEntities);
+
+	mPropertyFiltersWidget.filterEntities(mFilteredEntities);
+}
+
+void ImguiComponentInspectorWindow::processEntityIDInput(ImguiDebugData& debugData)
 {
 	if (ImGui::InputTextWithHint("Entity ID Filter", "Entity ID", mEntityFilterBuffer, IM_ARRAYSIZE(mEntityFilterBuffer)))
 	{
@@ -82,7 +88,18 @@ void ImguiComponentInspectorWindow::showEntityID()
 		}
 		ss << strId;
 		ss >> id;
-		mSelectedEntity = Entity(id);
+		Entity entity(id);
+
+		SpatialEntityManager allManagers = debugData.worldHolder.getWorld().getSpatialData().getAllCellManagers();
+		WorldCell* cell = allManagers.findEntityCell(entity);
+		if (cell != nullptr)
+		{
+			mSelectedEntity = std::make_tuple(cell, entity);
+		}
+		else
+		{
+			mSelectedEntity = std::nullopt;
+		}
 	}
 }
 
@@ -98,12 +115,12 @@ void ImguiComponentInspectorWindow::showFilteredEntities()
 			{
 				for (int i = 0, iSize = mFilteredEntities.size(); i < iSize; ++i)
 				{
-					const Entity& entity = mFilteredEntities[i];
+					const Entity& entity = std::get<1>(mFilteredEntities[i]);
 					char buf[32];
 					sprintf(buf, "0x%x", entity.getID());
-					if (ImGui::Selectable(buf, mSelectedEntity.isValid() && mSelectedEntity.getEntity() == entity))
+					if (ImGui::Selectable(buf, mSelectedEntity.has_value() && std::get<1>(*mSelectedEntity) == entity))
 					{
-						mSelectedEntity = entity;
+						mSelectedEntity = mFilteredEntities[i];
 						std::strcpy(mEntityFilterBuffer, buf);
 					}
 				}
@@ -115,15 +132,15 @@ void ImguiComponentInspectorWindow::showFilteredEntities()
 	}
 }
 
-void ImguiComponentInspectorWindow::showComponentsInspector(ImguiDebugData& debugData)
+void ImguiComponentInspectorWindow::showComponentsInspector()
 {
 	bool hasFoundAnything = false;
-	if (mSelectedEntity.isValid())
+	if (mSelectedEntity.has_value())
 	{
-		SpatialEntityManager allManagers = debugData.worldHolder.getWorld().getSpatialData().getAllCellManagers();
+		auto [cell, entity] = *mSelectedEntity;
 
 		std::vector<BaseComponent*> components;
-		allManagers.getAllEntityComponents(mSelectedEntity.getEntity(), components);
+		cell->getEntityManager().getAllEntityComponents(entity, components);
 		for (BaseComponent* component : components)
 		{
 			std::string name = FormatString("%s##ComponentInspection", ID_TO_STR(component->getComponentTypeName()).c_str());
@@ -142,7 +159,7 @@ void ImguiComponentInspectorWindow::showComponentsInspector(ImguiDebugData& debu
 		}
 	}
 
-	if (!hasFoundAnything && mSelectedEntity.isValid())
+	if (!hasFoundAnything && mSelectedEntity.has_value())
 	{
 		ImGui::Text("No inspectable entity with such ID found");
 		ImGui::SameLine(); HelpMarker("An entity without any components also can't be inspectable");
@@ -158,11 +175,13 @@ void ImguiComponentInspectorWindow::update(ImguiDebugData& debugData)
 		filterByComponents(debugData);
 		filterByProperties(debugData);
 
+		applyFilters(debugData);
+
 		ImGui::Text("Entities matching the filter: %lu", mFilteredEntities.size());
 
 		showFilteredEntities();
-		showEntityID();
-		showComponentsInspector(debugData);
+		processEntityIDInput(debugData);
+		showComponentsInspector();
 
 		ImGui::End();
 	}

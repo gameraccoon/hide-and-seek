@@ -32,6 +32,16 @@
 		"params": []
 	},
 	{
+		"name": "imgui/filters/attribute_descriptor_includes",
+		"params": [],
+		"blacklist": ["get_by_ref"]
+	},
+	{
+		"name": "imgui/filters/attribute_descriptor_registration",
+		"params": [],
+		"blacklist": ["get_by_ref"]
+	},
+	{
 		"name": "serialization/json/attributes_json_serialization",
 		"params": [],
 		"blacklist": ["transient"]

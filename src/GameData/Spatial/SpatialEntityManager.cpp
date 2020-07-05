@@ -28,10 +28,32 @@ void SpatialEntityManager::getAllEntityComponents(Entity entity, std::vector<Bas
 	}
 }
 
-void SpatialEntityManager::getEntitiesHavingComponents(const std::vector<std::type_index>& componentIndexes, std::vector<Entity>& inOutEntities) const
+void SpatialEntityManager::getSpatialEntitiesHavingComponents(const std::vector<std::type_index>& componentIndexes, TupleVector<WorldCell*, Entity>& inOutEntities) const
 {
 	for (WorldCell* cell : mCells)
 	{
-		cell->getEntityManager().getEntitiesHavingComponents(componentIndexes, inOutEntities);
+		std::vector<Entity> entities;
+		cell->getEntityManager().getEntitiesHavingComponents(componentIndexes, entities);
+		std::transform(
+			entities.begin(),
+			entities.end(),
+			std::back_inserter(inOutEntities),
+			[cell](Entity entity)
+			{
+				return std::make_tuple(cell, entity);
+			}
+		);
 	}
+}
+
+WorldCell* SpatialEntityManager::findEntityCell(Entity entity)
+{
+	for (WorldCell* cell : mCells)
+	{
+		if (cell->getEntityManager().hasEntity(entity))
+		{
+			return cell;
+		}
+	}
+	return nullptr;
 }

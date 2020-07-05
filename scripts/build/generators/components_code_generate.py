@@ -24,6 +24,7 @@ def get_base_data_dictionary(data_description):
         "component_name": data_description["component"],
         "component_name_capital": capitalize(data_description["component"]),
         "class_name": "%sComponent" % capitalize(data_description["component"]),
+        "component_tolower" : data_description["component"].lower(),
         "component_description": data_description["description"]
     }
 
@@ -35,6 +36,7 @@ def get_attribute_data_dictionary(attribute):
         attribute_data_dictionary["attribute_" + field_name] = field_value
 
     attribute_data_dictionary["attribute_name_capital"] = capitalize(attribute["name"])
+    attribute_data_dictionary["attribute_tolower"] = attribute["name"].lower()
 
     attribute_data_dictionary["attribute_include_full"] = ""
     if "includes" in attribute:
@@ -42,13 +44,31 @@ def get_attribute_data_dictionary(attribute):
             attribute_data_dictionary["attribute_include_full"] += ("#include %s\n" % include)
     attribute_data_dictionary["attribute_include_full"] = attribute_data_dictionary["attribute_include_full"].rstrip("\n")
 
-
     # fill missing fields from defaults
     for field_name, field_value in attribute_optional_fields.items():
         if ("attribute_" + field_name) not in attribute_data_dictionary:
             attribute_data_dictionary["attribute_" + field_name] = field_value
 
     return attribute_data_dictionary
+
+
+def does_attribute_pass_filters(attribute, template_params, attribute_template_data):
+    # skip attributes with empty values, if requested
+    if "not_empty" in template_params:
+        if len(attribute["data_dict"][attribute_template_data["value_to_empty_test"]]) == 0:
+            return False
+
+    # skip blacklisted attributes
+    if "blacklist" in attribute_template_data:
+        if any(x in attribute["data_dict"]["attribute_flags"] for x in attribute_template_data["blacklist"]):
+            return False
+
+    # if we have whitelist, skip attributes without whitelisted flags
+    if "whitelist" in attribute_template_data:
+        if not any(x in attribute["data_dict"]["attribute_flags"] for x in attribute_template_data["whitelist"]):
+            return False
+
+    return True
 
 
 def append_attributes_data_dictionary(data_dictionary, data_description):
@@ -63,23 +83,8 @@ def append_attributes_data_dictionary(data_dictionary, data_description):
 
         # filter attributes
         for attribute in data_description["attributes"]:
-
-            # skip attributes with empty values, if requested
-            if "not_empty" in template_params:
-                if len(attribute["data_dict"][attribute_template_data["value_to_empty_test"]]) == 0:
-                    continue
-
-            # skip blacklisted attributes
-            if "blacklist" in attribute_template_data:
-                if any(x in attribute["data_dict"]["attribute_flags"] for x in attribute_template_data["blacklist"]):
-                    continue
-
-            # if we have whitelist, skip attributes without whitelisted flags
-            if "whitelist" in attribute_template_data:
-                if not any(x in attribute["data_dict"]["attribute_flags"] for x in attribute_template_data["whitelist"]):
-                    continue
-
-            replacement_content_elements.append(attribute["data_dict"])
+            if does_attribute_pass_filters(attribute, template_params, attribute_template_data):
+                replacement_content_elements.append(attribute["data_dict"])
 
         # generate content
         for replace_content_dict in replacement_content_elements:
@@ -113,21 +118,10 @@ def get_full_data_dictionary(data_description):
     return full_data_dictionary
 
 
-def generate_component_cpp_file(template_name, destination_dir, file_name_template, full_data_dictionary):
+def generate_cpp_file(template_name, destination_dir, file_name_template, filled_templates):
     template = read_template(template_name, templates_dir)
-    generated_content = replace_content(template, full_data_dictionary)
-    file_name = replace_content(file_name_template, full_data_dictionary)
-
-    if not os.path.exists(destination_dir):
-        os.makedirs(destination_dir)
-
-    write_file(path.join(destination_dir, file_name), generated_content)
-
-
-def generate_component_list_cpp_file(template_name, destination_dir, file_name_template, component_filled_templates):
-    template = read_template(template_name, templates_dir)
-    generated_content = replace_content(template, component_filled_templates)
-    file_name = replace_content(file_name_template, component_filled_templates)
+    generated_content = replace_content(template, filled_templates)
+    file_name = replace_content(file_name_template, filled_templates)
 
     if not os.path.exists(destination_dir):
         os.makedirs(destination_dir)
@@ -161,17 +155,19 @@ def generate_files(file_infos, data_description, full_data_dict):
     for file_info in file_infos:
         if "flags" in file_info and "per_attribute" in file_info["flags"]:
             generate_per_attribute_cpp_files(data_description, file_info["template"],
-                                             path.join(working_dir, file_info["output_dir"]),
-                                             file_info["name_template"],
-                                             file_info["blacklist"],
-                                             full_data_dict)
+                path.join(working_dir, file_info["output_dir"]),
+                file_info["name_template"],
+                file_info["blacklist"],
+                full_data_dict)
+        elif "flags" in file_info and "attribute_list" in file_info["flags"]:
+            pass # generated in another function
         elif "flags" in file_info and "list" in file_info["flags"]:
             pass # generated in another function
         else:
-            generate_component_cpp_file(file_info["template"],
-                                        path.join(working_dir, file_info["output_dir"]),
-                                        file_info["name_template"],
-                                        full_data_dict)
+            generate_cpp_file(file_info["template"],
+                path.join(working_dir, file_info["output_dir"]),
+                file_info["name_template"],
+                full_data_dict)
 
 
 def load_component_data_description(file_path):
@@ -202,22 +198,70 @@ def generate_component_list_descriptions(components):
         component_filled_templates[component_template["name"]] = filled_template
     return component_filled_templates
 
+
+def generate_attribute_list_descriptions(components):
+    attribute_filled_templates = {}
+    for attribute_template in attribute_templates:
+        template = read_template(attribute_template["name"], templates_dir)
+
+        blacklist = None
+        if "blacklist" in attribute_template:
+            blacklist = attribute_template["blacklist"]
+
+        filled_template = ""
+        for component in components:
+            full_data_dict = component["data_dict"]
+            attributes = component["attributes"]
+            is_lastComponent = component is components[len(components) - 1]
+            for attribute in attributes:
+                # skip blacklisted attributes
+                if blacklist is not None:
+                    if any(x in attribute["data_dict"]["attribute_flags"] for x in blacklist):
+                        continue
+
+                # skip delimiters for the last item
+                if is_lastComponent and attribute is attributes[len(attributes) - 1]:
+                    delimiter_dict = empty_delimiter_dictionary
+                else:
+                    delimiter_dict = delimiter_dictionary
+
+                filled_template = filled_template + replace_content(template, {
+                    **full_data_dict,
+                    **attribute["data_dict"],
+                    **delimiter_dict
+                })
+        attribute_filled_templates[attribute_template["name"]] = filled_template
+    return attribute_filled_templates
+
+
 def generate_all():
     components = []
+    raw_components = []
     for file_name in os.listdir(descriptions_dir):
         component = load_component_data_description(path.join(descriptions_dir, file_name))
         full_data_dict = get_full_data_dictionary(component)
         generate_files(files_to_generate, component, full_data_dict)
+        component["data_dict"] = full_data_dict
+        raw_components.append(component)
         components.append(full_data_dict)
 
     # generate component lists
     component_filled_templates = generate_component_list_descriptions(components)
     for file_info in files_to_generate:
         if "flags" in file_info and "list" in file_info["flags"]:
-            generate_component_list_cpp_file(file_info["template"],
-                                             path.join(working_dir, file_info["output_dir"]),
-                                             file_info["name_template"],
-                                             component_filled_templates)
+            generate_cpp_file(file_info["template"],
+                path.join(working_dir, file_info["output_dir"]),
+                file_info["name_template"],
+                component_filled_templates)
+
+    # generate attributes lists
+    attribute_filled_templates = generate_attribute_list_descriptions(raw_components)
+    for file_info in files_to_generate:
+        if "flags" in file_info and "attribute_list" in file_info["flags"]:
+            generate_cpp_file(file_info["template"],
+                path.join(working_dir, file_info["output_dir"]),
+                file_info["name_template"],
+                attribute_filled_templates)
 
 
 delimiter_dictionary = load_json(path.join(configs_dir, "delimiter_dictionary.json"))

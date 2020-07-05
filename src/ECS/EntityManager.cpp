@@ -223,6 +223,11 @@ void EntityManager::getEntitiesHavingComponents(const std::vector<std::type_inde
 	}
 }
 
+bool EntityManager::hasEntity(Entity entity)
+{
+	return mEntityIndexMap.find(entity.getID()) != mEntityIndexMap.end();
+}
+
 void EntityManager::getPrefabFromEntity(nlohmann::json& json, Entity entity, const JsonComponentSerializationHolder& jsonSerializationHolder)
 {
 	std::vector<BaseComponent*> components;

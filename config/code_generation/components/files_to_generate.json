@@ -15,6 +15,26 @@
 		"output_dir": "src/GameLogic/Imgui/ComponentInspector/ComponentWidgets/"
 	},
 	{
+		"name_template": "{class_name}{attribute_name_capital}PropertyDescriptor.generated.cpp",
+		"template": "imgui/filters/attribute_descriptor_source",
+		"output_dir": "src/GameLogic/Imgui/ComponentInspector/PropertyFilters/PropertyDescriptors/",
+		"flags": ["per_attribute"],
+		"blacklist": ["get_by_ref"]
+	},
+	{
+		"name_template": "{class_name}{attribute_name_capital}PropertyDescriptor.generated.h",
+		"template": "imgui/filters/attribute_descriptor_header",
+		"output_dir": "src/GameLogic/Imgui/ComponentInspector/PropertyFilters/PropertyDescriptors/",
+		"flags": ["per_attribute"],
+		"blacklist": ["get_by_ref"]
+	},
+	{
+		"name_template": "PropertyDescriptorsRegistration.generated.cpp",
+		"template": "imgui/filters/attributes_descriptors_registration_source",
+		"output_dir": "src/GameLogic/Imgui/ComponentInspector/PropertyFilters/",
+		"flags": ["attribute_list"]
+	},
+	{
 		"name_template": "{class_name}JsonSerializer.generated.h",
 		"template": "serialization/json/component_json_serializer_header",
 		"output_dir": "src/GameData/Serialization/Json/"

@@ -70,7 +70,10 @@ public:
 
 	void getAllEntityComponents(Entity entity, std::vector<BaseComponent*>& outComponents);
 
-	void getEntitiesHavingComponents(const std::vector<std::type_index>& componentIndexes, std::vector<Entity>& inOutEntities) const;
+	void getSpatialEntitiesHavingComponents(const std::vector<std::type_index>& componentIndexes, TupleVector<WorldCell*, Entity>& inOutEntities) const;
+
+	// debug function for imgui
+	WorldCell* findEntityCell(Entity entity);
 
 private:
 	std::vector<WorldCell*> mCells;

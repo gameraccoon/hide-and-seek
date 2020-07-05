@@ -1,5 +1,7 @@
 #include "Base/precomp.h"
 
+#include "GameLogic/Imgui/ComponentInspector/DataInspectorWidgets/BasicTypesInspector.h"
+
 #include <cstring>
 
 #include "imgui.h"
@@ -8,8 +10,6 @@
 
 #include "GameData/Core/Vector2D.h"
 #include "GameData/Time/GameplayTimestamp.h"
-
-#include "GameLogic/Imgui/ComponentInspector/DataInspectorWidgets/BasicTypesInspector.h"
 
 namespace ImguiDataInspection
 {
