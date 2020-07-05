@@ -10,7 +10,7 @@ std::string FormatString(const std::string& format)
 }
 
 template<typename T>
-auto FormatSprinfableArgument(T&& arg);
+auto FormatSprinfableArgument(T arg);
 
 template<>
 inline auto FormatSprinfableArgument<const std::string&>(const std::string& arg)
@@ -19,13 +19,19 @@ inline auto FormatSprinfableArgument<const std::string&>(const std::string& arg)
 }
 
 template<>
-inline auto FormatSprinfableArgument<std::string>(std::string&& arg)
+inline auto FormatSprinfableArgument<std::string&&>(std::string&& arg)
 {
 	return arg.c_str();
 }
 
 template<>
-inline auto FormatSprinfableArgument<StringID>(StringID&& arg)
+inline auto FormatSprinfableArgument<std::string>(std::string arg)
+{
+	return arg.c_str();
+}
+
+template<>
+inline auto FormatSprinfableArgument<StringID>(StringID arg)
 {
 	static_assert(std::is_same_v<std::invoke_result_t<decltype(&StringIDManager::getStringFromID), StringIDManager, StringID>, const std::string&>, "StringIDManager::getStringFromID should return const ref to std::string");
 
@@ -33,7 +39,7 @@ inline auto FormatSprinfableArgument<StringID>(StringID&& arg)
 }
 
 template<typename T>
-auto FormatSprinfableArgument(T&& arg)
+auto FormatSprinfableArgument(T arg)
 {
 	return std::forward<T>(arg);
 }
