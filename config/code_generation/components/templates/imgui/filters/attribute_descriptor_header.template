@@ -9,7 +9,7 @@ namespace ImguiPropertyFiltration
 	public:
 		{class_name}{attribute_name_capital}PropertyDescriptor();
 
-		static std::shared_ptr<{class_name}{attribute_name_capital}PropertyDescriptor> create();
+		static std::shared_ptr<{class_name}{attribute_name_capital}PropertyDescriptor> Create();
 
 		std::any getPropertyValue(EntityManager& entityManager, Entity entity) override;
 		std::type_index getComponentType() const override;

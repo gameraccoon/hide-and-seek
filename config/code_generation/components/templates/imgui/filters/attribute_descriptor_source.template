@@ -14,7 +14,7 @@ namespace ImguiPropertyFiltration
 		: AbstractPropertyDescriptor("{class_name}.{attribute_name}")
 	{{}}
 
-	std::shared_ptr<{class_name}{attribute_name_capital}PropertyDescriptor> {class_name}{attribute_name_capital}PropertyDescriptor::create()
+	std::shared_ptr<{class_name}{attribute_name_capital}PropertyDescriptor> {class_name}{attribute_name_capital}PropertyDescriptor::Create()
 	{{
 		auto result = std::make_shared<{class_name}{attribute_name_capital}PropertyDescriptor>();
 		RegisterFilterFactories<{attribute_type}>(result->mFilterFactories, result);

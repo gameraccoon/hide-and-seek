@@ -8,6 +8,7 @@
 
 class EntityManager;
 class WorldCell;
+struct ImguiDebugData;
 
 namespace ImguiPropertyFiltration
 {
@@ -18,13 +19,15 @@ namespace ImguiPropertyFiltration
 	class ImguiPropertyFiltersWidget
 	{
 	public:
-		ImguiPropertyFiltersWidget();
 		~ImguiPropertyFiltersWidget();
 
-		void update();
+		void update(ImguiDebugData& debugData);
 
 		void appendFilteredComponentTypes(std::vector<std::type_index>& inOutComponentTypes) const;
 		void filterEntities(TupleVector<WorldCell*, Entity>& entities);
+
+	private:
+		void init(ImguiDebugData& debugData);
 
 	private:
 		static constexpr int mMinimalSearchLen = 2;
@@ -34,5 +37,6 @@ namespace ImguiPropertyFiltration
 		std::vector<std::unique_ptr<AbstractPropertyFilter>> mAppliedFilters;
 		std::vector<std::shared_ptr<AbstractPropertyFilterFactory>> mSuggestedFiltersFactories;
 		std::vector<std::shared_ptr<AbstractPropertyDescriptor>> mLastMatchedProperties;
+		bool mIsInited = false;
 	};
 } // namespace ImguiPropertyFiltration

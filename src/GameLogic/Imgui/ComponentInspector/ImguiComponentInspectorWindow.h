@@ -20,8 +20,6 @@ public:
 	bool isVisible = false;
 
 private:
-	void filterByComponents(ImguiDebugData& debugData);
-	void filterByProperties(ImguiDebugData& debugData);
 	void applyFilters(ImguiDebugData& debugData);
 
 	void processEntityIDInput(ImguiDebugData& debugData);
@@ -30,7 +28,6 @@ private:
 	void showComponentsInspector();
 
 private:
-	std::map<std::type_index, bool> mComponentFilters;
 	char mEntityFilterBuffer[128] = "";
 	std::optional<std::tuple<WorldCell*, Entity>> mSelectedEntity;
 	TupleVector<WorldCell*, Entity> mFilteredEntities;

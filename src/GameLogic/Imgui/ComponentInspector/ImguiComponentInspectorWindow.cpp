@@ -37,35 +37,9 @@ static void HelpMarker(const char* desc)
 	}
 }
 
-void ImguiComponentInspectorWindow::filterByComponents(ImguiDebugData& debugData)
-{
-	if (ImGui::CollapsingHeader("Filter By Components"))
-	{
-		ImGui::Columns(3, NULL, false);
-		debugData.componentFactory.forEachComponentType([this](std::type_index typeID, StringID className){
-			if (ImGui::Selectable(ID_TO_STR(className).c_str(), &mComponentFilters[typeID])) {}
-			ImGui::NextColumn();
-		});
-		ImGui::Columns(1);
-		ImGui::Separator();
-	}
-}
-
-void ImguiComponentInspectorWindow::filterByProperties(ImguiDebugData& /*debugData*/)
-{
-	if (ImGui::CollapsingHeader("Filter By Properties"))
-	{
-		mPropertyFiltersWidget.update();
-	}
-}
-
 void ImguiComponentInspectorWindow::applyFilters(ImguiDebugData& debugData)
 {
 	std::vector<std::type_index> filteredComponents;
-	for (const auto [typeID, isEnabled] : mComponentFilters)
-	{
-		if (isEnabled) { filteredComponents.push_back(typeID); }
-	}
 	mPropertyFiltersWidget.appendFilteredComponentTypes(filteredComponents);
 
 	SpatialEntityManager allManagers = debugData.worldHolder.getWorld().getSpatialData().getAllCellManagers();
@@ -175,8 +149,7 @@ void ImguiComponentInspectorWindow::update(ImguiDebugData& debugData)
 	{
 		ImGui::Begin("Component Inspector", &isVisible);
 
-		filterByComponents(debugData);
-		filterByProperties(debugData);
+		mPropertyFiltersWidget.update(debugData);
 
 		applyFilters(debugData);
 

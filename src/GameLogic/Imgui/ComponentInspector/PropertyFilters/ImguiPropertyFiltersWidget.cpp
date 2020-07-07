@@ -14,23 +14,41 @@
 #include "GameLogic/Imgui/ComponentInspector/PropertyFilters/TypeFilters/FilterRegistration/FilterRegistration.h"
 #include "GameLogic/Imgui/ComponentInspector/PropertyFilters/PropertyDescriptorsRegistration.h"
 
+#include "GameLogic/Imgui/ComponentInspector/PropertyFilters/PropertyDescriptors/ComponentAvailabilityPropertyDescriptor.h"
+
+#include "GameLogic/Imgui/ImguiDebugData.h"
+
 namespace ImguiPropertyFiltration
 {
-	ImguiPropertyFiltersWidget::ImguiPropertyFiltersWidget()
+	void ImguiPropertyFiltersWidget::init(ImguiDebugData& debugData)
 	{
-		mPropertyDescriptors.construct(PropertyDescriptiorsRegistration::GetDescriptions());
+		auto propertyDescriptions = PropertyDescriptiorsRegistration::GetDescriptions();
+		debugData.componentFactory.forEachComponentType([&propertyDescriptions](std::type_index typeID, StringID className)
+		{
+			std::string componentName = ID_TO_STR(className);
+			std::string lowerComponentName = componentName;
+			std::transform(lowerComponentName.begin(), lowerComponentName.end(), lowerComponentName.begin(), [](unsigned char c){ return std::tolower(c); });
+			propertyDescriptions.emplace_back(std::vector<std::string>{lowerComponentName}, ComponentAvailabilityPropertyDescriptor::Create(componentName, typeID));
+		});
+		mPropertyDescriptors.construct(std::move(propertyDescriptions));
 	}
 
 	ImguiPropertyFiltersWidget::~ImguiPropertyFiltersWidget() = default;
 
-	void ImguiPropertyFiltersWidget::update()
+	void ImguiPropertyFiltersWidget::update(ImguiDebugData& debugData)
 	{
+		if (!mIsInited)
+		{
+			init(debugData);
+			mIsInited = true;
+		}
+
 		std::optional<std::vector<std::unique_ptr<AbstractPropertyFilter>>::const_iterator> filterToRemove;
 		for (auto& filter : mAppliedFilters)
 		{
 			filter->updateImguiWidget();
 			ImGui::SameLine();
-			if (ImGui::Button("x"))
+			if (ImGui::Button(FormatString("x##%s", filter->getName()).c_str()))
 			{
 				filterToRemove = std::find(mAppliedFilters.begin(), mAppliedFilters.end(), filter);
 			}
@@ -40,7 +58,7 @@ namespace ImguiPropertyFiltration
 			mAppliedFilters.erase(*filterToRemove);
 		}
 
-		if (ImGui::InputText("Property Search", mFilterQueryBuffer, IM_ARRAYSIZE(mFilterQueryBuffer)))
+		if (ImGui::InputTextWithHint("##FilterSearch", "Search Query", mFilterQueryBuffer, IM_ARRAYSIZE(mFilterQueryBuffer)))
 		{
 			std::string strId(mFilterQueryBuffer, std::strlen(mFilterQueryBuffer));
 			// tolower
