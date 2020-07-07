@@ -141,6 +141,9 @@ void ImguiComponentInspectorWindow::showComponentsInspector()
 
 		std::vector<BaseComponent*> components;
 		cell->getEntityManager().getAllEntityComponents(entity, components);
+		std::sort(components.begin(), components.end(), [](auto a, auto b){
+			return a->getComponentTypeName() < b->getComponentTypeName();
+		});
 		for (BaseComponent* component : components)
 		{
 			std::string name = FormatString("%s##ComponentInspection", ID_TO_STR(component->getComponentTypeName()).c_str());
