@@ -4,7 +4,7 @@
 
 #include "ECS/ComponentSetHolder.h"
 
-class ComponentSerializersHolder;
+struct ComponentSerializersHolder;
 
 class GameData
 {

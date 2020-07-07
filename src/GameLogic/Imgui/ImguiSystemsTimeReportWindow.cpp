@@ -2,6 +2,8 @@
 
 #include "GameLogic/Imgui/ImguiSystemsTimeReportWindow.h"
 
+#include <algorithm>
+
 #include "imgui/imgui.h"
 
 #include "GameData/GameData.h"
@@ -69,7 +71,7 @@ void ImguiSystemsTimeReportWindow::update(ImguiDebugData& debugData)
 		}
 
 		// Slider that tells what frame we investigate
-		ImGui::SliderInt("Frame", &mCurrentFrame, 0, records.size() - 1);
+		ImGui::SliderInt("Frame", &mCurrentFrame, 0, static_cast<int>(records.size() - 1));
 
 		// Frame time by systems plot
 		mCurrentFrame = std::min(mCurrentFrame, static_cast<int>(records.size() - 1));

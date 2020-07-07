@@ -10,7 +10,7 @@
 
 int main(int argc, char** argv)
 {
-	Random::GlobalGenerator = std::mt19937(time(nullptr));
+	Random::GlobalGenerator = std::mt19937(static_cast<unsigned int>(time(nullptr)));
 
 	ArgumentsParser arguments(argc, argv);
 

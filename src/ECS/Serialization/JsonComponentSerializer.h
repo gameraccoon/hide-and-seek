@@ -8,6 +8,7 @@
 class JsonComponentSerializer
 {
 public:
+	virtual ~JsonComponentSerializer() = default;
 	virtual void toJson(nlohmann::json& outJson, const BaseComponent* component) const = 0;
 	virtual void fromJson(const nlohmann::json& json, BaseComponent* outComponent) const = 0;
 };
@@ -53,6 +54,6 @@ public:
 
 private:
 	std::vector<std::unique_ptr<JsonComponentSerializer>> mSerializers;
-	std::unordered_map<std::type_index, unsigned int> mTypeIDToSerializer;
-	std::unordered_map<StringID, unsigned int> mClassNameToSerializer;
+	std::unordered_map<std::type_index, size_t> mTypeIDToSerializer;
+	std::unordered_map<StringID, size_t> mClassNameToSerializer;
 };

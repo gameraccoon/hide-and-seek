@@ -18,7 +18,7 @@ namespace ImguiDataInspection
 	void Inspector(const char* title, float& data);
 
 	template<>
-	void Inspector(const char* title, class Vector2D& data);
+	void Inspector(const char* title, struct Vector2D& data);
 
 	template<>
 	void Inspector(const char* title, class Rotator& data);

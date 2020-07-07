@@ -2,6 +2,7 @@
 
 #include "GameLogic/Imgui/ComponentInspector/ImguiComponentInspectorWindow.h"
 
+#include <algorithm>
 #include <cstring>
 #include <sstream>
 #include <string_view>
@@ -67,7 +68,7 @@ void ImguiComponentInspectorWindow::showFilteredEntities()
 			auto scrollBoxSize = ImVec2(200.0f, std::min(180.0f, mFilteredEntities.size() * 17.0f + ImGui::GetStyle().FramePadding.y*4));
 			if (ImGui::BeginChild("FilteredEntities", scrollBoxSize, true))
 			{
-				for (int i = 0, iSize = mFilteredEntities.size(); i < iSize; ++i)
+				for (size_t i = 0, iSize = mFilteredEntities.size(); i < iSize; ++i)
 				{
 					const Entity& entity = std::get<1>(mFilteredEntities[i]);
 					char buf[32];

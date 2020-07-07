@@ -4,7 +4,7 @@
 
 class World;
 class GameData;
-class ComponentSerializersHolder;
+struct ComponentSerializersHolder;
 
 namespace GameDataLoader
 {

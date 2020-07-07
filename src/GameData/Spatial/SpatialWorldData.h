@@ -8,7 +8,7 @@
 #include "GameData/Spatial/CellPos.h"
 #include "GameData/Core/Vector2D.h"
 
-class ComponentSerializersHolder;
+struct ComponentSerializersHolder;
 
 class SpatialWorldData
 {

@@ -10,7 +10,7 @@
 #include "ECS/Entity.h"
 #include "ECS/Delegates.h"
 
-class ComponentSerializersHolder;
+struct ComponentSerializersHolder;
 class JsonComponentSerializationHolder;
 
 class EntityManager

@@ -8,7 +8,7 @@
 
 #include "GameData/Spatial/SpatialWorldData.h"
 
-class ComponentSerializersHolder;
+struct ComponentSerializersHolder;
 
 class World
 {

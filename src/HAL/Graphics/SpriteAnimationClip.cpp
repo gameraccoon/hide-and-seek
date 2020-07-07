@@ -2,6 +2,8 @@
 
 #include "HAL/Graphics/SpriteAnimationClip.h"
 
+#include <algorithm>
+
 #include "../Internal/SdlSurface.h"
 #include "HAL/Base/Engine.h"
 

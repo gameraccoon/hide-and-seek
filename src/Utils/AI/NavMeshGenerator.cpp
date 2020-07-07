@@ -81,9 +81,9 @@ void NavMeshGenerator::generateNavMesh(NavMesh& outNavMesh, const TupleVector<Co
 	std::unordered_map<Vector2D, DtIndexType> verticesMap;
 	for (const TPPLPoly& polygon : resultPolygons)
 	{
-		verticesMap.emplace(Vector2D(polygon[0].x, polygon[0].y), 0);
-		verticesMap.emplace(Vector2D(polygon[1].x, polygon[1].y), 0);
-		verticesMap.emplace(Vector2D(polygon[2].x, polygon[2].y), 0);
+		verticesMap.emplace(Vector2D(polygon[0].x, polygon[0].y), static_cast<unsigned short>(0));
+		verticesMap.emplace(Vector2D(polygon[1].x, polygon[1].y), static_cast<unsigned short>(0));
+		verticesMap.emplace(Vector2D(polygon[2].x, polygon[2].y), static_cast<unsigned short>(0));
 	}
 
 	std::vector<DtCoordType> verts;
@@ -91,9 +91,9 @@ void NavMeshGenerator::generateNavMesh(NavMesh& outNavMesh, const TupleVector<Co
 	DtIndexType idx = 0;
 	for (auto& it : verticesMap)
 	{
-		verts[idx * 3] = static_cast<DtCoordType>(it.first.x + 5000.0f);
-		verts[idx * 3 + 1] = 0;
-		verts[idx * 3 + 2] = static_cast<DtCoordType>(it.first.y + 5000.0f);
+		verts[static_cast<size_t>(idx) * 3] = static_cast<DtCoordType>(it.first.x + 5000.0f);
+		verts[static_cast<size_t>(idx) * 3 + 1] = 0;
+		verts[static_cast<size_t>(idx) * 3 + 2] = static_cast<DtCoordType>(it.first.y + 5000.0f);
 		it.second = idx++;
 	}
 

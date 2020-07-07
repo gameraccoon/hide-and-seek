@@ -1,6 +1,9 @@
 #pragma once
 
 #include <any>
+#include <optional>
+#include <vector>
+#include <memory>
 
 #include "Base/Types/TemplateAliases.h"
 

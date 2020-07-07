@@ -15,6 +15,8 @@ namespace ImguiPropertyFiltration
 			: mDescriptor(descriptor)
 		{}
 
+		virtual ~AbstractPropertyFilter() = default;
+
 		std::type_index getComponentType() const
 		{
 			return getDescriptor()->getComponentType();
@@ -55,6 +57,7 @@ namespace ImguiPropertyFiltration
 	class AbstractPropertyFilterFactory
 	{
 	public:
+		virtual ~AbstractPropertyFilterFactory() = default;
 		virtual std::string getName() const = 0;
 		virtual std::unique_ptr<AbstractPropertyFilter> createFilter() const = 0;
 	};

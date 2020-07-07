@@ -15,6 +15,7 @@ namespace ImguiPropertyFiltration
 	{
 	public:
 		AbstractPropertyDescriptor(const std::string& name) : mName(name) {}
+		virtual ~AbstractPropertyDescriptor() = default;
 
 		virtual std::any getPropertyValue(EntityManager& entityManager, Entity entity) = 0;
 		virtual std::type_index getComponentType() const = 0;

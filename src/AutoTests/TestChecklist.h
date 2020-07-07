@@ -3,6 +3,7 @@
 class TestCheck
 {
 public:
+	virtual ~TestCheck() = default;
 	virtual bool isPassed() const = 0;
 	virtual std::string describe() const = 0;
 };

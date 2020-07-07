@@ -2,6 +2,7 @@
 
 #include "GameLogic/Imgui/ComponentInspector/PropertyFilters/ImguiPropertyFiltersWidget.h"
 
+#include <algorithm>
 #include <string>
 
 #include "imgui.h"
@@ -27,7 +28,7 @@ namespace ImguiPropertyFiltration
 		{
 			std::string componentName = ID_TO_STR(className);
 			std::string lowerComponentName = componentName;
-			std::transform(lowerComponentName.begin(), lowerComponentName.end(), lowerComponentName.begin(), [](unsigned char c){ return std::tolower(c); });
+			std::transform(lowerComponentName.begin(), lowerComponentName.end(), lowerComponentName.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
 			propertyDescriptions.emplace_back(std::vector<std::string>{lowerComponentName}, ComponentAvailabilityPropertyDescriptor::Create(componentName, typeID));
 		});
 		mPropertyDescriptors.construct(std::move(propertyDescriptions));
@@ -86,7 +87,7 @@ namespace ImguiPropertyFiltration
 
 			std::string strId(mFilterQueryBuffer, std::strlen(mFilterQueryBuffer));
 			// tolower
-			std::transform(strId.begin(), strId.end(), strId.begin(), [](unsigned char c){ return std::tolower(c); });
+			std::transform(strId.begin(), strId.end(), strId.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
 
 			if (strId.size() >= mMinimalSearchLen)
 			{

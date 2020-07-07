@@ -8,7 +8,7 @@
 #include "Component.h"
 #include "Delegates.h"
 
-class ComponentSerializersHolder;
+struct ComponentSerializersHolder;
 
 /**
  * Use this class to store components specific for some non-entity object (e.g. for a World)

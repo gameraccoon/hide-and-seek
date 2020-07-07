@@ -2,6 +2,8 @@
 
 #include "HAL/Base/Engine.h"
 
+#include <algorithm>
+
 #include <glew/glew.h>
 
 #include <SDL_ttf.h>

@@ -2,6 +2,8 @@
 
 #include "Utils/Geometry/RayTrace.h"
 
+#include <algorithm>
+
 #include "GameData/Components/CollisionComponent.generated.h"
 #include "GameData/Components/TransformComponent.generated.h"
 
@@ -11,8 +13,6 @@
 #include "GameData/World.h"
 
 #include "Utils/Geometry/Collide.h"
-
-#include <algorithm>
 
 namespace RayTrace
 {
@@ -121,21 +121,21 @@ namespace RayTrace
 
 			BoundingBox box = collision->getBoundingBox();
 			// get Cohen's code for start point
-			int a = RayTrace::getDotCode(box, transformedStartPoint);
+			int codeA = RayTrace::getDotCode(box, transformedStartPoint);
 			// get Cohen's code for end point
-			int b = RayTrace::getDotCode(box, transformedEndPoint);
+			int codeB = RayTrace::getDotCode(box, transformedEndPoint);
 
 			// if the points on the same side of BB
-			if ((a & b) != 0)
+			if ((codeA & codeB) != 0)
 			{
 				// skip to the next entity
 				continue;
 			}
 
 			// if the raytrace intersects with AABB of this actor
-			if (((a == 0 || b == 0)	&& (a | b) != 0)	// one point is in BB another is out BB
+			if (((codeA == 0 || codeB == 0)	&& (codeA | codeB) != 0)	// one point is in BB another is out BB
 				||
-				((a | b) == 3 || (a | b) == 12)			// points on opposite sides of BB // 0011 or 1100
+				((codeA | codeB) == 3 || (codeA | codeB) == 12)			// points on opposite sides of BB // 0011 or 1100
 				||
 				RayTrace::IsLineIntersectAABB(box, transformedStartPoint, transformedEndPoint))	// other cases of intersection
 			{
@@ -201,21 +201,21 @@ namespace RayTrace
 
 			BoundingBox box = collision->getBoundingBox();
 			// get Cohen's code for start point
-			int a = RayTrace::getDotCode(box, transformedStartPoint);
+			int codeA = RayTrace::getDotCode(box, transformedStartPoint);
 			// get Cohen's code for end point
-			int b = RayTrace::getDotCode(box, transformedEndPoint);
+			int codeB = RayTrace::getDotCode(box, transformedEndPoint);
 
 			// if the points on the same side of BB
-			if ((a & b) != 0)
+			if ((codeA & codeB) != 0)
 			{
 				// skip to the next entity
 				return;
 			}
 
 			// if the raytrace intersects with AABB of this entity
-			if (((a == 0 || b == 0)	&& (a | b) != 0)	// one point is in BB another is out BB
+			if (((codeA == 0 || codeB == 0)	&& (codeA | codeB) != 0)	// one point is in BB another is out BB
 				||
-				((a | b) == 3 || (a | b) == 12)			// points on opposite sides of BB // 0011 or 1100
+				((codeA | codeB) == 3 || (codeA | codeB) == 12)			// points on opposite sides of BB // 0011 or 1100
 				||
 				RayTrace::IsLineIntersectAABB(box, transformedStartPoint, transformedEndPoint))	// other cases of intersection
 			{
