@@ -39,40 +39,20 @@ static void HelpMarker(const char* desc)
 
 void ImguiComponentInspectorWindow::applyFilters(ImguiDebugData& debugData)
 {
-	std::vector<std::type_index> filteredComponents;
-	mPropertyFiltersWidget.appendFilteredComponentTypes(filteredComponents);
-
-	SpatialEntityManager allManagers = debugData.worldHolder.getWorld().getSpatialData().getAllCellManagers();
-
-	mFilteredEntities.clear();
-	allManagers.getSpatialEntitiesHavingComponents(filteredComponents, mFilteredEntities);
-
-	mPropertyFiltersWidget.filterEntities(mFilteredEntities);
+	mFilteredEntities = mPropertyFiltersWidget.getFilteredEntities(debugData);
 }
 
-void ImguiComponentInspectorWindow::processEntityIDInput(ImguiDebugData& debugData)
+void ImguiComponentInspectorWindow::showEntityID()
 {
-	if (ImGui::InputTextWithHint("Entity ID Filter", "Entity ID", mEntityFilterBuffer, IM_ARRAYSIZE(mEntityFilterBuffer)))
+	if (mSelectedEntity.has_value())
 	{
-		Entity::EntityID id = 0;
-		std::string_view strId(mEntityFilterBuffer, IM_ARRAYSIZE(mEntityFilterBuffer));
-		std::stringstream ss;
-		if (strId[0] == '0' && strId[1] == 'x') {
-			ss << std::hex;
-		}
-		ss << strId;
-		ss >> id;
-		Entity entity(id);
-
-		SpatialEntityManager allManagers = debugData.worldHolder.getWorld().getSpatialData().getAllCellManagers();
-		WorldCell* cell = allManagers.findEntityCell(entity);
-		if (cell != nullptr)
+		ImGui::Text("0x%x", std::get<1>(*mSelectedEntity).getID());
+		ImGui::SameLine();
+		if (ImGui::Button("Copy"))
 		{
-			mSelectedEntity = std::make_tuple(cell, entity);
-		}
-		else
-		{
-			mSelectedEntity = std::nullopt;
+			ImGui::LogToClipboard();
+			ImGui::LogText("0x%x", std::get<1>(*mSelectedEntity).getID());
+			ImGui::LogFinish();
 		}
 	}
 }
@@ -156,7 +136,9 @@ void ImguiComponentInspectorWindow::update(ImguiDebugData& debugData)
 		ImGui::Text("Entities matching the filter: %lu", mFilteredEntities.size());
 
 		showFilteredEntities();
-		processEntityIDInput(debugData);
+
+		showEntityID();
+
 		showComponentsInspector();
 
 		ImGui::End();

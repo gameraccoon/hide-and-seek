@@ -60,6 +60,30 @@ namespace ImguiPropertyFiltration
 
 		if (ImGui::InputTextWithHint("##FilterSearch", "Search Query", mFilterQueryBuffer, IM_ARRAYSIZE(mFilterQueryBuffer)))
 		{
+			{
+				Entity::EntityID id = 0;
+				std::string_view strId(mFilterQueryBuffer, IM_ARRAYSIZE(mFilterQueryBuffer));
+				std::stringstream ss;
+				if (strId[0] == '0' && strId[1] == 'x') {
+					ss << std::hex;
+				}
+				ss << strId;
+				ss >> id;
+				Entity entity(id);
+
+				SpatialEntityManager allManagers = debugData.worldHolder.getWorld().getSpatialData().getAllCellManagers();
+				WorldCell* cell = allManagers.findEntityCell(entity);
+				if (cell != nullptr)
+				{
+					mExplicitlySetEntity = std::make_tuple(cell, entity);
+					return;
+				}
+				else
+				{
+					mExplicitlySetEntity = std::nullopt;
+				}
+			}
+
 			std::string strId(mFilterQueryBuffer, std::strlen(mFilterQueryBuffer));
 			// tolower
 			std::transform(strId.begin(), strId.end(), strId.begin(), [](unsigned char c){ return std::tolower(c); });
@@ -117,23 +141,45 @@ namespace ImguiPropertyFiltration
 		}
 	}
 
-	void ImguiPropertyFiltersWidget::appendFilteredComponentTypes(std::vector<std::type_index>& inOutComponentTypes) const
+	std::vector<std::type_index> ImguiPropertyFiltersWidget::getFilteredComponentTypes() const
 	{
+		std::vector<std::type_index> filteredComponents;
+		filteredComponents.reserve(mAppliedFilters.size());
+		// construct vector of unique elements
 		for (const auto& appliedFilter : mAppliedFilters)
 		{
 			std::type_index typeID = appliedFilter->getComponentType();
-			if (std::find(inOutComponentTypes.begin(), inOutComponentTypes.end(), typeID) == inOutComponentTypes.end())
+			auto lowerIt = std::lower_bound(filteredComponents.begin(), filteredComponents.end(), typeID);
+			if (lowerIt == filteredComponents.end() || *lowerIt != typeID)
 			{
-				inOutComponentTypes.push_back(typeID);
+				filteredComponents.insert(lowerIt, typeID);
 			}
 		}
+		return filteredComponents;
 	}
 
-	void ImguiPropertyFiltersWidget::filterEntities(TupleVector<WorldCell*, Entity>& entities)
+	TupleVector<WorldCell*, Entity> ImguiPropertyFiltersWidget::getFilteredEntities(ImguiDebugData& debugData)
 	{
-		for (const auto& filter : mAppliedFilters)
+		TupleVector<WorldCell*, Entity> result;
+		result.reserve(50);
+
+		std::vector<std::type_index> filteredComponentTypes = getFilteredComponentTypes();
+
+		if (!filteredComponentTypes.empty())
 		{
-			filter->filterEntities(entities);
+			SpatialEntityManager allManagers = debugData.worldHolder.getWorld().getSpatialData().getAllCellManagers();
+			allManagers.getSpatialEntitiesHavingComponents(filteredComponentTypes, result);
+
+			for (const auto& filter : mAppliedFilters)
+			{
+				filter->filterEntities(result);
+			}
 		}
+		else if (mExplicitlySetEntity.has_value())
+		{
+			result.push_back(*mExplicitlySetEntity);
+		}
+
+		return result;
 	}
 } // namespace ImguiPropertyFiltration

@@ -22,8 +22,7 @@ public:
 private:
 	void applyFilters(ImguiDebugData& debugData);
 
-	void processEntityIDInput(ImguiDebugData& debugData);
-
+	void showEntityID();
 	void showFilteredEntities();
 	void showComponentsInspector();
 
