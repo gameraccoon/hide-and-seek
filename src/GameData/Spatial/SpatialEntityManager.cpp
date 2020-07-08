@@ -30,9 +30,11 @@ void SpatialEntityManager::getAllEntityComponents(Entity entity, std::vector<Bas
 
 void SpatialEntityManager::getSpatialEntitiesHavingComponents(const std::vector<std::type_index>& componentIndexes, TupleVector<WorldCell*, Entity>& inOutEntities) const
 {
+	std::vector<Entity> entities;
+
 	for (WorldCell* cell : mCells)
 	{
-		std::vector<Entity> entities;
+		entities.clear();
 		cell->getEntityManager().getEntitiesHavingComponents(componentIndexes, entities);
 		std::transform(
 			entities.begin(),

@@ -40,7 +40,7 @@ static void HelpMarker(const char* desc)
 
 void ImguiComponentInspectorWindow::applyFilters(ImguiDebugData& debugData)
 {
-	mFilteredEntities = mPropertyFiltersWidget.getFilteredEntities(debugData);
+	 mPropertyFiltersWidget.getFilteredEntities(debugData, mFilteredEntities);
 }
 
 void ImguiComponentInspectorWindow::showEntityID()

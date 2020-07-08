@@ -26,7 +26,7 @@ namespace ImguiPropertyFiltration
 
 		void update(ImguiDebugData& debugData);
 
-		TupleVector<WorldCell*, Entity> getFilteredEntities(ImguiDebugData& debugData);
+		void getFilteredEntities(ImguiDebugData& debugData, TupleVector<WorldCell*, Entity>& inOutEntities);
 
 	private:
 		std::vector<std::type_index> getFilteredComponentTypes() const;

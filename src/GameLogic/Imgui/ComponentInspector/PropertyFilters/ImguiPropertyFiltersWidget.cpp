@@ -9,6 +9,8 @@
 
 #include "ECS/EntityManager.h"
 
+#include "GameData/Spatial/SpatialEntityManager.h"
+
 #include "GameLogic/Imgui/ComponentInspector/PropertyFilters/AbstractPropertyFilter.h"
 #include "GameLogic/Imgui/ComponentInspector/PropertyFilters/AbstractPropertyDescriptor.h"
 
@@ -159,28 +161,25 @@ namespace ImguiPropertyFiltration
 		return filteredComponents;
 	}
 
-	TupleVector<WorldCell*, Entity> ImguiPropertyFiltersWidget::getFilteredEntities(ImguiDebugData& debugData)
+	void ImguiPropertyFiltersWidget::getFilteredEntities(ImguiDebugData& debugData, TupleVector<WorldCell*, Entity>& inOutEntities)
 	{
-		TupleVector<WorldCell*, Entity> result;
-		result.reserve(50);
+		inOutEntities.clear();
 
 		std::vector<std::type_index> filteredComponentTypes = getFilteredComponentTypes();
 
 		if (!filteredComponentTypes.empty())
 		{
 			SpatialEntityManager allManagers = debugData.worldHolder.getWorld().getSpatialData().getAllCellManagers();
-			allManagers.getSpatialEntitiesHavingComponents(filteredComponentTypes, result);
+			allManagers.getSpatialEntitiesHavingComponents(filteredComponentTypes, inOutEntities);
 
 			for (const auto& filter : mAppliedFilters)
 			{
-				filter->filterEntities(result);
+				filter->filterEntities(inOutEntities);
 			}
 		}
 		else if (mExplicitlySetEntity.has_value())
 		{
-			result.push_back(*mExplicitlySetEntity);
+			inOutEntities.push_back(*mExplicitlySetEntity);
 		}
-
-		return result;
 	}
 } // namespace ImguiPropertyFiltration
