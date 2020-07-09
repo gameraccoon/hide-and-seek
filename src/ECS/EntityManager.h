@@ -43,9 +43,9 @@ public:
 			return false;
 		}
 
-		auto& componentVector = mComponents[typeid(ComponentType)];
+		auto it = mComponents.find(typeid(ComponentType));
 
-		return entityIdxItr->second < componentVector.size() && componentVector[entityIdxItr->second] != nullptr;
+		return it != mComponents.end() && (*it)->second < componentVector.size() && componentVector[(*it)->second] != nullptr;
 	}
 
 	template<typename ComponentType>
@@ -99,25 +99,24 @@ public:
 		auto entityIdxItr = mEntityIndexMap.find(entity.getID());
 		if (entityIdxItr == mEntityIndexMap.end())
 		{
-			return std::make_tuple(static_cast<Components*>(nullptr)...);
+			return getEmptyComponents<Components...>();
 		}
 		EntityIndex entityIdx = entityIdxItr->second;
 
-		auto componentVectors = std::make_tuple(mComponents[typeid(Components)]...);
-
+		auto componentVectors = getComponentVectors<Components...>();
 		return getEntityComponentSet<Components...>(entityIdx, componentVectors);
 	}
 
 	template<typename FirstComponent, typename... Components, typename... AdditionalData>
 	void getComponents(TupleVector<AdditionalData..., FirstComponent*, Components*...>& inOutComponents, AdditionalData... data)
 	{
-		auto& firstComponentVector = mComponents[typeid(FirstComponent)];
-
-		auto componentVectors = std::make_tuple(firstComponentVector, mComponents[typeid(Components)]...);
+		auto componentVectors = getComponentVectors<FirstComponent, Components...>();
+		auto& firstComponentVector = std::get<0>(componentVectors);
+		size_t shortestVectorSize = getShortestVector(componentVectors);
 
 		constexpr unsigned componentsSize = sizeof...(Components);
 
-		for (EntityIndex entityIndex = 0, i_size = firstComponentVector.size(); entityIndex < i_size; ++entityIndex)
+		for (EntityIndex entityIndex = 0, i_size = shortestVectorSize; entityIndex < i_size; ++entityIndex)
 		{
 			auto& firstComponent = firstComponentVector[entityIndex];
 			if (firstComponent == nullptr)
@@ -137,15 +136,15 @@ public:
 	template<typename FirstComponent, typename... Components, typename... AdditionalData>
 	void getComponentsWithEntities(TupleVector<Entity, AdditionalData..., FirstComponent*, Components*...>& inOutComponents, AdditionalData... data)
 	{
-		auto& firstComponentVector = mComponents[typeid(FirstComponent)];
-
-		auto componentVectors = std::make_tuple(firstComponentVector, mComponents[typeid(Components)]...);
+		auto componentVectors = getComponentVectors<FirstComponent, Components...>();
+		auto& firstComponentVector = std::get<0>(componentVectors);
+		size_t shortestVectorSize = getShortestVector(componentVectors);
 
 		constexpr unsigned componentsSize = sizeof...(Components);
 
 		for (auto& [entityID, entityIndex] : mEntityIndexMap)
 		{
-			if (entityIndex >= firstComponentVector.size())
+			if (entityIndex >= shortestVectorSize)
 			{
 				continue;
 			}
@@ -168,13 +167,13 @@ public:
 	template<typename FirstComponent, typename... Components, typename FunctionType, typename... AdditionalData>
 	void forEachComponentSet(FunctionType processor, AdditionalData... data)
 	{
-		auto& firstComponentVector = mComponents[typeid(FirstComponent)];
-
-		auto componentVectors = std::make_tuple(firstComponentVector, mComponents[typeid(Components)]...);
+		auto componentVectors = getComponentVectors<FirstComponent, Components...>();
+		auto& firstComponentVector = std::get<0>(componentVectors);
+		size_t shortestVectorSize = getShortestVector(componentVectors);
 
 		constexpr unsigned componentsSize = sizeof...(Components);
 
-		for (EntityIndex entityIndex = 0, i_size = firstComponentVector.size(); entityIndex < i_size; ++entityIndex)
+		for (EntityIndex entityIndex = 0, i_size = shortestVectorSize; entityIndex < i_size; ++entityIndex)
 		{
 			auto& firstComponent = firstComponentVector[entityIndex];
 			if (firstComponent == nullptr)
@@ -196,15 +195,15 @@ public:
 	template<typename FirstComponent, typename... Components, typename FunctionType, typename... AdditionalData>
 	void forEachComponentSetWithEntity(FunctionType processor, AdditionalData... data)
 	{
-		auto& firstComponentVector = mComponents[typeid(FirstComponent)];
-
-		auto componentVectors = std::make_tuple(firstComponentVector, mComponents[typeid(Components)]...);
+		auto componentVectors = getComponentVectors<FirstComponent, Components...>();
+		auto& firstComponentVector = std::get<0>(componentVectors);
+		size_t shortestVectorSize = getShortestVector(componentVectors);
 
 		constexpr unsigned componentsSize = sizeof...(Components);
 
 		for (auto& [entityID, entityIndex] : mEntityIndexMap)
 		{
-			if (entityIndex >= firstComponentVector.size())
+			if (entityIndex >= shortestVectorSize)
 			{
 				continue;
 			}
@@ -254,9 +253,9 @@ private:
 		std::type_index typeID;
 
 		ComponentToAdd(Entity entity, BaseComponent* component, std::type_index typeID)
-			: entity(entity),
-			  component(component),
-			  typeID(typeID)
+			: entity(entity)
+			, component(component)
+			, typeID(typeID)
 		{}
 	};
 
@@ -266,8 +265,8 @@ private:
 		std::type_index typeID;
 
 		ComponentToRemove(Entity entity, std::type_index typeID)
-			: entity(entity),
-			  typeID(typeID)
+			: entity(entity)
+			, typeID(typeID)
 		{}
 	};
 
@@ -308,10 +307,55 @@ private:
 	}
 
 	template<typename FirstComponent, typename... Components, typename... Data>
-	std::tuple<FirstComponent*, Components*...> getEntityComponentSet(EntityIndex entityIdx, std::tuple<std::vector<Data*>...>& componentVectors)
+	std::tuple<FirstComponent*, Components*...> getEntityComponentSet(EntityIndex entityIdx, std::tuple<std::vector<Data*>&...>& componentVectors)
 	{
-		using Datas = std::tuple<std::vector<Data*>...>;
+		using Datas = std::tuple<std::vector<Data*>&...>;
 		return getEntityComponentSetInner<0, Datas, FirstComponent, Components...>(entityIdx, componentVectors);
+	}
+
+	template<int I = 0>
+	std::tuple<> getEmptyComponentVectors()
+	{
+		return std::tuple<>();
+	}
+
+	template<typename FirstComponent, typename... Components>
+	auto getEmptyComponentVectors()
+	{
+		return std::tuple_cat(std::tuple<std::vector<BaseComponent*>&>(mEmptyVector), getEmptyComponentVectors<Components...>());
+	}
+
+	template<int I = 0>
+	std::tuple<> getComponentVectors()
+	{
+		return std::tuple<>();
+	}
+
+	template<typename FirstComponent, typename... Components>
+	auto getComponentVectors()
+	{
+		auto it = mComponents.find(typeid(FirstComponent));
+
+		if (it == mComponents.end())
+		{
+			return std::tuple_cat(std::tuple<std::vector<BaseComponent*>&>(mEmptyVector), getEmptyComponentVectors<Components>()...);
+		}
+
+		return std::tuple_cat(std::tuple<std::vector<BaseComponent*>&>(it->second), getComponentVectors<Components>()...);
+	}
+
+	template<typename... ComponentVector>
+	size_t getShortestVector(const std::tuple<ComponentVector&...>& vectorTuple)
+	{
+		size_t minimalSize = std::numeric_limits<size_t>::max();
+		std::apply(
+			[&minimalSize](const ComponentVector&... componentVector)
+			{
+				((minimalSize = std::min(minimalSize, componentVector.size())), ...);
+			},
+			vectorTuple
+		);
+		return minimalSize;
 	}
 
 	void addComponentToEntity(EntityIndex entityIdx, BaseComponent* component, std::type_index typeID);
@@ -323,6 +367,8 @@ private:
 
 	std::vector<ComponentToAdd> mScheduledComponentAdditions;
 	std::vector<ComponentToRemove> mScheduledComponentRemovements;
+
+	std::vector<BaseComponent*> mEmptyVector;
 
 	EntityIndex mNextEntityIndex = 0;
 };
