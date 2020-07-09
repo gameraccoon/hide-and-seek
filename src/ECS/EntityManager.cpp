@@ -15,7 +15,7 @@ static const int EntityInsertionTrialsLimit = 10;
 
 EntityManager::~EntityManager()
 {
-	for (auto& componentVector : mComponents.getRawData())
+	for (auto&& componentVector : mComponents)
 	{
 		for (auto component : componentVector.second)
 		{
@@ -84,7 +84,7 @@ void EntityManager::removeEntity(Entity entity)
 
 	--mNextEntityIndex; // now it points to the element that going to be removed
 
-	for (auto& componentVector : mComponents.getRawData())
+	for (auto&& componentVector : mComponents)
 	{
 		// if the vector containts deleted entity
 		if (oldEntityIdx < componentVector.second.size())
@@ -122,7 +122,7 @@ void EntityManager::getAllEntityComponents(Entity entity, std::vector<BaseCompon
 	if (entityIdxItr != mEntityIndexMap.end())
 	{
 		EntityIndex index = entityIdxItr->second;
-		for (auto& componentArray : mComponents.getRawData())
+		for (auto&& componentArray : mComponents)
 		{
 			if (componentArray.second.size() > index && componentArray.second[index] != nullptr)
 			{
@@ -283,7 +283,7 @@ void EntityManager::transferEntityTo(EntityManager& otherManager, Entity entity)
 	--mNextEntityIndex; // now it points to the element that going to be removed
 	EntityIndex oldEntityIdx = entityIdxItr->second;
 
-	for (auto& componentVector : mComponents.getRawData())
+	for (auto&& componentVector : mComponents)
 	{
 		if (oldEntityIdx < componentVector.second.size())
 		{
@@ -338,7 +338,7 @@ nlohmann::json EntityManager::toJson(const ComponentSerializersHolder& component
 
 	auto components = nlohmann::json{};
 
-	for (auto& componentArray : mComponents.getRawData())
+	for (auto&& componentArray : mComponents)
 	{
 		auto componentArrayObject = nlohmann::json::array();
 		const JsonComponentSerializer* jsonSerializer = componentSerializers.jsonSerializer.getComponentSerializerFromTypeID(componentArray.first);
