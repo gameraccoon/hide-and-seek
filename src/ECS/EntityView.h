@@ -12,12 +12,6 @@ public:
 	EntityView(Entity entity, EntityManager& manager);
 
 	template<typename ComponentType>
-	bool hasComponent()
-	{
-		return mManager.doesEntityHaveComponent<ComponentType>(mEntity);
-	}
-
-	template<typename ComponentType>
 	ComponentType* addComponent()
 	{
 		return mManager.addComponent<ComponentType>(mEntity);

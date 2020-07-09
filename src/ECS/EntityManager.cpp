@@ -15,7 +15,7 @@ static const int EntityInsertionTrialsLimit = 10;
 
 EntityManager::~EntityManager()
 {
-	for (auto& componentVector : mComponents)
+	for (auto& componentVector : mComponents.getRawData())
 	{
 		for (auto component : componentVector.second)
 		{
@@ -84,7 +84,7 @@ void EntityManager::removeEntity(Entity entity)
 
 	--mNextEntityIndex; // now it points to the element that going to be removed
 
-	for (auto& componentVector : mComponents)
+	for (auto& componentVector : mComponents.getRawData())
 	{
 		// if the vector containts deleted entity
 		if (oldEntityIdx < componentVector.second.size())
@@ -122,7 +122,7 @@ void EntityManager::getAllEntityComponents(Entity entity, std::vector<BaseCompon
 	if (entityIdxItr != mEntityIndexMap.end())
 	{
 		EntityIndex index = entityIdxItr->second;
-		for (auto& componentArray : mComponents)
+		for (auto& componentArray : mComponents.getRawData())
 		{
 			if (componentArray.second.size() > index && componentArray.second[index] != nullptr)
 			{
@@ -151,7 +151,7 @@ void EntityManager::removeComponent(Entity entity, std::type_index typeID)
 		return;
 	}
 
-	auto& componentsVector = mComponents[typeID];
+	auto& componentsVector = mComponents.getComponentVectorByID(typeID);
 
 	if (componentsVector.size() > entityIdxItr->second)
 	{
@@ -197,15 +197,11 @@ void EntityManager::getEntitiesHavingComponents(const std::vector<std::type_inde
 	componentVectors.reserve(componentIndexes.size());
 	for (std::type_index typeID : componentIndexes)
 	{
-		const auto& it = mComponents.find(typeID);
-		if (it == mComponents.end())
-		{
-			return;
-		}
+		auto& componentVector = mComponents.getComponentVectorByID(typeID);
 
-		endIdx = std::min(endIdx, it->second.size());
+		endIdx = std::min(endIdx, componentVector.size());
 
-		componentVectors.push_back(&it->second);
+		componentVectors.push_back(&componentVector);
 	}
 
 	for (EntityIndex idx = 0; idx < endIdx; ++idx)
@@ -287,7 +283,7 @@ void EntityManager::transferEntityTo(EntityManager& otherManager, Entity entity)
 	--mNextEntityIndex; // now it points to the element that going to be removed
 	EntityIndex oldEntityIdx = entityIdxItr->second;
 
-	for (auto& componentVector : mComponents)
+	for (auto& componentVector : mComponents.getRawData())
 	{
 		if (oldEntityIdx < componentVector.second.size())
 		{
@@ -342,7 +338,7 @@ nlohmann::json EntityManager::toJson(const ComponentSerializersHolder& component
 
 	auto components = nlohmann::json{};
 
-	for (auto& componentArray : mComponents)
+	for (auto& componentArray : mComponents.getRawData())
 	{
 		auto componentArrayObject = nlohmann::json::array();
 		const JsonComponentSerializer* jsonSerializer = componentSerializers.jsonSerializer.getComponentSerializerFromTypeID(componentArray.first);
@@ -390,7 +386,7 @@ void EntityManager::fromJson(const nlohmann::json& json, const ComponentSerializ
 		if (typeIndex.has_value() && componentCreateFn != nullptr)
 		{
 			const JsonComponentSerializer* jsonSerializer = componentSerializers.jsonSerializer.getComponentSerializerFromTypeID(typeIndex.value());
-			std::vector<BaseComponent*>& componentsVector = mComponents[typeIndex.value()];
+			std::vector<BaseComponent*>& componentsVector = mComponents.getOrCreateComponentVectorByID(typeIndex.value());
 			componentsVector.reserve(vector.size());
 			for (const auto& componentData : vector)
 			{
@@ -411,7 +407,7 @@ void EntityManager::fromJson(const nlohmann::json& json, const ComponentSerializ
 
 void EntityManager::addComponentToEntity(EntityIndex entityIdx, BaseComponent* component, std::type_index typeID)
 {
-	auto& componentsVector = mComponents[typeID];
+	auto& componentsVector = mComponents.getOrCreateComponentVectorByID(typeID);
 	if (componentsVector.size() <= entityIdx)
 	{
 		if (componentsVector.capacity() <= entityIdx)

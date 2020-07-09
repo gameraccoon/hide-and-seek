@@ -9,6 +9,7 @@
 #include "ECS/Component.h"
 #include "ECS/Entity.h"
 #include "ECS/Delegates.h"
+#include "ECS/ComponentMap.h"
 
 struct ComponentSerializersHolder;
 class JsonComponentSerializationHolder;
@@ -33,20 +34,6 @@ public:
 	void insertEntityUnsafe(Entity entity);
 
 	void getAllEntityComponents(Entity entity, std::vector<BaseComponent*>& outComponents);
-
-	template<typename ComponentType>
-	bool doesEntityHaveComponent(Entity entity)
-	{
-		auto entityIdxItr = mEntityIndexMap.find(std::forward<Entity>(entity).getID());
-		if (entityIdxItr == mEntityIndexMap.end())
-		{
-			return false;
-		}
-
-		auto it = mComponents.find(typeid(ComponentType));
-
-		return it != mComponents.end() && (*it)->second < componentVector.size() && componentVector[(*it)->second] != nullptr;
-	}
 
 	template<typename ComponentType>
 	ComponentType* addComponent(Entity entity)
@@ -103,14 +90,14 @@ public:
 		}
 		EntityIndex entityIdx = entityIdxItr->second;
 
-		auto componentVectors = getComponentVectors<Components...>();
+		auto componentVectors = mComponents.getComponentVectors<Components...>();
 		return getEntityComponentSet<Components...>(entityIdx, componentVectors);
 	}
 
 	template<typename FirstComponent, typename... Components, typename... AdditionalData>
 	void getComponents(TupleVector<AdditionalData..., FirstComponent*, Components*...>& inOutComponents, AdditionalData... data)
 	{
-		auto componentVectors = getComponentVectors<FirstComponent, Components...>();
+		auto componentVectors = mComponents.getComponentVectors<FirstComponent, Components...>();
 		auto& firstComponentVector = std::get<0>(componentVectors);
 		size_t shortestVectorSize = getShortestVector(componentVectors);
 
@@ -136,7 +123,7 @@ public:
 	template<typename FirstComponent, typename... Components, typename... AdditionalData>
 	void getComponentsWithEntities(TupleVector<Entity, AdditionalData..., FirstComponent*, Components*...>& inOutComponents, AdditionalData... data)
 	{
-		auto componentVectors = getComponentVectors<FirstComponent, Components...>();
+		auto componentVectors = mComponents.getComponentVectors<FirstComponent, Components...>();
 		auto& firstComponentVector = std::get<0>(componentVectors);
 		size_t shortestVectorSize = getShortestVector(componentVectors);
 
@@ -167,7 +154,7 @@ public:
 	template<typename FirstComponent, typename... Components, typename FunctionType, typename... AdditionalData>
 	void forEachComponentSet(FunctionType processor, AdditionalData... data)
 	{
-		auto componentVectors = getComponentVectors<FirstComponent, Components...>();
+		auto componentVectors = mComponents.getComponentVectors<FirstComponent, Components...>();
 		auto& firstComponentVector = std::get<0>(componentVectors);
 		size_t shortestVectorSize = getShortestVector(componentVectors);
 
@@ -195,7 +182,7 @@ public:
 	template<typename FirstComponent, typename... Components, typename FunctionType, typename... AdditionalData>
 	void forEachComponentSetWithEntity(FunctionType processor, AdditionalData... data)
 	{
-		auto componentVectors = getComponentVectors<FirstComponent, Components...>();
+		auto componentVectors = mComponents.getComponentVectors<FirstComponent, Components...>();
 		auto& firstComponentVector = std::get<0>(componentVectors);
 		size_t shortestVectorSize = getShortestVector(componentVectors);
 
@@ -313,39 +300,8 @@ private:
 		return getEntityComponentSetInner<0, Datas, FirstComponent, Components...>(entityIdx, componentVectors);
 	}
 
-	template<int I = 0>
-	std::tuple<> getEmptyComponentVectors()
-	{
-		return std::tuple<>();
-	}
-
-	template<typename FirstComponent, typename... Components>
-	auto getEmptyComponentVectors()
-	{
-		return std::tuple_cat(std::tuple<std::vector<BaseComponent*>&>(mEmptyVector), getEmptyComponentVectors<Components...>());
-	}
-
-	template<int I = 0>
-	std::tuple<> getComponentVectors()
-	{
-		return std::tuple<>();
-	}
-
-	template<typename FirstComponent, typename... Components>
-	auto getComponentVectors()
-	{
-		auto it = mComponents.find(typeid(FirstComponent));
-
-		if (it == mComponents.end())
-		{
-			return std::tuple_cat(std::tuple<std::vector<BaseComponent*>&>(mEmptyVector), getEmptyComponentVectors<Components>()...);
-		}
-
-		return std::tuple_cat(std::tuple<std::vector<BaseComponent*>&>(it->second), getComponentVectors<Components>()...);
-	}
-
 	template<typename... ComponentVector>
-	size_t getShortestVector(const std::tuple<ComponentVector&...>& vectorTuple)
+	static size_t getShortestVector(const std::tuple<ComponentVector&...>& vectorTuple)
 	{
 		size_t minimalSize = std::numeric_limits<size_t>::max();
 		std::apply(
@@ -354,21 +310,19 @@ private:
 				((minimalSize = std::min(minimalSize, componentVector.size())), ...);
 			},
 			vectorTuple
-		);
+				);
 		return minimalSize;
 	}
 
 	void addComponentToEntity(EntityIndex entityIdx, BaseComponent* component, std::type_index typeID);
 
 private:
-	std::unordered_map<std::type_index, std::vector<BaseComponent*>> mComponents;
+	ComponentMap mComponents;
 	std::unordered_map<Entity::EntityID, EntityIndex> mEntityIndexMap;
 	std::unordered_map<EntityIndex, Entity::EntityID> mIndexEntityMap;
 
 	std::vector<ComponentToAdd> mScheduledComponentAdditions;
 	std::vector<ComponentToRemove> mScheduledComponentRemovements;
-
-	std::vector<BaseComponent*> mEmptyVector;
 
 	EntityIndex mNextEntityIndex = 0;
 };

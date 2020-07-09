@@ -31,7 +31,7 @@ static void InitSpatialTrackedEntities(SpatialWorldData& spatialData, ComponentS
 		}
 		else
 		{
-			ReportError("No tracked spatial entity record found for entity %s", spatialTrack->getId());
+			ReportError("No tracked spatial entity record found for entity %d", spatialTrack->getId());
 		}
 	});
 }
