@@ -3,7 +3,6 @@
 #include <functional>
 #include <string>
 #include <type_traits>
-#include <typeindex>
 #include <unordered_map>
 
 #include <nlohmann/json_fwd.hpp>

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <typeindex>
-
 #include "ECS/Component.h"
 
 
@@ -20,18 +18,6 @@ public:
 	JsonComponentSerializationHolder(JsonComponentSerializationHolder&) = delete;
 	JsonComponentSerializationHolder& operator=(JsonComponentSerializationHolder&) = delete;
 
-	const JsonComponentSerializer* getComponentSerializerFromTypeID(std::type_index typeID) const
-	{
-		const auto& it = mTypeIDToSerializer.find(typeID);
-		if (it != mTypeIDToSerializer.end())
-		{
-			return mSerializers[it->second].get();
-		}
-
-		ReportFatalError("Unknown component type: '%s'", typeID.name());
-		return nullptr;
-	}
-
 	const JsonComponentSerializer* getComponentSerializerFromClassName(StringID className) const
 	{
 		const auto& it = mClassNameToSerializer.find(className);
@@ -48,12 +34,10 @@ public:
 	void registerSerializer(StringID className, std::unique_ptr<JsonComponentSerializer>&& serializer)
 	{
 		mSerializers.push_back(std::move(serializer));
-		mTypeIDToSerializer.emplace(typeid(T), mSerializers.size() - 1);
 		mClassNameToSerializer.emplace(className, mSerializers.size() - 1);
 	}
 
 private:
 	std::vector<std::unique_ptr<JsonComponentSerializer>> mSerializers;
-	std::unordered_map<std::type_index, size_t> mTypeIDToSerializer;
 	std::unordered_map<StringID, size_t> mClassNameToSerializer;
 };

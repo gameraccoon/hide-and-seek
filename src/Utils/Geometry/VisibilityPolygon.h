@@ -4,6 +4,8 @@
 
 #include "Base/Types/TemplateAliases.h"
 
+#include "GameData/Core/Vector2D.h"
+
 class CollisionComponent;
 class TransformComponent;
 

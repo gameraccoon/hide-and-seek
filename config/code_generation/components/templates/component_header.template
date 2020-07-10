@@ -17,9 +17,9 @@ public:
 	{attribute_setters}
 
 public:
-	static StringID GetClassName() {{ return STR_TO_ID("{class_name}"); }}
+	static StringID GetTypeName() {{ return STR_TO_ID("{class_name}"); }}
 
-	StringID getComponentTypeName() const override {{ return GetClassName(); }}
+	StringID getComponentTypeName() const override {{ return GetTypeName(); }}
 
 private:
 	{attribute_fields}

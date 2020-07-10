@@ -52,35 +52,5 @@ const std::string& StringIDManager::getStringFromID(StringID id)
 	}
 }
 
-bool operator ==(const StringID& a, const StringID& b)
-{
-	return a.hash == b.hash;
-}
-
-bool operator !=(const StringID& a, const StringID& b)
-{
-	return a.hash != b.hash;
-}
-
-bool operator <(const StringID& a, const StringID& b)
-{
-	return a.hash < b.hash;
-}
-
-bool operator >(const StringID& a, const StringID& b)
-{
-	return a.hash > b.hash;
-}
-
-bool operator <=(const StringID& a, const StringID& b)
-{
-	return a.hash <= b.hash;
-}
-
-bool operator >=(const StringID& a, const StringID& b)
-{
-	return a.hash >= b.hash;
-}
-
 static_assert(sizeof(StringID) == sizeof(uint64_t), "StringID is too big");
 static_assert(std::is_trivially_copyable<StringID>(), "StringID should be trivially copyable");

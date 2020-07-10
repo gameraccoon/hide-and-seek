@@ -7,14 +7,14 @@ namespace ImguiPropertyFiltration
 	class ComponentAvailabilityPropertyDescriptor : public AbstractPropertyDescriptor
 	{
 	public:
-		ComponentAvailabilityPropertyDescriptor(const std::string& componentName, std::type_index typeID);
+		ComponentAvailabilityPropertyDescriptor(const std::string& componentName, StringID typeID);
 
-		static std::shared_ptr<ComponentAvailabilityPropertyDescriptor> Create(const std::string& componentName, std::type_index typeID);
+		static std::shared_ptr<ComponentAvailabilityPropertyDescriptor> Create(const std::string& componentName, StringID typeID);
 
 		std::any getPropertyValue(EntityManager& /*entityManager*/, Entity /*entity*/) override { return nullptr; }
-		std::type_index getComponentType() const override { return mTypeID; }
+		StringID getComponentType() const override { return mTypeID; }
 
 	private:
-		std::type_index mTypeID;
+		StringID mTypeID;
 	};
 }

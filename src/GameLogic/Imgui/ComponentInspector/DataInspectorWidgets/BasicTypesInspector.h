@@ -1,5 +1,9 @@
 #pragma once
 
+struct Vector2D;
+class Rotator;
+class StringID;
+
 namespace ImguiDataInspection
 {
 	template<typename T>
@@ -18,11 +22,11 @@ namespace ImguiDataInspection
 	void Inspector(const char* title, float& data);
 
 	template<>
-	void Inspector(const char* title, struct Vector2D& data);
+	void Inspector(const char* title, Vector2D& data);
 
 	template<>
-	void Inspector(const char* title, class Rotator& data);
+	void Inspector(const char* title, Rotator& data);
 
 	template<>
-	void Inspector(const char* title, class StringID& data);
+	void Inspector(const char* title, StringID& data);
 }

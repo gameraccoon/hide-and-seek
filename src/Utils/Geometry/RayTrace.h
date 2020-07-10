@@ -1,5 +1,6 @@
 #pragma once
 
+#include "GameData/Core/Vector2D.h"
 #include "GameData/Spatial/SpatialEntity.h"
 
 class World;

@@ -26,7 +26,7 @@ std::vector<BaseComponent*> ComponentSetHolder::getAllComponents()
 	return components;
 }
 
-void ComponentSetHolder::addComponent(BaseComponent* component, std::type_index typeID)
+void ComponentSetHolder::addComponent(BaseComponent* component, StringID typeID)
 {
 	if (component != nullptr)
 	{
@@ -34,7 +34,7 @@ void ComponentSetHolder::addComponent(BaseComponent* component, std::type_index 
 	}
 }
 
-void ComponentSetHolder::removeComponent(std::type_index typeID)
+void ComponentSetHolder::removeComponent(StringID typeID)
 {
 	if (auto it = mComponents.find(typeID); it != mComponents.end())
 	{
@@ -52,8 +52,8 @@ nlohmann::json ComponentSetHolder::toJson(const ComponentSerializersHolder& comp
 	for (auto component : mComponents)
 	{
 		auto componenObj = nlohmann::json{};
-		componentSerializers.jsonSerializer.getComponentSerializerFromTypeID(component.first)->toJson(componenObj, component.second);
-		components[ID_TO_STR(componentSerializers.factory.getClassNameFromTypeID(component.first))] = componenObj;
+		componentSerializers.jsonSerializer.getComponentSerializerFromClassName(component.first)->toJson(componenObj, component.second);
+		components[ID_TO_STR(component.first)] = componenObj;
 	}
 	outJson["components"] = components;
 
@@ -66,15 +66,14 @@ void ComponentSetHolder::fromJson(const nlohmann::json& json, const ComponentSer
 	for (const auto& [stringType, componentData] : components.items())
 	{
 		StringID className = STR_TO_ID(stringType);
-		std::optional<std::type_index> typeIndex = componentSerializers.factory.getTypeIDFromClassName(className);
 		ComponentFactory::CreationFn componentCreateFn = componentSerializers.factory.getCreationFn(className);
-		if (typeIndex.has_value() && componentCreateFn != nullptr)
+		if (componentCreateFn != nullptr)
 		{
 			if (!componentData.is_null())
 			{
 				BaseComponent* component = componentCreateFn();
 				componentSerializers.jsonSerializer.getComponentSerializerFromClassName(className)->fromJson(componentData, component);
-				mComponents[typeIndex.value()] = component;
+				mComponents[className] = component;
 			}
 		}
 	}

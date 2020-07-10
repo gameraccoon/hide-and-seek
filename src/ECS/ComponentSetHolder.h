@@ -1,7 +1,6 @@
 #pragma once
 
 #include <tuple>
-#include <typeindex>
 #include <map>
 #include <vector>
 
@@ -29,29 +28,29 @@ public:
 	template<typename ComponentType>
 	bool doesComponentExists()
 	{
-		return mComponents[typeid(ComponentType)] != nullptr;
+		return mComponents[ComponentType::GetTypeName()] != nullptr;
 	}
 
 	template<typename T>
 	T* addComponent()
 	{
 		T* component = new T();
-		addComponent(component, typeid(T));
+		addComponent(component, T::GetTypeName());
 		return component;
 	}
 
-	void addComponent(BaseComponent* component, std::type_index typeID);
-	void removeComponent(std::type_index typeID);
+	void addComponent(BaseComponent* component, StringID typeID);
+	void removeComponent(StringID typeID);
 
 	template<typename... Components>
 	std::tuple<Components*...> getComponents()
 	{
-		return std::make_tuple(static_cast<Components*>(mComponents[typeid(Components)])...);
+		return std::make_tuple(static_cast<Components*>(mComponents[Components::GetTypeName()])...);
 	}
 
 	nlohmann::json toJson(const ComponentSerializersHolder& componentSerializers) const;
 	void fromJson(const nlohmann::json& json, const ComponentSerializersHolder& componentSerializers);
 
 private:
-	std::map<std::type_index, BaseComponent*> mComponents;
+	std::map<StringID, BaseComponent*> mComponents;
 };
