@@ -19,8 +19,7 @@ void AddComponentCommand::doCommand(World* world)
 	Utils::AddComponent(
 		mSource,
 		mComponentFactory.createComponent(mComponentTypeName),
-		world,
-		mComponentFactory
+		world
 	);
 }
 
@@ -29,8 +28,6 @@ void AddComponentCommand::undoCommand(World* world)
 	Utils::RemoveComponent(
 		mSource,
 		mComponentTypeName,
-		world,
-		mComponentFactory
+		world
 	);
 }
-

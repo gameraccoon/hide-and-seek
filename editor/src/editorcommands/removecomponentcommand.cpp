@@ -38,8 +38,7 @@ void RemoveComponentCommand::doCommand(World* world)
 	Utils::RemoveComponent(
 		mSource,
 		mComponentTypeName,
-		world,
-		mComponentSerializerHolder.factory
+		world
 	);
 }
 
@@ -53,7 +52,6 @@ void RemoveComponentCommand::undoCommand(World* world)
 	Utils::AddComponent(
 		mSource,
 		component,
-		world,
-		mComponentSerializerHolder.factory
+		world
 	);
 }

@@ -35,9 +35,23 @@ public:
 	void getAllEntityComponents(Entity entity, std::vector<BaseComponent*>& outComponents);
 
 	template<typename ComponentType>
+	bool doesEntityHaveComponent(Entity entity)
+	{
+		auto entityIdxItr = mEntityIndexMap.find(entity.getID());
+		if (entityIdxItr == mEntityIndexMap.end())
+		{
+			return false;
+		}
+
+		auto [componentVector] = mComponents.getComponentVectors<ComponentType>();
+
+		return entityIdxItr->second < componentVector.size() && componentVector[entityIdxItr->second] != nullptr;
+	}
+
+	template<typename ComponentType>
 	ComponentType* addComponent(Entity entity)
 	{
-		auto entityIdxItr = mEntityIndexMap.find(std::forward<Entity>(entity).getID());
+		auto entityIdxItr = mEntityIndexMap.find(entity.getID());
 		if (entityIdxItr == mEntityIndexMap.end())
 		{
 			return nullptr;
@@ -55,7 +69,7 @@ public:
 	template<typename ComponentType>
 	void removeComponent(Entity entity)
 	{
-		removeComponent(std::forward<Entity>(entity), ComponentType::GetTypeName());
+		removeComponent(entity, ComponentType::GetTypeName());
 	}
 
 	void removeComponent(Entity entity, StringID typeID);
@@ -73,7 +87,7 @@ public:
 	template<typename ComponentType>
 	void scheduleRemoveComponent(Entity entity)
 	{
-		scheduleRemoveComponent(std::forward<Entity>(entity), ComponentType::GetTypeName());
+		scheduleRemoveComponent(entity, ComponentType::GetTypeName());
 	}
 
 	void scheduleRemoveComponent(Entity entity, StringID typeID);

@@ -1,7 +1,5 @@
 #include "componentreferenceutils.h"
 
-#include "ECS/ComponentFactory.h"
-
 #include "GameData/World.h"
 
 namespace Utils
@@ -38,7 +36,7 @@ namespace Utils
 		return std::vector<BaseComponent*>();
 	}
 
-	void AddComponent(const ComponentSourceReference& source, BaseComponent* component, World* world, const ComponentFactory& componentFactory)
+	void AddComponent(const ComponentSourceReference& source, BaseComponent* component, World* world)
 	{
 		if (world)
 		{
@@ -48,20 +46,20 @@ namespace Utils
 				(*entityManager)->addComponent(
 					*source.entity,
 					component,
-					componentFactory.getTypeIDFromClassName(component->getComponentTypeName()).value()
+					component->getComponentTypeName()
 				);
 			}
 			else if (auto componentHolder = std::get_if<ComponentSetHolder*>(&componentHolderOrEntityManager))
 			{
 				(*componentHolder)->addComponent(
 					component,
-					componentFactory.getTypeIDFromClassName(component->getComponentTypeName()).value()
+					component->getComponentTypeName()
 				);
 			}
 		}
 	}
 
-	void RemoveComponent(const ComponentSourceReference& source, StringID componentTypeName, World* world, const ComponentFactory& componentFactory)
+	void RemoveComponent(const ComponentSourceReference& source, StringID componentTypeName, World* world)
 	{
 		if (world)
 		{
@@ -70,13 +68,13 @@ namespace Utils
 			{
 				(*entityManager)->removeComponent(
 					*source.entity,
-					componentFactory.getTypeIDFromClassName(componentTypeName).value()
+					componentTypeName
 				);
 			}
 			else if (auto componentHolder = std::get_if<ComponentSetHolder*>(&componentHolderOrEntityManager))
 			{
 				(*componentHolder)->removeComponent(
-					componentFactory.getTypeIDFromClassName(componentTypeName).value()
+					componentTypeName
 				);
 			}
 		}
