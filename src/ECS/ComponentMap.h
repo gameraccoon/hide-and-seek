@@ -9,6 +9,10 @@
 class ComponentMap
 {
 public:
+	using Iterator = std::unordered_map<StringID, std::vector<BaseComponent*>>::iterator;
+	using ConstIterator = std::unordered_map<StringID, std::vector<BaseComponent*>>::const_iterator;
+
+public:
 	ComponentMap() = default;
 	ComponentMap(const ComponentMap&) = delete;
 	ComponentMap& operator=(const ComponentMap&) = delete;
@@ -16,47 +20,41 @@ public:
 	ComponentMap& operator=(ComponentMap&&) = delete;
 	~ComponentMap() { AssertFatal(mEmptyVector.empty(), "mEmptyVector has changed during runtime, that should never happen"); }
 
-	class Iterator
+	template<typename FirstComponent, typename... Components>
+	[[nodiscard]] auto getComponentVectors()
 	{
-	public:
-		Iterator(ComponentMap& container, size_t idx)
-			: mContainer(container)
-			, mIdx(idx)
-		{}
+		auto it = mData.find(FirstComponent::GetTypeName());
 
-		using ValueType = std::pair<StringID, std::vector<BaseComponent*>&>;
+		if (it == mData.end())
+		{
+			return std::tuple_cat(std::tuple<std::vector<BaseComponent*>&>(mEmptyVector), getEmptyComponentVectors<Components>()...);
+		}
 
-		Iterator& operator++() { ++mIdx; return (*this); }
-		ValueType operator*() { return ValueType(mContainer.mKeys[mIdx], mContainer.mValues[mIdx]); }
-		ValueType operator*() const { return ValueType(mContainer.mKeys[mIdx], mContainer.mValues[mIdx]); }
-		// assumes that you will never compire iterators from different maps
-		bool operator!=(const Iterator& other) const { return mIdx != other.mIdx; }
+		return std::tuple_cat(std::tuple<std::vector<BaseComponent*>&>(it->second), getComponentVectors<Components>()...);
+	}
 
-	private:
-		ComponentMap& mContainer;
-		size_t mIdx;
-	};
-
-	class ConstIterator
+	[[nodiscard]] std::vector<BaseComponent*>& getComponentVectorByID(StringID id)
 	{
-	public:
-		ConstIterator(const ComponentMap& container, size_t idx)
-			: mContainer(container)
-			, mIdx(idx)
-		{}
+		auto it = mData.find(id);
+		return it == mData.end() ? mEmptyVector : it->second;
+	}
 
-		using ValueType = std::pair<StringID, const std::vector<BaseComponent*>&>;
+	[[nodiscard]] const std::vector<BaseComponent*>& getComponentVectorByID(StringID id) const
+	{
+		return const_cast<ComponentMap*>(this)->getComponentVectorByID(id);
+	}
 
-		ConstIterator& operator++() { ++mIdx; return (*this); }
-		ValueType operator*() const { return ValueType(mContainer.mKeys[mIdx], mContainer.mValues[mIdx]); }
-		// assumes that you will never compire iterators from different maps
-		bool operator!=(const ConstIterator& other) const { return mIdx != other.mIdx; }
+	[[nodiscard]] std::vector<BaseComponent*>& getOrCreateComponentVectorByID(StringID id)
+	{
+		return mData[id];
+	}
 
-	private:
-		const ComponentMap& mContainer;
-		size_t mIdx;
-	};
+	[[nodiscard]] Iterator begin() noexcept { return mData.begin(); }
+	[[nodiscard]] Iterator end() noexcept { return mData.end(); }
+	[[nodiscard]] ConstIterator begin() const noexcept { return mData.cbegin(); }
+	[[nodiscard]] ConstIterator end() const noexcept { return mData.cend(); }
 
+private:
 	template<int I = 0>
 	std::tuple<> getEmptyComponentVectors()
 	{
@@ -75,60 +73,7 @@ public:
 		return std::tuple<>();
 	}
 
-	template<typename FirstComponent, typename... Components>
-	auto getComponentVectors()
-	{
-		size_t idx = getKeyByID(FirstComponent::GetTypeName());
-
-		if (idx == InvalidIndex)
-		{
-			return std::tuple_cat(std::tuple<std::vector<BaseComponent*>&>(mEmptyVector), getEmptyComponentVectors<Components>()...);
-		}
-
-		return std::tuple_cat(std::tuple<std::vector<BaseComponent*>&>(mValues[idx]), getComponentVectors<Components>()...);
-	}
-
-	std::vector<BaseComponent*>& getComponentVectorByID(StringID id)
-	{
-		size_t idx = getKeyByID(id);
-		return idx == InvalidIndex ? mEmptyVector : mValues[idx];
-	}
-
-	const std::vector<BaseComponent*>& getComponentVectorByID(StringID id) const
-	{
-		return const_cast<ComponentMap*>(this)->getComponentVectorByID(id);
-	}
-
-	std::vector<BaseComponent*>& getOrCreateComponentVectorByID(StringID id)
-	{
-		size_t idx = getKeyByID(id);
-		return idx == InvalidIndex ? createNewComponentVector(id) : mValues[idx];
-	}
-
-	Iterator begin() { return Iterator(*this, 0); }
-	Iterator end() { return Iterator(*this, mKeys.size()); }
-	ConstIterator begin() const { return ConstIterator(*this, 0); }
-	ConstIterator end() const { return ConstIterator(*this, mKeys.size()); }
-
 private:
-	size_t getKeyByID(StringID id) const
-	{
-		auto it = std::find(mKeys.begin(), mKeys.end(), id);
-		return it == mKeys.end() ? InvalidIndex : std::distance(mKeys.begin(), it);
-	}
-
-	std::vector<BaseComponent*>& createNewComponentVector(StringID id)
-	{
-		mKeys.emplace_back(id);
-		mValues.emplace_back();
-		AssertFatal(mKeys.size() == mValues.size(), "Keys and Values size mismatch");
-		return mValues.back();
-	}
-
-private:
-	constexpr static size_t InvalidIndex = std::numeric_limits<size_t>::max();
-
-	std::vector<StringID> mKeys;
-	std::vector<std::vector<BaseComponent*>> mValues;
+	std::unordered_map<StringID, std::vector<BaseComponent*>> mData;
 	std::vector<BaseComponent*> mEmptyVector;
 };
