@@ -54,7 +54,7 @@ TEST(Components, RemoveEntityWithComponents)
 
 	TupleVector<TransformComponent*> components;
 	entityManager.getComponents<TransformComponent>(components);
-	EXPECT_EQ(static_cast<size_t>(2), components.size());
+	EXPECT_EQ(static_cast<size_t>(2u), components.size());
 
 	bool location1Found = false;
 	bool location2Found = false;
@@ -88,6 +88,7 @@ TEST(Components, RemoveEntityWithComponents)
 	bool location3Found = false;
 	TupleVector<TransformComponent*> transforms;
 	entityManager.getComponents<TransformComponent>(transforms);
+	EXPECT_EQ(static_cast<size_t>(2u), transforms.size());
 	for (auto& [transform] : transforms)
 	{
 		Vector2D location = transform->getLocation();
@@ -111,4 +112,15 @@ TEST(Components, RemoveEntityWithComponents)
 	EXPECT_TRUE(location1Found);
 	EXPECT_FALSE(location2Found);
 	EXPECT_TRUE(location3Found);
+
+	entityManager.clearCaches();
+	transforms.clear();
+	entityManager.getComponents<TransformComponent>(transforms);
+	EXPECT_EQ(static_cast<size_t>(2u), transforms.size());
+
+	entityManager.removeEntity(testEntity3);
+	entityManager.clearCaches();
+	transforms.clear();
+	entityManager.getComponents<TransformComponent>(transforms);
+	EXPECT_EQ(static_cast<size_t>(1u), transforms.size());
 }

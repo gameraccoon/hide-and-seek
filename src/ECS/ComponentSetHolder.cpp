@@ -78,3 +78,8 @@ void ComponentSetHolder::fromJson(const nlohmann::json& json, const ComponentSer
 		}
 	}
 }
+
+bool ComponentSetHolder::hasAnyComponents() const
+{
+	return !mComponents.empty();
+}

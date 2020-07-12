@@ -239,6 +239,9 @@ public:
 	nlohmann::json toJson(const ComponentSerializersHolder& componentSerializers) const;
 	void fromJson(const nlohmann::json& json, const ComponentSerializersHolder& componentSerializers);
 
+	void clearCaches();
+	[[nodiscard]] bool hasAnyEntities() const;
+
 public:
 	MulticastDelegate<> OnEntityAdded;
 	MulticastDelegate<> OnEntityRemoved;
@@ -323,7 +326,7 @@ private:
 				((minimalSize = std::min(minimalSize, componentVector.size())), ...);
 			},
 			vectorTuple
-				);
+		);
 		return minimalSize;
 	}
 

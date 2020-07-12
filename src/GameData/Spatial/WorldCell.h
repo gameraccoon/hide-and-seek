@@ -22,6 +22,9 @@ public:
 	nlohmann::json toJson(const ComponentSerializersHolder& componentSerializers) const;
 	void fromJson(const nlohmann::json& json, const ComponentSerializersHolder& componentSerializers);
 
+	void clearCaches();
+	[[nodiscard]] bool hasAnyData() const;
+
 private:
 	EntityManager mEntityManager;
 	ComponentSetHolder mCellComponents;

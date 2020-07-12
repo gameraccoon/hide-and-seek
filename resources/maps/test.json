@@ -1,3084 +1,7 @@
 {
     "world": {
         "entity_manager": {
-            "components": {
-                "AiControllerComponent": [
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null
-                ],
-                "AnimationGroupCreatorComponent": [
-                    null
-                ],
-                "CharacterStateComponent": [
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null
-                ],
-                "CollisionComponent": [
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null
-                ],
-                "LightComponent": [
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null
-                ],
-                "MovementComponent": [
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null
-                ],
-                "SpatialTrackComponent": [
-                    null,
-                    null
-                ],
-                "SpriteCreatorComponent": [
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null
-                ],
-                "TransformComponent": [
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null
-                ]
-            },
+            "components": null,
             "entityIndexMap": []
         },
         "spatial_data": {
@@ -3117,7 +40,6 @@
                                         }
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -3250,7 +172,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -3433,7 +354,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -3635,7 +555,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -3841,7 +760,6 @@
                                         }
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -3988,7 +906,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -4117,7 +1034,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "TransformComponent": [
                                     {
                                         "location": {
@@ -4231,7 +1147,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -4413,7 +1328,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     null,
                                     {
@@ -4615,7 +1529,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -4821,7 +1734,6 @@
                                         }
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -4960,7 +1872,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -5154,7 +2065,6 @@
                                         }
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -5370,7 +2280,6 @@
                                         }
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -5564,7 +2473,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -5746,7 +2654,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -5945,7 +2852,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     null,
                                     {
@@ -6151,7 +3057,6 @@
                                         }
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -6289,7 +3194,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     null,
                                     {
@@ -6445,7 +3349,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     null,
                                     null,
@@ -6616,7 +3519,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -6783,7 +3685,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -6982,7 +3883,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     null,
                                     {
@@ -7202,7 +4102,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -7384,7 +4283,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -7573,7 +4471,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -7760,7 +4657,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     null,
                                     {
@@ -7930,7 +4826,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     null,
                                     {
@@ -8097,7 +4992,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -8249,7 +5143,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -8395,7 +5288,6 @@
                                         }
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -8527,7 +5419,6 @@
                                         }
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -8635,7 +5526,6 @@
                                         }
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -8737,7 +5627,6 @@
                                         }
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -8917,7 +5806,6 @@
                                         }
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -9085,7 +5973,6 @@
                                         }
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -9211,7 +6098,6 @@
                                         }
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -9403,7 +6289,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     null,
                                     {
@@ -9586,7 +6471,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -9739,7 +6623,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -9860,7 +6743,6 @@
                                         }
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -9962,7 +6844,6 @@
                                         }
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -10070,7 +6951,6 @@
                                         }
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -10172,7 +7052,6 @@
                                         }
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -10319,7 +7198,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     null,
                                     {
@@ -10503,7 +7381,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -10694,7 +7571,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -10905,7 +7781,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -11106,7 +7981,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -11273,7 +8147,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -11449,7 +8322,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     null,
                                     {
@@ -11657,7 +8529,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -11890,7 +8761,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -12103,7 +8973,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -12255,7 +9124,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     null,
                                     {
@@ -12401,7 +9269,6 @@
                                         }
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -12590,7 +9457,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -12803,7 +9669,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -12924,7 +9789,6 @@
                                         }
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -13057,7 +9921,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -13240,7 +10103,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -13392,7 +10254,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -13543,7 +10404,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     null,
                                     {
@@ -13721,7 +10581,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -13987,8 +10846,7 @@
                                     },
                                     {
                                         "id": "CameraEntity"
-                                    },
-                                    null
+                                    }
                                 ],
                                 "SpriteCreatorComponent": [
                                     {
@@ -14214,7 +11072,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -14434,7 +11291,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     null,
                                     {
@@ -14594,7 +11450,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     null,
                                     {
@@ -14755,7 +11610,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -14941,7 +11795,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -15106,7 +11959,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     null,
                                     {
@@ -15263,7 +12115,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     null,
                                     {
@@ -15429,7 +12280,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -15550,7 +12400,6 @@
                                         }
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -15683,7 +12532,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -15915,7 +12763,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -16128,7 +12975,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -16281,7 +13127,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -16484,22 +13329,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "MovementComponent": [
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null
-                                ],
-                                "SpatialTrackComponent": [
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
-                                    null
-                                ],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -16616,8 +13445,7 @@
                                         "rotation": {
                                             "v": 0.0
                                         }
-                                    },
-                                    null
+                                    }
                                 ]
                             },
                             "entityIndexMap": [
@@ -16656,16 +13484,6 @@
                         },
                         "entity_manager": {
                             "components": {
-                                "AnimationGroupCreatorComponent": [
-                                    null,
-                                    null,
-                                    null
-                                ],
-                                "CharacterStateComponent": [
-                                    null,
-                                    null,
-                                    null
-                                ],
                                 "CollisionComponent": [
                                     {
                                         "geometry": {
@@ -16714,18 +13532,7 @@
                                             "radius": 8.96831017167883e-44,
                                             "type": "Angular"
                                         }
-                                    },
-                                    null
-                                ],
-                                "MovementComponent": [
-                                    null,
-                                    null,
-                                    null
-                                ],
-                                "SpatialTrackComponent": [
-                                    null,
-                                    null,
-                                    null
+                                    }
                                 ],
                                 "SpriteCreatorComponent": [
                                     {
@@ -16781,8 +13588,7 @@
                                         "rotation": {
                                             "v": 0.0
                                         }
-                                    },
-                                    null
+                                    }
                                 ]
                             },
                             "entityIndexMap": [
@@ -16866,7 +13672,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -17059,7 +13864,6 @@
                                         }
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -17283,7 +14087,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -17459,7 +14262,6 @@
                                         }
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -17622,7 +14424,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -17798,7 +14599,6 @@
                                         }
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -17961,7 +14761,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -18144,7 +14943,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -18290,7 +15088,6 @@
                                         }
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -18436,7 +15233,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     null,
                                     {
@@ -18593,7 +15389,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -18751,7 +15546,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     null,
                                     {
@@ -18962,7 +15756,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -19100,18 +15893,6 @@
                         },
                         "entity_manager": {
                             "components": {
-                                "AiControllerComponent": [
-                                    null,
-                                    null,
-                                    null,
-                                    null
-                                ],
-                                "CharacterStateComponent": [
-                                    null,
-                                    null,
-                                    null,
-                                    null
-                                ],
                                 "CollisionComponent": [
                                     null,
                                     {
@@ -19137,9 +15918,7 @@
                                             "radius": 8.96831017167883e-44,
                                             "type": "Angular"
                                         }
-                                    },
-                                    null,
-                                    null
+                                    }
                                 ],
                                 "LightComponent": [
                                     {
@@ -19150,13 +15929,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "MovementComponent": [
-                                    null,
-                                    null,
-                                    null,
-                                    null
-                                ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     null,
                                     {
@@ -19175,9 +15947,7 @@
                                                 "path": "resources/textures/testTexture.png"
                                             }
                                         ]
-                                    },
-                                    null,
-                                    null
+                                    }
                                 ],
                                 "TransformComponent": [
                                     {
@@ -19206,8 +15976,7 @@
                                         "rotation": {
                                             "v": 0.0
                                         }
-                                    },
-                                    null
+                                    }
                                 ]
                             },
                             "entityIndexMap": [
@@ -19299,7 +16068,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -19507,7 +16275,6 @@
                                         }
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -19739,7 +16506,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -19975,7 +16741,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -20181,7 +16946,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     null,
                                     {
@@ -20339,7 +17103,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -20484,7 +17247,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     null,
                                     {
@@ -20714,7 +17476,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     null,
                                     {
@@ -20920,7 +17681,6 @@
                                         }
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -21052,7 +17812,6 @@
                                         }
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -21160,7 +17919,6 @@
                                         }
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -21238,7 +17996,6 @@
                                         }
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -21340,7 +18097,6 @@
                                         }
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -21520,7 +18276,6 @@
                                         }
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -21688,7 +18443,6 @@
                                         }
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -21814,7 +18568,6 @@
                                         }
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -21983,7 +18736,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -22110,7 +18862,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     null,
                                     {
@@ -22233,7 +18984,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -22386,7 +19136,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -22507,7 +19256,6 @@
                                         }
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -22591,7 +19339,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -22713,7 +19460,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -22894,7 +19640,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -23093,7 +19838,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -23260,7 +20004,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -23437,7 +20180,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -23643,7 +20385,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     null,
                                     {
@@ -23874,7 +20615,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -24087,7 +20827,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -24238,7 +20977,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     null,
                                     {
@@ -24416,7 +21154,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -24568,7 +21305,6 @@
                                         }
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -24727,7 +21463,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -24947,7 +21682,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     null,
                                     null,
@@ -25105,7 +21839,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -25264,7 +21997,6 @@
                                         "brightness": 1.0
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -25440,7 +22172,6 @@
                                         }
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -25548,7 +22279,6 @@
                                         }
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [
@@ -25626,7 +22356,6 @@
                                         }
                                     }
                                 ],
-                                "SpatialTrackComponent": [],
                                 "SpriteCreatorComponent": [
                                     {
                                         "descriptions": [

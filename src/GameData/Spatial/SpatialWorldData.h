@@ -44,6 +44,8 @@ public:
 	nlohmann::json toJson(const ComponentSerializersHolder& componentSerializers) const;
 	void fromJson(const nlohmann::json& json, const ComponentSerializersHolder& componentSerializers);
 
+	void clearCaches();
+
 public:
 	static constexpr int CellSizeInt = 200;
 	static constexpr float CellSize = static_cast<float>(CellSizeInt);

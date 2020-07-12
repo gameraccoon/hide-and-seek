@@ -51,6 +51,8 @@ public:
 	nlohmann::json toJson(const ComponentSerializersHolder& componentSerializers) const;
 	void fromJson(const nlohmann::json& json, const ComponentSerializersHolder& componentSerializers);
 
+	[[nodiscard]] bool hasAnyComponents() const;
+
 private:
 	std::map<StringID, BaseComponent*> mComponents;
 };

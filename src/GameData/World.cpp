@@ -84,3 +84,9 @@ EntityView World::createSpatialEntity(CellPos pos)
 	WorldCell& cell = getSpatialData().getOrCreateCell(pos);
 	return EntityView(cell.getEntityManager().addEntity(), cell.getEntityManager());
 }
+
+void World::clearCaches()
+{
+	mEntityManager.clearCaches();
+	mSpatialData.clearCaches();
+}

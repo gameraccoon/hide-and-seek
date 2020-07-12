@@ -49,6 +49,22 @@ public:
 		return mData[id];
 	}
 
+	void cleanEmptyVetors()
+	{
+		for (auto it = mData.begin(), itEnd = mData.end(); it != itEnd;)
+		{
+			if (it->second.empty())
+			{
+				it = mData.erase(it);
+			}
+			else
+			{
+				++it;
+			}
+		}
+		AssertFatal(mEmptyVector.empty(), "mEmptyVector should be empty");
+	}
+
 	[[nodiscard]] Iterator begin() noexcept { return mData.begin(); }
 	[[nodiscard]] Iterator end() noexcept { return mData.end(); }
 	[[nodiscard]] ConstIterator begin() const noexcept { return mData.cbegin(); }

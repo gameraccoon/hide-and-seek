@@ -208,3 +208,19 @@ void SpatialWorldData::fromJson(const nlohmann::json& json, const ComponentSeria
 		RedistributeSpatialEntitiesBetweenCells(*this, static_cast<float>(cellSize));
 	}
 }
+
+void SpatialWorldData::clearCaches()
+{
+	for (auto it = mCells.begin(), itEnd = mCells.end(); it != itEnd;)
+	{
+		it->second.clearCaches();
+		if (!it->second.hasAnyData())
+		{
+			it = mCells.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
+}

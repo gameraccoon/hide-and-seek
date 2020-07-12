@@ -209,6 +209,7 @@ void MainWindow::on_actionSave_World_As_triggered()
 		return;
 	}
 
+	mCurrentWorld->clearCaches();
 	GameDataLoader::SaveWorld(*mCurrentWorld.get(), fileName, mComponentSerializationHolder);
 	mOpenedWorldPath = fileName;
 	ui->actionSave_World->setEnabled(true);
@@ -221,6 +222,7 @@ void MainWindow::on_actionSave_World_triggered()
 		return;
 	}
 
+	mCurrentWorld->clearCaches();
 	GameDataLoader::SaveWorld(*mCurrentWorld.get(), mOpenedWorldPath, mComponentSerializationHolder);
 }
 

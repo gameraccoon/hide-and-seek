@@ -15,7 +15,7 @@ static const int EntityInsertionTrialsLimit = 10;
 
 EntityManager::~EntityManager()
 {
-	for (auto&& componentVector : mComponents)
+	for (auto& componentVector : mComponents)
 	{
 		for (auto component : componentVector.second)
 		{
@@ -84,7 +84,7 @@ void EntityManager::removeEntity(Entity entity)
 
 	--mNextEntityIndex; // now it points to the element that going to be removed
 
-	for (auto&& componentVector : mComponents)
+	for (auto& componentVector : mComponents)
 	{
 		// if the vector containts deleted entity
 		if (oldEntityIdx < componentVector.second.size())
@@ -122,7 +122,7 @@ void EntityManager::getAllEntityComponents(Entity entity, std::vector<BaseCompon
 	if (entityIdxItr != mEntityIndexMap.end())
 	{
 		EntityIndex index = entityIdxItr->second;
-		for (auto&& componentArray : mComponents)
+		for (auto& componentArray : mComponents)
 		{
 			if (componentArray.second.size() > index && componentArray.second[index] != nullptr)
 			{
@@ -281,7 +281,7 @@ void EntityManager::transferEntityTo(EntityManager& otherManager, Entity entity)
 	--mNextEntityIndex; // now it points to the element that going to be removed
 	EntityIndex oldEntityIdx = entityIdxItr->second;
 
-	for (auto&& componentVector : mComponents)
+	for (auto& componentVector : mComponents)
 	{
 		if (oldEntityIdx < componentVector.second.size())
 		{
@@ -336,7 +336,7 @@ nlohmann::json EntityManager::toJson(const ComponentSerializersHolder& component
 
 	auto components = nlohmann::json{};
 
-	for (auto&& componentArray : mComponents)
+	for (auto& componentArray : mComponents)
 	{
 		auto componentArrayObject = nlohmann::json::array();
 		const JsonComponentSerializer* jsonSerializer = componentSerializers.jsonSerializer.getComponentSerializerFromClassName(componentArray.first);
@@ -400,6 +400,34 @@ void EntityManager::fromJson(const nlohmann::json& json, const ComponentSerializ
 			}
 		}
 	}
+}
+
+void EntityManager::clearCaches()
+{
+	for (auto& componentVectorPair : mComponents)
+	{
+		auto& componentVector = componentVectorPair.second;
+		auto lastFilledRIt = std::find_if(componentVector.rbegin(), componentVector.rend(),
+			[](const BaseComponent* component){ return component != nullptr; }
+		);
+
+		if (lastFilledRIt != componentVector.rend())
+		{
+			size_t lastFilledIdx = std::distance(lastFilledRIt, componentVector.rend());
+			componentVector.erase(componentVector.begin() + lastFilledIdx, componentVector.end());
+		}
+		else
+		{
+			componentVector.clear();
+		}
+	}
+
+	mComponents.cleanEmptyVetors();
+}
+
+bool EntityManager::hasAnyEntities() const
+{
+	return !mEntityIndexMap.empty();
 }
 
 void EntityManager::addComponentToEntity(EntityIndex entityIdx, BaseComponent* component, StringID typeID)

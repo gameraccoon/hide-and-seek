@@ -24,6 +24,8 @@ public:
 	EntityView createTrackedSpatialEntity(StringID entityStringID, CellPos pos);
 	EntityView createSpatialEntity(CellPos pos);
 
+	void clearCaches();
+
 private:
 	EntityManager mEntityManager;
 	ComponentSetHolder mWorldComponents;

@@ -22,3 +22,13 @@ void WorldCell::fromJson(const nlohmann::json& json, const ComponentSerializersH
 	mEntityManager.fromJson(json.at("entity_manager"), componentSerializers);
 	mCellComponents.fromJson(json.at("cell_components"), componentSerializers);
 }
+
+void WorldCell::clearCaches()
+{
+	mEntityManager.clearCaches();
+}
+
+bool WorldCell::hasAnyData() const
+{
+	return mEntityManager.hasAnyEntities() || mCellComponents.hasAnyComponents();
+}
