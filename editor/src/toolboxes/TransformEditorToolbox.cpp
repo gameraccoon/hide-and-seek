@@ -11,8 +11,9 @@
 
 #include <QPainter>
 #include <QMouseEvent>
-#include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <QCheckBox>
+#include <QSlider>
 #include <QApplication>
 #include <QAction>
 #include <QMenu>
@@ -69,14 +70,24 @@ void TransformEditorToolbox::show()
 	dockWidget->setContextMenuPolicy(Qt::CustomContextMenu);
 	QObject::connect(dockWidget, &QListWidget::customContextMenuRequested, this, &TransformEditorToolbox::showContextMenu);
 
-	QVBoxLayout* layout = new QVBoxLayout();
+	QHBoxLayout* layout = new QHBoxLayout();
 	layout->addStretch();
+	layout->setAlignment(Qt::AlignmentFlag::AlignBottom | Qt::AlignmentFlag::AlignRight);
 	mContent->setLayout(layout);
+
 	QCheckBox* freeMoveCheckbox = new QCheckBox();
 	freeMoveCheckbox->setText("Free Move");
 	freeMoveCheckbox->setChecked(mContent->mFreeMove);
 	QObject::connect(freeMoveCheckbox, &QCheckBox::stateChanged, this, &TransformEditorToolbox::onFreeMoveChanged);
 	layout->addWidget(freeMoveCheckbox);
+
+	QSlider* scaleSlider = new QSlider();
+	scaleSlider->setRange(10, 1000);
+	scaleSlider->setValue(100);
+	scaleSlider->setOrientation(Qt::Orientation::Horizontal);
+	QObject::connect(scaleSlider, &QSlider::valueChanged, this, &TransformEditorToolbox::onScaleChanged);
+	layout->addWidget(scaleSlider);
+
 	mContent->OnEntitiesMoved.assign([this](std::vector<SpatialEntity> entities, const Vector2D& shift){onEntitiesMoved(entities, shift);});
 }
 
@@ -153,6 +164,19 @@ void TransformEditorToolbox::onFreeMoveChanged(int newValue)
 	if (mContent)
 	{
 		mContent->mFreeMove = (newValue != 0);
+	}
+}
+
+void TransformEditorToolbox::onScaleChanged(int newValue)
+{
+	if (mContent)
+	{
+		float newScale = static_cast<float>(newValue) * 0.01f;
+		Vector2D halfScreenSizeInWorld = 0.5f / mContent->mScale * Vector2D(mContent->size().width(), mContent->size().height());
+		Vector2D shiftChange = halfScreenSizeInWorld * (mContent->mScale - newScale) / newScale;
+		mContent->mPosShift += QVector2D(static_cast<int>(shiftChange.x), static_cast<int>(shiftChange.y));
+		mContent->mScale = newScale;
+		mContent->repaint();
 	}
 }
 
@@ -301,7 +325,7 @@ void TransformEditorWidget::mouseMoveEvent(QMouseEvent* event)
 
 	if (!mIsCatchedSelectedEntity && !mIsRectangleSelection)
 	{
-		mPosShift -= QVector2D(mLastMousePos - pos);
+		mPosShift -= QVector2D(mLastMousePos - pos) / mScale;
 	}
 	mLastMousePos = pos;
 	repaint();
@@ -339,10 +363,12 @@ void TransformEditorWidget::paintEvent(QPaintEvent*)
 
 	QPainter painter(this);
 
+	int crossSize = static_cast<int>(5.0f * mScale);
+
 	std::vector<WorldCell*> cells = getCellsOnScreen();
 	for (WorldCell* cell : cells)
 	{
-		cell->getEntityManager().forEachComponentSetWithEntity<TransformComponent>([&painter, cell, this](Entity entity, TransformComponent* transform)
+		cell->getEntityManager().forEachComponentSetWithEntity<TransformComponent>([&painter, cell, crossSize, this](Entity entity, TransformComponent* transform)
 		{
 			CellPos cellPos = cell->getPos();
 			Vector2D location = transform->getLocation();
@@ -393,7 +419,9 @@ void TransformEditorWidget::paintEvent(QPaintEvent*)
 				}
 
 				// draw selected entity border
+				selectionLtShift *= mScale;
 				selectionLtShift -= QVector2D(5.0f, 5.0f);
+				selectionSize *= mScale;
 				selectionSize += QVector2D(10.0f, 10.0f);
 				QRectF rectangle((projectAbsolute(location) + selectionLtShift).toPoint(), QSize(static_cast<int>(selectionSize.x()), static_cast<int>(selectionSize.y())));
 				QBrush brush = painter.brush();
@@ -428,8 +456,8 @@ void TransformEditorWidget::paintEvent(QPaintEvent*)
 			// draw entity location cross
 			QVector2D screenLocation = projectAbsolute(location);
 			QPoint screenPoint(static_cast<int>(screenLocation.x()), static_cast<int>(screenLocation.y()));
-			painter.drawLine(QPoint(screenPoint.x() - 5, screenPoint.y()), QPoint(screenPoint.x() + 5, screenPoint.y()));
-			painter.drawLine(QPoint(screenPoint.x(), screenPoint.y() - 5), QPoint(screenPoint.x(), screenPoint.y() + 5));
+			painter.drawLine(QPoint(screenPoint.x() - crossSize, screenPoint.y()), QPoint(screenPoint.x() + crossSize, screenPoint.y()));
+			painter.drawLine(QPoint(screenPoint.x(), screenPoint.y() - crossSize), QPoint(screenPoint.x(), screenPoint.y() + crossSize));
 		});
 	}
 
@@ -474,9 +502,9 @@ void TransformEditorWidget::onClick(const QPoint& pos)
 
 std::vector<WorldCell*> TransformEditorWidget::getCellsOnScreen()
 {
-	Vector2D screenSize = Vector2D(size().width(), size().height());
-	Vector2D screenCenterPos = screenSize*0.5f - Vector2D(mPosShift.x(), mPosShift.y());;
-	return mWorld->getSpatialData().getCellsAround(screenCenterPos, screenSize);
+	Vector2D screenSizeInWorld = Vector2D(size().width(), size().height()) / mScale;
+	Vector2D screenCenterPos = screenSizeInWorld*0.5f - Vector2D(mPosShift.x(), mPosShift.y());
+	return mWorld->getSpatialData().getCellsAround(screenCenterPos, screenSizeInWorld);
 }
 
 SpatialEntity TransformEditorWidget::getEntityUnderPoint(const QPoint& pos)

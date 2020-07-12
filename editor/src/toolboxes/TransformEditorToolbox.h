@@ -86,6 +86,7 @@ private:
 	void onEntitySelected(const std::optional<EntityReference>& entityRef);
 	void onEntitiesMoved(std::vector<SpatialEntity> entities, const Vector2D& shift);
 	void onFreeMoveChanged(int newValue);
+	void onScaleChanged(int newValue);
 	void showContextMenu(const QPoint& pos);
 	void onCopyCommand();
 	void onPasteCommand();
