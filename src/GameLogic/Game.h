@@ -49,9 +49,12 @@ private:
 
 #ifdef PROFILE_SYSTEMS
 	bool mProfileSystems = false;
-	SystemFrameRecords mSystemFrameRecords;
 	std::string mSystemProfileOutputPath = "systemProfile.csv";
 #endif // PROFILE_SYSTEMS
+
+#if defined(IMGUI_ENABLED) || defined(PROFILE_SYSTEMS)
+	SystemFrameRecords mSystemFrameRecords;
+#endif // IMGUI_ENABLED || PROFILE_SYSTEMS
 
 #ifdef IMGUI_ENABLED
 	ImguiDebugData mImguiDebugData{mWorldHolder, mTime, mSystemFrameRecords, mComponentSerializers.factory, {}};

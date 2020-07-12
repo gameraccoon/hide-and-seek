@@ -6,10 +6,6 @@
 
 #include <chrono>
 
-#ifdef DEBUG
-	#define PROFILE_SYSTEMS
-#endif // DEBUG
-
 struct SystemsFrameTime
 {
 	std::chrono::microseconds frameTime;

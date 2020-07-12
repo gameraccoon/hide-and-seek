@@ -9,9 +9,10 @@ project(${APP_NAME})
 set(EXECUTABLE_NAME Game)
 
 # parameters
-option(DEBUG_MODE "Enable debug features" ON)
+option(DEBUG_CHECKS "Enable debug checks and assertions" ON)
+option(PROFILE_SYSTEMS "Enable systems time gathering for systems time reports" ON)
 option(MEMLEAK_DETECTION "Enable memory leaks detection code (slow)" OFF)
-option(MEMLEAK_REDEFINE_NEW "Redefine default new (can conflict with some libs)" OFF)
+option(MEMLEAK_REDEFINE_NEW "Redefine default new (provide more detailed info but can conflict with some libs)" OFF)
 option(IMGUI_ENABLED "Enable imgui in the build" ON)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -33,13 +34,24 @@ project(${APP_NAME} VERSION ${EXECUTABLE_VERSION})
 file(MAKE_DIRECTORY ${GAME_BIN_DIR})
 
 # definitions
-if(DEBUG_MODE)
-	set(CMAKE_BUILD_TYPE DEBUG)
-	add_definitions(-D_DEBUG)
-	add_definitions(-DDEBUG)
-else(DEBUG_MODE)
-	set(CMAKE_BUILD_TYPE RELEASE)
-endif(DEBUG_MODE)
+if(DEBUG_CHECKS)
+	add_definitions(-DDEBUG_CHECKS)
+endif(DEBUG_CHECKS)
+
+if(PROFILE_SYSTEMS)
+	add_definitions(-DPROFILE_SYSTEMS)
+endif(PROFILE_SYSTEMS)
+
+if(MEMLEAK_DETECTION)
+	add_definitions(-DDETECT_MEMORY_LEAKS)
+	if(MEMLEAK_REDEFINE_NEW)
+		add_definitions(-DREDEFINE_NEW)
+	endif()
+endif()
+
+if(IMGUI_ENABLED)
+	add_definitions(-DIMGUI_ENABLED)
+endif()
 
 add_definitions(-DGLEW_NO_GLU)
 add_definitions(-DGLM_FORCE_RADIANS)
@@ -53,7 +65,8 @@ if (MSVC)
 	set(EXTERNALS_CXX_FLAGS /W0 /std:c++17 /wd4996 /wd4458)
 	set(EXTERNALS_C_FLAGS /W0)
 
-	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_RELEASE} /MDd")
+	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG -DDEBUG")
+	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_RELEASE}") # /MDd
 else()
 	set(PROJECT_CXX_FLAGS -std=c++17 -Wall -Wextra -pedantic -Werror)
 	set(EXTERNALS_CXX_FLAGS -std=c++17)
@@ -63,22 +76,12 @@ else()
 	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_RELEASE} -O2")
 endif()
 
-if(MEMLEAK_DETECTION)
-	add_definitions(-DDETECT_MEMORY_LEAKS)
-	if(MEMLEAK_REDEFINE_NEW)
-		add_definitions(-DREDEFINE_NEW)
-	endif()
-endif()
-
-if(IMGUI_ENABLED)
-	add_definitions(-DIMGUI_ENABLED)
-endif()
-
 # code generation
 execute_process(
 	COMMAND ${PYTHON_EXECUTABLE} ${GAME_BASE_DIR}/scripts/build/code_generate.py ${GAME_BASE_DIR}
 )
 
+# requirements
 find_package(PythonInterp 3.5 REQUIRED)
 if (NOT WIN32)
 	find_package(SDL2 REQUIRED)
@@ -120,7 +123,7 @@ add_executable(${APP_NAME} "${APP_SRC}")
 target_compile_options(${APP_NAME} PRIVATE ${PROJECT_CXX_FLAGS})
 
 # Detour
-option(RECASTNAVIGATION_STATIC "Build static libraries for detour" ON)
+set(RECASTNAVIGATION_STATIC ON)
 add_subdirectory(${EXTERNALS_DIR}/sources/recastnavigation/Detour
 	${INTERMEDIATES_DIR}/external/Detour
 	EXCLUDE_FROM_ALL)
@@ -135,7 +138,7 @@ add_dependencies(${APP_NAME} Polypartition)
 include_directories(${EXTERNALS_DIR}/sources/polypartition/include)
 target_compile_options(Polypartition PRIVATE ${EXTERNALS_CXX_FLAGS})
 
-# imgui
+# ImGui
 add_library(Imgui EXCLUDE_FROM_ALL
 	${EXTERNALS_DIR}/sources/imgui/imgui.cpp
 	${EXTERNALS_DIR}/sources/imgui/imgui_demo.cpp
@@ -149,8 +152,6 @@ include_directories(${EXTERNALS_DIR}/sources/imgui)
 target_compile_options(Imgui PRIVATE ${EXTERNALS_CXX_FLAGS})
 
 set(GENERAL_PROJECT_LIBS
-#	liblua52
-
 	GameLogic
 	Hal
 	Utils

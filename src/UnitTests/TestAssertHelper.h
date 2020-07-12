@@ -4,16 +4,16 @@
 
 inline void EnableFailOnAssert() noexcept
 {
-#ifdef DEBUG
+#ifdef DEBUG_CHECKS
 	GlobalAssertHandler = [](){ GTEST_FAIL(); };
 	GlobalFatalAssertHandler = [](){ GTEST_FAIL(); };
-#endif // DEBUG
+#endif // DEBUG_CHECKS
 }
 
 inline void DisableFailOnAssert() noexcept
 {
-#ifdef DEBUG
+#ifdef DEBUG_CHECKS
 	GlobalAssertHandler = [](){};
 	GlobalFatalAssertHandler = [](){};
-#endif // DEBUG
+#endif // DEBUG_CHECKS
 }

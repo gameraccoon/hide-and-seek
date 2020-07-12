@@ -1,12 +1,12 @@
 #pragma once
 
-#ifdef DEBUG
+#ifdef DEBUG_CHECKS
 // to be able to change behavior for tests
 inline std::function<void()> GlobalAssertHandler = [](){};
 inline std::function<void()> GlobalFatalAssertHandler = [](){ std::terminate(); };
 #endif
 
-#ifdef DEBUG
+#ifdef DEBUG_CHECKS
 	#define ReportError(...) \
 		do \
 		{ \
@@ -17,7 +17,7 @@ inline std::function<void()> GlobalFatalAssertHandler = [](){ std::terminate(); 
 	#define ReportError(...) do { } while(0)
 #endif
 
-#ifdef DEBUG
+#ifdef DEBUG_CHECKS
 	#define ReportFatalError(...) \
 		do \
 		{ \
@@ -28,7 +28,7 @@ inline std::function<void()> GlobalFatalAssertHandler = [](){ std::terminate(); 
 	#define ReportFatalError(...) do { } while(0)
 #endif
 
-#ifdef DEBUG
+#ifdef DEBUG_CHECKS
 	#define Assert(cond, ...) \
 	do \
 	{ \
@@ -42,7 +42,7 @@ inline std::function<void()> GlobalFatalAssertHandler = [](){ std::terminate(); 
 	#define Assert(...) do { } while(0)
 #endif
 
-#ifdef DEBUG
+#ifdef DEBUG_CHECKS
 	#define AssertFatal(cond, ...) \
 	do { \
 		if ALMOST_NEVER(static_cast<bool>(cond) == false) \
