@@ -6,8 +6,8 @@
 
 #include "editorcommand.h"
 
-#include "ECS/Entity.h"
 #include "GameData/Core/Vector2D.h"
+#include "GameData/Spatial/SpatialEntity.h"
 
 class World;
 
@@ -21,7 +21,7 @@ public:
 
 private:
 	std::vector<nlohmann::json> mEntities;
-	std::vector<Entity> mCreatedEntities;
+	std::vector<SpatialEntity> mCreatedEntities;
 	const ComponentSerializersHolder& mSerializationHolder;
 	Vector2D mShift;
 };

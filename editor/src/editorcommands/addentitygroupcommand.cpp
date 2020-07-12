@@ -16,22 +16,33 @@ AddEntityGroupCommand::AddEntityGroupCommand(const std::vector<nlohmann::json>& 
 void AddEntityGroupCommand::doCommand(World* world)
 {
 	mCreatedEntities.clear();
+	CellPos initialPos(0, 0);
+	WorldCell& cell = world->getSpatialData().getOrCreateCell(initialPos);
 	for (const auto& serializedObject : mEntities)
 	{
-		Entity entity = world->getEntityManager().createPrefabInstance(serializedObject, mSerializationHolder);
-		mCreatedEntities.push_back(entity);
-		auto [transform] = world->getEntityManager().getEntityComponents<TransformComponent>(entity);
+		CellPos cellPos = initialPos;
+		Entity entity = cell.getEntityManager().createPrefabInstance(serializedObject, mSerializationHolder);
+		auto [transform] = cell.getEntityManager().getEntityComponents<TransformComponent>(entity);
 		if (transform)
 		{
-			transform->setLocation(transform->getLocation() + mShift);
+			Vector2D newPos = transform->getLocation() + mShift;
+			transform->setLocation(newPos);
+
+			cellPos = SpatialWorldData::GetCellForPos(newPos);
+			if (cellPos != initialPos)
+			{
+				// the component pointer get invalidated from this line
+				cell.getEntityManager().transferEntityTo(world->getSpatialData().getOrCreateCell(cellPos).getEntityManager(), entity);
+			}
 		}
+		mCreatedEntities.emplace_back(entity, cellPos);
 	}
 }
 
 void AddEntityGroupCommand::undoCommand(World* world)
 {
-	for (Entity entity : mCreatedEntities)
+	for (auto [entity, cellPos] : mCreatedEntities)
 	{
-		world->getEntityManager().removeEntity(entity);
+		world->getSpatialData().getOrCreateCell(cellPos).getEntityManager().removeEntity(entity.getEntity());
 	}
 }

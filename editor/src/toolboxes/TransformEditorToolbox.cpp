@@ -186,17 +186,21 @@ void TransformEditorToolbox::onCopyCommand()
 
 	const auto& jsonSerializationHolder = mMainWindow->getComponentSerializationHolder().jsonSerializer;
 
-	Vector2D center;
+	Vector2D center{ZERO_VECTOR};
 	mCopiedObjects.clear();
 	for (SpatialEntity spatialEntity : mContent->mSelectedEntities)
 	{
-		nlohmann::json serializedEntity;
-		world->getEntityManager().getPrefabFromEntity(serializedEntity, spatialEntity.entity.getEntity(), jsonSerializationHolder);
-		mCopiedObjects.push_back(serializedEntity);
-		auto [transform] = world->getEntityManager().getEntityComponents<TransformComponent>(spatialEntity.entity.getEntity());
-		if (transform)
+		WorldCell* cell = world->getSpatialData().getCell(spatialEntity.cell);
+		if (cell != nullptr)
 		{
-			center += transform->getLocation();
+			nlohmann::json serializedEntity;
+			cell->getEntityManager().getPrefabFromEntity(serializedEntity, spatialEntity.entity.getEntity(), jsonSerializationHolder);
+			mCopiedObjects.push_back(serializedEntity);
+			auto [transform] = cell->getEntityManager().getEntityComponents<TransformComponent>(spatialEntity.entity.getEntity());
+			if (transform)
+			{
+				center += transform->getLocation();
+			}
 		}
 	}
 
