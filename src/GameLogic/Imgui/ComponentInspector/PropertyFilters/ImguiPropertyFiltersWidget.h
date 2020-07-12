@@ -7,7 +7,11 @@
 
 #include "Base/Types/TemplateAliases.h"
 
+#include "ECS/Entity.h"
+
 #include "GameData/Debug/SubstringSearcher.h"
+
+#include "GameLogic/Imgui/ComponentInspector/PropertyFilters/AbstractPropertyFilter.h"
 
 class EntityManager;
 class WorldCell;
@@ -16,7 +20,6 @@ struct ImguiDebugData;
 namespace ImguiPropertyFiltration
 {
 	class AbstractPropertyDescriptor;
-	class AbstractPropertyFilter;
 	class AbstractPropertyFilterFactory;
 
 	class ImguiPropertyFiltersWidget
@@ -29,7 +32,7 @@ namespace ImguiPropertyFiltration
 		void getFilteredEntities(ImguiDebugData& debugData, TupleVector<WorldCell*, Entity>& inOutEntities);
 
 	private:
-		std::vector<std::type_index> getFilteredComponentTypes() const;
+		std::vector<StringID> getFilteredComponentTypes() const;
 		void init(ImguiDebugData& debugData);
 
 	private:

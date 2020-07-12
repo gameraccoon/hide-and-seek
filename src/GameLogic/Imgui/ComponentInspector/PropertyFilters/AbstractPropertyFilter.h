@@ -17,7 +17,7 @@ namespace ImguiPropertyFiltration
 
 		virtual ~AbstractPropertyFilter() = default;
 
-		std::type_index getComponentType() const
+		StringID getComponentType() const
 		{
 			return getDescriptor()->getComponentType();
 		}

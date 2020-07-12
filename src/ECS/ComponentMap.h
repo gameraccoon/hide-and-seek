@@ -1,19 +1,60 @@
 #pragma once
 
 #include <unordered_map>
-#include <typeindex>
+#include <algorithm>
 
 #include "ECS/Component.h"
+#include "Base/Types/String/StringID.h"
 
 class ComponentMap
 {
+public:
+	using Iterator = std::unordered_map<StringID, std::vector<BaseComponent*>>::iterator;
+	using ConstIterator = std::unordered_map<StringID, std::vector<BaseComponent*>>::const_iterator;
+
 public:
 	ComponentMap() = default;
 	ComponentMap(const ComponentMap&) = delete;
 	ComponentMap& operator=(const ComponentMap&) = delete;
 	ComponentMap(ComponentMap&&) = delete;
 	ComponentMap& operator=(ComponentMap&&) = delete;
+	~ComponentMap() { AssertFatal(mEmptyVector.empty(), "mEmptyVector has changed during runtime, that should never happen"); }
 
+	template<typename FirstComponent, typename... Components>
+	[[nodiscard]] auto getComponentVectors()
+	{
+		auto it = mData.find(FirstComponent::GetTypeName());
+
+		if (it == mData.end())
+		{
+			return std::tuple_cat(std::tuple<std::vector<BaseComponent*>&>(mEmptyVector), getEmptyComponentVectors<Components>()...);
+		}
+
+		return std::tuple_cat(std::tuple<std::vector<BaseComponent*>&>(it->second), getComponentVectors<Components>()...);
+	}
+
+	[[nodiscard]] std::vector<BaseComponent*>& getComponentVectorByID(StringID id)
+	{
+		auto it = mData.find(id);
+		return it == mData.end() ? mEmptyVector : it->second;
+	}
+
+	[[nodiscard]] const std::vector<BaseComponent*>& getComponentVectorByID(StringID id) const
+	{
+		return const_cast<ComponentMap*>(this)->getComponentVectorByID(id);
+	}
+
+	[[nodiscard]] std::vector<BaseComponent*>& getOrCreateComponentVectorByID(StringID id)
+	{
+		return mData[id];
+	}
+
+	[[nodiscard]] Iterator begin() noexcept { return mData.begin(); }
+	[[nodiscard]] Iterator end() noexcept { return mData.end(); }
+	[[nodiscard]] ConstIterator begin() const noexcept { return mData.cbegin(); }
+	[[nodiscard]] ConstIterator end() const noexcept { return mData.cend(); }
+
+private:
 	template<int I = 0>
 	std::tuple<> getEmptyComponentVectors()
 	{
@@ -32,40 +73,7 @@ public:
 		return std::tuple<>();
 	}
 
-	template<typename FirstComponent, typename... Components>
-	auto getComponentVectors()
-	{
-		auto it = mData.find(typeid(FirstComponent));
-
-		if (it == mData.end())
-		{
-			return std::tuple_cat(std::tuple<std::vector<BaseComponent*>&>(mEmptyVector), getEmptyComponentVectors<Components>()...);
-		}
-
-		return std::tuple_cat(std::tuple<std::vector<BaseComponent*>&>(it->second), getComponentVectors<Components>()...);
-	}
-
-	std::vector<BaseComponent*>& getComponentVectorByID(std::type_index id)
-	{
-		auto it = mData.find(id);
-		return it == mData.end() ? mEmptyVector : it->second;
-	}
-
-	const std::vector<BaseComponent*>& getComponentVectorByID(std::type_index id) const
-	{
-		auto it = mData.find(id);
-		return it == mData.end() ? mEmptyVector : it->second;
-	}
-
-	std::vector<BaseComponent*>& getOrCreateComponentVectorByID(std::type_index id)
-	{
-		return mData[id];
-	}
-
-	std::unordered_map<std::type_index, std::vector<BaseComponent*>>& getRawData() { return mData; }
-	const std::unordered_map<std::type_index, std::vector<BaseComponent*>>& getRawData() const { return mData; }
-
 private:
-	std::unordered_map<std::type_index, std::vector<BaseComponent*>> mData;
+	std::unordered_map<StringID, std::vector<BaseComponent*>> mData;
 	std::vector<BaseComponent*> mEmptyVector;
 };

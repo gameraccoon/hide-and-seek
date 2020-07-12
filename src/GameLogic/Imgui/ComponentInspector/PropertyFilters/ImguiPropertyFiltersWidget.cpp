@@ -4,14 +4,18 @@
 
 #include <algorithm>
 #include <string>
+#include <sstream>
 
 #include "imgui.h"
 
 #include "ECS/EntityManager.h"
+#include "ECS/ComponentFactory.h"
 
 #include "GameData/Spatial/SpatialEntityManager.h"
+#include "GameData/World.h"
 
-#include "GameLogic/Imgui/ComponentInspector/PropertyFilters/AbstractPropertyFilter.h"
+#include "GameLogic/SharedManagers/WorldHolder.h"
+
 #include "GameLogic/Imgui/ComponentInspector/PropertyFilters/AbstractPropertyDescriptor.h"
 
 #include "GameLogic/Imgui/ComponentInspector/PropertyFilters/TypeFilters/FilterRegistration/FilterRegistration.h"
@@ -26,12 +30,12 @@ namespace ImguiPropertyFiltration
 	void ImguiPropertyFiltersWidget::init(ImguiDebugData& debugData)
 	{
 		auto propertyDescriptions = PropertyDescriptiorsRegistration::GetDescriptions();
-		debugData.componentFactory.forEachComponentType([&propertyDescriptions](std::type_index typeID, StringID className)
+		debugData.componentFactory.forEachComponentType([&propertyDescriptions](StringID className)
 		{
 			std::string componentName = ID_TO_STR(className);
 			std::string lowerComponentName = componentName;
 			std::transform(lowerComponentName.begin(), lowerComponentName.end(), lowerComponentName.begin(), [](unsigned char c){ return static_cast<char>(std::tolower(c)); });
-			propertyDescriptions.emplace_back(std::vector<std::string>{lowerComponentName}, ComponentAvailabilityPropertyDescriptor::Create(componentName, typeID));
+			propertyDescriptions.emplace_back(std::vector<std::string>{lowerComponentName}, ComponentAvailabilityPropertyDescriptor::Create(componentName, className));
 		});
 		mPropertyDescriptors.construct(std::move(propertyDescriptions));
 	}
@@ -144,14 +148,14 @@ namespace ImguiPropertyFiltration
 		}
 	}
 
-	std::vector<std::type_index> ImguiPropertyFiltersWidget::getFilteredComponentTypes() const
+	std::vector<StringID> ImguiPropertyFiltersWidget::getFilteredComponentTypes() const
 	{
-		std::vector<std::type_index> filteredComponents;
+		std::vector<StringID> filteredComponents;
 		filteredComponents.reserve(mAppliedFilters.size());
 		// construct vector of unique elements
 		for (const auto& appliedFilter : mAppliedFilters)
 		{
-			std::type_index typeID = appliedFilter->getComponentType();
+			StringID typeID = appliedFilter->getComponentType();
 			auto lowerIt = std::lower_bound(filteredComponents.begin(), filteredComponents.end(), typeID);
 			if (lowerIt == filteredComponents.end() || *lowerIt != typeID)
 			{
@@ -165,7 +169,7 @@ namespace ImguiPropertyFiltration
 	{
 		inOutEntities.clear();
 
-		std::vector<std::type_index> filteredComponentTypes = getFilteredComponentTypes();
+		std::vector<StringID> filteredComponentTypes = getFilteredComponentTypes();
 
 		if (!filteredComponentTypes.empty())
 		{

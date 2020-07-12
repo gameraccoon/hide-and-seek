@@ -175,7 +175,7 @@ void ComponentsListToolbox::addComponentCommand()
 	dialog->setCancelButtonText("Cancel");
 	dialog->setComboBoxEditable(false);
 	QStringList items;
-	mMainWindow->getComponentSerializationHolder().factory.forEachComponentType([&items](std::type_index, StringID name)
+	mMainWindow->getComponentSerializationHolder().factory.forEachComponentType([&items](StringID name)
 	{
 		items.append(QString::fromStdString(ID_TO_STR(name)));
 	});

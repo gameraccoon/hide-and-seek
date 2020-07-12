@@ -44,7 +44,7 @@ namespace ImguiDataInspection
 	}
 
 	template<>
-	void Inspector(const char* title, class Rotator& data)
+	void Inspector(const char* title, Rotator& data)
 	{
 		float value = data.getValue();
 		if (ImGui::InputFloat(title, &value))
@@ -54,7 +54,7 @@ namespace ImguiDataInspection
 	}
 
 	template<>
-	void Inspector(const char* title, class StringID& data)
+	void Inspector(const char* title, StringID& data)
 	{
 		char buffer[256];
 		std::strcpy(buffer, ID_TO_STR(data).c_str());

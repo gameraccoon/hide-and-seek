@@ -15,8 +15,8 @@ namespace Utils
 {
 	BaseComponent* GetComponent(const ComponentReference& reference, World* world);
 	std::vector<BaseComponent*> GetComponents(const ComponentSourceReference& source, World* world);
-	void AddComponent(const ComponentSourceReference& source, BaseComponent* component, World* world, const ComponentFactory& componentFactory);
-	void RemoveComponent(const ComponentSourceReference& source, StringID componentTypeName, World* world, const ComponentFactory& componentFactory);
+	void AddComponent(const ComponentSourceReference& source, BaseComponent* component, World* world);
+	void RemoveComponent(const ComponentSourceReference& source, StringID componentTypeName, World* world);
 
 	std::variant<ComponentSetHolder*, EntityManager*, std::nullptr_t> GetBoundComponentHolderOrEntityManager(const ComponentSourceReference& source, World* world);
 

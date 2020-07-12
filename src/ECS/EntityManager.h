@@ -1,7 +1,6 @@
 #pragma once
 
 #include <tuple>
-#include <typeindex>
 #include <unordered_map>
 
 #include "Base/Types/TemplateAliases.h"
@@ -36,9 +35,23 @@ public:
 	void getAllEntityComponents(Entity entity, std::vector<BaseComponent*>& outComponents);
 
 	template<typename ComponentType>
+	bool doesEntityHaveComponent(Entity entity)
+	{
+		auto entityIdxItr = mEntityIndexMap.find(entity.getID());
+		if (entityIdxItr == mEntityIndexMap.end())
+		{
+			return false;
+		}
+
+		auto [componentVector] = mComponents.getComponentVectors<ComponentType>();
+
+		return entityIdxItr->second < componentVector.size() && componentVector[entityIdxItr->second] != nullptr;
+	}
+
+	template<typename ComponentType>
 	ComponentType* addComponent(Entity entity)
 	{
-		auto entityIdxItr = mEntityIndexMap.find(std::forward<Entity>(entity).getID());
+		auto entityIdxItr = mEntityIndexMap.find(entity.getID());
 		if (entityIdxItr == mEntityIndexMap.end())
 		{
 			return nullptr;
@@ -46,38 +59,38 @@ public:
 
 		ComponentType* component = new ComponentType();
 
-		addComponentToEntity(entityIdxItr->second, component, typeid(ComponentType));
+		addComponentToEntity(entityIdxItr->second, component, ComponentType::GetTypeName());
 
 		return component;
 	}
 
-	void addComponent(Entity entity, BaseComponent* component, std::type_index typeID);
+	void addComponent(Entity entity, BaseComponent* component, StringID typeID);
 
 	template<typename ComponentType>
 	void removeComponent(Entity entity)
 	{
-		removeComponent(std::forward<Entity>(entity), typeid(ComponentType));
+		removeComponent(entity, ComponentType::GetTypeName());
 	}
 
-	void removeComponent(Entity entity, std::type_index typeID);
+	void removeComponent(Entity entity, StringID typeID);
 
 	template<typename ComponentType>
 	ComponentType* scheduleAddComponent(Entity entity)
 	{
 		ComponentType* component = new ComponentType();
-		scheduleAddComponentToEntity(entity, component, typeid(ComponentType));
+		scheduleAddComponentToEntity(entity, component, ComponentType::GetTypeName());
 		return component;
 	}
 
-	void scheduleAddComponentToEntity(Entity entity, BaseComponent* component, std::type_index typeID);
+	void scheduleAddComponentToEntity(Entity entity, BaseComponent* component, StringID typeID);
 
 	template<typename ComponentType>
 	void scheduleRemoveComponent(Entity entity)
 	{
-		scheduleRemoveComponent(std::forward<Entity>(entity), typeid(ComponentType));
+		scheduleRemoveComponent(entity, ComponentType::GetTypeName());
 	}
 
-	void scheduleRemoveComponent(Entity entity, std::type_index typeID);
+	void scheduleRemoveComponent(Entity entity, StringID typeID);
 	void executeScheduledActions();
 
 	template<typename... Components>
@@ -212,7 +225,7 @@ public:
 		}
 	}
 
-	void getEntitiesHavingComponents(const std::vector<std::type_index>& componentIndexes, std::vector<Entity>& inOutEntities) const;
+	void getEntitiesHavingComponents(const std::vector<StringID>& componentIndexes, std::vector<Entity>& inOutEntities) const;
 
 	bool hasEntity(Entity entity);
 
@@ -237,9 +250,9 @@ private:
 	{
 		Entity entity;
 		BaseComponent* component;
-		std::type_index typeID;
+		StringID typeID;
 
-		ComponentToAdd(Entity entity, BaseComponent* component, std::type_index typeID)
+		ComponentToAdd(Entity entity, BaseComponent* component, StringID typeID)
 			: entity(entity)
 			, component(component)
 			, typeID(typeID)
@@ -249,9 +262,9 @@ private:
 	struct ComponentToRemove
 	{
 		Entity entity;
-		std::type_index typeID;
+		StringID typeID;
 
-		ComponentToRemove(Entity entity, std::type_index typeID)
+		ComponentToRemove(Entity entity, StringID typeID)
 			: entity(entity)
 			, typeID(typeID)
 		{}
@@ -314,7 +327,7 @@ private:
 		return minimalSize;
 	}
 
-	void addComponentToEntity(EntityIndex entityIdx, BaseComponent* component, std::type_index typeID);
+	void addComponentToEntity(EntityIndex entityIdx, BaseComponent* component, StringID typeID);
 
 private:
 	ComponentMap mComponents;

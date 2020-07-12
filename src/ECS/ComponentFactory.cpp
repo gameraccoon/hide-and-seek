@@ -14,30 +14,6 @@ ComponentFactory::CreationFn ComponentFactory::getCreationFn(StringID className)
 	return nullptr;
 }
 
-std::optional<std::type_index> ComponentFactory::getTypeIDFromClassName(StringID className) const
-{
-	const auto& it = mClassNameToTypeID.find(className);
-	if (it != mClassNameToTypeID.end())
-	{
-		return it->second;
-	}
-
-	ReportFatalError("Unknown component type: '%s'", className);
-	return std::nullopt;
-}
-
-StringID ComponentFactory::getClassNameFromTypeID(const std::type_index& typeID) const
-{
-	const auto& it = mTypeIDToClassName.find(typeID);
-	if (it != mTypeIDToClassName.end())
-	{
-		return it->second;
-	}
-
-	ReportError("Unknown type_index: '%s'", typeID.name());
-	return StringID();
-}
-
 BaseComponent* ComponentFactory::createComponent(StringID typeName) const
 {
 	const auto& it = mComponentCreators.find(typeName);

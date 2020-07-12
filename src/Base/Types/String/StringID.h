@@ -17,17 +17,40 @@ public:
 public:
 	constexpr StringID() = default;
 
-	bool isValid() const { return hash != 0; }
+	[[nodiscard]] bool isValid() const noexcept { return hash != InvalidValue; }
 
-	friend bool operator ==(const StringID& a, const StringID& b);
-	friend bool operator !=(const StringID& a, const StringID& b);
-	friend bool operator <(const StringID& a, const StringID& b);
-	friend bool operator >(const StringID& a, const StringID& b);
-	friend bool operator <=(const StringID& a, const StringID& b);
-	friend bool operator >=(const StringID& a, const StringID& b);
+	[[nodiscard]] bool operator ==(const StringID& other) const noexcept
+	{
+		return hash == other.hash;
+	}
+
+	[[nodiscard]] bool operator !=(const StringID& other) const noexcept
+	{
+		return hash != other.hash;
+	}
+
+	[[nodiscard]] bool operator <(const StringID& other) const noexcept
+	{
+		return hash < other.hash;
+	}
+
+	[[nodiscard]] bool operator >(const StringID& other) const noexcept
+	{
+		return hash > other.hash;
+	}
+
+	[[nodiscard]] bool operator <=(const StringID& other) const noexcept
+	{
+		return hash <= other.hash;
+	}
+
+	[[nodiscard]] bool operator >=(const StringID& other) const noexcept
+	{
+		return hash >= other.hash;
+	}
 
 private:
-	constexpr StringID(KeyType hash)
+	constexpr StringID(KeyType hash) noexcept
 		: hash(hash)
 	{
 	}
