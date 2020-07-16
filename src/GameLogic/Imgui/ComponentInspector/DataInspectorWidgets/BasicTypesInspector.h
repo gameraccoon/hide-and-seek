@@ -1,5 +1,9 @@
 #pragma once
 
+#include <vector>
+
+#include "imgui.h"
+
 struct Vector2D;
 class Rotator;
 class StringID;
@@ -29,4 +33,18 @@ namespace ImguiDataInspection
 
 	template<>
 	void Inspector(const char* title, StringID& data);
+
+	template<typename T>
+	void Inspector(const char* title, std::vector<T>& data)
+	{
+		if (ImGui::TreeNode(title))
+		{
+			for (size_t i = 0, iSize = data.size(); i < iSize; ++i)
+			{
+				Inspector(FormatString("%s[%u]", title, i).c_str(), data[i]);
+			}
+			ImGui::TreePop();
+			ImGui::Separator();
+		}
+	}
 }
