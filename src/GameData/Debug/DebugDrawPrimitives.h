@@ -1,7 +1,6 @@
 #pragma once
 
 #include "GameData/Core/Vector2D.h"
-#include "GameData/Spatial/CellPos.h"
 #include "GameData/Time/GameplayTimestamp.h"
 
 struct DebugDrawPrimitive
@@ -21,20 +20,17 @@ struct DebugDrawPrimitive
 
 struct DebugDrawWorldPoint : DebugDrawPrimitive
 {
-	CellPos cellPos;
 	Vector2D pos;
 	std::string name;
 
-	DebugDrawWorldPoint(const CellPos& cellPos, const Vector2D& pos, GameplayTimestamp lifeDeadline)
+	DebugDrawWorldPoint(const Vector2D& pos, GameplayTimestamp lifeDeadline)
 		: DebugDrawPrimitive(lifeDeadline)
-		, cellPos(cellPos)
 		, pos(pos)
 	{
 	}
 
-	DebugDrawWorldPoint(const CellPos& cellPos, const Vector2D& pos, const std::string& name, GameplayTimestamp lifeDeadline)
+	DebugDrawWorldPoint(const Vector2D& pos, const std::string& name, GameplayTimestamp lifeDeadline)
 		: DebugDrawPrimitive(lifeDeadline)
-		, cellPos(cellPos)
 		, pos(pos)
 		, name(name)
 	{

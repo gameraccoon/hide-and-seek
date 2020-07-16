@@ -9,7 +9,9 @@
 #include "GameData/Components/MovementComponent.generated.h"
 #include "GameData/Components/CharacterStateComponent.generated.h"
 #include "GameData/Components/TrackedSpatialEntitiesComponent.generated.h"
+#include "GameData/Components/DebugDrawComponent.generated.h"
 #include "GameData/World.h"
+#include "GameData/GameData.h"
 
 #include "Utils/AI/NavMeshGenerator.h"
 
@@ -195,56 +197,56 @@ static int fixupShortcuts(dtPolyRef* path, int npath, dtNavMeshQuery* navQuery)
 
 constexpr int MAX_SMOOTH = 2048;
 
-static void RecalcNavmesh(dtNavMesh* m_navMesh, dtNavMeshQuery* m_navQuery, float* m_spos, float* m_epos, float* m_polyPickExt, float* m_smoothPath, int& m_nsmoothPath)
+static void RecalcNavmesh(dtNavMesh* navMesh, dtNavMeshQuery* navQuery, float* spos, float* epos, float* polyPickExt, float* smoothPath, int& nsmoothPath)
 {
-	if (!m_navMesh) {
+	if (!navMesh) {
 		return;
 	}
 
 	constexpr int MAX_POLYS = 2048;
 
-	dtPolyRef m_startRef;
-	dtPolyRef m_endRef;
+	dtPolyRef startRef;
+	dtPolyRef endRef;
 
-	dtQueryFilter m_filter;
+	dtQueryFilter filter;
 
-	m_navQuery->findNearestPoly(m_spos, m_polyPickExt, &m_filter, &m_startRef, nullptr);
-	m_navQuery->findNearestPoly(m_epos, m_polyPickExt, &m_filter, &m_endRef, nullptr);
+	navQuery->findNearestPoly(spos, polyPickExt, &filter, &startRef, nullptr);
+	navQuery->findNearestPoly(epos, polyPickExt, &filter, &endRef, nullptr);
 
-	if (m_startRef && m_endRef)
+	if (startRef && endRef)
 	{
-		int m_npolys;
-		dtPolyRef m_polys[MAX_POLYS];
-		m_navQuery->findPath(m_startRef, m_endRef, m_spos, m_epos, &m_filter, m_polys, &m_npolys, MAX_POLYS);
+		int orig_npolys;
+		dtPolyRef orig_polys[MAX_POLYS];
+		navQuery->findPath(startRef, endRef, spos, epos, &filter, orig_polys, &orig_npolys, MAX_POLYS);
 
-		if (m_npolys)
+		if (orig_npolys)
 		{
 			// Iterate over the path to find smooth path on the detail mesh surface.
 			dtPolyRef polys[MAX_POLYS];
-			memcpy(polys, m_polys, sizeof(dtPolyRef)*static_cast<size_t>(m_npolys));
-			int npolys = m_npolys;
+			memcpy(polys, orig_polys, sizeof(dtPolyRef)*static_cast<size_t>(orig_npolys));
+			int npolys = orig_npolys;
 
 			float iterPos[3], targetPos[3];
-			m_navQuery->closestPointOnPoly(m_startRef, m_spos, iterPos, nullptr);
-			m_navQuery->closestPointOnPoly(polys[npolys-1], m_epos, targetPos, nullptr);
+			navQuery->closestPointOnPoly(startRef, spos, iterPos, nullptr);
+			navQuery->closestPointOnPoly(polys[npolys-1], epos, targetPos, nullptr);
 
 			constexpr float STEP_SIZE = 50.0f;
 			constexpr float SLOP = 0.0001f;
 
-			dtVcopy(&m_smoothPath[m_nsmoothPath*3], iterPos);
-			m_nsmoothPath++;
+			dtVcopy(&smoothPath[nsmoothPath*3], iterPos);
+			nsmoothPath++;
 
 			// Move towards target a small advancement at a time until target reached or
 			// when ran out of memory to store the path.
-			while (npolys && m_nsmoothPath < MAX_SMOOTH)
+			while (npolys && nsmoothPath < MAX_SMOOTH)
 			{
 				// Find location to steer towards.
 				float steerPos[3];
 				unsigned char steerPosFlag;
 				dtPolyRef steerPosRef;
 
-				if (!getSteerTarget(m_navQuery, iterPos, targetPos, SLOP,
-									polys, npolys, steerPos, steerPosFlag, steerPosRef)) {
+				if (!getSteerTarget(navQuery, iterPos, targetPos, SLOP,
+						polys, npolys, steerPos, steerPosFlag, steerPosRef)) {
 					break;
 				}
 
@@ -269,14 +271,14 @@ static void RecalcNavmesh(dtNavMesh* m_navMesh, dtNavMeshQuery* m_navQuery, floa
 				float result[3];
 				dtPolyRef visited[16];
 				int nvisited = 0;
-				m_navQuery->moveAlongSurface(polys[0], iterPos, moveTgt, &m_filter,
+				navQuery->moveAlongSurface(polys[0], iterPos, moveTgt, &filter,
 											 result, visited, &nvisited, 16);
 
 				npolys = fixupCorridor(polys, npolys, MAX_POLYS, visited, nvisited);
-				npolys = fixupShortcuts(polys, npolys, m_navQuery);
+				npolys = fixupShortcuts(polys, npolys, navQuery);
 
 				float h = 0;
-				m_navQuery->getPolyHeight(polys[0], result, &h);
+				navQuery->getPolyHeight(polys[0], result, &h);
 				result[1] = h;
 				dtVcopy(iterPos, result);
 
@@ -285,10 +287,10 @@ static void RecalcNavmesh(dtNavMesh* m_navMesh, dtNavMeshQuery* m_navQuery, floa
 				{
 					// Reached end of path.
 					dtVcopy(iterPos, targetPos);
-					if (m_nsmoothPath < MAX_SMOOTH)
+					if (nsmoothPath < MAX_SMOOTH)
 					{
-						dtVcopy(&m_smoothPath[m_nsmoothPath*3], iterPos);
-						m_nsmoothPath++;
+						dtVcopy(&smoothPath[nsmoothPath*3], iterPos);
+						nsmoothPath++;
 					}
 					break;
 				}
@@ -312,33 +314,33 @@ static void RecalcNavmesh(dtNavMesh* m_navMesh, dtNavMeshQuery* m_navQuery, floa
 					npolys -= npos;
 
 					// Handle the connection.
-					dtStatus status = m_navMesh->getOffMeshConnectionPolyEndPoints(prevRef, polyRef, startPos, endPos);
+					dtStatus status = navMesh->getOffMeshConnectionPolyEndPoints(prevRef, polyRef, startPos, endPos);
 					if (dtStatusSucceed(status))
 					{
-						if (m_nsmoothPath < MAX_SMOOTH)
+						if (nsmoothPath < MAX_SMOOTH)
 						{
-							dtVcopy(&m_smoothPath[m_nsmoothPath*3], startPos);
-							m_nsmoothPath++;
+							dtVcopy(&smoothPath[nsmoothPath*3], startPos);
+							nsmoothPath++;
 							// Hack to make the dotted path not visible during off-mesh connection.
-							if (m_nsmoothPath & 1)
+							if (nsmoothPath & 1)
 							{
-								dtVcopy(&m_smoothPath[m_nsmoothPath*3], startPos);
-								m_nsmoothPath++;
+								dtVcopy(&smoothPath[nsmoothPath*3], startPos);
+								nsmoothPath++;
 							}
 						}
 						// Move position at the other side of the off-mesh link.
 						dtVcopy(iterPos, endPos);
 						float eh = 0.0f;
-						m_navQuery->getPolyHeight(polys[0], iterPos, &eh);
+						navQuery->getPolyHeight(polys[0], iterPos, &eh);
 						iterPos[1] = eh;
 					}
 				}
 
 				// Store results.
-				if (m_nsmoothPath < MAX_SMOOTH)
+				if (nsmoothPath < MAX_SMOOTH)
 				{
-					dtVcopy(&m_smoothPath[m_nsmoothPath*3], iterPos);
-					m_nsmoothPath++;
+					dtVcopy(&smoothPath[nsmoothPath*3], iterPos);
+					nsmoothPath++;
 				}
 			}
 		}
@@ -365,15 +367,19 @@ void AiSystem::update()
 	}
 
 	TupleVector<CollisionComponent*, TransformComponent*> collisions;
-	world.getEntityManager().getComponents<CollisionComponent, TransformComponent>(collisions);
+	world.getSpatialData().getAllCellManagers().getComponents<CollisionComponent, TransformComponent>(collisions);
 
-	auto it = std::find_if(std::begin(collisions), std::end(collisions), [lastUpdateTimestamp = navMeshComponent->getUpdateTimestamp()](const std::tuple<CollisionComponent*, TransformComponent*>& set)
+	bool needUpdate = navMeshComponent->getNavMeshRef().getMesh() == nullptr;
+	if (!needUpdate)
 	{
-		GameplayTimestamp lightUpdateTimestamp = std::get<1>(set)->getUpdateTimestamp();
-		return lightUpdateTimestamp > lastUpdateTimestamp && std::get<0>(set)->getGeometry().type == HullType::Angular;
-	});
+		needUpdate = std::any_of(std::begin(collisions), std::end(collisions), [lastUpdateTimestamp = navMeshComponent->getUpdateTimestamp()](const std::tuple<CollisionComponent*, TransformComponent*>& set)
+		{
+			GameplayTimestamp objectUpdateTimestamp = std::get<1>(set)->getUpdateTimestamp();
+			return objectUpdateTimestamp > lastUpdateTimestamp && std::get<0>(set)->getGeometry().type == HullType::Angular;
+		});
+	}
 
-	if (it != collisions.end())
+	if (needUpdate)
 	{
 		NavMeshGenerator generator;
 		generator.generateNavMesh(navMeshComponent->getNavMeshRef(), collisions);
@@ -399,43 +405,69 @@ void AiSystem::update()
 		return;
 	}
 
+	auto [debugDraw] = mWorldHolder.getGameData().getGameComponents().getComponents<DebugDrawComponent>();
+
 	Vector2D targetLocation = playerTransform->getLocation();
 
-	world.getEntityManager().forEachComponentSet<AiControllerComponent, TransformComponent, MovementComponent, CharacterStateComponent>([targetLocation, navMesh](AiControllerComponent* aiController, TransformComponent* transform, MovementComponent* movement, CharacterStateComponent* characterState)
+	world.getSpatialData().getAllCellManagers().forEachComponentSet<AiControllerComponent, TransformComponent, MovementComponent, CharacterStateComponent>([targetLocation, navMesh, debugDraw, timestampNow](AiControllerComponent* aiController, TransformComponent* transform, MovementComponent* movement, CharacterStateComponent* characterState)
 	{
-		Vector2D startLocation = transform->getLocation();
-
-		dtNavMeshQuery query;
-		query.init(navMesh, 256);
-		float startPos[3];
-		startPos[0] = startLocation.x;
-		startPos[1] = 0.0f;
-		startPos[2] = startLocation.y;
-		float endPos[3];
-		endPos[0] = targetLocation.x;
-		endPos[1] = 0.0f;
-		endPos[2] = targetLocation.y;
-		float halfExtents[3] = {20.0f, 5.0f, 20.0f};
-
-		int m_nsmoothPath = 0;
-		float m_smoothPath[MAX_SMOOTH*3];
-
-		RecalcNavmesh(navMesh, &query, startPos, endPos, halfExtents, m_smoothPath, m_nsmoothPath);
+		Vector2D currentLocation = transform->getLocation();
 
 		std::vector<Vector2D> &path = aiController->getPathRef().getSmoothPathRef();
-		path.resize(static_cast<size_t>(m_nsmoothPath / 3));
-		for (size_t i = 0; i < path.size(); ++i)
+		if (path.empty())
 		{
-			path[i].x = m_smoothPath[i*3];
-			path[i].y = m_smoothPath[i*3 + 2];
+			dtNavMeshQuery query;
+			query.init(navMesh, 256);
+			float startPos[3];
+			startPos[0] = currentLocation.x;
+			startPos[1] = 0.0f;
+			startPos[2] = currentLocation.y;
+			float endPos[3];
+			endPos[0] = targetLocation.x;
+			endPos[1] = 0.0f;
+			endPos[2] = targetLocation.y;
+			float halfExtents[3] = {40.0f, 5.0f, 40.0f};
+
+			int nsmoothPath = 0;
+			float smoothPath[MAX_SMOOTH*3];
+
+			RecalcNavmesh(navMesh, &query, startPos, endPos, halfExtents, smoothPath, nsmoothPath);
+
+			size_t pointsCount = static_cast<size_t>(nsmoothPath / 3);
+			path.reserve(pointsCount);
+			for (size_t i = 0; i < pointsCount; ++i)
+			{
+				Vector2D newPoint(smoothPath[i*3], smoothPath[i*3 + 2]);
+				if (path.empty() || newPoint != path.back())
+				{
+					path.push_back(std::move(newPoint));
+				}
+			}
+
+			for (size_t i = 1; i < path.size(); ++i)
+			{
+				debugDraw->getWorldLineSegmentsRef().emplace_back(path[i - 1], path[i], timestampNow.getIncreasedByFloatTime(10.0f));
+			}
+
+			characterState->getBlackboardRef().setValue<bool>(CharacterStateBlackboardKeys::TryingToMove, path.size() > 1);
 		}
 
-		if (path.size() > 1)
+		if (!path.empty())
 		{
-			Vector2D diff = path[1] - startLocation;
+			if ((path[0] - currentLocation).qSize() < 100.0f)
+			{
+				path.erase(path.begin());
+			}
+		}
+
+		if (!path.empty())
+		{
+			Vector2D diff = path[1] - currentLocation;
 			movement->setMoveDirection(diff);
 		}
-
-		characterState->getBlackboardRef().setValue<bool>(CharacterStateBlackboardKeys::TryingToMove, path.size() > 1);
+		else
+		{
+			movement->setMoveDirection(ZERO_VECTOR);
+		}
 	});
 }
