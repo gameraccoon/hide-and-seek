@@ -11,6 +11,6 @@ namespace ImguiDataInspection
 	template<>
 	void Inspector(const char* title, TravelPath& data)
 	{
-		Inspector(title, data.getSmoothPathRef());
+		Inspector(title, data.smoothPath);
 	}
 }

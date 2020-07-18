@@ -38,6 +38,7 @@ void NavMeshGenerator::generateNavMesh(NavMesh& outNavMesh, const TupleVector<Co
 	constexpr int polygonMaxVertsCount = 3;
 
 	Vector2D size(10000, 10000);
+	Vector2D halfSize(size * 0.5f);
 
 	TPPLPartition pp;
 
@@ -91,9 +92,9 @@ void NavMeshGenerator::generateNavMesh(NavMesh& outNavMesh, const TupleVector<Co
 	DtIndexType idx = 0;
 	for (auto& it : verticesMap)
 	{
-		verts[static_cast<size_t>(idx) * 3] = static_cast<DtCoordType>(it.first.x + 5000.0f);
+		verts[static_cast<size_t>(idx) * 3] = static_cast<DtCoordType>(it.first.x + halfSize.x);
 		verts[static_cast<size_t>(idx) * 3 + 1] = 0;
-		verts[static_cast<size_t>(idx) * 3 + 2] = static_cast<DtCoordType>(it.first.y + 5000.0f);
+		verts[static_cast<size_t>(idx) * 3 + 2] = static_cast<DtCoordType>(it.first.y + halfSize.y);
 		it.second = idx++;
 	}
 

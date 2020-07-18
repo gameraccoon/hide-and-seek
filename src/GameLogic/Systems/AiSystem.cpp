@@ -242,7 +242,7 @@ static void RecalcNavmesh(dtNavMesh* navMesh, dtNavMeshQuery* navQuery, float* s
 			navQuery->closestPointOnPoly(startRef, spos, iterPos, nullptr);
 			navQuery->closestPointOnPoly(polys[npolys-1], epos, targetPos, nullptr);
 
-			constexpr float STEP_SIZE = 50.0f;
+			constexpr float STEP_SIZE = 5.0f;
 			constexpr float SLOP = 0.0001f;
 
 			dtVcopy(&smoothPath[nsmoothPath*3], iterPos);
@@ -418,17 +418,19 @@ void AiSystem::update()
 	{
 		return;
 	}
+	GameplayTimestamp navmeshUpdateTimestamp = navMeshComponent->getUpdateTimestamp();
 
 	auto [debugDraw] = mWorldHolder.getGameData().getGameComponents().getComponents<DebugDrawComponent>();
 
 	Vector2D targetLocation = playerTransform->getLocation();
 
-	world.getSpatialData().getAllCellManagers().forEachComponentSet<AiControllerComponent, TransformComponent, MovementComponent, CharacterStateComponent>([targetLocation, navMesh, debugDraw, timestampNow](AiControllerComponent* aiController, TransformComponent* transform, MovementComponent* movement, CharacterStateComponent* characterState)
+	world.getSpatialData().getAllCellManagers().forEachComponentSet<AiControllerComponent, TransformComponent, MovementComponent, CharacterStateComponent>([targetLocation, navMesh, timestampNow, navmeshUpdateTimestamp, debugDraw](AiControllerComponent* aiController, TransformComponent* transform, MovementComponent* movement, CharacterStateComponent* characterState)
 	{
 		Vector2D currentLocation = transform->getLocation();
 
-		std::vector<Vector2D> &path = aiController->getPathRef().getSmoothPathRef();
-		if (path.empty())
+		TravelPath& pathData = aiController->getPathRef();
+		std::vector<Vector2D> &path = pathData.smoothPath;
+		if (path.empty() || pathData.targetPos != targetLocation || pathData.updateTimestamp < navmeshUpdateTimestamp)
 		{
 			dtNavMeshQuery query;
 			query.init(navMesh, 256);
@@ -448,6 +450,7 @@ void AiSystem::update()
 			RecalcNavmesh(navMesh, &query, startPos, endPos, halfExtents, smoothPath, nsmoothPath);
 
 			size_t pointsCount = static_cast<size_t>(nsmoothPath / 3);
+			path.clear();
 			path.reserve(pointsCount);
 			for (size_t i = 0; i < pointsCount; ++i)
 			{
@@ -464,6 +467,8 @@ void AiSystem::update()
 			}
 
 			characterState->getBlackboardRef().setValue<bool>(CharacterStateBlackboardKeys::TryingToMove, path.size() > 1);
+			pathData.targetPos = targetLocation;
+			pathData.updateTimestamp = timestampNow;
 		}
 
 		if (!path.empty())

@@ -155,7 +155,7 @@ void DebugDrawSystem::update()
 
 		spatialManager.forEachComponentSet<AiControllerComponent>([drawShift, &quadUV, &navMeshSprite, &renderer](AiControllerComponent* aiController)
 		{
-			std::vector<Vector2D>& path = aiController->getPathRef().getSmoothPathRef();
+			std::vector<Vector2D>& path = aiController->getPathRef().smoothPath;
 			if (path.size() > 1)
 			{
 				std::vector<Graphics::DrawPoint> drawablePolygon;
