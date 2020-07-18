@@ -29,10 +29,10 @@ inline bool inRange(const float* v1, const float* v2, const float r, const float
 }
 
 static bool getSteerTarget(dtNavMeshQuery* navQuery, const float* startPos, const float* endPos,
-						   const float minTargetDist,
-						   const dtPolyRef* path, const int pathSize,
-						   float* steerPos, unsigned char& steerPosFlag, dtPolyRef& steerPosRef,
-						   float* outPoints = nullptr, int* outPointCount = nullptr)
+	const float minTargetDist,
+	const dtPolyRef* path, const int pathSize,
+	float* steerPos, unsigned char& steerPosFlag, dtPolyRef& steerPosRef,
+	float* outPoints = nullptr, int* outPointCount = nullptr)
 {
 	// Find steer target.
 	static const int MAX_STEER_POINTS = 3;
@@ -49,11 +49,11 @@ static bool getSteerTarget(dtNavMeshQuery* navQuery, const float* startPos, cons
 	if (outPoints && outPointCount)
 	{
 		*outPointCount = nsteerPath;
-		for (int i = 0; i < nsteerPath; ++i) {
+		for (int i = 0; i < nsteerPath; ++i)
+		{
 			dtVcopy(&outPoints[i*3], &steerPath[i*3]);
 		}
 	}
-
 
 	// Find vertex far enough to steer to.
 	int ns = 0;
@@ -61,13 +61,15 @@ static bool getSteerTarget(dtNavMeshQuery* navQuery, const float* startPos, cons
 	{
 		// Stop at Off-Mesh link or when point is further than slop away.
 		if ((steerPathFlags[ns] & DT_STRAIGHTPATH_OFFMESH_CONNECTION) ||
-			!inRange(&steerPath[ns*3], startPos, minTargetDist, 1000.0f)) {
+			!inRange(&steerPath[ns*3], startPos, minTargetDist, 1000.0f))
+		{
 			break;
 		}
 		ns++;
 	}
 	// Failed to find good point to steer to.
-	if (ns >= nsteerPath) {
+	if (ns >= nsteerPath)
+	{
 		return false;
 	}
 
@@ -83,7 +85,7 @@ template<class T> inline T rcMin(T a, T b) { return a < b ? a : b; }
 template<class T> inline T rcMax(T a, T b) { return a > b ? a : b; }
 
 static int fixupCorridor(dtPolyRef* path, const int npath, const int maxPath,
-						 const dtPolyRef* visited, const int nvisited)
+	const dtPolyRef* visited, const int nvisited)
 {
 	int furthestPath = -1;
 	int furthestVisited = -1;
@@ -101,13 +103,15 @@ static int fixupCorridor(dtPolyRef* path, const int npath, const int maxPath,
 				found = true;
 			}
 		}
-		if (found) {
+		if (found)
+		{
 			break;
 		}
 	}
 
 	// If no intersection found just return current path.
-	if (furthestPath == -1 || furthestVisited == -1) {
+	if (furthestPath == -1 || furthestVisited == -1)
+	{
 		return npath;
 	}
 
@@ -120,12 +124,14 @@ static int fixupCorridor(dtPolyRef* path, const int npath, const int maxPath,
 	if (req+size > maxPath) {
 		size = maxPath-req;
 	}
-	if (size) {
+	if (size)
+	{
 		memmove(path+req, path+orig, static_cast<size_t>(size)*sizeof(dtPolyRef));
 	}
 
 	// Store visited
-	for (int i = 0; i < req; ++i) {
+	for (int i = 0; i < req; ++i)
+	{
 		path[i] = visited[(nvisited-1)-i];
 	}
 
@@ -155,7 +161,8 @@ static int fixupShortcuts(dtPolyRef* path, int npath, dtNavMeshQuery* navQuery)
 
 	const dtMeshTile* tile = nullptr;
 	const dtPoly* poly = nullptr;
-	if (dtStatusFailed(navQuery->getAttachedNavMesh()->getTileAndPolyByRef(path[0], &tile, &poly))) {
+	if (dtStatusFailed(navQuery->getAttachedNavMesh()->getTileAndPolyByRef(path[0], &tile, &poly)))
+	{
 		return npath;
 	}
 
@@ -164,7 +171,8 @@ static int fixupShortcuts(dtPolyRef* path, int npath, dtNavMeshQuery* navQuery)
 		const dtLink* link = &tile->links[k];
 		if (link->ref != 0)
 		{
-			if (nneis < maxNeis) {
+			if (nneis < maxNeis)
+			{
 				neis[nneis++] = link->ref;
 			}
 		}
@@ -174,10 +182,12 @@ static int fixupShortcuts(dtPolyRef* path, int npath, dtNavMeshQuery* navQuery)
 	// in the path, short cut to that polygon directly.
 	static const int maxLookAhead = 6;
 	int cut = 0;
-	for (int i = dtMin(maxLookAhead, npath) - 1; i > 1 && cut == 0; i--) {
+	for (int i = dtMin(maxLookAhead, npath) - 1; i > 1 && cut == 0; i--)
+	{
 		for (int j = 0; j < nneis; j++)
 		{
-			if (path[i] == neis[j]) {
+			if (path[i] == neis[j])
+			{
 				cut = i;
 				break;
 			}
@@ -187,7 +197,8 @@ static int fixupShortcuts(dtPolyRef* path, int npath, dtNavMeshQuery* navQuery)
 	{
 		int offset = cut-1;
 		npath -= offset;
-		for (int i = 1; i < npath; i++) {
+		for (int i = 1; i < npath; i++)
+		{
 			path[i] = path[i+offset];
 		}
 	}
@@ -199,7 +210,8 @@ constexpr int MAX_SMOOTH = 2048;
 
 static void RecalcNavmesh(dtNavMesh* navMesh, dtNavMeshQuery* navQuery, float* spos, float* epos, float* polyPickExt, float* smoothPath, int& nsmoothPath)
 {
-	if (!navMesh) {
+	if (!navMesh)
+	{
 		return;
 	}
 
@@ -246,7 +258,8 @@ static void RecalcNavmesh(dtNavMesh* navMesh, dtNavMeshQuery* navQuery, float* s
 				dtPolyRef steerPosRef;
 
 				if (!getSteerTarget(navQuery, iterPos, targetPos, SLOP,
-						polys, npolys, steerPos, steerPosFlag, steerPosRef)) {
+						polys, npolys, steerPos, steerPosFlag, steerPosRef))
+				{
 					break;
 				}
 
@@ -258,10 +271,12 @@ static void RecalcNavmesh(dtNavMesh* navMesh, dtNavMeshQuery* navQuery, float* s
 				dtVsub(delta, steerPos, iterPos);
 				len = dtMathSqrtf(dtVdot(delta, delta));
 				// If the steer target is end of path or off-mesh link, do not move past the location.
-				if ((endOfPath || offMeshConnection) && len < STEP_SIZE) {
+				if ((endOfPath || offMeshConnection) && len < STEP_SIZE)
+				{
 					len = 1;
 				}
-				else {
+				else
+				{
 					len = STEP_SIZE / len;
 				}
 				float moveTgt[3];
@@ -271,8 +286,7 @@ static void RecalcNavmesh(dtNavMesh* navMesh, dtNavMeshQuery* navQuery, float* s
 				float result[3];
 				dtPolyRef visited[16];
 				int nvisited = 0;
-				navQuery->moveAlongSurface(polys[0], iterPos, moveTgt, &filter,
-											 result, visited, &nvisited, 16);
+				navQuery->moveAlongSurface(polys[0], iterPos, moveTgt, &filter, result, visited, &nvisited, 16);
 
 				npolys = fixupCorridor(polys, npolys, MAX_POLYS, visited, nvisited);
 				npolys = fixupShortcuts(polys, npolys, navQuery);
