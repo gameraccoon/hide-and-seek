@@ -6,78 +6,46 @@
 
 #include "Base/Math/Float.h"
 
-Rotator::Rotator(float angle)
-	: mValue(angle)
-{
-	normalize();
-}
-
-bool Rotator::isNearlyEqualTo(Rotator other) const
+bool Rotator::isNearlyEqualTo(Rotator other) const noexcept
 {
 	float difference = this->getValue() - other.getValue();
 	return Math::AreEqualWithEpsilon(difference, 0) || Math::AreEqualWithEpsilon(difference, TwoPI);
 }
 
-float Rotator::getValue() const
+bool Rotator::operator==(Rotator other) const noexcept
 {
-	return mValue;
+	return getValue() == other.getValue();
 }
 
-void Rotator::normalize()
+bool Rotator::operator!=(Rotator other) const noexcept
 {
-	while (mValue <= -PI)
-	{
-		mValue += 2 * PI;
-	}
-	while (mValue > PI)
-	{
-		mValue -= 2 * PI;
-	}
+	return !(*this == other);
 }
 
-Rotator operator-(Rotator rot)
+Rotator Rotator::operator+(Rotator other) const noexcept
 {
-	return Rotator(-rot.getValue());
+	return Rotator(getValue() + other.getValue());
 }
 
-bool operator==(const Rotator& left, const Rotator& right)
+Rotator Rotator::operator+=(Rotator other) noexcept
 {
-	return left.getValue() == right.getValue();
+	mValue += other.getValue();
+	normalize();
+
+	return *this;
 }
 
-bool operator!=(const Rotator& left, const Rotator& right)
+Rotator Rotator::operator-(Rotator right) const noexcept
 {
-	return !(left == right);
+	return Rotator(getValue() - right.getValue());
 }
 
-Rotator operator+(const Rotator& left, const Rotator& right)
+Rotator Rotator::operator-=(Rotator right) noexcept
 {
-	return Rotator(left.getValue() + right.getValue());
-}
+	mValue -= right.getValue();
+	normalize();
 
-Rotator operator+=(Rotator& left, const Rotator& right)
-{
-	float newValue = left.getValue() + right.getValue();
-
-	left.mValue = newValue;
-	left.normalize();
-
-	return Rotator(newValue);
-}
-
-Rotator operator-(const Rotator& left, const Rotator& right)
-{
-	return Rotator(left.getValue() - right.getValue());
-}
-
-Rotator operator-=(Rotator& left, const Rotator& right)
-{
-	float newValue = left.getValue() - right.getValue();
-
-	left.mValue = newValue;
-	left.normalize();
-
-	return Rotator(newValue);
+	return *this;
 }
 
 void to_json(nlohmann::json& outJson, const Rotator& rotator)

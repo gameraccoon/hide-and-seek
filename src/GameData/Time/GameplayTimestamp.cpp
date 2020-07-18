@@ -17,60 +17,60 @@ GameplayTimestamp::TimeValueType GetConvertedPassedTime(float passedTime)
 	return static_cast<GameplayTimestamp::TimeValueType>(PositiveRoundFunc(passedTime * GameplayTimestamp::TimeMultiplier));
 }
 
-bool GameplayTimestamp::isInitialized() const
+bool GameplayTimestamp::isInitialized() const noexcept
 {
 	return mTimestamp != UNINITIALIZED_TIME;
 }
 
-bool GameplayTimestamp::operator==(GameplayTimestamp other) const
+bool GameplayTimestamp::operator==(GameplayTimestamp other) const noexcept
 {
 	Assert(isInitialized(), "Timestamp should be initialized before being used");
 	Assert(other.isInitialized(), "Timestamp should be initialized before being used");
 	return mTimestamp == other.mTimestamp;
 }
 
-bool GameplayTimestamp::operator!=(GameplayTimestamp other) const
+bool GameplayTimestamp::operator!=(GameplayTimestamp other) const noexcept
 {
 	Assert(isInitialized(), "Timestamp should be initialized before being used");
 	Assert(other.isInitialized(), "Timestamp should be initialized before being used");
 	return mTimestamp != other.mTimestamp;
 }
 
-bool GameplayTimestamp::operator<(GameplayTimestamp other) const
+bool GameplayTimestamp::operator<(GameplayTimestamp other) const noexcept
 {
 	Assert(isInitialized(), "Timestamp should be initialized before being used");
 	Assert(other.isInitialized(), "Timestamp should be initialized before being used");
 	return mTimestamp < other.mTimestamp;
 }
 
-bool GameplayTimestamp::operator<=(GameplayTimestamp other) const
+bool GameplayTimestamp::operator<=(GameplayTimestamp other) const noexcept
 {
 	Assert(isInitialized(), "Timestamp should be initialized before being used");
 	Assert(other.isInitialized(), "Timestamp should be initialized before being used");
 	return mTimestamp <= other.mTimestamp;
 }
 
-bool GameplayTimestamp::operator>(GameplayTimestamp other) const
+bool GameplayTimestamp::operator>(GameplayTimestamp other) const noexcept
 {
 	Assert(isInitialized(), "Timestamp should be initialized before being used");
 	Assert(other.isInitialized(), "Timestamp should be initialized before being used");
 	return mTimestamp > other.mTimestamp;
 }
 
-bool GameplayTimestamp::operator>=(GameplayTimestamp other) const
+bool GameplayTimestamp::operator>=(GameplayTimestamp other) const noexcept
 {
 	Assert(isInitialized(), "Timestamp should be initialized before being used");
 	Assert(other.isInitialized(), "Timestamp should be initialized before being used");
 	return mTimestamp >= other.mTimestamp;
 }
 
-void GameplayTimestamp::increaseByFloatTime(float passedTime)
+void GameplayTimestamp::increaseByFloatTime(float passedTime) noexcept
 {
 	Assert(isInitialized(), "Timestamp should be initialized before being used");
 	mTimestamp += GetConvertedPassedTime(passedTime);
 }
 
-GameplayTimestamp GameplayTimestamp::getIncreasedByFloatTime(float passedTime) const
+GameplayTimestamp GameplayTimestamp::getIncreasedByFloatTime(float passedTime) const noexcept
 {
 	Assert(isInitialized(), "Timestamp should be initialized before being used");
 	return GameplayTimestamp(mTimestamp + GetConvertedPassedTime(passedTime));

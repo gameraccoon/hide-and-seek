@@ -14,12 +14,12 @@ void from_json(const nlohmann::json& json, Entity& outEntity)
 	json.at("id").get_to(outEntity.mId);
 }
 
-Entity OptionalEntity::getEntity() const {
+Entity OptionalEntity::getEntity() const noexcept {
 	Assert(mIsValid, "Getting uninitialized entity");
 	return Entity(mId);
 }
 
-Entity::EntityID OptionalEntity::getID() const
+Entity::EntityID OptionalEntity::getID() const noexcept
 {
 	Assert(mIsValid, "Getting uninitialized entity ID");
 	return mId;

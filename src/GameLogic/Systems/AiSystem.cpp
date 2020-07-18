@@ -455,7 +455,7 @@ void AiSystem::update()
 			for (size_t i = 0; i < pointsCount; ++i)
 			{
 				Vector2D newPoint(smoothPath[i*3], smoothPath[i*3 + 2]);
-				if (path.empty() || newPoint != path.back())
+				if (path.empty() || !newPoint.isNearlyEqualTo(path.back()))
 				{
 					path.push_back(std::move(newPoint));
 				}

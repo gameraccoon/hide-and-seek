@@ -247,7 +247,7 @@ void VisibilityPolygonCalculator::calculateVisibilityPolygon(std::vector<Vector2
 		}
 
 		// add point (and optionally its casted shadow) to the polygon
-		if (nearestPoint != point.coords)
+		if (!nearestPoint.isNearlyEqualTo(point.coords))
 		{
 			if (point.side == PointSide::Left)
 			{

@@ -3,42 +3,28 @@
 #include "GameData/Core/Border.h"
 
 
-Border::Border(const Vector2D& a, const Vector2D& b) : aPoint(a),
-										bPoint(b),
-										normal((b - a).normal())
+Border::Border(Vector2D a, Vector2D b) noexcept
+	: mPointA(a)
+	, mPointB(b)
+	, normal((b - a).normal())
 {
 }
 
-Vector2D Border::getNormal() const
+void Border::setA(Vector2D a) noexcept
 {
-	return normal;
-}
-
-Vector2D Border::getA() const
-{
-	return aPoint;
-}
-
-Vector2D Border::getB() const
-{
-	return bPoint;
-}
-
-void Border::setA(const Vector2D& a)
-{
-	aPoint = a;
+	mPointA = a;
 	calculateNormal();
 }
 
-void Border::setB(const Vector2D& b)
+void Border::setB(Vector2D b) noexcept
 {
-	bPoint = b;
+	mPointB = b;
 	calculateNormal();
 }
 
-void Border::calculateNormal()
+void Border::calculateNormal() noexcept
 {
-	normal = (bPoint - aPoint).normal();
+	normal = (mPointB - mPointA).normal();
 }
 
 static_assert(std::is_trivially_copyable<Border>(), "Border should be trivially copyable");

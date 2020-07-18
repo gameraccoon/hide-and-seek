@@ -78,7 +78,7 @@ Vector2D SpatialWorldData::GetRelativeLocation(const CellPos& baseCell, const Ce
 
 bool SpatialWorldData::TransformCellPos(CellPos& inOutCellPos, Vector2D& inOutPos)
 {
-	if (inOutPos.isInside(ZERO_VECTOR, CellSizeVector))
+	if (inOutPos.isInsideRect(ZERO_VECTOR, CellSizeVector))
 	{
 		return false;
 	}

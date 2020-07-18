@@ -32,8 +32,8 @@ public:
 	explicit OptionalEntity(Entity::EntityID id) : mId(id), mIsValid(true) {}
 
 	bool isValid() const { return mIsValid; }
-	Entity getEntity() const;
-	Entity::EntityID getID() const;
+	Entity getEntity() const noexcept;
+	Entity::EntityID getID() const noexcept;
 
 	friend void to_json(nlohmann::json& outJson, const OptionalEntity& entity);
 	friend void from_json(const nlohmann::json& json, OptionalEntity& outEntity);

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <nlohmann/json_fwd.hpp>
+
 #include "Base/Types/BasicTypes.h"
 
 class GameplayTimestamp
@@ -10,20 +11,20 @@ public:
 	using TimeValueType = u64;
 
 public:
-	GameplayTimestamp() = default;
-	explicit GameplayTimestamp(TimeValueType time) : mTimestamp(time) {}
+	constexpr GameplayTimestamp() = default;
+	explicit constexpr GameplayTimestamp(TimeValueType time) noexcept : mTimestamp(time) {}
 
-	bool isInitialized() const;
+	[[nodiscard]] bool isInitialized() const noexcept;
 
-	bool operator==(GameplayTimestamp other) const;
-	bool operator!=(GameplayTimestamp other) const;
-	bool operator<(GameplayTimestamp other) const;
-	bool operator<=(GameplayTimestamp other) const;
-	bool operator>(GameplayTimestamp other) const;
-	bool operator>=(GameplayTimestamp other) const;
+	[[nodiscard]] bool operator==(GameplayTimestamp other) const noexcept;
+	[[nodiscard]] bool operator!=(GameplayTimestamp other) const noexcept;
+	[[nodiscard]] bool operator<(GameplayTimestamp other) const noexcept;
+	[[nodiscard]] bool operator<=(GameplayTimestamp other) const noexcept;
+	[[nodiscard]] bool operator>(GameplayTimestamp other) const noexcept;
+	[[nodiscard]] bool operator>=(GameplayTimestamp other) const noexcept;
 
-	void increaseByFloatTime(float passedTime);
-	GameplayTimestamp getIncreasedByFloatTime(float passedTime) const;
+	void increaseByFloatTime(float passedTime) noexcept;
+	[[nodiscard]] GameplayTimestamp getIncreasedByFloatTime(float passedTime) const noexcept;
 
 	friend void to_json(nlohmann::json& outJson, const GameplayTimestamp timestamp);
 	friend void from_json(const nlohmann::json& json, GameplayTimestamp& outTimestamp);
@@ -32,6 +33,6 @@ public:
 	static constexpr float TimeMultiplier = 300.0f;
 
 private:
-	static const TimeValueType UNINITIALIZED_TIME = std::numeric_limits<TimeValueType>::max();
+	static constexpr TimeValueType UNINITIALIZED_TIME = std::numeric_limits<TimeValueType>::max();
 	TimeValueType mTimestamp = UNINITIALIZED_TIME;
 };

@@ -243,7 +243,7 @@ void RenderSystem::drawLights(SpatialEntityManager& managerGroup, Vector2D playe
 			std::end(lightComponentSets),
 			[emitterPositionBordersLT, emitterPositionBordersRB](auto& componentSet)
 			{
-				return !std::get<1>(componentSet)->getLocation().isInside(emitterPositionBordersLT, emitterPositionBordersRB);
+				return !std::get<1>(componentSet)->getLocation().isInsideRect(emitterPositionBordersLT, emitterPositionBordersRB);
 			}
 		),
 		std::end(lightComponentSets)

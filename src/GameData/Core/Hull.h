@@ -11,21 +11,21 @@
 class Hull
 {
 public:
-	/** Pre-calculated squared radius */
-	float getQRadius() const;
 	/** Get the radius */
-	float getRadius() const;
+	[[nodiscard]] float getRadius() const { return mRadius; }
+	/** Get pre-calculated squared radius */
+	[[nodiscard]] float getQRadius() const { return mQRadius; }
 	/** Set the radius */
-	void setRadius(float newRadius);
+	void setRadius(float newRadius) noexcept;
 	/** Calc borders from points */
-	void generateBorders();
+	void generateBorders() noexcept;
 
-	friend bool operator==(const Hull& left, const Hull& right);
-	friend bool operator!=(const Hull& left, const Hull& right);
+	[[nodiscard]] bool operator==(const Hull& other) noexcept;
+	[[nodiscard]] bool operator!=(const Hull& other) noexcept;
 
 	friend void to_json(nlohmann::json& outJson, const Hull& hull);
 	friend void from_json(const nlohmann::json& json, Hull& hull);
-	
+
 	/** Corners of a hull's borders */
 	std::vector<Vector2D> points;
 	/** Borders of hull (calculates from Points) */
@@ -34,7 +34,7 @@ public:
 
 private:
 	/** Squared radius */
-	float qRadius;
+	float mQRadius;
 	/** Radius for the circular hull */
-	float radius;
+	float mRadius;
 };

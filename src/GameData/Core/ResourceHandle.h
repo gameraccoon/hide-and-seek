@@ -13,7 +13,7 @@ public:
 
 	bool isValid() const { return ResourceIndex != InvalidResourceIndex; }
 
-	static const IndexType InvalidResourceIndex = -1;
+	static constexpr IndexType InvalidResourceIndex = -1;
 	IndexType ResourceIndex = InvalidResourceIndex;
 };
 

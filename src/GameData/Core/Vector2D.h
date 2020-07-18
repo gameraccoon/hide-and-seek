@@ -13,56 +13,59 @@ struct Vector2D
 
 	// leaves inner data uninitialized
 	Vector2D() = default;
+	// can be created from initializer list
 	constexpr Vector2D(float x, float y) : x(x), y(y) {}
-	explicit Vector2D(const Rotator& rotator);
+	explicit Vector2D(Rotator rotator) noexcept;
 
 	/** Get vector length in units */
-	float size() const;
+	[[nodiscard]] float size() const noexcept;
 
 	/** Get quarter of vector length (faster than Size()) */
-	float qSize() const;
+	[[nodiscard]] float qSize() const noexcept;
 
-	bool isZeroLength() const;
+	[[nodiscard]] bool isZeroLength() const noexcept;
 
 	/** Normalize vector */
-	Vector2D unit() const;
+	[[nodiscard]] Vector2D unit() const noexcept;
 	/** Mirror horisontally */
-	Vector2D mirrorH() const;
+	[[nodiscard]] Vector2D mirrorH() const noexcept;
 	/** Mirror vertically */
-	Vector2D mirrorV() const;
+	[[nodiscard]] Vector2D mirrorV() const noexcept;
 	/** Get normal-vector */
-	Vector2D normal() const;
+	[[nodiscard]] Vector2D normal() const noexcept;
 
 	/** Project this vector to line that parallel with the vector "base" */
-	Vector2D project(const Vector2D& base) const;
+	[[nodiscard]] Vector2D project(Vector2D base) const noexcept;
 
 	/** Check that current point is inside an AABB rect with the given top-left and bottom-right points */
-	bool isInside(const Vector2D& lt, const Vector2D& rb) const;
+	[[nodiscard]] bool isInsideRect(Vector2D lt, Vector2D rb) const noexcept;
 
 	/** Get angle between vector and OX axis */
-	Rotator rotation() const;
+	[[nodiscard]] Rotator rotation() const noexcept;
 
-	friend bool operator==(const Vector2D& left, const Vector2D& right);
-	friend bool operator!=(const Vector2D& left, const Vector2D& right);
+	// check for exact equality
+	[[nodiscard]] bool operator==(Vector2D other) const noexcept;
+	[[nodiscard]] bool operator!=(Vector2D other) const noexcept;
 
-	friend Vector2D operator-(const Vector2D& vector);
+	[[nodiscard]] bool isNearlyEqualTo(Vector2D other) const noexcept;
 
-	friend Vector2D operator+(const Vector2D& left, const Vector2D& right);
-	friend Vector2D operator+=(Vector2D& left, const Vector2D& right);
+	[[nodiscard]] Vector2D operator-() const noexcept;
 
-	friend Vector2D operator-(const Vector2D& left, const Vector2D& right);
-	friend Vector2D operator-=(Vector2D& left, const Vector2D& right);
+	[[nodiscard]] Vector2D operator+(Vector2D other) const noexcept;
+	Vector2D operator+=(Vector2D other) noexcept;
 
-	friend Vector2D operator*(const Vector2D& vector, float scalar);
-	friend Vector2D operator*(float scalar, const Vector2D& vector);
-	friend Vector2D operator*=(Vector2D& vector, float scalar);
-	friend Vector2D operator*=(float scalar, Vector2D& vector);
+	[[nodiscard]] Vector2D operator-(Vector2D right) const noexcept;
+	Vector2D operator-=(Vector2D right) noexcept;
 
-	friend Vector2D operator/(const Vector2D& vector, float scalar);
-	friend Vector2D operator/=(Vector2D& vector, float scalar);
+	[[nodiscard]] Vector2D operator*(float scalar) const noexcept;
+	[[nodiscard]] friend Vector2D operator*(float scalar, Vector2D vector) noexcept;
+	Vector2D operator*=(float scalar) noexcept;
 
-	friend float DotProduct(const Vector2D& left, const Vector2D& right);
-	friend Vector2D HadamardProduct(const Vector2D& left, const Vector2D& right);
+	[[nodiscard]] Vector2D operator/(float scalar) const noexcept;
+	Vector2D operator/=(float scalar) noexcept;
+
+	[[nodiscard]] friend float DotProduct(const Vector2D& left, const Vector2D& right) noexcept;
+	[[nodiscard]] friend Vector2D HadamardProduct(const Vector2D& left, const Vector2D& right) noexcept;
 
 	friend void to_json(nlohmann::json& outJson, const Vector2D& vector);
 	friend void from_json(const nlohmann::json& json, Vector2D& outVector);

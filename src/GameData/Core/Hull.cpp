@@ -4,49 +4,39 @@
 
 #include <nlohmann/json.hpp>
 
-void Hull::generateBorders()
+void Hull::generateBorders() noexcept
 {
-    borders.clear();
-    for (size_t i = 0, count = points.size(); i < count; i++)
+	borders.clear();
+	for (size_t i = 0, count = points.size(); i < count; ++i)
 	{
 		borders.insert(borders.end(), Border(points[i], points[(i + 1) % count]));
 	}
 }
 
-bool operator==(const Hull& left, const Hull& right)
+bool Hull::operator==(const Hull& other) noexcept
 {
-	return left.type == right.type &&
-	((left.type == HullType::Angular && left.points == right.points)
-	 ||
-	 (left.type == HullType::Circular && left.radius == right.radius));
+	return type == other.type &&
+		((type == HullType::Angular && points == other.points)
+		||
+		(type == HullType::Circular && mRadius == other.mRadius));
 }
 
-bool operator!=(const Hull& left, const Hull& right)
+bool Hull::operator!=(const Hull& other) noexcept
 {
-	return !(left == right);
+	return !(*this == other);
 }
 
-float Hull::getQRadius() const
+void Hull::setRadius(float newRadius) noexcept
 {
-	return qRadius;
-}
-
-float Hull::getRadius() const
-{
-	return radius;
-}
-
-void Hull::setRadius(float newRadius)
-{
-	radius = newRadius;
-	qRadius = newRadius * newRadius;
+	mRadius = newRadius;
+	mQRadius = newRadius * newRadius;
 }
 
 void to_json(nlohmann::json& outJson, const Hull& hull)
 {
 	outJson = nlohmann::json{
 		{"points", hull.points},
-		{"radius", hull.radius},
+		{"radius", hull.mRadius},
 		{"type", hull.type}
 	};
 }

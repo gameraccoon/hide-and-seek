@@ -5,28 +5,25 @@
 class Border
 {
 public:
-	Border(const Vector2D& a, const Vector2D& b);
+	Border(Vector2D a, Vector2D b) noexcept;
 
 	/** Get normal-vector for this border */
-	Vector2D getNormal() const;
+	[[nodiscard]] Vector2D getNormal() const { return normal; }
 	/** Get first point of this segment */
-	Vector2D getA() const;
+	[[nodiscard]] Vector2D getA() const { return mPointA; }
 	/** Get second point of this segment */
-	Vector2D getB() const;
+	[[nodiscard]] Vector2D getB() const { return mPointB; }
 	/** Change first point of this segment (and recalculate normal) */
-	void setA(const Vector2D& a);
+	void setA(Vector2D a) noexcept;
 	/** Change second point of this segment (and recalculate normal) */
-	void setB(const Vector2D& b);
+	void setB(Vector2D b) noexcept;
 
 private:
-	/** Calculate normal for this hull */
-	void calculateNormal();
+	void calculateNormal() noexcept;
 
 private:
-	/** First point */
-	Vector2D aPoint;
-	/** Second point */
-	Vector2D bPoint;
+	Vector2D mPointA;
+	Vector2D mPointB;
 	/** Normal of this border */
 	Vector2D normal;
 };

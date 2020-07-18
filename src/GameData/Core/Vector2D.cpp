@@ -14,29 +14,30 @@ const Vector2D UP_DIRECTION(0.0f, -1.0f);
 const Vector2D DOWN_DIRECTION(0.0f, 1.0f);
 const Vector2D ZERO_VECTOR(0.0f, 0.0f);
 
-Vector2D::Vector2D(const Rotator& rotator)
+
+Vector2D::Vector2D(Rotator rotator) noexcept
 {
-	float rotation = rotator.getValue();
-	x = std::cos(rotation);
-	y = std::sin(rotation);
+	float angle = rotator.getValue();
+	x = std::cos(angle);
+	y = std::sin(angle);
 }
 
-float Vector2D::size() const
+float Vector2D::size() const noexcept
 {
 	return sqrt((x * x) + (y * y));
 }
 
-float Vector2D::qSize() const
+float Vector2D::qSize() const noexcept
 {
 	return (x * x) + (y * y);
 }
 
-bool Vector2D::isZeroLength() const
+bool Vector2D::isZeroLength() const noexcept
 {
 	return x == 0.0f && y == 0.0f;
 }
 
-Vector2D Vector2D::unit() const
+Vector2D Vector2D::unit() const noexcept
 {
 	if (isZeroLength())
 	{
@@ -46,27 +47,27 @@ Vector2D Vector2D::unit() const
 	return (*this) / size();
 }
 
-Rotator Vector2D::rotation() const
+Rotator Vector2D::rotation() const noexcept
 {
 	return Rotator(atan2(y, x));
 }
 
-Vector2D Vector2D::mirrorH() const
+Vector2D Vector2D::mirrorH() const noexcept
 {
 	return Vector2D(-x, y);
 }
 
-Vector2D Vector2D::mirrorV() const
+Vector2D Vector2D::mirrorV() const noexcept
 {
 	return Vector2D(x, -y);
 }
 
-Vector2D Vector2D::normal() const
+Vector2D Vector2D::normal() const noexcept
 {
-	return Vector2D(rotation() - Rotator(PI * 0.5f));
+	return Vector2D(rotation() - Rotator(HalfPI));
 }
 
-Vector2D Vector2D::project(const Vector2D& base) const
+Vector2D Vector2D::project(Vector2D base) const noexcept
 {
 	float qSize = base.qSize();
 	Vector2D result(ZERO_VECTOR);
@@ -80,129 +81,94 @@ Vector2D Vector2D::project(const Vector2D& base) const
 	return result;
 }
 
-bool Vector2D::isInside(const Vector2D& lt, const Vector2D& rb) const
+bool Vector2D::isInsideRect(Vector2D lt, Vector2D rb) const noexcept
 {
 	return x >= lt.x && x <= rb.x && y >= lt.y && y <= rb.y;
 }
 
-Vector2D operator-(const Vector2D& vector)
+Vector2D Vector2D::operator-() const noexcept
 {
-	Vector2D newVect(vector);
-	newVect.x = -vector.x;
-	newVect.y = -vector.y;
-	return newVect;
+	return Vector2D(-x, -y);
 }
 
-bool operator==(const Vector2D& left, const Vector2D& right)
+bool Vector2D::operator==(Vector2D other) const noexcept
 {
-	float vError = 0.0f;
-	vError += abs(left.x - right.x);
-	vError += abs(left.y - right.y);
-
-	return vError <= VECTOR_ERROR;
+	return x == other.x && y == other.y;
 }
 
-bool operator!=(const Vector2D& left, const Vector2D& right)
+bool Vector2D::operator!=(Vector2D other) const noexcept
 {
-	return !(left == right);
+	return !(*this == other);
 }
 
-Vector2D operator+(const Vector2D& left, const Vector2D& right)
+bool Vector2D::isNearlyEqualTo(Vector2D other) const noexcept
 {
-	Vector2D newVect(left);
-	
-	newVect.x += right.x;
-	newVect.y += right.y;
-
-	return newVect;
+	return (abs(x - other.x) + abs(y - other.y)) <= VECTOR_ERROR;
 }
 
-Vector2D operator+=(Vector2D& left, const Vector2D& right)
+Vector2D Vector2D::operator+(Vector2D other) const noexcept
 {
-	left.x += right.x;
-	left.y += right.y;
-
-	return Vector2D(left);
+	return Vector2D(x + other.x, y + other.y);
 }
 
-Vector2D operator-(const Vector2D& left, const Vector2D& right)
+Vector2D Vector2D::operator+=(Vector2D other) noexcept
 {
-	Vector2D newVect(left);
-	
-	newVect.x -= right.x;
-	newVect.y -= right.y;
+	x += other.x;
+	y += other.y;
 
-	return newVect;
+	return *this;
 }
 
-Vector2D operator-=(Vector2D& left, const Vector2D& right)
+Vector2D Vector2D::operator-(Vector2D right) const noexcept
 {
-	left.x -= right.x;
-	left.y -= right.y;
-
-	return Vector2D(left);
+	return Vector2D(x - right.x, y - right.y);
 }
 
-Vector2D operator*(const Vector2D& vect, float scalar)
+Vector2D Vector2D::operator-=(Vector2D right) noexcept
 {
-	Vector2D newVect(vect);
-	
-	newVect.x *= scalar;
-	newVect.y *= scalar;
+	x -= right.x;
+	y -= right.y;
 
-	return newVect;
+	return *this;
 }
 
-Vector2D operator*(float scalar, const Vector2D& vector)
+Vector2D Vector2D::operator*(float scalar) const noexcept
 {
-	Vector2D newVect(vector);
-	
-	newVect.x *= scalar;
-	newVect.y *= scalar;
-
-	return newVect;
+	return Vector2D(x * scalar, y * scalar);
 }
 
-Vector2D operator*=(Vector2D& vector, float scalar)
+Vector2D operator*(float scalar, Vector2D vector) noexcept
 {
-	vector.x *= scalar;
-	vector.y *= scalar;
-
-	return Vector2D(vector);
+	return Vector2D(scalar * vector.x, scalar * vector.y);
 }
 
-Vector2D operator*=(float scalar, Vector2D& vector)
+Vector2D Vector2D::operator*=(float scalar) noexcept
 {
-	vector.x *= scalar;
-	vector.y *= scalar;
+	x *= scalar;
+	y *= scalar;
 
-	return Vector2D(vector);
+	return *this;
 }
 
-Vector2D operator/(const Vector2D& vector, float scalar)
+Vector2D Vector2D::operator/(float scalar) const noexcept
 {
-	Vector2D newVect(vector);
-	
-	newVect.x /= scalar;
-	newVect.y /= scalar;
-
-	return newVect;
+	return Vector2D(x / scalar, y / scalar);
 }
 
-Vector2D operator/=(Vector2D& vector, float scalar)
+Vector2D Vector2D::operator/=(float scalar) noexcept
 {
-	vector.x /= scalar;
-	vector.y /= scalar;
+	x /= scalar;
+	y /= scalar;
 
-	return Vector2D(vector);
+	return *this;
 }
 
-float DotProduct(const Vector2D& left, const Vector2D& right)
+float DotProduct(const Vector2D& left, const Vector2D& right) noexcept
 {
 	return left.x * right.x + left.y * right.y;
 }
 
-Vector2D HadamardProduct(const Vector2D& left, const Vector2D& right)
+Vector2D HadamardProduct(const Vector2D& left, const Vector2D& right) noexcept
 {
 	return Vector2D(left.x * right.x, left.y * right.y);
 }
