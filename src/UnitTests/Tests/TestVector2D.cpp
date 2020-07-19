@@ -21,12 +21,12 @@ TEST(Vector2D, InitializationFromAngle)
 	Rotator angle(0.0f);
 	Vector2D testVectorA(angle);
 
-	EXPECT_EQ(Vector2D(1.0, 0.0), testVectorA);
+	EXPECT_TRUE(testVectorA.isNearlyEqualTo(Vector2D(1.0, 0.0)));
 
 	angle = Rotator(PI * 0.5f);
 	testVectorA = Vector2D(angle);
 
-	EXPECT_EQ(Vector2D(0.0, 1.0), testVectorA);
+	EXPECT_TRUE(testVectorA.isNearlyEqualTo(Vector2D(0.0, 1.0)));
 }
 
 TEST(Vector2D, Comparison)
@@ -36,10 +36,10 @@ TEST(Vector2D, Comparison)
 	Vector2D testVectorC(5.199998f, -0.390001f);
 	Vector2D testVectorD(5.3f, -0.39f);
 		
-	EXPECT_TRUE(testVectorA == testVectorB);		// A == B
-	EXPECT_EQ(testVectorA, testVectorB);	// A == B
-	EXPECT_EQ(testVectorA, testVectorC);
-	EXPECT_NE(testVectorA, testVectorD); // A != D
+	EXPECT_TRUE(testVectorA == testVectorB); // A == B
+	EXPECT_TRUE(testVectorA.isNearlyEqualTo(testVectorB)); // A == B
+	EXPECT_TRUE(testVectorA.isNearlyEqualTo(testVectorC)); // A == C
+	EXPECT_FALSE(testVectorA.isNearlyEqualTo(testVectorD)); // A != D
 }
 
 TEST(Vector2D, Protection)
@@ -77,11 +77,11 @@ TEST(Vector2D, Negation)
 
 	Vector2D testVectorB = -testVectorA;
 
-	EXPECT_EQ(Vector2D(-5.2f, 0.39f), testVectorB);
+	EXPECT_TRUE(testVectorB.isNearlyEqualTo(Vector2D(-5.2f, 0.39f)));
 
 	testVectorB.y = 70.0f;
 
-	EXPECT_EQ(Vector2D(5.2f, -0.39f), testVectorA);
+	EXPECT_TRUE(testVectorA.isNearlyEqualTo(Vector2D(5.2f, -0.39f)));
 	EXPECT_FLOAT_EQ(5.2f, testVectorA.x);
 }
 
@@ -94,9 +94,9 @@ TEST(Vector2D, Addition)
 	testVectorA = testVectorB + testVectorC;
 	testVectorB += testVectorB;
 
-	EXPECT_EQ(Vector2D(22.1f, 802.88f), testVectorC);
-	EXPECT_EQ(Vector2D(39, 1606.15f), testVectorA);
-	EXPECT_EQ(Vector2D(33.8f, 1606.54f), testVectorB);
+	EXPECT_TRUE(testVectorC.isNearlyEqualTo(Vector2D(22.1f, 802.88f)));
+	EXPECT_TRUE(testVectorA.isNearlyEqualTo(Vector2D(39, 1606.15f)));
+	EXPECT_TRUE(testVectorB.isNearlyEqualTo(Vector2D(33.8f, 1606.54f)));
 }
 
 TEST(Vector2D, Substraction)
@@ -108,9 +108,9 @@ TEST(Vector2D, Substraction)
 	testVectorA = testVectorB - testVectorC;
 	testVectorB -= testVectorB;
 
-	EXPECT_EQ(Vector2D(-11.7f, -803.66f), testVectorC);
-	EXPECT_EQ(Vector2D(28.6f, 1606.9301f), testVectorA);
-	EXPECT_EQ(Vector2D(0.0f, 0.0f), testVectorB);
+	EXPECT_TRUE(testVectorC.isNearlyEqualTo(Vector2D(-11.7f, -803.66f)));
+	EXPECT_TRUE(testVectorA.isNearlyEqualTo(Vector2D(28.6f, 1606.9301f)));
+	EXPECT_TRUE(testVectorB.isNearlyEqualTo(Vector2D(0.0f, 0.0f)));
 }
 
 TEST(Vector2D, Multiplication)
@@ -121,9 +121,9 @@ TEST(Vector2D, Multiplication)
 	Vector2D testVectorB = testVectorA * testScalar;
 	testVectorA *= -testScalar;
 
-	EXPECT_EQ(Vector2D(95.16f, -7.137f), testVectorB);
-	EXPECT_EQ(Vector2D(-95.16f, 7.137f), testVectorA);
-	EXPECT_EQ(testVectorA, -testVectorB);
+	EXPECT_TRUE(testVectorB.isNearlyEqualTo(Vector2D(95.16f, -7.137f)));
+	EXPECT_TRUE(testVectorA.isNearlyEqualTo(Vector2D(-95.16f, 7.137f)));
+	EXPECT_TRUE(testVectorA.isNearlyEqualTo(-testVectorB));
 }
 
 TEST(Vector2D, Division)
@@ -132,11 +132,11 @@ TEST(Vector2D, Division)
 	float testScalar = 18.3f;
 
 	testVectorA /= testScalar;
-	Vector2D testVectorB = testVectorA / testVectorA.size();	// B = ort(A);
+	Vector2D testVectorB = testVectorA / testVectorA.size(); // B = ort(A);
 
-	EXPECT_EQ(Vector2D(0.2841f, -0.0213f), testVectorA);
-	EXPECT_EQ(Vector2D(0.9972f, -0.07476377f), testVectorB);
-	EXPECT_FLOAT_EQ(1.0f, testVectorB.size());					// ort size is only 1.0
+	EXPECT_TRUE(testVectorA.isNearlyEqualTo(Vector2D(0.2841f, -0.0213f)));
+	EXPECT_TRUE(testVectorB.isNearlyEqualTo(Vector2D(0.9972f, -0.07476377f)));
+	EXPECT_FLOAT_EQ(1.0f, testVectorB.size()); // ort size is 1.0
 }
 
 TEST(Vector2D, Unit)
@@ -145,11 +145,11 @@ TEST(Vector2D, Unit)
 
 	testVectorA = testVectorA.unit();
 
-	EXPECT_EQ(Vector2D(0.9972f, -0.07476377f), testVectorA);
-	EXPECT_FLOAT_EQ(1.0f, testVectorA.size());				// ort size is only 1.0
+	EXPECT_TRUE(testVectorA.isNearlyEqualTo(Vector2D(0.9972f, -0.07476377f)));
+	EXPECT_FLOAT_EQ(1.0f, testVectorA.size()); // ort size is 1.0
 
 	testVectorA = Vector2D(0.0f, 0.0f);
-	EXPECT_EQ(Vector2D(0.0f, 0.0f), testVectorA.unit());
+	EXPECT_TRUE(testVectorA.unit().isNearlyEqualTo(Vector2D(0.0f, 0.0f)));
 }
 
 TEST(Vector2D, GetRotation)
@@ -186,10 +186,10 @@ TEST(Vector2D, Project)
 	// Another (slowlest) way to calc projection vector
 	Vector2D projectAB = testVectorA.unit() * testVectorB.size() * cos((testVectorA.rotation() - testVectorB.rotation()).getValue());
 
-	EXPECT_EQ(Vector2D(5.2f, 0.0f), testVectorA.project(oX));
-	EXPECT_EQ(Vector2D(0.0f, 803.27f), testVectorB.project(oYxFive));
-	EXPECT_EQ(Vector2D(0.0f, 0.0f), oYxFive.project(oX));
-	EXPECT_EQ(testVectorA.project(oX) + testVectorA.project(oYxFive), testVectorA);
-		
-	EXPECT_EQ(projectAB, testVectorB.project(testVectorA));
+	EXPECT_TRUE(testVectorA.project(oX).isNearlyEqualTo(Vector2D(5.2f, 0.0f)));
+	EXPECT_TRUE(testVectorB.project(oYxFive).isNearlyEqualTo(Vector2D(0.0f, 803.27f)));
+	EXPECT_TRUE(oYxFive.project(oX).isNearlyEqualTo(Vector2D(0.0f, 0.0f)));
+	EXPECT_TRUE(testVectorA.isNearlyEqualTo(testVectorA.project(oX) + testVectorA.project(oYxFive)));
+
+	EXPECT_TRUE(projectAB.isNearlyEqualTo(testVectorB.project(testVectorA)));
 }

@@ -27,14 +27,14 @@ static bool AreVisibilityPolygonsEqual(const std::vector<Vector2D>& a, const std
 
 	auto a_copy = a;
 
-	auto it = std::find(a_copy.begin(), a_copy.end(), b.front());
+	auto it = std::find_if(a_copy.begin(), a_copy.end(), [start = b.front()](Vector2D val){ return val.isNearlyEqualTo(start); });
 	if (it == a_copy.end())
 	{
 		return false;
 	}
 
 	std::rotate(a_copy.begin(), it, a_copy.end());
-	return a_copy == b;
+	return a_copy.size() == b.size() && std::equal(a_copy.begin(), a_copy.end(), b.begin(), [](Vector2D a, Vector2D b){ return a.isNearlyEqualTo(b); });
 }
 
 TEST(VisibilityPolygon, TestPlygonsEqualityTest)
