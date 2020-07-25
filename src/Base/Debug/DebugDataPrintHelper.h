@@ -28,7 +28,7 @@ namespace DebugDataPrintHelper
 	template<typename MapType, typename PrintFn>
 	void PrintConflictingElementsForBucketStatistics(const MapType& map, PrintFn printFn, std::ostream& outStream)
 	{
-		std::unordered_map<size_t, std::vector<std::pair<size_t, std::string>>> bucketValueMapping;
+		std::unordered_map<size_t, std::vector<typename MapType::value_type>> bucketValueMapping;
 		size_t maxSize = 0;
 		for (auto& pair : map)
 		{
