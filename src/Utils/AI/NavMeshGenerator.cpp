@@ -2,6 +2,7 @@
 
 #include "Utils/AI/NavMeshGenerator.h"
 
+#include <cmath>
 #include <unordered_map>
 
 #include <polypartition.h>
@@ -10,9 +11,11 @@
 #include <DetourNavMeshBuilder.h>
 
 #include "Base/Types/TemplateAliases.h"
+#include "Base/Types/ComplexTypes/VectorUtils.h"
 
 #include "GameData/Components/CollisionComponent.generated.h"
 #include "GameData/Components/TransformComponent.generated.h"
+#include "GameData/Core/IntVector2D.h"
 
 struct NavMeshGenerator::Caches
 {
@@ -28,6 +31,11 @@ NavMeshGenerator::~NavMeshGenerator()
 {
 }
 
+static IntVector2D IntVecFromTPPLPoint(TPPLPoint point)
+{
+	return IntVector2D(static_cast<int>(std::round(point.x)), static_cast<int>(std::round(point.y)));
+}
+
 void NavMeshGenerator::generateNavMesh(NavMesh& outNavMesh, const TupleVector<CollisionComponent*, TransformComponent*>& collidableComponents)
 {
 	using DtCoordType = unsigned short;
@@ -37,8 +45,8 @@ void NavMeshGenerator::generateNavMesh(NavMesh& outNavMesh, const TupleVector<Co
 
 	constexpr int polygonMaxVertsCount = 3;
 
-	Vector2D size(100000, 100000);
-	Vector2D halfSize(size * 0.5f);
+	IntVector2D size(10000, 10000);
+	IntVector2D halfSize(size / 2);
 
 	TPPLPartition pp;
 
@@ -46,14 +54,14 @@ void NavMeshGenerator::generateNavMesh(NavMesh& outNavMesh, const TupleVector<Co
 	std::vector<TPPLPoly> resultPolygons;
 
 	mCaches->borderPolygon.Init(4);
-	mCaches->borderPolygon[0].x = -size.x*0.5f;
-	mCaches->borderPolygon[0].y = -size.y*0.5f;
-	mCaches->borderPolygon[1].x = size.x*0.5f;
-	mCaches->borderPolygon[1].y = -size.y*0.5f;
-	mCaches->borderPolygon[2].x = size.x*0.5f;
-	mCaches->borderPolygon[2].y = size.y*0.5f;
-	mCaches->borderPolygon[3].x = -size.x*0.5f;
-	mCaches->borderPolygon[3].y = size.y*0.5f;
+	mCaches->borderPolygon[0].x = -halfSize.x;
+	mCaches->borderPolygon[0].y = -halfSize.y;
+	mCaches->borderPolygon[1].x = halfSize.x;
+	mCaches->borderPolygon[1].y = -halfSize.y;
+	mCaches->borderPolygon[2].x = halfSize.x;
+	mCaches->borderPolygon[2].y = halfSize.y;
+	mCaches->borderPolygon[3].x = -halfSize.x;
+	mCaches->borderPolygon[3].y = halfSize.y;
 	polygons.push_back(mCaches->borderPolygon);
 
 	for (auto [collision, transform] : collidableComponents)
@@ -79,12 +87,12 @@ void NavMeshGenerator::generateNavMesh(NavMesh& outNavMesh, const TupleVector<Co
 
 	pp.Triangulate_MONO(&polygons, &resultPolygons);
 
-	std::unordered_map<Vector2D, DtIndexType> verticesMap;
+	std::unordered_map<IntVector2D, DtIndexType> verticesMap;
 	for (const TPPLPoly& polygon : resultPolygons)
 	{
-		verticesMap.emplace(Vector2D(polygon[0].x, polygon[0].y), static_cast<unsigned short>(0));
-		verticesMap.emplace(Vector2D(polygon[1].x, polygon[1].y), static_cast<unsigned short>(0));
-		verticesMap.emplace(Vector2D(polygon[2].x, polygon[2].y), static_cast<unsigned short>(0));
+		verticesMap.emplace(IntVecFromTPPLPoint(polygon[0]), static_cast<DtIndexType>(0u));
+		verticesMap.emplace(IntVecFromTPPLPoint(polygon[1]), static_cast<DtIndexType>(0u));
+		verticesMap.emplace(IntVecFromTPPLPoint(polygon[2]), static_cast<DtIndexType>(0u));
 	}
 
 	std::vector<DtCoordType> verts;
@@ -102,9 +110,9 @@ void NavMeshGenerator::generateNavMesh(NavMesh& outNavMesh, const TupleVector<Co
 	triangles.reserve(resultPolygons.size() * 2 * polygonMaxVertsCount);
 	for (const TPPLPoly& polygon : resultPolygons)
 	{
-		triangles.push_back(verticesMap.find(Vector2D(polygon[0].x, polygon[0].y))->second);
-		triangles.push_back(verticesMap.find(Vector2D(polygon[1].x, polygon[1].y))->second);
-		triangles.push_back(verticesMap.find(Vector2D(polygon[2].x, polygon[2].y))->second);
+		triangles.push_back(verticesMap.find(IntVecFromTPPLPoint(polygon[0]))->second);
+		triangles.push_back(verticesMap.find(IntVecFromTPPLPoint(polygon[1]))->second);
+		triangles.push_back(verticesMap.find(IntVecFromTPPLPoint(polygon[2]))->second);
 
 		// borders-portals information
 		triangles.push_back(0);
@@ -116,12 +124,12 @@ void NavMeshGenerator::generateNavMesh(NavMesh& outNavMesh, const TupleVector<Co
 
 	outNavMesh.setMesh(std::make_unique<dtNavMesh>());
 	dtNavMeshCreateParams params;
-	params.bmax[0] = size.x*0.5f;
+	params.bmax[0] = halfSize.x;
 	params.bmax[1] = 0.0f;
-	params.bmax[2] = size.y*0.5f;
-	params.bmin[0] = -size.x*0.5f;
+	params.bmax[2] = halfSize.y;
+	params.bmin[0] = -halfSize.x;
 	params.bmin[1] = 0.0f;
-	params.bmin[2] = -size.y*0.5f;
+	params.bmin[2] = -halfSize.y;
 	params.buildBvTree = false;
 	params.ch = 1.0f;
 	params.cs = 1.0f;
@@ -165,11 +173,11 @@ void NavMeshGenerator::generateNavMesh(NavMesh& outNavMesh, const TupleVector<Co
 	dtNavMeshParams navmeshParams;
 	navmeshParams.maxPolys = static_cast<int>(resultPolygons.size());
 	navmeshParams.maxTiles = 1;
-	navmeshParams.orig[0] = -5000.0f;
+	navmeshParams.orig[0] = -halfSize.x;
 	navmeshParams.orig[1] = 0.0f;
-	navmeshParams.orig[2] = -5000.0f;
-	navmeshParams.tileHeight = 10000;
-	navmeshParams.tileWidth = 10000;
+	navmeshParams.orig[2] = -halfSize.y;
+	navmeshParams.tileHeight = size.x;
+	navmeshParams.tileWidth = size.y;
 	outNavMesh.getMesh()->init(&navmeshParams);
 	outNavMesh.getMesh()->addTile(navData, navDataSize, DT_TILE_FREE_DATA, 0, nullptr);
 }

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <math.h>
-
 #include "Rotator.h"
 
 #include <nlohmann/json_fwd.hpp>
@@ -82,7 +80,7 @@ namespace std
 	template <>
 	struct hash<Vector2D>
 	{
-		std::size_t operator()(const Vector2D& k) const
+		std::size_t operator()(Vector2D k) const
 		{
 			return hash<float>()(k.x) ^ (hash<float>()(k.y) << 1);
 		}
