@@ -122,34 +122,24 @@ void DebugDrawSystem::update()
 
 		if (navMeshComponent)
 		{
-			if (const dtNavMesh* navmesh = navMeshComponent->getNavMeshRef().getMesh())
+			const NavMesh& navMesh = navMeshComponent->getNavMesh();
+			const NavMesh::Geometry& navMeshGeometry = navMesh.geometry;
+			std::vector<Graphics::DrawPoint> drawablePolygon;
+			drawablePolygon.reserve(navMeshGeometry.polygonMaxVerticesCount);
+			for (size_t k = 0; k < navMeshGeometry.polygonsCount; ++k)
 			{
-				int maxTiles = navmesh->getMaxTiles();
-				for (int i = 0; i < maxTiles; ++i)
+				drawablePolygon.clear();
+				for (size_t j = 0; j < navMeshGeometry.polygonMaxVerticesCount; ++j)
 				{
-					if (const dtMeshTile* tile = navmesh->getTile(i); tile && tile->header)
-					{
-						std::vector<std::array<Vector2D, 3>> points;
-						for (int k = 0; k < tile->header->polyCount; ++k)
-						{
-							const auto& poly = tile->polys[k];
-							std::vector<Graphics::DrawPoint> drawablePolygon;
-							drawablePolygon.reserve(3);
-							for (int j = 0; j < poly.vertCount; ++j)
-							{
-								float u = static_cast<float>(Random::GlobalGenerator() * 1.0f / Random::GlobalGenerator.max());
-								float v = static_cast<float>(Random::GlobalGenerator() * 1.0f / Random::GlobalGenerator.max());
+					float u = static_cast<float>(Random::GlobalGenerator() * 1.0f / Random::GlobalGenerator.max());
+					float v = static_cast<float>(Random::GlobalGenerator() * 1.0f / Random::GlobalGenerator.max());
 
-								float x = tile->verts[poly.verts[j] * 3];
-								float y = tile->verts[poly.verts[j] * 3 + 2];
-								drawablePolygon.push_back(Graphics::DrawPoint{Vector2D(x, y), Graphics::QuadLerp(quadUV, u, v)});
-							}
-							glm::mat4 transform(1.0f);
-							transform = glm::translate(transform, glm::vec3(drawShift.x, drawShift.y, 0.0f));
-							renderer.renderFan(*navMeshSprite.getSurface(), drawablePolygon, transform, 0.3f);
-						}
-					}
+					Vector2D pos = navMeshGeometry.vertices[navMeshGeometry.indexes[k*navMeshGeometry.polygonMaxVerticesCount + j]];
+					drawablePolygon.push_back(Graphics::DrawPoint{pos, Graphics::QuadLerp(quadUV, u, v)});
 				}
+				glm::mat4 transform(1.0f);
+				transform = glm::translate(transform, glm::vec3(drawShift.x, drawShift.y, 0.0f));
+				renderer.renderFan(*navMeshSprite.getSurface(), drawablePolygon, transform, 0.3f);
 			}
 		}
 
