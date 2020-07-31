@@ -32,11 +32,6 @@ public:
 	std::string getName() override { return "DebugDrawSystem"; }
 
 private:
-	void drawVisibilityPolygon(const std::vector<Vector2D>& polygon, const Vector2D& fowSize, const Vector2D& drawShift);
-	static Vector2D GetPlayerSightPosition(World* world);
-	void drawLights(World* world, const Vector2D& drawShift, const Vector2D& maxFov);
-
-private:
 	WorldHolder& mWorldHolder;
 	const TimeData& mTime;
 	HAL::Engine& mEngine;

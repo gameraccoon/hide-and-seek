@@ -65,7 +65,7 @@ namespace Collide
 			{
 				Vector2D borderA = *rCenter + border.getA();
 
-				float qDistance = DotProduct(border.getNormal(), borderA - *cCenter);
+				float qDistance = Vector2D::DotProduct(border.getNormal(), borderA - *cCenter);
 				qDistance*=qDistance;
 
 				if (qDistance < nearestBorderQDistance)
@@ -80,7 +80,7 @@ namespace Collide
 					if (distA < distB)
 					{
 						// check if we outside the section
-						if (DotProduct(*cCenter - borderA, border.getB() - border.getA()) < 0)
+						if (Vector2D::DotProduct(*cCenter - borderA, border.getB() - border.getA()) < 0)
 						{
 							qDistance = distA;
 							resistDir = ResistDir::PointA;
@@ -88,7 +88,7 @@ namespace Collide
 					}
 					else
 					{
-						if (DotProduct(*cCenter - borderB, border.getA() - border.getB()) < 0)
+						if (Vector2D::DotProduct(*cCenter - borderB, border.getA() - border.getB()) < 0)
 						{
 							qDistance = distB;
 							resistDir = ResistDir::PointB;
@@ -222,5 +222,131 @@ namespace Collide
 
 			collision->setBoundingBox(BoundingBox(Vector2D(minX, minY), Vector2D(maxX, maxY)));
 		}
+	}
+
+	static int GetCohenCode(const BoundingBox& box, const Vector2D& dot)
+	{
+		constexpr int LEFT_BIT = 0;
+		constexpr int RIGHT_BIT = 1;
+		constexpr int TOP_BIT = 2;
+		constexpr int BOTTOM_BIT = 3;
+
+		return (
+			((dot.x < box.minX) << LEFT_BIT)
+			|
+			((dot.x > box.maxX) << RIGHT_BIT)
+			|
+			((dot.y < box.minY) << TOP_BIT)
+			|
+			((dot.y > box.maxY) << BOTTOM_BIT)
+		);
+	}
+
+	static bool IsAAIntersect(const float a, const float b, const float c, const float d)
+	{
+		float a1 = a;
+		float b1 = b;
+		float c1 = c;
+		float d1 = d;
+
+		if (a1 > b1) std::swap(a1, b1);
+		if (c1 > d1) std::swap(c1, d1);
+
+		return std::max(a1, c1) <= std::min(b1, d1);
+	}
+
+	bool AreLinesIntersect(const Vector2D& A1, const Vector2D& A2, const Vector2D& B1, const Vector2D& B2)
+	{
+		if (IsAAIntersect(A1.x, A2.x, B1.x, B2.x)
+			&& IsAAIntersect(A1.y, A2.y, B1.y, B2.y)
+			&& Collide::SignedArea(A1, A2, B1) * Collide::SignedArea(A1, A2, B2) <= 0
+			&& Collide::SignedArea(B1, B2, A1) * Collide::SignedArea(B1, B2, A2) <= 0)
+		{
+			return true;
+		}
+		return false;
+	}
+
+	bool IsLineIntersectAABB(const BoundingBox& box, const Vector2D& start, const Vector2D& finish)
+	{
+		// get Cohen's code for start point
+		int codeA = GetCohenCode(box, start);
+		// get Cohen's code for end point
+		int codeB = GetCohenCode(box, finish);
+
+		// if the points on the same side of BB
+		if ((codeA & codeB) != 0)
+		{
+			return false;
+		}
+
+		// one point is in BB another is out BB
+		if ((codeA == 0 || codeB == 0) && (codeA | codeB) != 0)
+		{
+			return true;
+		}
+
+		// points on opposite sides of BB // 0011 or 1100
+		if ((codeA | codeB) == 3 || (codeA | codeB) == 12)
+		{
+			return true;
+		}
+
+		float l = box.minX;
+		float t = box.minY;
+		float r = box.maxX;
+		float b = box.maxY;
+
+		float x1 = start.x;
+		float y1 = start.y;
+		float x2 = finish.x;
+		float y2 = finish.y;
+
+		// ToDo: optimize it for axis-aligned borders
+		if (AreLinesIntersect(Vector2D(l, t), Vector2D(l, b), Vector2D(x1, y1), Vector2D(x2, y2))
+			||
+			AreLinesIntersect(Vector2D(r, t), Vector2D(r, b), Vector2D(x1, y1), Vector2D(x2, y2))
+			||
+			AreLinesIntersect(Vector2D(l, t), Vector2D(r, t), Vector2D(x1, y1), Vector2D(x2, y2))
+			||
+			AreLinesIntersect(Vector2D(l, b), Vector2D(r, b), Vector2D(x1, y1), Vector2D(x2, y2)))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	static float Det(const float a, const float b, const float c, const float d)
+	{
+		return a * d - b * c;
+	}
+
+	Vector2D GetPointIntersect2Lines(const Vector2D& A1, const Vector2D& A2, const Vector2D& B1, const Vector2D& B2)
+	{
+		constexpr float EPS = 1E-4f;
+
+		float DA1 = A1.y - A2.y;
+		float DB1 = A2.x - A1.x;
+		float DC1 = -DA1 * A1.x - DB1 * A1.y;
+		float DA2 = B1.y - B2.y;
+		float DB2 = B2.x - B1.x;
+		float DC2 = -DA2 * B1.x - DB2 * B1.y;
+
+		float zn = Det(DA1, DB1, DA2, DB2);
+
+		// if lines are not parallel
+		if (zn < -EPS || zn > EPS)
+		{
+			float x = -Det(DC1, DB1, DC2, DB2) / zn;
+			float y = -Det(DA1, DC1, DA2, DC2) / zn;
+
+			return Vector2D(x, y);
+		}
+
+		// if lines not intersected
+		return ZERO_VECTOR;
 	}
 }

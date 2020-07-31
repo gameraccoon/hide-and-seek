@@ -163,12 +163,12 @@ Vector2D Vector2D::operator/=(float scalar) noexcept
 	return *this;
 }
 
-float DotProduct(const Vector2D& left, const Vector2D& right) noexcept
+float Vector2D::DotProduct(const Vector2D& left, const Vector2D& right) noexcept
 {
 	return left.x * right.x + left.y * right.y;
 }
 
-Vector2D HadamardProduct(const Vector2D& left, const Vector2D& right) noexcept
+Vector2D Vector2D::HadamardProduct(const Vector2D& left, const Vector2D& right) noexcept
 {
 	return Vector2D(left.x * right.x, left.y * right.y);
 }

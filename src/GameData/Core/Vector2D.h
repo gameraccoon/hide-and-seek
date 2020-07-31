@@ -62,8 +62,8 @@ struct Vector2D
 	[[nodiscard]] Vector2D operator/(float scalar) const noexcept;
 	Vector2D operator/=(float scalar) noexcept;
 
-	[[nodiscard]] friend float DotProduct(const Vector2D& left, const Vector2D& right) noexcept;
-	[[nodiscard]] friend Vector2D HadamardProduct(const Vector2D& left, const Vector2D& right) noexcept;
+	[[nodiscard]] static float DotProduct(const Vector2D& left, const Vector2D& right) noexcept;
+	[[nodiscard]] static Vector2D HadamardProduct(const Vector2D& left, const Vector2D& right) noexcept;
 
 	friend void to_json(nlohmann::json& outJson, const Vector2D& vector);
 	friend void from_json(const nlohmann::json& json, Vector2D& outVector);
