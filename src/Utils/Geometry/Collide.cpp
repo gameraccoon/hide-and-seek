@@ -13,11 +13,6 @@
 
 namespace Collide
 {
-	float SignedArea(const Vector2D& a, const Vector2D& b, const Vector2D& c)
-	{
-		return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
-	}
-
 	enum class ResistDir
 	{
 		Normal,

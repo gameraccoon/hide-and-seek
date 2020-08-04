@@ -11,8 +11,6 @@
 
 #include "GameData/Components/CollisionComponent.generated.h"
 #include "GameData/Components/TransformComponent.generated.h"
-#include "GameData/Core/IntVector2D.h"
-#include "GameData/AI/NavMesh.h"
 #include "GameData/Core/BoundingBox.h"
 
 #include "Utils/Geometry/Collide.h"
@@ -22,6 +20,11 @@ namespace NavMeshGenerator
 	static IntVector2D IntVecFromTPPLPoint(TPPLPoint point)
 	{
 		return IntVector2D(static_cast<int>(std::round(point.x)), static_cast<int>(std::round(point.y)));
+	}
+
+	static Vector2D VecFromTPPLPoint(TPPLPoint point)
+	{
+		return Vector2D(point.x, point.y);
 	}
 
 	void GenerateNavMeshGeometry(NavMesh::Geometry& outGeometry, const TupleVector<CollisionComponent*, TransformComponent*>& collidableComponents, Vector2D start, Vector2D size)
@@ -91,9 +94,20 @@ namespace NavMeshGenerator
 			it.second = idx++;
 		}
 
+		bool order = false;
+		bool inited = false;
+
 		outGeometry.indexes.reserve(resultPolygons.size() * outGeometry.vertsPerPoly);
 		for (const TPPLPoly& polygon : resultPolygons)
 		{
+			bool newOrder = Collide::SignedArea(VecFromTPPLPoint(polygon[0]), VecFromTPPLPoint(polygon[1]), VecFromTPPLPoint(polygon[2]));
+			if (inited && newOrder != order)
+			{
+				LogError("winding order changed");
+			}
+			inited = true;
+			order = newOrder;
+
 			outGeometry.indexes.push_back(verticesMap.find(IntVecFromTPPLPoint(polygon[0]))->second);
 			outGeometry.indexes.push_back(verticesMap.find(IntVecFromTPPLPoint(polygon[1]))->second);
 			outGeometry.indexes.push_back(verticesMap.find(IntVecFromTPPLPoint(polygon[2]))->second);
@@ -127,7 +141,7 @@ namespace NavMeshGenerator
 		for (size_t i = 0, iSize = geometry.polygonsCount; i < iSize; ++i)
 		{
 			size_t iShift = i * geometry.vertsPerPoly;
-			for (size_t j = 0, jSize = geometry.vertsPerPoly - 1; j < jSize; ++j)
+			for (size_t j = 0; j < geometry.vertsPerPoly - 1; ++j)
 			{
 				size_t indexA = geometry.indexes[iShift + j];
 				size_t indexB = geometry.indexes[iShift + j + 1];
@@ -168,13 +182,13 @@ namespace NavMeshGenerator
 		{
 			aabb.minY = vertex.y;
 		}
-		if (vertex.x > aabb.minX)
+		if (vertex.x > aabb.maxX)
 		{
-			aabb.minX = vertex.x;
+			aabb.maxX = vertex.x;
 		}
-		if (vertex.y > aabb.minY)
+		if (vertex.y > aabb.maxY)
 		{
-			aabb.minY = vertex.y;
+			aabb.maxY = vertex.y;
 		}
 	}
 
@@ -214,11 +228,31 @@ namespace NavMeshGenerator
 
 		for (size_t i = 0; i < geometry.vertsPerPoly - 1; ++i)
 		{
+			if (polygon[i].x >= aabb.minX && polygon[i].x <= aabb.maxX
+				&& polygon[i].y >= aabb.minY && polygon[i].y <= aabb.maxY)
+			{
+				return true;
+			}
+
 			if (Collide::IsLineIntersectAABB(aabb, polygon[i], polygon[i + 1]))
 			{
 				return true;
 			}
 		}
+
+		size_t lastIndex = geometry.vertsPerPoly - 1;
+
+		if (polygon[lastIndex].x >= aabb.minX && polygon[lastIndex].x <= aabb.maxX
+			&& polygon[lastIndex].y >= aabb.minY && polygon[lastIndex].y <= aabb.maxY)
+		{
+			return true;
+		}
+
+		if (Collide::IsLineIntersectAABB(aabb, polygon[lastIndex], polygon[0]))
+		{
+			return true;
+		}
+
 		return false;
 	}
 
@@ -238,8 +272,8 @@ namespace NavMeshGenerator
 			BoundingBox aabb = GetAABB(geometry, polygonIdx);
 			size_t leftCellIdx = static_cast<size_t>(aabb.minX - geometry.navMeshStart.x) / outSpatialHash.cellSize;
 			size_t topCellIdx = static_cast<size_t>(aabb.minY - geometry.navMeshStart.y) / outSpatialHash.cellSize;
-			size_t rightCellIdx = static_cast<size_t>(aabb.maxX - geometry.navMeshStart.x) / outSpatialHash.cellSize;
-			size_t bottomCellIdx = static_cast<size_t>(aabb.maxY - geometry.navMeshStart.y) / outSpatialHash.cellSize;
+			size_t rightCellIdx = std::min(static_cast<size_t>(aabb.maxX - geometry.navMeshStart.x / outSpatialHash.cellSize), static_cast<size_t>(outSpatialHash.hashSize.x - 1));
+			size_t bottomCellIdx = std::min(static_cast<size_t>(aabb.maxY - geometry.navMeshStart.y / outSpatialHash.cellSize), static_cast<size_t>(outSpatialHash.hashSize.y - 1));
 
 			for (size_t y = topCellIdx; y <= bottomCellIdx; ++y)
 			{

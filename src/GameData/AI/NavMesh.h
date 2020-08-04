@@ -31,7 +31,7 @@ struct NavMesh
 
 	struct SpatialHash
 	{
-		float cellSize = 10.0f;
+		float cellSize = 100.0f;
 		IntVector2D hashSize;
 		std::vector<std::vector<size_t>> polygonsHash;
 		bool isCalculated = false;

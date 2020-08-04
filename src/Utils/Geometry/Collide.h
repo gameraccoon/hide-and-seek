@@ -5,7 +5,10 @@ struct Vector2D;
 
 namespace Collide
 {
-	float SignedArea(const Vector2D& a, const Vector2D& b, const Vector2D& c);
+	inline float SignedArea(Vector2D a, Vector2D b, Vector2D c)
+	{
+		return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+	}
 
 	bool DoCollide(const CollisionComponent* collisionA, const Vector2D& locationA,
 				   const CollisionComponent* collisionB, const Vector2D& locationB, Vector2D& outResist);

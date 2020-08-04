@@ -14,6 +14,7 @@
 #include "GameData/GameData.h"
 
 #include "Utils/AI/NavMeshGenerator.h"
+#include "Utils/AI/PathFinding.h"
 
 AiSystem::AiSystem(WorldHolder& worldHolder, const TimeData& timeData)
 	: mWorldHolder(worldHolder)
@@ -84,39 +85,12 @@ void AiSystem::update()
 		std::vector<Vector2D> &path = pathData.smoothPath;
 		if (path.empty() || pathData.targetPos != targetLocation || pathData.updateTimestamp < navmeshUpdateTimestamp)
 		{
-			/*dtNavMeshQuery query;
-			query.init(navMesh, 256);
-			float startPos[3];
-			startPos[0] = currentLocation.x;
-			startPos[1] = 0.0f;
-			startPos[2] = currentLocation.y;
-			float endPos[3];
-			endPos[0] = targetLocation.x;
-			endPos[1] = 0.0f;
-			endPos[2] = targetLocation.y;
-			float halfExtents[3] = {40.0f, 5.0f, 40.0f};
-
-			int nsmoothPath = 0;
-			float smoothPath[MAX_SMOOTH*3];
-
-			RecalcNavmesh(navMesh, &query, startPos, endPos, halfExtents, smoothPath, nsmoothPath);
-
-			size_t pointsCount = static_cast<size_t>(nsmoothPath / 3);
-			path.clear();
-			path.reserve(pointsCount);
-			for (size_t i = 0; i < pointsCount; ++i)
-			{
-				Vector2D newPoint(smoothPath[i*3], smoothPath[i*3 + 2]);
-				if (path.empty() || !newPoint.isNearlyEqualTo(path.back()))
-				{
-					path.push_back(std::move(newPoint));
-				}
-			}
+			PathFinding::FindPath(path, navMesh, currentLocation, targetLocation);
 
 			for (size_t i = 1; i < path.size(); ++i)
 			{
 				debugDraw->getWorldLineSegmentsRef().emplace_back(path[i - 1], path[i], timestampNow.getIncreasedByFloatTime(10.0f));
-			}*/
+			}
 
 			characterState->getBlackboardRef().setValue<bool>(CharacterStateBlackboardKeys::TryingToMove, path.size() > 1);
 			pathData.targetPos = targetLocation;
