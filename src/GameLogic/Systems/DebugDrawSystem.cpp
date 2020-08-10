@@ -195,9 +195,9 @@ void DebugDrawSystem::update()
 			for (size_t i = 0; i < navMeshLinks.links.size(); ++i)
 			{
 				Vector2D firstPolygonCenter = GetNavmeshPolygonCenter(i, navMeshGeometry);
-				for (size_t linkedPolygon : navMeshLinks.links[i])
+				for (NavMesh::InnerLinks::LinkData link : navMeshLinks.links[i])
 				{
-					Vector2D secondPolygonCenter = GetNavmeshPolygonCenter(linkedPolygon, navMeshGeometry);
+					Vector2D secondPolygonCenter = GetNavmeshPolygonCenter(link.neighbor, navMeshGeometry);
 					std::vector<Vector2D> line{firstPolygonCenter, secondPolygonCenter + (firstPolygonCenter - secondPolygonCenter)*0.52f};
 					DrawPath(line, renderer, navMeshSprite, quadUV, drawShift);
 				}

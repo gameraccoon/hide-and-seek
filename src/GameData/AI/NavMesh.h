@@ -25,7 +25,19 @@ struct NavMesh
 
 	struct InnerLinks
 	{
-		std::vector<std::vector<size_t>> links;
+		struct LinkData
+		{
+			LinkData() = default;
+			LinkData(size_t neighbor, const std::pair<size_t, size_t>& border)
+				: neighbor(neighbor)
+				, border(border)
+			{}
+
+			size_t neighbor;
+			std::pair<size_t, size_t> border;
+		};
+
+		std::vector<std::vector<LinkData>> links;
 		bool isCalculated = false;
 	};
 

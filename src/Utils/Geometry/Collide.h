@@ -19,3 +19,19 @@ namespace Collide
 	bool IsLineIntersectAABB(const BoundingBox& box, const Vector2D& start, const Vector2D& finish);
 	Vector2D GetPointIntersect2Lines(const Vector2D& A1, const Vector2D& A2, const Vector2D& B1, const Vector2D& B2);
 }
+
+// macro that calls CODE for each border, where i and j are indexes of the vertices of this border
+#define FOR_EACH_BORDER(size, CODE) { \
+	do { \
+		for (size_t i = 0; i < size - 1; ++i) \
+		{ \
+			size_t j = i + 1; \
+			CODE \
+		} \
+		{ \
+			size_t i = size - 1; \
+			size_t j = 0; \
+			CODE \
+		} \
+	} while(false); \
+}

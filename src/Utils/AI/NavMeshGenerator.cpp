@@ -94,19 +94,23 @@ namespace NavMeshGenerator
 			it.second = idx++;
 		}
 
+#ifdef DEBUG_CHECKS
 		bool order = false;
 		bool inited = false;
+#endif // DEBUG_CHECKS
 
 		outGeometry.indexes.reserve(resultPolygons.size() * outGeometry.vertsPerPoly);
 		for (const TPPLPoly& polygon : resultPolygons)
 		{
-			bool newOrder = Collide::SignedArea(VecFromTPPLPoint(polygon[0]), VecFromTPPLPoint(polygon[1]), VecFromTPPLPoint(polygon[2]));
+#ifdef DEBUG_CHECKS
+			bool newOrder = (Collide::SignedArea(VecFromTPPLPoint(polygon[0]), VecFromTPPLPoint(polygon[1]), VecFromTPPLPoint(polygon[2])) >= 0);
 			if (inited && newOrder != order)
 			{
 				LogError("winding order changed");
 			}
 			inited = true;
 			order = newOrder;
+#endif // DEBUG_CHECKS
 
 			outGeometry.indexes.push_back(verticesMap.find(IntVecFromTPPLPoint(polygon[0]))->second);
 			outGeometry.indexes.push_back(verticesMap.find(IntVecFromTPPLPoint(polygon[1]))->second);
@@ -119,17 +123,25 @@ namespace NavMeshGenerator
 		outGeometry.isCalculated = true;
 	}
 
-	struct size_t_pair_hash
+	struct SortedBorderPair
 	{
-		std::size_t operator() (const std::pair<size_t, size_t> &p) const
+		bool operator==(const SortedBorderPair& other) const { return first == other.first && second == other.second; }
+		size_t first;
+		size_t second;
+		bool isSwapped;
+	};
+
+	struct BorderPairHash
+	{
+		std::size_t operator() (const SortedBorderPair& p) const
 		{
 			return std::hash<size_t>()(p.first) ^ (std::hash<size_t>()(p.second) << 1);
 		}
 	};
 
-	static std::pair<size_t, size_t> MakeSortedPair(size_t first, size_t second)
+	static SortedBorderPair MakeSortedPair(size_t first, size_t second)
 	{
-		return (first < second) ? std::make_pair(first, second) : std::make_pair(second, first);
+		return (first < second) ? SortedBorderPair{first, second, false} : SortedBorderPair{second, first, true};
 	}
 
 	void LinkNavMesh(NavMesh::InnerLinks& outLinks, const NavMesh::Geometry& geometry)
@@ -137,23 +149,26 @@ namespace NavMeshGenerator
 		Assert(geometry.isCalculated, "Geometry should be calculated before calculating links");
 
 		// form a dictionary with borders as keys and polygon indexes as values
-		std::unordered_map<std::pair<size_t, size_t>, std::vector<size_t>, size_t_pair_hash> polysByBorders;
-		for (size_t i = 0, iSize = geometry.polygonsCount; i < iSize; ++i)
+		std::unordered_map<SortedBorderPair, std::vector<size_t>, BorderPairHash> polysByBorders;
+		for (size_t p = 0, pSize = geometry.polygonsCount; p < pSize; ++p)
 		{
-			size_t iShift = i * geometry.vertsPerPoly;
-			for (size_t j = 0; j < geometry.vertsPerPoly - 1; ++j)
+			size_t pShift = p * geometry.vertsPerPoly;
+			FOR_EACH_BORDER(geometry.vertsPerPoly,
 			{
-				size_t indexA = geometry.indexes[iShift + j];
-				size_t indexB = geometry.indexes[iShift + j + 1];
-				polysByBorders[MakeSortedPair(indexA, indexB)].push_back(i);
-			}
-
-			{
-				// last border
-				size_t indexA = geometry.indexes[iShift + 0];
-				size_t indexB = geometry.indexes[iShift + geometry.vertsPerPoly - 1];
-				polysByBorders[MakeSortedPair(indexA, indexB)].push_back(i);
-			}
+				size_t indexA = geometry.indexes[pShift + i];
+				size_t indexB = geometry.indexes[pShift + j];
+				SortedBorderPair sortedPair = MakeSortedPair(indexA, indexB);
+				std::vector<size_t>& vector = polysByBorders[sortedPair];
+				// the first link has points in correct winding order, and the second has them reversed
+				if (sortedPair.isSwapped)
+				{
+					vector.push_back(p);
+				}
+				else
+				{
+					vector.insert(vector.begin(), p);
+				}
+			});
 		}
 
 		// connect polygons that have a shared border
@@ -164,10 +179,33 @@ namespace NavMeshGenerator
 			Assert(pair.second.size() <= 2, "There are more than 2 triangles that share the same border. That should not happen.");
 			if (pair.second.size() == 2)
 			{
-				outLinks.links[pair.second[0]].push_back(pair.second[1]);
-				outLinks.links[pair.second[1]].push_back(pair.second[0]);
+				size_t firstBorder = pair.first.first;
+				size_t secondBorder = pair.first.second;
+				outLinks.links[pair.second[0]].emplace_back(pair.second[1], std::make_pair(firstBorder, secondBorder));
+				outLinks.links[pair.second[1]].emplace_back(pair.second[0], std::make_pair(secondBorder, firstBorder));
 			}
 		}
+
+#ifdef DEBUG_CHECKS
+		for (size_t p = 0; p < geometry.polygonsCount; ++p)
+		{
+			size_t pShift = p * geometry.vertsPerPoly;
+			for (const NavMesh::InnerLinks::LinkData& link : outLinks.links[p])
+			{
+				bool found = false;
+				FOR_EACH_BORDER(geometry.vertsPerPoly,
+				{
+					size_t index1 = pShift + i;
+					size_t index2 = pShift + j;
+					if (geometry.indexes[index1] == link.border.first && geometry.indexes[index2] == link.border.second)
+					{
+						found = true;
+					}
+				});
+				Assert(found, "Border from a link not found (probably incorrect winding order)");
+			}
+		}
+#endif // DEBUG_CHECKS
 
 		outLinks.isCalculated = true;
 	}
