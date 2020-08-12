@@ -57,65 +57,37 @@ namespace PathFinding
 		return InvalidPolygon;
 	}
 
-/*	std::pair<size_t, size_t> GetNeighborBorder(const NavMesh::InnerLinks& links, size_t current, size_t neighbor)
+	struct LineSegmentToNeighborIntersection
 	{
-		for (const NavMesh::InnerLinks::LinkData& link : links.links[current])
-		{
-			if (link.neighbor == neighbor)
-			{
-				return link.border;
-			}
-		}
-
-		return std::make_pair(0u, 0u);
-	}
-
-	struct LineSegmentToPolygonIntersection
-	{
-		size_t borderPointA;
-		size_t borderPointB;
-		Vector2D point;
+		NavMesh::InnerLinks::LinkData link;
+		Vector2D intersectionPoint;
 	};
 
-	static LineSegmentToPolygonIntersection FindLineSegmentToPolygonIntersection(const NavMesh::Geometry& geometry, Vector2D start, Vector2D finish, size_t polygon, const std::pair<size_t, size_t>& ignoredBorder)
+	static LineSegmentToNeighborIntersection FindLineSegmentToNeighborIntersection(const NavMesh& navMesh, Vector2D start, Vector2D finish, size_t polygon, size_t ignoredNeighbor)
 	{
-		LineSegmentToPolygonIntersection result;
+		LineSegmentToNeighborIntersection result;
 
-		size_t polygonShift = polygon * geometry.vertsPerPoly;
-		FOR_EACH_BORDER(geometry.vertsPerPoly,
+		for (const NavMesh::InnerLinks::LinkData& link : navMesh.links.links[polygon])
 		{
-			if (polygonShift + i != ignoredBorder.first || polygonShift + j != ignoredBorder.second)
+			if (link.neighbor != ignoredNeighbor)
 			{
-				Vector2D vert1 = geometry.vertices[geometry.indexes[polygonShift + i]];
-				Vector2D vert2 = geometry.vertices[geometry.indexes[polygonShift + j]];
+				Vector2D vert1 = navMesh.geometry.vertices[link.border.first];
+				Vector2D vert2 = navMesh.geometry.vertices[link.border.second];
 
 				bool areIntersect = Collide::AreLinesIntersect(start, finish, vert1, vert2);
 
 				if (areIntersect)
 				{
-					result.borderPointA = geometry.indexes[polygonShift + i];
-					result.borderPointB = geometry.indexes[polygonShift + j];
-					result.point = Collide::GetPointIntersect2Lines(start, finish, vert1, vert2);
+					result.link = link;
+					result.intersectionPoint = Collide::GetPointIntersect2Lines(start, finish, vert1, vert2);
 					return result;
 				}
 			}
-		});
-
-		return result;
-	}
-
-	static size_t FindNeighborWithBorder(const NavMesh::InnerLinks& links, size_t currentPolygon, size_t borderPointA, size_t borderPointB)
-	{
-		for (const NavMesh::InnerLinks::LinkData& link : links.links[currentPolygon])
-		{
-			if (link.border.first == borderPointA && link.border.second == borderPointB)
-			{
-				return link.neighbor;
-			}
 		}
 
-		return InvalidPolygon;
-	}*/
+		result.link.neighbor = InvalidPolygon;
+		return result;
+	}
 
 	struct PathPoint
 	{
@@ -230,26 +202,25 @@ namespace PathFinding
 			}
 
 			// find raycast neighbor (best possible neighbor from this point)
-/*			std::pair<size_t, size_t> ignoredBorder = GetNeighborBorder(navMesh.links, currentPoint.polygon, currentPoint.previous);
-			LineSegmentToPolygonIntersection rayIntersection = FindLineSegmentToPolygonIntersection(navMesh.geometry, currentPoint.pos, start, currentPoint.polygon, ignoredBorder);
-			size_t bestNeighborID = FindNeighborWithBorder(navMesh.links, currentPoint.polygon, rayIntersection.borderPointA, rayIntersection.borderPointB);
+			LineSegmentToNeighborIntersection rayIntersection = FindLineSegmentToNeighborIntersection(navMesh, currentPoint.pos, start, currentPoint.polygon, currentPoint.previous);
+			size_t bestNeighborID = rayIntersection.link.neighbor;
 
 			if (bestNeighborID != InvalidPolygon)
 			{
 				PathPoint point;
 				point.polygon = bestNeighborID;
 				point.previous = currentPoint.polygon;
-				point.pos = rayIntersection.point;
+				point.pos = rayIntersection.intersectionPoint;
 				CalculatePointData(point, currentPoint.g, currentPoint.pos, start);
 
 				AddToOpenListIfBetter(openList, openMap, point);
 			}
-*/
+
 			for (const NavMesh::InnerLinks::LinkData& link : navMesh.links.links[currentPoint.polygon])
 			{
 				// we already added bestNeighborID node to the open list
 				// also skip the previous point where we came from
-				if (/*link.neighbor == bestNeighborID ||*/ link.neighbor == currentPoint.previous)
+				if (link.neighbor == bestNeighborID || link.neighbor == currentPoint.previous)
 				{
 					continue;
 				}
