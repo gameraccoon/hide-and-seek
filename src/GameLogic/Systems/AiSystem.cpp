@@ -99,7 +99,7 @@ void AiSystem::update()
 
 		if (!path.empty())
 		{
-			if ((path[0] - currentLocation).qSize() < 100.0f)
+			if ((path[0] - currentLocation).qSize() < 20.0f)
 			{
 				path.erase(path.begin());
 			}
@@ -107,7 +107,7 @@ void AiSystem::update()
 
 		if (!path.empty())
 		{
-			Vector2D diff = path[1] - currentLocation;
+			Vector2D diff = path[0] - currentLocation;
 			movement->setMoveDirection(diff);
 		}
 		else

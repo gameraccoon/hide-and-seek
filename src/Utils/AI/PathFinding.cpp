@@ -57,6 +57,19 @@ namespace PathFinding
 		return InvalidPolygon;
 	}
 
+/*	std::pair<size_t, size_t> GetNeighborBorder(const NavMesh::InnerLinks& links, size_t current, size_t neighbor)
+	{
+		for (const NavMesh::InnerLinks::LinkData& link : links.links[current])
+		{
+			if (link.neighbor == neighbor)
+			{
+				return link.border;
+			}
+		}
+
+		return std::make_pair(0u, 0u);
+	}
+
 	struct LineSegmentToPolygonIntersection
 	{
 		size_t borderPointA;
@@ -64,31 +77,34 @@ namespace PathFinding
 		Vector2D point;
 	};
 
-	static LineSegmentToPolygonIntersection FindLineSegmentToPolygonIntersection(const NavMesh::Geometry& geometry, Vector2D start, Vector2D finish, size_t polygon)
+	static LineSegmentToPolygonIntersection FindLineSegmentToPolygonIntersection(const NavMesh::Geometry& geometry, Vector2D start, Vector2D finish, size_t polygon, const std::pair<size_t, size_t>& ignoredBorder)
 	{
 		LineSegmentToPolygonIntersection result;
 
 		size_t polygonShift = polygon * geometry.vertsPerPoly;
 		FOR_EACH_BORDER(geometry.vertsPerPoly,
 		{
-			Vector2D vert1 = geometry.vertices[geometry.indexes[polygonShift + i]];
-			Vector2D vert2 = geometry.vertices[geometry.indexes[polygonShift + j]];
-
-			bool areIntersect = Collide::AreLinesIntersect(start, finish, vert1, vert2);
-
-			if (areIntersect)
+			if (polygonShift + i != ignoredBorder.first || polygonShift + j != ignoredBorder.second)
 			{
-				result.borderPointA = polygonShift + i;
-				result.borderPointB = polygonShift + j;
-				result.point = Collide::GetPointIntersect2Lines(start, finish, vert1, vert2);
-				return result;
+				Vector2D vert1 = geometry.vertices[geometry.indexes[polygonShift + i]];
+				Vector2D vert2 = geometry.vertices[geometry.indexes[polygonShift + j]];
+
+				bool areIntersect = Collide::AreLinesIntersect(start, finish, vert1, vert2);
+
+				if (areIntersect)
+				{
+					result.borderPointA = geometry.indexes[polygonShift + i];
+					result.borderPointB = geometry.indexes[polygonShift + j];
+					result.point = Collide::GetPointIntersect2Lines(start, finish, vert1, vert2);
+					return result;
+				}
 			}
 		});
 
 		return result;
 	}
 
-	size_t findNeighborWithBorder(const NavMesh::InnerLinks& links, size_t currentPolygon, size_t borderPointA, size_t borderPointB)
+	static size_t FindNeighborWithBorder(const NavMesh::InnerLinks& links, size_t currentPolygon, size_t borderPointA, size_t borderPointB)
 	{
 		for (const NavMesh::InnerLinks::LinkData& link : links.links[currentPolygon])
 		{
@@ -99,7 +115,7 @@ namespace PathFinding
 		}
 
 		return InvalidPolygon;
-	}
+	}*/
 
 	struct PathPoint
 	{
@@ -111,6 +127,62 @@ namespace PathFinding
 		size_t previous;
 	};
 
+	using OpenListType = std::multimap<float, PathPoint>;
+	using OpenMapType = std::unordered_map<size_t, OpenListType::iterator>;
+	using ClosedListType = std::unordered_map<size_t, PathPoint>;
+
+	static void AddToOpenListIfBetter(OpenListType& openList, OpenMapType& openMap, const PathPoint& point)
+	{
+		auto [mapIterator, isInserted] = openMap.try_emplace(point.polygon, openList.end());
+		// if the node is new
+		if (isInserted)
+		{
+			// add the new node to the openList and save its iterator to openMap
+			mapIterator->second = openList.emplace(point.f, point);
+		}
+		else
+		{
+			// if the node is better than the previous
+			if (point.f < mapIterator->second->second.f)
+			{
+				// remove the old node
+				openList.erase(mapIterator->second);
+				// add the new node to the openList and save its iterator to openMap
+				mapIterator->second = openList.emplace(point.f, point);
+			}
+		}
+		AssertFatal(openList.size() == openMap.size(), "openList and openMap have diverged");
+	}
+
+	static void AddToClosedListIfBetter(ClosedListType& closedList, const PathPoint& point)
+	{
+		auto [mapIterator, isInserted] = closedList.emplace(point.polygon, point);
+
+		if (!isInserted)
+		{
+			if (point.f < mapIterator->second.f)
+			{
+				mapIterator->second = point;
+			}
+		}
+	}
+
+	static PathPoint PopBestFromOpenList(OpenListType& openList, OpenMapType& openMap)
+	{
+		PathPoint result = std::move(openList.begin()->second);
+		openList.erase(openList.begin());
+		openMap.erase(result.polygon);
+		AssertFatal(openList.size() == openMap.size(), "openList and openMap have diverged");
+		return result;
+	}
+
+	static void CalculatePointData(PathPoint& point, float previousG, Vector2D previousPos, Vector2D target)
+	{
+		point.g = previousG + (point.pos - previousPos).size();
+		point.h = (target - point.pos).size();
+		point.f = point.g + point.h;
+	}
+
 	void FindPath(std::vector<Vector2D>& outPath, const NavMesh& navMesh, Vector2D start, Vector2D finish)
 	{
 		outPath.clear();
@@ -120,80 +192,90 @@ namespace PathFinding
 
 		if (startPolygon == InvalidPolygon || finishPolygon == InvalidPolygon)
 		{
+			outPath.push_back(start);
+			outPath.push_back(finish);
 			return;
 		}
 
-		PathPoint currentPoint;
-		currentPoint.polygon = startPolygon;
-		currentPoint.previous = InvalidPolygon;
-		currentPoint.g = 0.0f;
-		currentPoint.h = (finish - start).size();
-		currentPoint.f = currentPoint.g + currentPoint.h;
-		currentPoint.pos = start;
+		// open list sorted by the f value
+		OpenListType openList;
+		OpenMapType openMap;
+		ClosedListType closedList;
 
-		std::list<PathPoint> openList;
-		std::vector<bool> openSet(navMesh.geometry.polygonsCount, false);
-		std::unordered_map<size_t, PathPoint> closedList;
+		{
+			PathPoint firstPoint;
+			firstPoint.polygon = finishPolygon;
+			firstPoint.previous = InvalidPolygon;
+			// we are moving from finish to start, to then rewind the path
+			firstPoint.pos = finish;
+			firstPoint.g = 0.0f;
+			firstPoint.h = (start - finish).size();
+			firstPoint.f = firstPoint.g + firstPoint.h;
+			AddToOpenListIfBetter(openList, openMap, firstPoint);
+		}
 
 		unsigned int stepLimit = 100u;
 		unsigned int step = 0u;
-		while (step < stepLimit)
+		PathPoint currentPoint;
+		while (!openList.empty() && step < stepLimit)
 		{
-			if (currentPoint.polygon == finishPolygon)
+			++step;
+
+			currentPoint = PopBestFromOpenList(openList, openMap);
+			AddToClosedListIfBetter(closedList, currentPoint);
+
+			if (currentPoint.polygon == startPolygon)
 			{
 				break;
 			}
 
+			// find raycast neighbor (best possible neighbor from this point)
+/*			std::pair<size_t, size_t> ignoredBorder = GetNeighborBorder(navMesh.links, currentPoint.polygon, currentPoint.previous);
+			LineSegmentToPolygonIntersection rayIntersection = FindLineSegmentToPolygonIntersection(navMesh.geometry, currentPoint.pos, start, currentPoint.polygon, ignoredBorder);
+			size_t bestNeighborID = FindNeighborWithBorder(navMesh.links, currentPoint.polygon, rayIntersection.borderPointA, rayIntersection.borderPointB);
+
+			if (bestNeighborID != InvalidPolygon)
+			{
+				PathPoint point;
+				point.polygon = bestNeighborID;
+				point.previous = currentPoint.polygon;
+				point.pos = rayIntersection.point;
+				CalculatePointData(point, currentPoint.g, currentPoint.pos, start);
+
+				AddToOpenListIfBetter(openList, openMap, point);
+			}
+*/
 			for (const NavMesh::InnerLinks::LinkData& link : navMesh.links.links[currentPoint.polygon])
 			{
-				if (openSet[link.neighbor] == false)
+				// we already added bestNeighborID node to the open list
+				// also skip the previous point where we came from
+				if (/*link.neighbor == bestNeighborID ||*/ link.neighbor == currentPoint.previous)
 				{
-					Vector2D borderPointA = navMesh.geometry.vertices[link.border.first];
-					Vector2D borderPointB = navMesh.geometry.vertices[link.border.second];
-					Vector2D borderMiddlePoint = borderPointA + (borderPointB - borderPointA) * 0.5f;
-
-					PathPoint point;
-					point.polygon = link.neighbor;
-					point.previous = currentPoint.polygon;
-					point.g = currentPoint.g + (borderMiddlePoint - currentPoint.pos).size();
-					openList.push_back(std::move(point));
-					openSet[link.neighbor] = true;
+					continue;
 				}
+
+				Vector2D borderPointA = navMesh.geometry.vertices[link.border.first];
+				Vector2D borderPointB = navMesh.geometry.vertices[link.border.second];
+				Vector2D borderMiddlePoint = borderPointA + (borderPointB - borderPointA) * 0.5f;
+
+				PathPoint point;
+				point.polygon = link.neighbor;
+				point.previous = currentPoint.polygon;
+				point.pos = borderMiddlePoint;
+				CalculatePointData(point, currentPoint.g, currentPoint.pos, start);
+
+				AddToOpenListIfBetter(openList, openMap, point);
 			}
-
-			LineSegmentToPolygonIntersection intersection = FindLineSegmentToPolygonIntersection(navMesh.geometry, currentPoint.pos, finish, currentPoint.polygon);
-
-			{
-				float scoreG = currentPoint.g + (intersection.point - currentPoint.pos).size();
-				auto [iterator, isEnserted] = closedList.emplace(currentPoint.polygon, PathPoint{});
-				PathPoint& closedPoint = iterator->second;
-				if (isEnserted || scoreG < closedPoint.g)
-				{
-					closedPoint.pos = intersection.point;
-					closedPoint.h = (intersection.point - start).size();
-					closedPoint.g = scoreG;
-					closedPoint.f = closedPoint.h + closedPoint.g;
-					closedPoint.previous = currentPoint.previous;
-				}
-			}
-
-			size_t neighborID = findNeighborWithBorder(navMesh.links, currentPoint.polygon, intersection.borderPointA, intersection.borderPointB);
-
-			if (neighborID != InvalidPolygon)
-			{
-				outPath.push_back(intersection.point);
-//				currentPolygon = neighborID;
-			}
-			else
-			{
-//				currentPolygon = openList.pop_front();
-			}
-
-			++step;
 		}
 
 		outPath.push_back(start);
-		// ToDo: rewind path from closed list
+		size_t nextPolygon = currentPoint.polygon;
+		while (nextPolygon != finishPolygon)
+		{
+			PathPoint point = closedList[nextPolygon];
+			outPath.push_back(point.pos);
+			nextPolygon = point.previous;
+		}
 		outPath.push_back(finish);
 
 		// optimize the path
