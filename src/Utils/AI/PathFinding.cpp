@@ -227,28 +227,41 @@ namespace PathFinding
 
 				Vector2D borderPointA = navMesh.geometry.vertices[link.border.first];
 				Vector2D borderPointB = navMesh.geometry.vertices[link.border.second];
-				Vector2D borderMiddlePoint = borderPointA + (borderPointB - borderPointA) * 0.5f;
 
 				PathPoint point;
 				point.polygon = link.neighbor;
 				point.previous = currentPoint.polygon;
-				point.pos = borderMiddlePoint;
+				if ((start - borderPointA).qSize() < (start - borderPointB).qSize())
+				{
+					point.pos = borderPointA;
+				}
+				else
+				{
+					point.pos = borderPointB;
+				}
 				CalculatePointData(point, currentPoint.g, currentPoint.pos, start);
 
 				AddToOpenListIfBetter(openList, openMap, point);
 			}
 		}
 
-		outPath.push_back(start);
-		size_t nextPolygon = currentPoint.polygon;
-		while (nextPolygon != finishPolygon)
+		std::vector<PathPoint> bestPath;
 		{
-			PathPoint point = closedList[nextPolygon];
+			size_t nextPolygon = currentPoint.polygon;
+			while (nextPolygon != finishPolygon)
+			{
+				bestPath.push_back(closedList[nextPolygon]);
+				nextPolygon = bestPath.back().previous;
+			}
+		}
+
+		// optimize path
+
+		outPath.push_back(start);
+		for (const PathPoint& point : bestPath)
+		{
 			outPath.push_back(point.pos);
-			nextPolygon = point.previous;
 		}
 		outPath.push_back(finish);
-
-		// optimize the path
 	}
 } // namespace PathFinding
