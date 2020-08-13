@@ -63,6 +63,9 @@ namespace PathFinding
 		Vector2D intersectionPoint;
 	};
 
+	static_assert(std::is_trivially_copyable<LineSegmentToNeighborIntersection>(), "LineSegmentToNeighborIntersection should be trivially copyable");
+	static_assert(std::is_trivially_constructible<LineSegmentToNeighborIntersection>(), "LineSegmentToNeighborIntersection should be trivially constructible");
+
 	static LineSegmentToNeighborIntersection FindLineSegmentToNeighborIntersection(const NavMesh& navMesh, Vector2D start, Vector2D finish, size_t polygon, size_t ignoredNeighbor)
 	{
 		LineSegmentToNeighborIntersection result;
@@ -71,8 +74,8 @@ namespace PathFinding
 		{
 			if (link.neighbor != ignoredNeighbor)
 			{
-				Vector2D vert1 = navMesh.geometry.vertices[link.border.first];
-				Vector2D vert2 = navMesh.geometry.vertices[link.border.second];
+				Vector2D vert1 = navMesh.geometry.vertices[link.borderPoint1];
+				Vector2D vert2 = navMesh.geometry.vertices[link.borderPoint2];
 
 				bool areIntersect = Collide::AreLinesIntersect(start, finish, vert1, vert2);
 
@@ -98,6 +101,9 @@ namespace PathFinding
 		float f;
 		size_t previous;
 	};
+
+	static_assert(std::is_trivially_copyable<PathPoint>(), "PathPoint should be trivially copyable");
+	static_assert(std::is_trivially_constructible<PathPoint>(), "PathPoint should be trivially constructible");
 
 	using OpenListType = std::multimap<float, PathPoint>;
 	using OpenMapType = std::unordered_map<size_t, OpenListType::iterator>;
@@ -153,6 +159,25 @@ namespace PathFinding
 		point.g = previousG + (point.pos - previousPos).size();
 		point.h = (target - point.pos).size();
 		point.f = point.g + point.h;
+	}
+
+	static bool CanBuildStraightPath(const NavMesh& navMesh, const PathPoint& point1, const PathPoint& point2)
+	{
+		size_t currentPolygon = point1.polygon;
+		size_t previousPolygon = InvalidPolygon;
+		while (currentPolygon != point2.polygon)
+		{
+			LineSegmentToNeighborIntersection intersection = FindLineSegmentToNeighborIntersection(navMesh, point1.pos, point2.pos, currentPolygon, previousPolygon);
+			// if the line segment intersects with some space not covered by the navmesh
+			if (intersection.link.neighbor == InvalidPolygon)
+			{
+				return false;
+			}
+
+			previousPolygon = currentPolygon;
+			currentPolygon = intersection.link.neighbor;
+		}
+		return true;
 	}
 
 	void FindPath(std::vector<Vector2D>& outPath, const NavMesh& navMesh, Vector2D start, Vector2D finish)
@@ -225,8 +250,8 @@ namespace PathFinding
 					continue;
 				}
 
-				Vector2D borderPointA = navMesh.geometry.vertices[link.border.first];
-				Vector2D borderPointB = navMesh.geometry.vertices[link.border.second];
+				Vector2D borderPointA = navMesh.geometry.vertices[link.borderPoint1];
+				Vector2D borderPointB = navMesh.geometry.vertices[link.borderPoint2];
 
 				PathPoint point;
 				point.polygon = link.neighbor;
@@ -247,8 +272,16 @@ namespace PathFinding
 
 		std::vector<PathPoint> bestPath;
 		{
+			// add start point (it is not in the closed list)
+			{
+				PathPoint point;
+				point.polygon = startPolygon;
+				point.pos = start;
+				bestPath.push_back(std::move(point));
+			}
+
 			size_t nextPolygon = currentPoint.polygon;
-			while (nextPolygon != finishPolygon)
+			while (nextPolygon != InvalidPolygon)
 			{
 				bestPath.push_back(closedList[nextPolygon]);
 				nextPolygon = bestPath.back().previous;
@@ -256,12 +289,18 @@ namespace PathFinding
 		}
 
 		// optimize path
+		for (int i = 0; i < static_cast<int>(bestPath.size()) - 2; ++i)
+		{
+			if (CanBuildStraightPath(navMesh, bestPath[i], bestPath[i + 2]))
+			{
+				bestPath.erase(bestPath.begin() + (i + 1));
+				--i;
+			}
+		}
 
-		outPath.push_back(start);
 		for (const PathPoint& point : bestPath)
 		{
 			outPath.push_back(point.pos);
 		}
-		outPath.push_back(finish);
 	}
 } // namespace PathFinding

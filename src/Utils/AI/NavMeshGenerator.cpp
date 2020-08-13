@@ -181,8 +181,8 @@ namespace NavMeshGenerator
 			{
 				size_t firstBorder = pair.first.first;
 				size_t secondBorder = pair.first.second;
-				outLinks.links[pair.second[0]].emplace_back(pair.second[1], std::make_pair(firstBorder, secondBorder));
-				outLinks.links[pair.second[1]].emplace_back(pair.second[0], std::make_pair(secondBorder, firstBorder));
+				outLinks.links[pair.second[0]].emplace_back(pair.second[1], firstBorder, secondBorder);
+				outLinks.links[pair.second[1]].emplace_back(pair.second[0], secondBorder, firstBorder);
 			}
 		}
 
@@ -197,7 +197,7 @@ namespace NavMeshGenerator
 				{
 					size_t index1 = pShift + i;
 					size_t index2 = pShift + j;
-					if (geometry.indexes[index1] == link.border.first && geometry.indexes[index2] == link.border.second)
+					if (geometry.indexes[index1] == link.borderPoint1 && geometry.indexes[index2] == link.borderPoint2)
 					{
 						found = true;
 					}

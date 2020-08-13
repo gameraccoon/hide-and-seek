@@ -28,13 +28,15 @@ struct NavMesh
 		struct LinkData
 		{
 			LinkData() = default;
-			LinkData(size_t neighbor, const std::pair<size_t, size_t>& border)
+			LinkData(size_t neighbor, size_t borderPoint1, size_t borderPoint2)
 				: neighbor(neighbor)
-				, border(border)
+				, borderPoint1(borderPoint1)
+				, borderPoint2(borderPoint2)
 			{}
 
 			size_t neighbor;
-			std::pair<size_t, size_t> border;
+			size_t borderPoint1;
+			size_t borderPoint2;
 		};
 
 		std::vector<std::vector<LinkData>> links;
