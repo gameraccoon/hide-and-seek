@@ -69,6 +69,7 @@ namespace PathFinding
 	static LineSegmentToNeighborIntersection FindLineSegmentToNeighborIntersection(const NavMesh& navMesh, Vector2D start, Vector2D finish, size_t polygon, size_t ignoredNeighbor)
 	{
 		LineSegmentToNeighborIntersection result;
+		result.link.neighbor = InvalidPolygon;
 
 		for (const NavMesh::InnerLinks::LinkData& link : navMesh.links.links[polygon])
 		{
@@ -81,14 +82,19 @@ namespace PathFinding
 
 				if (areIntersect)
 				{
-					result.link = link;
-					result.intersectionPoint = Collide::GetPointIntersect2Lines(start, finish, vert1, vert2);
-					return result;
+					Vector2D intersectionPoint = Collide::GetPointIntersect2Lines(start, finish, vert1, vert2);
+					if (result.link.neighbor == InvalidPolygon
+						// choose the variant closer to the finish point
+						|| (intersectionPoint - finish).qSize() < (result.intersectionPoint - finish).qSize()
+						)
+					{
+						result.link = link;
+						result.intersectionPoint = intersectionPoint;
+					}
 				}
 			}
 		}
 
-		result.link.neighbor = InvalidPolygon;
 		return result;
 	}
 
@@ -132,9 +138,9 @@ namespace PathFinding
 		AssertFatal(openList.size() == openMap.size(), "openList and openMap have diverged");
 	}
 
-	static void AddToClosedListIfBetter(ClosedListType& closedList, const PathPoint& point)
+	static bool AddToClosedListIfBetter(ClosedListType& closedList, const PathPoint& point)
 	{
-		auto [mapIterator, isInserted] = closedList.emplace(point.polygon, point);
+		auto [mapIterator, isInserted] = closedList.try_emplace(point.polygon, point);
 
 		if (!isInserted)
 		{
@@ -142,7 +148,12 @@ namespace PathFinding
 			{
 				mapIterator->second = point;
 			}
+			else
+			{
+				return false;
+			}
 		}
+		return true;
 	}
 
 	static PathPoint PopBestFromOpenList(OpenListType& openList, OpenMapType& openMap)
@@ -211,6 +222,7 @@ namespace PathFinding
 			AddToOpenListIfBetter(openList, openMap, firstPoint);
 		}
 
+
 		unsigned int stepLimit = 100u;
 		unsigned int step = 0u;
 		PathPoint currentPoint;
@@ -219,11 +231,16 @@ namespace PathFinding
 			++step;
 
 			currentPoint = PopBestFromOpenList(openList, openMap);
-			AddToClosedListIfBetter(closedList, currentPoint);
+			bool isBetter = AddToClosedListIfBetter(closedList, currentPoint);
 
 			if (currentPoint.polygon == startPolygon)
 			{
 				break;
+			}
+
+			if (!isBetter)
+			{
+				continue;
 			}
 
 			// find raycast neighbor (best possible neighbor from this point)
@@ -289,12 +306,14 @@ namespace PathFinding
 		}
 
 		// optimize path
-		for (int i = 0; i < static_cast<int>(bestPath.size()) - 2; ++i)
+		if (!bestPath.empty())
 		{
-			if (CanBuildStraightPath(navMesh, bestPath[i], bestPath[i + 2]))
+			for (size_t i = bestPath.size() - 1; i >= 2; --i)
 			{
-				bestPath.erase(bestPath.begin() + (i + 1));
-				--i;
+				if (CanBuildStraightPath(navMesh, bestPath[i], bestPath[i - 2]))
+				{
+					bestPath.erase(bestPath.begin() + (i - 1));
+				}
 			}
 		}
 

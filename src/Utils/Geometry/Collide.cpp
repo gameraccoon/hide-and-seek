@@ -13,6 +13,8 @@
 
 namespace Collide
 {
+	static constexpr float EPS = 1E-4f;
+
 	enum class ResistDir
 	{
 		Normal,
@@ -237,29 +239,15 @@ namespace Collide
 		);
 	}
 
-	static bool IsAAIntersect(const float a, const float b, const float c, const float d)
-	{
-		float a1 = a;
-		float b1 = b;
-		float c1 = c;
-		float d1 = d;
-
-		if (a1 > b1) std::swap(a1, b1);
-		if (c1 > d1) std::swap(c1, d1);
-
-		return std::max(a1, c1) <= std::min(b1, d1);
-	}
-
 	bool AreLinesIntersect(const Vector2D& A1, const Vector2D& A2, const Vector2D& B1, const Vector2D& B2)
 	{
-		if (IsAAIntersect(A1.x, A2.x, B1.x, B2.x)
-			&& IsAAIntersect(A1.y, A2.y, B1.y, B2.y)
-			&& Collide::SignedArea(A1, A2, B1) * Collide::SignedArea(A1, A2, B2) <= 0
-			&& Collide::SignedArea(B1, B2, A1) * Collide::SignedArea(B1, B2, A2) <= 0)
-		{
-			return true;
-		}
-		return false;
+		return (
+			// check that points B1 and B2 on the different sides of A1 A2 line
+			Collide::SignedArea(A1, A2, B1) * Collide::SignedArea(A1, A2, B2) <= 0.0f
+			&&
+			// check that points A1 and A2 on the different sides of B1 B2 line
+			Collide::SignedArea(B1, B2, A1) * Collide::SignedArea(B1, B2, A2) <= 0.0f
+		);
 	}
 
 	bool IsLineIntersectAABB(const BoundingBox& box, const Vector2D& start, const Vector2D& finish)
@@ -321,8 +309,6 @@ namespace Collide
 
 	Vector2D GetPointIntersect2Lines(const Vector2D& A1, const Vector2D& A2, const Vector2D& B1, const Vector2D& B2)
 	{
-		constexpr float EPS = 1E-4f;
-
 		float DA1 = A1.y - A2.y;
 		float DB1 = A2.x - A1.x;
 		float DC1 = -DA1 * A1.x - DB1 * A1.y;
