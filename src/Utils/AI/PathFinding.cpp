@@ -70,6 +70,7 @@ namespace PathFinding
 	{
 		LineSegmentToNeighborIntersection result;
 		result.link.neighbor = InvalidPolygon;
+		float bestIntersectionQDistance = 0.0f;
 
 		for (const NavMesh::InnerLinks::LinkData& link : navMesh.links.links[polygon])
 		{
@@ -83,13 +84,15 @@ namespace PathFinding
 				if (areIntersect)
 				{
 					Vector2D intersectionPoint = Collide::GetPointIntersect2Lines(start, finish, vert1, vert2);
+					float intersectionQDistance = (intersectionPoint - finish).qSize();
 					if (result.link.neighbor == InvalidPolygon
 						// choose the variant closer to the finish point
-						|| (intersectionPoint - finish).qSize() < (result.intersectionPoint - finish).qSize()
+						|| intersectionQDistance < bestIntersectionQDistance
 						)
 					{
 						result.link = link;
 						result.intersectionPoint = intersectionPoint;
+						bestIntersectionQDistance = intersectionQDistance;
 					}
 				}
 			}
@@ -98,13 +101,18 @@ namespace PathFinding
 		return result;
 	}
 
+	struct PointScores
+	{
+		float g;
+		float h;
+		float f;
+	};
+
 	struct PathPoint
 	{
 		size_t polygon;
 		Vector2D pos;
-		float g;
-		float h;
-		float f;
+		PointScores scores;
 		size_t previous;
 	};
 
@@ -122,17 +130,17 @@ namespace PathFinding
 		if (isInserted)
 		{
 			// add the new node to the openList and save its iterator to openMap
-			mapIterator->second = openList.emplace(point.f, point);
+			mapIterator->second = openList.emplace(point.scores.f, point);
 		}
 		else
 		{
 			// if the node is better than the previous
-			if (point.f < mapIterator->second->second.f)
+			if (point.scores.f < mapIterator->second->second.scores.f)
 			{
 				// remove the old node
 				openList.erase(mapIterator->second);
 				// add the new node to the openList and save its iterator to openMap
-				mapIterator->second = openList.emplace(point.f, point);
+				mapIterator->second = openList.emplace(point.scores.f, point);
 			}
 		}
 		AssertFatal(openList.size() == openMap.size(), "openList and openMap have diverged");
@@ -144,7 +152,7 @@ namespace PathFinding
 
 		if (!isInserted)
 		{
-			if (point.f < mapIterator->second.f)
+			if (point.scores.f < mapIterator->second.scores.f)
 			{
 				mapIterator->second = point;
 			}
@@ -165,11 +173,13 @@ namespace PathFinding
 		return result;
 	}
 
-	static void CalculatePointData(PathPoint& point, float previousG, Vector2D previousPos, Vector2D target)
+	static PointScores CalculatePointScores(Vector2D pos, float previousG, Vector2D previousPos, Vector2D target)
 	{
-		point.g = previousG + (point.pos - previousPos).size();
-		point.h = (target - point.pos).size();
-		point.f = point.g + point.h;
+		PointScores result;
+		result.g = previousG + (pos - previousPos).size();
+		result.h = (target - pos).size();
+		result.f = result.g + result.h;
+		return result;
 	}
 
 	static bool CanBuildStraightPath(const NavMesh& navMesh, const PathPoint& point1, const PathPoint& point2)
@@ -216,12 +226,11 @@ namespace PathFinding
 			firstPoint.previous = InvalidPolygon;
 			// we are moving from finish to start, to then rewind the path
 			firstPoint.pos = finish;
-			firstPoint.g = 0.0f;
-			firstPoint.h = (start - finish).size();
-			firstPoint.f = firstPoint.g + firstPoint.h;
+			firstPoint.scores.g = 0.0f;
+			firstPoint.scores.h = (start - finish).size();
+			firstPoint.scores.f = firstPoint.scores.g + firstPoint.scores.h;
 			AddToOpenListIfBetter(openList, openMap, firstPoint);
 		}
-
 
 		unsigned int stepLimit = 100u;
 		unsigned int step = 0u;
@@ -253,7 +262,7 @@ namespace PathFinding
 				point.polygon = bestNeighborID;
 				point.previous = currentPoint.polygon;
 				point.pos = rayIntersection.intersectionPoint;
-				CalculatePointData(point, currentPoint.g, currentPoint.pos, start);
+				point.scores = CalculatePointScores(point.pos, currentPoint.scores.g, currentPoint.pos, start);
 
 				AddToOpenListIfBetter(openList, openMap, point);
 			}
@@ -267,21 +276,27 @@ namespace PathFinding
 					continue;
 				}
 
+				// select better border point
 				Vector2D borderPointA = navMesh.geometry.vertices[link.borderPoint1];
 				Vector2D borderPointB = navMesh.geometry.vertices[link.borderPoint2];
+
+				PointScores scoresA = CalculatePointScores(borderPointA, currentPoint.scores.g, currentPoint.pos, start);
+				PointScores scoresB = CalculatePointScores(borderPointB, currentPoint.scores.g, currentPoint.pos, start);
 
 				PathPoint point;
 				point.polygon = link.neighbor;
 				point.previous = currentPoint.polygon;
-				if ((start - borderPointA).qSize() < (start - borderPointB).qSize())
+
+				if (scoresA.f < scoresB.f)
 				{
 					point.pos = borderPointA;
+					point.scores = scoresA;
 				}
 				else
 				{
 					point.pos = borderPointB;
+					point.scores = scoresB;
 				}
-				CalculatePointData(point, currentPoint.g, currentPoint.pos, start);
 
 				AddToOpenListIfBetter(openList, openMap, point);
 			}
@@ -297,6 +312,7 @@ namespace PathFinding
 				bestPath.push_back(std::move(point));
 			}
 
+			// unwind the path
 			size_t nextPolygon = currentPoint.polygon;
 			while (nextPolygon != InvalidPolygon)
 			{
