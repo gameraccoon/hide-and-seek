@@ -101,6 +101,29 @@ namespace PathFinding
 		return result;
 	}
 
+	static std::vector<size_t> GetIntersectedNeighbors(const NavMesh& navMesh, Vector2D start, Vector2D finish, size_t polygon, size_t ignoredNeighbor)
+	{
+		std::vector<size_t> result;
+
+		for (const NavMesh::InnerLinks::LinkData& link : navMesh.links.links[polygon])
+		{
+			if (link.neighbor != ignoredNeighbor)
+			{
+				Vector2D vert1 = navMesh.geometry.vertices[link.borderPoint1];
+				Vector2D vert2 = navMesh.geometry.vertices[link.borderPoint2];
+
+				bool areIntersect = Collide::AreLinesIntersect(start, finish, vert1, vert2);
+
+				if (areIntersect)
+				{
+					result.push_back(link.neighbor);
+				}
+			}
+		}
+
+		return result;
+	}
+
 	struct PointScores
 	{
 		float g;
@@ -182,23 +205,45 @@ namespace PathFinding
 		return result;
 	}
 
-	static bool CanBuildStraightPath(const NavMesh& navMesh, const PathPoint& point1, const PathPoint& point2)
+	static bool CanBuildStraightPathRecursive(const NavMesh& navMesh, Vector2D point1, Vector2D point2, size_t currentPolygon, size_t lastPolygon, size_t previousPolygon)
 	{
-		size_t currentPolygon = point1.polygon;
-		size_t previousPolygon = InvalidPolygon;
-		while (currentPolygon != point2.polygon)
+		std::vector<size_t> intersections = GetIntersectedNeighbors(navMesh, point1, point2, currentPolygon, previousPolygon);
+
+		for (size_t intersection : intersections)
 		{
-			LineSegmentToNeighborIntersection intersection = FindLineSegmentToNeighborIntersection(navMesh, point1.pos, point2.pos, currentPolygon, previousPolygon);
-			// if the line segment intersects with some space not covered by the navmesh
-			if (intersection.link.neighbor == InvalidPolygon)
+			if (intersection == lastPolygon)
 			{
-				return false;
+				return true;
 			}
 
-			previousPolygon = currentPolygon;
-			currentPolygon = intersection.link.neighbor;
+			if (CanBuildStraightPathRecursive(navMesh, point1, point2, intersection, lastPolygon, currentPolygon))
+			{
+				return true;
+			}
 		}
-		return true;
+
+		return false;
+	}
+
+	static bool CanBuildStraightPath(const NavMesh& navMesh, const PathPoint& point1, const PathPoint& point2)
+	{
+		Vector2D smallAdvancement = (point2.pos - point1.pos).unit() * 0.1f;
+		Vector2D secondPoint = point2.pos + smallAdvancement;
+		return CanBuildStraightPathRecursive(navMesh, point1.pos, secondPoint, point1.polygon, point2.polygon, InvalidPolygon);
+	}
+
+	static void OptimizePath(std::vector<PathPoint>& inOutPath, const NavMesh& navMesh)
+	{
+		if (!inOutPath.empty())
+		{
+			for (size_t i = inOutPath.size() - 1; i >= 2; --i)
+			{
+				if (CanBuildStraightPath(navMesh, inOutPath[i], inOutPath[i - 2]))
+				{
+					inOutPath.erase(inOutPath.begin() + (i - 1));
+				}
+			}
+		}
 	}
 
 	void FindPath(std::vector<Vector2D>& outPath, const NavMesh& navMesh, Vector2D start, Vector2D finish)
@@ -231,6 +276,8 @@ namespace PathFinding
 			firstPoint.scores.f = firstPoint.scores.g + firstPoint.scores.h;
 			AddToOpenListIfBetter(openList, openMap, firstPoint);
 		}
+
+		// A* improved with first checks by raytracing
 
 		unsigned int stepLimit = 100u;
 		unsigned int step = 0u;
@@ -321,17 +368,7 @@ namespace PathFinding
 			}
 		}
 
-		// optimize path
-		if (!bestPath.empty())
-		{
-			for (size_t i = bestPath.size() - 1; i >= 2; --i)
-			{
-				if (CanBuildStraightPath(navMesh, bestPath[i], bestPath[i - 2]))
-				{
-					bestPath.erase(bestPath.begin() + (i - 1));
-				}
-			}
-		}
+		OptimizePath(bestPath, navMesh);
 
 		for (const PathPoint& point : bestPath)
 		{
