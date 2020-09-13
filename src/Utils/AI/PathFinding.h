@@ -2,7 +2,7 @@
 
 #include "GameData/Core/Vector2D.h"
 
-class NavMesh;
+struct NavMesh;
 
 namespace PathFinding
 {

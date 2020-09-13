@@ -43,14 +43,14 @@ namespace NavMeshGenerator
 
 		TPPLPoly borderPolygon;
 		borderPolygon.Init(4);
-		borderPolygon[0].x = centerPos.x - halfSize.x;
-		borderPolygon[0].y = centerPos.y - halfSize.y;
-		borderPolygon[1].x = centerPos.x + halfSize.x;
-		borderPolygon[1].y = centerPos.y - halfSize.y;
-		borderPolygon[2].x = centerPos.x + halfSize.x;
-		borderPolygon[2].y = centerPos.y + halfSize.y;
-		borderPolygon[3].x = centerPos.x - halfSize.x;
-		borderPolygon[3].y = centerPos.y + halfSize.y;
+		borderPolygon[0].x = static_cast<tppl_float>(centerPos.x - halfSize.x);
+		borderPolygon[0].y = static_cast<tppl_float>(centerPos.y - halfSize.y);
+		borderPolygon[1].x = static_cast<tppl_float>(centerPos.x + halfSize.x);
+		borderPolygon[1].y = static_cast<tppl_float>(centerPos.y - halfSize.y);
+		borderPolygon[2].x = static_cast<tppl_float>(centerPos.x + halfSize.x);
+		borderPolygon[2].y = static_cast<tppl_float>(centerPos.y + halfSize.y);
+		borderPolygon[3].x = static_cast<tppl_float>(centerPos.x - halfSize.x);
+		borderPolygon[3].y = static_cast<tppl_float>(centerPos.y + halfSize.y);
 		polygons.push_back(borderPolygon);
 
 		for (auto [collision, transform] : collidableComponents)
@@ -301,15 +301,15 @@ namespace NavMeshGenerator
 		outSpatialHash.polygonsHash.clear();
 
 		Vector2D cellsCountFloat = Vector2D::HadamardProduct(geometry.navMeshSize, Vector2D(1.0f / outSpatialHash.cellSize, 1.0f / outSpatialHash.cellSize));
-		outSpatialHash.hashSize = IntVector2D(std::ceil(cellsCountFloat.x), std::ceil(cellsCountFloat.y));
+		outSpatialHash.hashSize = IntVector2D(static_cast<int>(std::ceil(cellsCountFloat.x)), static_cast<int>(std::ceil(cellsCountFloat.y)));
 
 		outSpatialHash.polygonsHash.resize(outSpatialHash.hashSize.x * outSpatialHash.hashSize.y);
 
 		for (size_t polygonIdx = 0; polygonIdx < geometry.polygonsCount; ++polygonIdx)
 		{
 			BoundingBox aabb = GetAABB(geometry, polygonIdx);
-			size_t leftCellIdx = static_cast<size_t>(aabb.minX - geometry.navMeshStart.x) / outSpatialHash.cellSize;
-			size_t topCellIdx = static_cast<size_t>(aabb.minY - geometry.navMeshStart.y) / outSpatialHash.cellSize;
+			size_t leftCellIdx = static_cast<size_t>(static_cast<size_t>(aabb.minX - geometry.navMeshStart.x) / outSpatialHash.cellSize);
+			size_t topCellIdx = static_cast<size_t>(static_cast<size_t>(aabb.minY - geometry.navMeshStart.y) / outSpatialHash.cellSize);
 			size_t rightCellIdx = std::min(static_cast<size_t>(aabb.maxX - geometry.navMeshStart.x / outSpatialHash.cellSize), static_cast<size_t>(outSpatialHash.hashSize.x - 1));
 			size_t bottomCellIdx = std::min(static_cast<size_t>(aabb.maxY - geometry.navMeshStart.y / outSpatialHash.cellSize), static_cast<size_t>(outSpatialHash.hashSize.y - 1));
 

@@ -362,6 +362,7 @@ namespace PathFinding
 		unsigned int stepLimit = 100u;
 		unsigned int step = 0u;
 		PathPoint currentPoint;
+		currentPoint.polygon = InvalidPolygon;
 		while (!openList.empty() && step < stepLimit)
 		{
 			++step;

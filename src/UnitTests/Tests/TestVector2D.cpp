@@ -172,7 +172,7 @@ TEST(Vector2D, DotProduct)
 	Vector2D testVectorA(5.2f, -0.39f);
 	Vector2D testVectorB(16.9f, 803.27f);
 
-	EXPECT_EQ(-225.3953f, DotProduct(testVectorA, testVectorB));
+	EXPECT_EQ(-225.3953f, Vector2D::DotProduct(testVectorA, testVectorB));
 }
 
 TEST(Vector2D, Project)
@@ -183,7 +183,7 @@ TEST(Vector2D, Project)
 	Vector2D testVectorA(5.2f, -0.39f);
 	Vector2D testVectorB(16.9f, 803.27f);
 
-	// Another (slowlest) way to calc projection vector
+	// Another (slowler) way to calc projection vector
 	Vector2D projectAB = testVectorA.unit() * testVectorB.size() * cos((testVectorA.rotation() - testVectorB.rotation()).getValue());
 
 	EXPECT_TRUE(testVectorA.project(oX).isNearlyEqualTo(Vector2D(5.2f, 0.0f)));

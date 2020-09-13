@@ -2,6 +2,7 @@
 
 class CollisionComponent;
 struct Vector2D;
+class BoundingBox;
 
 namespace Collide
 {
