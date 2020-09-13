@@ -187,8 +187,8 @@ namespace PathFinding
 	{
 		// find next points that are not equal in position to the current ones
 
-		size_t bestLeft;
-		for (bestLeft = start; bestLeft < portals.size() - 1; ++bestLeft)
+		size_t bestLeft = start;
+		for (; bestLeft < portals.size() - 1; ++bestLeft)
 		{
 			if (portals[bestLeft][0] != portals[bestLeft+1][0])
 			{
@@ -197,8 +197,8 @@ namespace PathFinding
 			}
 		}
 
-		size_t bestRight;
-		for (bestRight = start; bestRight < portals.size() - 1; ++bestRight)
+		size_t bestRight = start;
+		for (; bestRight < portals.size() - 1; ++bestRight)
 		{
 			if (portals[bestRight][1] != portals[bestRight+1][1])
 			{
@@ -239,37 +239,37 @@ namespace PathFinding
 		Vector2D funnelStart = path[0].pos;
 		size_t bestLeft = 0;
 		size_t bestRight = 0;
-		outFinalPath.push_back(path[0].pos);
+		outFinalPath.push_back(funnelStart);
 
 		size_t i = 1;
 		while (i <= portals.size())
 		{
 			bool updateLeft = false;
 			bool updateRight = false;
-			bool turnedRight = false;
-			bool turnedLeft = false;
+			bool turnRight = false;
+			bool turnLeft = false;
 
-			// process next portal
+			// process the next portal
 			if (i < portals.size())
 			{
-				// if the point on the right of the left side of the funnel
+				// if the point is on the right side of the left border of the funnel
 				if (i > bestLeft && Collide::SignedArea(portals[i][0], funnelStart, portals[bestLeft][0]) > 0.0f)
 				{
 					updateLeft = true;
-					// if the point on the right side of the right side of the funnel
-					turnedRight = Collide::SignedArea(portals[i][0], funnelStart, portals[bestRight][1]) > 0.0f;
+					// if the point is on the right side of the right border of the funnel
+					turnRight = Collide::SignedArea(portals[i][0], funnelStart, portals[bestRight][1]) > 0.0f;
 				}
 				else if (bestLeft == i - 1 && portals[i - 1][0] == portals[i][0])
 				{
 					updateLeft = true;
 				}
 
-				// if the point on the left of the right side of the funnel
-				if (i > bestRight && portals[i - 1][1] != portals[i][1] && Collide::SignedArea(portals[i][1], funnelStart, portals[bestRight][1]) < 0.0f)
+				// if the point is on the left side of the right border of the funnel
+				if (i > bestRight && Collide::SignedArea(portals[i][1], funnelStart, portals[bestRight][1]) < 0.0f)
 				{
 					updateRight = true;
-					// if the point on the left side of the left side of the funnel
-					turnedLeft = Collide::SignedArea(portals[i][1], funnelStart, portals[bestLeft][0]) < 0.0f;
+					// if the point is on the left side of the left border of the funnel
+					turnLeft = Collide::SignedArea(portals[i][1], funnelStart, portals[bestLeft][0]) < 0.0f;
 				}
 				else if (bestRight == i - 1 && portals[i - 1][1] == portals[i][1])
 				{
@@ -279,47 +279,48 @@ namespace PathFinding
 			else
 			{
 				// check that the last point is not outside the funnel
-				turnedRight = Collide::SignedArea(path.back().pos, funnelStart, portals[bestRight][1]) > 0.0f;
-				turnedLeft = Collide::SignedArea(path.back().pos, funnelStart, portals[bestLeft][0]) < 0.0f;
+				turnRight = Collide::SignedArea(path.back().pos, funnelStart, portals[bestRight][1]) > 0.0f;
+				turnLeft = Collide::SignedArea(path.back().pos, funnelStart, portals[bestLeft][0]) < 0.0f;
 			}
 
 			// if the portal will be rotated on more than 90 degrees to the funnel start
 			{
 				size_t bestLeftPreview = updateLeft ? i : bestLeft;
-				size_t bestRightPreview = updateLeft ? i : bestRight;
-				if (Collide::SignedArea(portals[bestRightPreview][1], funnelStart, portals[bestLeftPreview][0]) < 0.0f)
+				size_t bestRightPreview = updateRight ? i : bestRight;
+				if ((turnLeft && turnRight) || Collide::SignedArea(portals[bestRightPreview][1], funnelStart, portals[bestLeftPreview][0]) < 0.0f)
 				{
 					// make the closest turn
 					if ((portals[bestLeftPreview][0] - funnelStart).qSize() < (portals[bestRightPreview][1] - funnelStart).qSize())
 					{
-						turnedRight = false;
-						turnedLeft = true;
+						turnRight = false;
+						turnLeft = true;
 					}
 					else
 					{
-						turnedLeft = false;
-						turnedRight = true;
+						turnLeft = false;
+						turnRight = true;
 					}
 				}
 			}
 
-			Assert(!(turnedLeft && turnedRight), "Only one turn is possible, two simultaneous turns detected");
+			Assert(!(turnLeft && turnRight), "Only one turn is possible, two simultaneous turns detected");
 
-			if (turnedRight)
+			if (turnRight || turnLeft)
 			{
-				// restart search from the best right point
-				funnelStart = portals[bestRight][1];
-				i = bestRight + 1;
-				std::tie(bestLeft, bestRight) = FindNextBestPoints(portals, bestRight);
-				outFinalPath.push_back(funnelStart);
-				continue;
-			}
-			else if (turnedLeft)
-			{
-				// restart search from the best left point
-				funnelStart = portals[bestLeft][0];
-				i = bestLeft + 1;
-				std::tie(bestLeft, bestRight) = FindNextBestPoints(portals, bestLeft);
+				// restart search
+				if (turnRight)
+				{
+					// restart from the best right point
+					funnelStart = portals[bestRight][1];
+					i = bestRight + 1;
+				}
+				else
+				{
+					// restart from the best left point
+					funnelStart = portals[bestLeft][0];
+					i = bestLeft + 1;
+				}
+				std::tie(bestLeft, bestRight) = FindNextBestPoints(portals, i - 1);
 				outFinalPath.push_back(funnelStart);
 				continue;
 			}
