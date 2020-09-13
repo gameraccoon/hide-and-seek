@@ -101,29 +101,6 @@ namespace PathFinding
 		return result;
 	}
 
-	static std::vector<size_t> GetIntersectedNeighbors(const NavMesh& navMesh, Vector2D start, Vector2D finish, size_t polygon, size_t ignoredNeighbor)
-	{
-		std::vector<size_t> result;
-
-		for (const NavMesh::InnerLinks::LinkData& link : navMesh.links.links[polygon])
-		{
-			if (link.neighbor != ignoredNeighbor)
-			{
-				Vector2D vert1 = navMesh.geometry.vertices[link.borderPoint1];
-				Vector2D vert2 = navMesh.geometry.vertices[link.borderPoint2];
-
-				bool areIntersect = Collide::AreLinesIntersect(start, finish, vert1, vert2);
-
-				if (areIntersect)
-				{
-					result.push_back(link.neighbor);
-				}
-			}
-		}
-
-		return result;
-	}
-
 	struct PointScores
 	{
 		float g;
@@ -205,45 +182,148 @@ namespace PathFinding
 		return result;
 	}
 
-	static bool CanBuildStraightPathRecursive(const NavMesh& navMesh, Vector2D point1, Vector2D point2, size_t currentPolygon, size_t lastPolygon, size_t previousPolygon)
+	static std::pair<size_t, size_t> FindNextBestPoints(const std::vector<std::array<Vector2D, 2>>& portals, size_t start)
 	{
-		std::vector<size_t> intersections = GetIntersectedNeighbors(navMesh, point1, point2, currentPolygon, previousPolygon);
+		// find next points that are not equal in position to the current ones
 
-		for (size_t intersection : intersections)
+		size_t bestLeft;
+		for (bestLeft = start; bestLeft < portals.size() - 1; ++bestLeft)
 		{
-			if (intersection == lastPolygon)
+			if (portals[bestLeft][0] != portals[bestLeft+1][0])
 			{
-				return true;
-			}
-
-			if (CanBuildStraightPathRecursive(navMesh, point1, point2, intersection, lastPolygon, currentPolygon))
-			{
-				return true;
+				++bestLeft;
+				break;
 			}
 		}
 
-		return false;
-	}
-
-	static bool CanBuildStraightPath(const NavMesh& navMesh, const PathPoint& point1, const PathPoint& point2)
-	{
-		Vector2D smallAdvancement = (point2.pos - point1.pos).unit() * 0.1f;
-		Vector2D secondPoint = point2.pos + smallAdvancement;
-		return CanBuildStraightPathRecursive(navMesh, point1.pos, secondPoint, point1.polygon, point2.polygon, InvalidPolygon);
-	}
-
-	static void OptimizePath(std::vector<PathPoint>& inOutPath, const NavMesh& navMesh)
-	{
-		if (!inOutPath.empty())
+		size_t bestRight;
+		for (bestRight = start; bestRight < portals.size() - 1; ++bestRight)
 		{
-			for (size_t i = inOutPath.size() - 1; i >= 2; --i)
+			if (portals[bestRight][1] != portals[bestRight+1][1])
 			{
-				if (CanBuildStraightPath(navMesh, inOutPath[i], inOutPath[i - 2]))
+				++bestRight;
+				break;
+			}
+		}
+
+		return std::make_pair(bestLeft, bestRight);
+	}
+
+	static void OptimizePath(std::vector<Vector2D>& outFinalPath, const std::vector<PathPoint>& path, const NavMesh& navMesh)
+	{
+		if (path.size() < 3)
+		{
+			for (const PathPoint& point : path)
+			{
+				outFinalPath.push_back(point.pos);
+			}
+			return;
+		}
+
+		// collect portals
+		std::vector<std::array<Vector2D, 2>> portals;
+		portals.reserve(path.size() - 1);
+		for (size_t i = 0; i < path.size() - 1; ++i)
+		{
+			for (const NavMesh::InnerLinks::LinkData& link : navMesh.links.links[path[i].polygon])
+			{
+				if (link.neighbor == path[i + 1].polygon)
 				{
-					inOutPath.erase(inOutPath.begin() + (i - 1));
+					portals.push_back(std::array<Vector2D, 2>{navMesh.geometry.vertices[link.borderPoint1], navMesh.geometry.vertices[link.borderPoint2]});
+					break;
 				}
 			}
 		}
+
+		Vector2D funnelStart = path[0].pos;
+		size_t bestLeft = 0;
+		size_t bestRight = 0;
+		outFinalPath.push_back(path[0].pos);
+
+		size_t i = 1;
+		while (i < portals.size())
+		{
+			// if the point on the right of the left side of the funnel
+			if (i > bestLeft && Collide::SignedArea(portals[i][0], funnelStart, portals[bestLeft][0]) > 0.0f)
+			{
+				// if the point on the right side of the right side of the funnel
+				if (Collide::SignedArea(portals[i][0], funnelStart, portals[bestRight][1]) > 0.0f)
+				{
+					// restart search from the best right point
+					funnelStart = portals[bestRight][1];
+					i = bestRight + 1;
+					std::tie(bestLeft, bestRight) = FindNextBestPoints(portals, bestRight);
+					outFinalPath.push_back(funnelStart);
+					continue;
+				}
+				bestLeft = i;
+			}
+			else if (bestLeft == i-1 && portals[i-1][0] == portals[i][0])
+			{
+				bestLeft = i;
+			}
+
+			// if the point on the left of the right side of the funnel
+			if (i > bestRight && portals[i-1][1] != portals[i][1] && Collide::SignedArea(portals[i][1], funnelStart, portals[bestRight][1]) < 0.0f)
+			{
+				// if the point on the left side of the left side of the funnel
+				if (Collide::SignedArea(portals[i][1], funnelStart, portals[bestLeft][0]) < 0.0f)
+				{
+					// restart search from the best left point
+					funnelStart = portals[bestLeft][0];
+					i = bestLeft + 1;
+					std::tie(bestLeft, bestRight) = FindNextBestPoints(portals, bestLeft);
+					outFinalPath.push_back(funnelStart);
+					continue;
+				}
+				bestRight = i;
+			}
+			else if (bestRight == i-1 && portals[i-1][1] == portals[i][1])
+			{
+				bestRight = i;
+			}
+
+			// if we processed the last portal
+			if (i == portals.size() - 1)
+			{
+				// check that the last point not outside the funnel
+				bool crossedRight = Collide::SignedArea(path.back().pos, funnelStart, portals[bestRight][1]) > 0.0f;
+				bool crossedLeft = Collide::SignedArea(path.back().pos, funnelStart, portals[bestLeft][0]) < 0.0f;
+
+				// if the point is outside a portal that is rotated more than 90 degrees
+				if (crossedLeft && crossedRight)
+				{
+					if ((portals[bestLeft][0] - funnelStart).qSize() < (portals[bestLeft][1] - funnelStart).qSize())
+					{
+						crossedRight = false;
+					}
+					else
+					{
+						crossedLeft = false;
+					}
+				}
+
+				if (crossedRight)
+				{
+					funnelStart = portals[bestRight][1];
+					i = bestRight + 1;
+					std::tie(bestLeft, bestRight) = FindNextBestPoints(portals, bestRight);
+					outFinalPath.push_back(funnelStart);
+					continue;
+				}
+				else if (crossedLeft)
+				{
+					funnelStart = portals[bestLeft][0];
+					i = bestLeft + 1;
+					std::tie(bestLeft, bestRight) = FindNextBestPoints(portals, bestLeft);
+					outFinalPath.push_back(funnelStart);
+					continue;
+				}
+			}
+
+			++i;
+		}
+		outFinalPath.push_back(path.back().pos);
 	}
 
 	void FindPath(std::vector<Vector2D>& outPath, const NavMesh& navMesh, Vector2D start, Vector2D finish)
@@ -368,11 +448,6 @@ namespace PathFinding
 			}
 		}
 
-		OptimizePath(bestPath, navMesh);
-
-		for (const PathPoint& point : bestPath)
-		{
-			outPath.push_back(point.pos);
-		}
+		OptimizePath(outPath, bestPath, navMesh);
 	}
 } // namespace PathFinding
