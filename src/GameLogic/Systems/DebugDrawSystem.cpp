@@ -51,6 +51,55 @@ void RemoveOldDrawElement(std::vector<T>& vector, GameplayTimestamp now)
 	);
 }
 
+static Vector2D GetNavmeshPolygonCenter(size_t triangleIdx, const NavMesh::Geometry& navMeshGeometry)
+{
+	Vector2D polygonCenter{ZERO_VECTOR};
+	for (size_t i = 0; i < navMeshGeometry.vertsPerPoly; ++i)
+	{
+		polygonCenter += navMeshGeometry.vertices[navMeshGeometry.indexes[triangleIdx * navMeshGeometry.vertsPerPoly + i]];
+	}
+	polygonCenter /= static_cast<float>(navMeshGeometry.vertsPerPoly);
+	return polygonCenter;
+}
+
+static void DrawPath(const std::vector<Vector2D>& path, Graphics::Renderer& renderer, const Graphics::Sprite& navMeshSprite, const Graphics::QuadUV& quadUV, Vector2D drawShift)
+{
+	if (path.size() > 1)
+	{
+		std::vector<Graphics::DrawPoint> drawablePolygon;
+		drawablePolygon.reserve(path.size() * 2);
+
+		{
+			float u1 = static_cast<float>(Random::GlobalGenerator() * 1.0f / Random::GlobalGenerator.max());
+			float v1 = static_cast<float>(Random::GlobalGenerator() * 1.0f / Random::GlobalGenerator.max());
+			float u2 = static_cast<float>(Random::GlobalGenerator() * 1.0f / Random::GlobalGenerator.max());
+			float v2 = static_cast<float>(Random::GlobalGenerator() * 1.0f / Random::GlobalGenerator.max());
+
+			Vector2D normal = (path[1] - path[0]).normal() * 3;
+
+			drawablePolygon.push_back(Graphics::DrawPoint{path[0] + normal, Graphics::QuadLerp(quadUV, u1, v1)});
+			drawablePolygon.push_back(Graphics::DrawPoint{path[0] - normal, Graphics::QuadLerp(quadUV, u2, v2)});
+		}
+
+		for (size_t i = 1; i < path.size(); ++i)
+		{
+			float u1 = static_cast<float>(Random::GlobalGenerator() * 1.0f / Random::GlobalGenerator.max());
+			float v1 = static_cast<float>(Random::GlobalGenerator() * 1.0f / Random::GlobalGenerator.max());
+			float u2 = static_cast<float>(Random::GlobalGenerator() * 1.0f / Random::GlobalGenerator.max());
+			float v2 = static_cast<float>(Random::GlobalGenerator() * 1.0f / Random::GlobalGenerator.max());
+
+			Vector2D normal = (path[i] - path[i-1]).normal() * 3;
+
+			drawablePolygon.push_back(Graphics::DrawPoint{path[i] + normal, Graphics::QuadLerp(quadUV, u1, v1)});
+			drawablePolygon.push_back(Graphics::DrawPoint{path[i] - normal, Graphics::QuadLerp(quadUV, u2, v2)});
+		}
+
+		glm::mat4 transform(1.0f);
+		transform = glm::translate(transform, glm::vec3(drawShift.x, drawShift.y, 0.0f));
+		renderer.renderStrip(*navMeshSprite.getSurface(), drawablePolygon, transform, 0.5f);
+	}
+}
+
 void DebugDrawSystem::update()
 {
 	World& world = mWorldHolder.getWorld();
@@ -125,61 +174,39 @@ void DebugDrawSystem::update()
 			const NavMesh& navMesh = navMeshComponent->getNavMesh();
 			const NavMesh::Geometry& navMeshGeometry = navMesh.geometry;
 			std::vector<Graphics::DrawPoint> drawablePolygon;
-			drawablePolygon.reserve(navMeshGeometry.polygonMaxVerticesCount);
+			drawablePolygon.reserve(navMeshGeometry.vertsPerPoly);
 			for (size_t k = 0; k < navMeshGeometry.polygonsCount; ++k)
 			{
 				drawablePolygon.clear();
-				for (size_t j = 0; j < navMeshGeometry.polygonMaxVerticesCount; ++j)
+				for (size_t j = 0; j < navMeshGeometry.vertsPerPoly; ++j)
 				{
 					float u = static_cast<float>(Random::GlobalGenerator() * 1.0f / Random::GlobalGenerator.max());
 					float v = static_cast<float>(Random::GlobalGenerator() * 1.0f / Random::GlobalGenerator.max());
 
-					Vector2D pos = navMeshGeometry.vertices[navMeshGeometry.indexes[k*navMeshGeometry.polygonMaxVerticesCount + j]];
+					Vector2D pos = navMeshGeometry.vertices[navMeshGeometry.indexes[k*navMeshGeometry.vertsPerPoly + j]];
 					drawablePolygon.push_back(Graphics::DrawPoint{pos, Graphics::QuadLerp(quadUV, u, v)});
 				}
 				glm::mat4 transform(1.0f);
 				transform = glm::translate(transform, glm::vec3(drawShift.x, drawShift.y, 0.0f));
 				renderer.renderFan(*navMeshSprite.getSurface(), drawablePolygon, transform, 0.3f);
 			}
+
+			const NavMesh::InnerLinks& navMeshLinks = navMesh.links;
+			for (size_t i = 0; i < navMeshLinks.links.size(); ++i)
+			{
+				Vector2D firstPolygonCenter = GetNavmeshPolygonCenter(i, navMeshGeometry);
+				for (NavMesh::InnerLinks::LinkData link : navMeshLinks.links[i])
+				{
+					Vector2D secondPolygonCenter = GetNavmeshPolygonCenter(link.neighbor, navMeshGeometry);
+					std::vector<Vector2D> line{firstPolygonCenter, secondPolygonCenter + (firstPolygonCenter - secondPolygonCenter)*0.52f};
+					DrawPath(line, renderer, navMeshSprite, quadUV, drawShift);
+				}
+			}
 		}
 
-		spatialManager.forEachComponentSet<AiControllerComponent>([drawShift, &quadUV, &navMeshSprite, &renderer](AiControllerComponent* aiController)
+		spatialManager.forEachComponentSet<AiControllerComponent>([&renderer, &navMeshSprite, &quadUV, drawShift](AiControllerComponent* aiController)
 		{
-			std::vector<Vector2D>& path = aiController->getPathRef().smoothPath;
-			if (path.size() > 1)
-			{
-				std::vector<Graphics::DrawPoint> drawablePolygon;
-				drawablePolygon.reserve(path.size() * 2);
-
-				{
-					float u1 = static_cast<float>(Random::GlobalGenerator() * 1.0f / Random::GlobalGenerator.max());
-					float v1 = static_cast<float>(Random::GlobalGenerator() * 1.0f / Random::GlobalGenerator.max());
-					float u2 = static_cast<float>(Random::GlobalGenerator() * 1.0f / Random::GlobalGenerator.max());
-					float v2 = static_cast<float>(Random::GlobalGenerator() * 1.0f / Random::GlobalGenerator.max());
-
-					Vector2D normal = (path[1] - path[0]).normal() * 3;
-
-					drawablePolygon.push_back(Graphics::DrawPoint{path[0] + normal, Graphics::QuadLerp(quadUV, u1, v1)});
-					drawablePolygon.push_back(Graphics::DrawPoint{path[0] - normal, Graphics::QuadLerp(quadUV, u2, v2)});
-				}
-
-				for (size_t i = 1; i < path.size(); ++i)
-				{
-					float u1 = static_cast<float>(Random::GlobalGenerator() * 1.0f / Random::GlobalGenerator.max());
-					float v1 = static_cast<float>(Random::GlobalGenerator() * 1.0f / Random::GlobalGenerator.max());
-					float u2 = static_cast<float>(Random::GlobalGenerator() * 1.0f / Random::GlobalGenerator.max());
-					float v2 = static_cast<float>(Random::GlobalGenerator() * 1.0f / Random::GlobalGenerator.max());
-
-					Vector2D normal = (path[i] - path[i-1]).normal() * 3;
-
-					drawablePolygon.push_back(Graphics::DrawPoint{path[i] + normal, Graphics::QuadLerp(quadUV, u1, v1)});
-					drawablePolygon.push_back(Graphics::DrawPoint{path[i] - normal, Graphics::QuadLerp(quadUV, u2, v2)});
-				}
-
-				glm::mat4 transform(1.0f);
-				transform = glm::translate(transform, glm::vec3(drawShift.x, drawShift.y, 0.0f));
-				renderer.renderStrip(*navMeshSprite.getSurface(), drawablePolygon, transform, 0.5f);
-			}
+			DrawPath(aiController->getPathRef().smoothPath, renderer, navMeshSprite, quadUV, drawShift);
 		});
 	}
 

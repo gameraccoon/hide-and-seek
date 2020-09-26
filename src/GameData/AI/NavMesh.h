@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "GameData/Core/Vector2D.h"
+#include "GameData/Core/IntVector2D.h"
 
 struct NavMesh
 {
@@ -15,7 +16,7 @@ struct NavMesh
 	{
 		std::vector<Vector2D> vertices;
 		std::vector<size_t> indexes;
-		size_t polygonMaxVerticesCount = 3;
+		size_t vertsPerPoly = 3;
 		size_t polygonsCount = 0;
 		Vector2D navMeshStart{ZERO_VECTOR};
 		Vector2D navMeshSize{ZERO_VECTOR};
@@ -24,14 +25,29 @@ struct NavMesh
 
 	struct InnerLinks
 	{
-		std::vector<std::vector<size_t>> links;
+		struct LinkData
+		{
+			LinkData() = default;
+			LinkData(size_t neighbor, size_t borderPoint1, size_t borderPoint2)
+				: neighbor(neighbor)
+				, borderPoint1(borderPoint1)
+				, borderPoint2(borderPoint2)
+			{}
+
+			size_t neighbor;
+			size_t borderPoint1;
+			size_t borderPoint2;
+		};
+
+		std::vector<std::vector<LinkData>> links;
 		bool isCalculated = false;
 	};
 
 	struct SpatialHash
 	{
-		float spatialHashCellSize = 10.0f;
-		std::vector<std::vector<size_t>> trianlesHash;
+		float cellSize = 100.0f;
+		IntVector2D hashSize;
+		std::vector<std::vector<size_t>> polygonsHash;
 		bool isCalculated = false;
 	};
 

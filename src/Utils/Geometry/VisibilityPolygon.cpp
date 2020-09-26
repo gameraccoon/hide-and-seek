@@ -10,7 +10,6 @@
 #include "GameData/Components/CollisionComponent.generated.h"
 #include "GameData/Spatial/SpatialWorldData.h"
 
-#include "Utils/Geometry/RayTrace.h"
 #include "Utils/Geometry/Collide.h"
 
 static float CalcClockwiseDirection(const Vector2D& a, const Vector2D& b)
@@ -232,7 +231,7 @@ void VisibilityPolygonCalculator::calculateVisibilityPolygon(std::vector<Vector2
 					continue;
 				}
 
-				Vector2D intersectPoint = RayTrace::GetPointIntersect2Lines(border.a, border.b, ZERO_VECTOR, point.coords);
+				Vector2D intersectPoint = Collide::GetPointIntersect2Lines(border.a, border.b, ZERO_VECTOR, point.coords);
 				if (notFound || intersectPoint.qSize() < nearestPoint.qSize())
 				{
 					nearestPoint = intersectPoint;
