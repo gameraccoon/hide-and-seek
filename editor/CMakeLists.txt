@@ -57,7 +57,7 @@ if (MSVC)
 	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG -DDEBUG")
 	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_RELEASE}")
 else()
-	set(PROJECT_CXX_FLAGS -std=c++17 -Wall -Wextra -pedantic -Werror)
+	set(PROJECT_CXX_FLAGS -std=c++17 -Wall -Wextra -pedantic -Werror -pthread)
 	set(EXTERNALS_CXX_FLAGS -std=c++17)
 	set(EXTERNALS_C_FLAGS "")
 
@@ -155,6 +155,7 @@ if (NOT WIN32)
 	set(APP_LIBS
 		${APP_LIBS}
 		stdc++fs
+		pthread
 	)
 endif()
 
