@@ -20,8 +20,8 @@ namespace Jobs
 	WorkerManager::~WorkerManager()
 	{
 		{
-			std::unique_lock<std::mutex> l(mMutex);
-			mShutdown = true;
+			std::unique_lock<std::mutex> l(mDataMutex);
+			mNeedShutdown = true;
 		}
 
 		mPlannedJobsTrigger.notify_all();
@@ -34,11 +34,11 @@ namespace Jobs
 
 	void WorkerManager::runJobs(std::vector<BaseJob::UniquePtr>&& jobs)
 	{
-		BaseJob::JobGroupID thisJobGroupId = mNextId++;
+		BaseJob::JobGroupID thisJobGroupId = generateNextID();
 		size_t runnedJobsCount = jobs.size();
 
 		{
-			std::unique_lock<std::mutex> l(mMutex);
+			std::unique_lock<std::mutex> l(mDataMutex);
 
 			std::for_each(
 				begin(jobs),
@@ -63,9 +63,9 @@ namespace Jobs
 		{
 			if (!isJobsListEmpty)
 			{
-				std::unique_lock<std::mutex> l(mMutex);
+				std::unique_lock<std::mutex> l(mDataMutex);
 
-				// find a job to do in this thread while it waiting for finalizing tasks
+				// find a job to process in this thread while it is waiting for the finalizing tasks
 				auto it = std::find_if(
 					std::begin(mPlannedJobs),
 					std::end(mPlannedJobs),
@@ -94,20 +94,20 @@ namespace Jobs
 			else
 			{
 				// no jobs to do, waiting for finalization tasks only
-				std::unique_lock<std::mutex> l(mMutex);
-				while (!mShutdown && mFinishedJobs.empty())
+				std::unique_lock<std::mutex> l(mDataMutex);
+				while (!mNeedShutdown && mFinishedJobs.empty())
 				{
 					mFinishedJobsTrigger.wait(l);
 				}
 
-				if (mShutdown)
+				if (mNeedShutdown)
 				{
 					return;
 				}
 			}
 
 			{
-				std::unique_lock<std::mutex> l(mMutex);
+				std::unique_lock<std::mutex> l(mDataMutex);
 
 				// find and group finalization tasks
 				auto newEnd = std::partition(
@@ -147,15 +147,15 @@ namespace Jobs
 		while(true)
 		{
 			{
-				std::unique_lock<std::mutex> l(mMutex);
+				std::unique_lock<std::mutex> l(mDataMutex);
 
 				// wait for shutdown or a new planned job
-				while (!mShutdown && mPlannedJobs.empty())
+				while (!mNeedShutdown && mPlannedJobs.empty())
 				{
 					mPlannedJobsTrigger.wait(l);
 				}
 
-				if (mShutdown)
+				if (mNeedShutdown)
 				{
 					return;
 				}
@@ -167,7 +167,7 @@ namespace Jobs
 			currentJob->process();
 
 			{
-				std::unique_lock<std::mutex> l(mMutex);
+				std::unique_lock<std::mutex> l(mDataMutex);
 				mFinishedJobs.push_back(std::move(currentJob));
 				mFinishedJobsTrigger.notify_all();
 			}

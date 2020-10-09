@@ -22,22 +22,25 @@ namespace Jobs
 
 		void runJobs(std::vector<BaseJob::UniquePtr>&& jobs);
 
-		size_t getThreadsCount() { return mThreads.size(); }
+		size_t getThreadsCount() const { return mThreads.size(); }
 
 	private:
 		void threadFunction();
+		BaseJob::JobGroupID generateNextID() { return mNextId.fetch_add(1, std::memory_order_relaxed); }
 
 	private:
-		std::mutex mMutex;
-		bool mShutdown = false;
+		std::vector<std::thread> mThreads;
+
+		std::mutex mDataMutex;
+		bool mNeedShutdown = false;
 		// queue for working threads
 		std::list<BaseJob::UniquePtr> mPlannedJobs;
 		std::condition_variable mPlannedJobsTrigger;
 		// queue for started threads for finalization
 		std::list<BaseJob::UniquePtr> mFinishedJobs;
 		std::condition_variable mFinishedJobsTrigger;
-		std::vector<std::thread> mThreads;
-		BaseJob::JobGroupID mNextId = 0;
+
+		std::atomic<BaseJob::JobGroupID> mNextId = 0;
 	};
 
 	size_t GetAvailableThreadsCount();
