@@ -22,7 +22,7 @@ namespace NavMeshGenerator
 		return IntVector2D(static_cast<int>(std::round(point.x)), static_cast<int>(std::round(point.y)));
 	}
 
-	static Vector2D VecFromTPPLPoint(TPPLPoint point)
+	[[maybe_unused]] static Vector2D VecFromTPPLPoint(TPPLPoint point)
 	{
 		return Vector2D(point.x, point.y);
 	}
