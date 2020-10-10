@@ -1,5 +1,7 @@
 #include "Base/precomp.h"
 
+#include <cmath>
+
 #include <gtest/gtest.h>
 
 #include "GameData/Core/Vector2D.h"
@@ -35,7 +37,7 @@ TEST(Vector2D, Comparison)
 	Vector2D testVectorB(testVectorA);
 	Vector2D testVectorC(5.199998f, -0.390001f);
 	Vector2D testVectorD(5.3f, -0.39f);
-		
+
 	EXPECT_TRUE(testVectorA == testVectorB); // A == B
 	EXPECT_TRUE(testVectorA.isNearlyEqualTo(testVectorB)); // A == B
 	EXPECT_TRUE(testVectorA.isNearlyEqualTo(testVectorC)); // A == C
@@ -184,7 +186,7 @@ TEST(Vector2D, Project)
 	Vector2D testVectorB(16.9f, 803.27f);
 
 	// Another (slowler) way to calc projection vector
-	Vector2D projectAB = testVectorA.unit() * testVectorB.size() * cos((testVectorA.rotation() - testVectorB.rotation()).getValue());
+	Vector2D projectAB = testVectorA.unit() * testVectorB.size() * std::cos((testVectorA.rotation() - testVectorB.rotation()).getValue());
 
 	EXPECT_TRUE(testVectorA.project(oX).isNearlyEqualTo(Vector2D(5.2f, 0.0f)));
 	EXPECT_TRUE(testVectorB.project(oYxFive).isNearlyEqualTo(Vector2D(0.0f, 803.27f)));

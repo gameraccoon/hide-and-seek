@@ -103,7 +103,7 @@ bool Vector2D::operator!=(Vector2D other) const noexcept
 
 bool Vector2D::isNearlyEqualTo(Vector2D other) const noexcept
 {
-	return (abs(x - other.x) + abs(y - other.y)) <= VECTOR_ERROR;
+	return (std::fabs(x - other.x) + std::fabs(y - other.y)) <= VECTOR_ERROR;
 }
 
 Vector2D Vector2D::operator+(Vector2D other) const noexcept
