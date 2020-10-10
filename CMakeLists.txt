@@ -13,6 +13,7 @@ option(DEBUG_CHECKS "Enable debug checks and assertions" ON)
 option(PROFILE_SYSTEMS "Enable systems time gathering for systems time reports" ON)
 option(MEMLEAK_DETECTION "Enable memory leaks detection code (slow)" OFF)
 option(MEMLEAK_REDEFINE_NEW "Redefine default new (provide more detailed info but can conflict with some libs)" OFF)
+option(CONCURRENT_ACCESS_DETECTION "Enable concurrent access detection" ON)
 option(IMGUI_ENABLED "Enable imgui in the build" ON)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
@@ -52,6 +53,10 @@ endif()
 if(IMGUI_ENABLED)
 	add_definitions(-DIMGUI_ENABLED)
 endif()
+
+if(CONCURRENT_ACCESS_DETECTION)
+	add_definitions(-DCONCURRENT_ACCESS_DETECTION)
+endif(CONCURRENT_ACCESS_DETECTION)
 
 add_definitions(-DGLEW_NO_GLU)
 add_definitions(-DGLM_FORCE_RADIANS)

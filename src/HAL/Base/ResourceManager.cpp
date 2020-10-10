@@ -28,6 +28,7 @@ namespace HAL
 
 	int ResourceManager::createResourceLock(const ResourcePath& path)
 	{
+		DETECT_CONCURRENT_ACCESS(mConcurrencyDetector);
 		mPathsMap[path] = mHandleIdx;
 		mPathFindMap[mHandleIdx] = path;
 		mResourceLocksCount[mHandleIdx] = 1;
@@ -36,6 +37,7 @@ namespace HAL
 
 	void ResourceManager::loadOneAtlasData(const ResourcePath& path)
 	{
+		DETECT_CONCURRENT_ACCESS(mConcurrencyDetector);
 		namespace fs = std::filesystem;
 		fs::path atlasDescPath(static_cast<std::string>(path));
 
@@ -84,6 +86,7 @@ namespace HAL
 
 	std::vector<ResourcePath> ResourceManager::loadSpriteAnimClipData(const ResourcePath& path)
 	{
+		DETECT_CONCURRENT_ACCESS(mConcurrencyDetector);
 		namespace fs = std::filesystem;
 		fs::path atlasDescPath(static_cast<std::string>(path));
 
@@ -116,6 +119,7 @@ namespace HAL
 
 	ResourceManager::AnimGroupData ResourceManager::loadAnimGroupData(const ResourcePath& path)
 	{
+		DETECT_CONCURRENT_ACCESS(mConcurrencyDetector);
 		namespace fs = std::filesystem;
 		fs::path atlasDescPath(static_cast<std::string>(path));
 
@@ -142,6 +146,7 @@ namespace HAL
 
 	ResourceHandle ResourceManager::lockSurface(const ResourcePath& path)
 	{
+		DETECT_CONCURRENT_ACCESS(mConcurrencyDetector);
 		auto it = mPathsMap.find(path);
 		if (it != mPathsMap.end())
 		{
@@ -158,6 +163,7 @@ namespace HAL
 
 	ResourceHandle ResourceManager::lockFont(const ResourcePath& path, int fontSize)
 	{
+		DETECT_CONCURRENT_ACCESS(mConcurrencyDetector);
 		std::string id = path + ":" + std::to_string(fontSize);
 		auto it = mPathsMap.find(static_cast<ResourcePath>(id));
 		if (it != mPathsMap.end())
@@ -175,6 +181,7 @@ namespace HAL
 
 	ResourceHandle ResourceManager::lockSprite(const ResourcePath& path)
 	{
+		DETECT_CONCURRENT_ACCESS(mConcurrencyDetector);
 		std::string spritePathId = "spr-" + path;
 		auto spritePathIt = mPathsMap.find(static_cast<ResourcePath>(spritePathId));
 		if (spritePathIt != mPathsMap.end())
@@ -205,6 +212,7 @@ namespace HAL
 
 	ResourceHandle ResourceManager::lockSound(const ResourcePath& path)
 	{
+		DETECT_CONCURRENT_ACCESS(mConcurrencyDetector);
 		auto it = mPathsMap.find(path);
 		if (it != mPathsMap.end())
 		{
@@ -221,6 +229,7 @@ namespace HAL
 
 	ResourceHandle ResourceManager::lockMusic(const ResourcePath& path)
 	{
+		DETECT_CONCURRENT_ACCESS(mConcurrencyDetector);
 		auto it = mPathsMap.find(path);
 		if (it != mPathsMap.end())
 		{
@@ -237,6 +246,7 @@ namespace HAL
 
 	ResourceHandle ResourceManager::lockSpriteAnimationClip(const ResourcePath& path)
 	{
+		DETECT_CONCURRENT_ACCESS(mConcurrencyDetector);
 		auto it = mPathsMap.find(path);
 		if (it != mPathsMap.end())
 		{
@@ -270,6 +280,7 @@ namespace HAL
 
 	ResourceHandle ResourceManager::lockAnimationGroup(const ResourcePath& path)
 	{
+		DETECT_CONCURRENT_ACCESS(mConcurrencyDetector);
 		auto it = mPathsMap.find(path);
 		if (it != mPathsMap.end())
 		{
@@ -306,6 +317,7 @@ namespace HAL
 
 	void ResourceManager::unlockResource(ResourceHandle handle)
 	{
+		DETECT_CONCURRENT_ACCESS(mConcurrencyDetector);
 		auto locksCntIt = mResourceLocksCount.find(handle.ResourceIndex);
 		if ALMOST_NEVER(locksCntIt == mResourceLocksCount.end())
 		{
@@ -344,6 +356,7 @@ namespace HAL
 
 	void ResourceManager::loadAtlasesData(const ResourcePath& listPath)
 	{
+		DETECT_CONCURRENT_ACCESS(mConcurrencyDetector);
 		namespace fs = std::filesystem;
 		fs::path listFsPath(static_cast<std::string>(listPath));
 

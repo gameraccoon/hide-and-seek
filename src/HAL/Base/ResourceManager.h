@@ -5,6 +5,7 @@
 #include <functional>
 
 #include "Base/Types/String/Path.h"
+#include "Base/Debug/ConcurrentAccessDetector.h"
 
 #include "GameData/Core/ResourceHandle.h"
 
@@ -42,6 +43,7 @@ namespace HAL
 		template<typename T>
 		[[nodiscard]] const T& getResource(ResourceHandle handle)
 		{
+			DETECT_CONCURRENT_ACCESS(mConcurrencyDetector);
 			auto it = mResources.find(handle.ResourceIndex);
 			AssertFatal(it != mResources.end(), "Trying to access non loaded resource");
 			return static_cast<T&>(*(it->second.get()));
@@ -86,5 +88,7 @@ namespace HAL
 		Engine& mEngine;
 
 		int mHandleIdx = 0;
+
+		ConcurrentAccessDetector mConcurrencyDetector;
 	};
 }
