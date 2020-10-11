@@ -26,7 +26,7 @@ public:
 
 	Entity addEntity();
 	void removeEntity(Entity entity);
-	std::unordered_map<Entity::EntityID, size_t>& getEntities() { return mEntityIndexMap; }
+	const std::unordered_map<Entity::EntityID, size_t>& getEntities() const { return mEntityIndexMap; }
 
 	// these two should be used carefully (added for the editor)
 	Entity getNonExistentEntity();
