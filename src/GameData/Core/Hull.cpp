@@ -13,7 +13,7 @@ void Hull::generateBorders() noexcept
 	}
 }
 
-bool Hull::operator==(const Hull& other) noexcept
+bool Hull::operator==(const Hull& other) const noexcept
 {
 	return type == other.type &&
 		((type == HullType::Angular && points == other.points)
@@ -21,7 +21,7 @@ bool Hull::operator==(const Hull& other) noexcept
 		(type == HullType::Circular && mRadius == other.mRadius));
 }
 
-bool Hull::operator!=(const Hull& other) noexcept
+bool Hull::operator!=(const Hull& other) const noexcept
 {
 	return !(*this == other);
 }

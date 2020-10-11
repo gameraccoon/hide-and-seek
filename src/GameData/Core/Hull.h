@@ -20,12 +20,13 @@ public:
 	/** Calc borders from points */
 	void generateBorders() noexcept;
 
-	[[nodiscard]] bool operator==(const Hull& other) noexcept;
-	[[nodiscard]] bool operator!=(const Hull& other) noexcept;
+	[[nodiscard]] bool operator==(const Hull& other) const noexcept;
+	[[nodiscard]] bool operator!=(const Hull& other) const noexcept;
 
 	friend void to_json(nlohmann::json& outJson, const Hull& hull);
 	friend void from_json(const nlohmann::json& json, Hull& hull);
 
+public:
 	/** Corners of a hull's borders */
 	std::vector<Vector2D> points;
 	/** Borders of hull (calculates from Points) */
