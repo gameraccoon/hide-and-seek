@@ -48,6 +48,9 @@ namespace TypesEditConstructor
 	Edit<unsigned int>::Ptr FillEdit<unsigned int>::Call(QLayout* layout, const QString& label, const unsigned int& initialValue);
 
 	template<>
+	Edit<unsigned long>::Ptr FillEdit<unsigned long>::Call(QLayout* layout, const QString& label, const unsigned long& initialValue);
+
+	template<>
 	Edit<bool>::Ptr FillEdit<bool>::Call(QLayout* layout, const QString& label, const bool& initialValue);
 
 	template<>

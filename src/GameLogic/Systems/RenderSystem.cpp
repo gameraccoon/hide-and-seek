@@ -6,8 +6,8 @@
 
 #include "GameData/Components/RenderComponent.generated.h"
 #include "GameData/Components/TransformComponent.generated.h"
-#include "GameData/Components/CollisionComponent.generated.h"
 #include "GameData/Components/LightComponent.generated.h"
+#include "GameData/Components/LightBlockingGeometryComponent.generated.h"
 #include "GameData/Components/RenderModeComponent.generated.h"
 #include "GameData/Components/WorldCachedDataComponent.generated.h"
 #include "GameData/GameData.h"
@@ -22,11 +22,13 @@
 #include <glm/matrix.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-RenderSystem::RenderSystem(WorldHolder& worldHolder,
-   const TimeData& timeData,
-   HAL::Engine& engine,
-   HAL::ResourceManager& resourceManager,
-   Jobs::WorkerManager& jobsWorkerManager)
+RenderSystem::RenderSystem(
+		WorldHolder& worldHolder,
+		const TimeData& timeData,
+		HAL::Engine& engine,
+		HAL::ResourceManager& resourceManager,
+		Jobs::WorkerManager& jobsWorkerManager
+	)
 	: mWorldHolder(worldHolder)
 	, mTime(timeData)
 	, mEngine(engine)
@@ -55,11 +57,12 @@ void RenderSystem::update()
 
 	Vector2D drawShift = screenHalfSize - cameraLocation;
 
-	SpatialEntityManager spatialManager = world.getSpatialData().getCellManagersAround(cameraLocation, workingRect);
+	std::vector<WorldCell*> cells = world.getSpatialData().getCellsAround(cameraLocation, workingRect);
+	SpatialEntityManager spatialManager(cells);
 
 	if (!renderMode || renderMode->getIsDrawLightsEnabled())
 	{
-		drawLights(spatialManager, cameraLocation, drawShift, maxFov, screenHalfSize);
+		drawLights(spatialManager, cells, cameraLocation, drawShift, maxFov, screenHalfSize);
 	}
 
 	if (!renderMode || renderMode->getIsDrawVisibleEntitiesEnabled())
@@ -134,12 +137,12 @@ public:
 	};
 
 	using FinalizeFn = std::function<void(std::vector<Result>&&)>;
-	using CollidableComponents = TupleVector<CollisionComponent*, TransformComponent*>;
+	using LightBlockingComponents = std::vector<LightBlockingGeometryComponent*>;
 
 public:
-	VisibilityPolygonCalculationJob(Vector2D maxFov, const CollidableComponents& collidableComponents, GameplayTimestamp timestamp, FinalizeFn finalizeFn)
+	VisibilityPolygonCalculationJob(Vector2D maxFov, const LightBlockingComponents& lightBlockingComponents, GameplayTimestamp timestamp, FinalizeFn finalizeFn)
 		: mMaxFov(maxFov)
-		, mCollidableComponents(collidableComponents)
+		, mLightBlockingComponents(lightBlockingComponents)
 		, mTimestamp(timestamp)
 		, mFinalizeFn(std::move(finalizeFn))
 	{
@@ -156,7 +159,7 @@ public:
 		{
 			auto [light, transform] = componentsToProcess[i];
 
-			visibilityPolygonCalculator.calculateVisibilityPolygon(light->getCachedVisibilityPolygonRef(), mCollidableComponents, transform->getLocation(), mMaxFov * light->getBrightness());
+			visibilityPolygonCalculator.calculateVisibilityPolygon(light->getCachedVisibilityPolygonRef(), mLightBlockingComponents, transform->getLocation(), mMaxFov * light->getBrightness());
 			light->setUpdateTimestamp(mTimestamp);
 
 			const std::vector<Vector2D>& visibilityPolygon = light->getCachedVisibilityPolygon();
@@ -185,7 +188,7 @@ public:
 
 private:
 	Vector2D mMaxFov;
-	const CollidableComponents& mCollidableComponents;
+	const LightBlockingComponents& mLightBlockingComponents;
 	const GameplayTimestamp mTimestamp;
 	FinalizeFn mFinalizeFn;
 
@@ -204,7 +207,7 @@ static size_t GetJobDivisor(size_t maxThreadsCount)
 	return maxThreadsCount * 3 - 1;
 }
 
-void RenderSystem::drawLights(SpatialEntityManager& managerGroup, Vector2D playerSightPosition, Vector2D drawShift, Vector2D maxFov, Vector2D screenHalfSize)
+void RenderSystem::drawLights(SpatialEntityManager& managerGroup, std::vector<WorldCell*>& cells, Vector2D playerSightPosition, Vector2D drawShift, Vector2D maxFov, Vector2D screenHalfSize)
 {
 	const GameplayTimestamp timestampNow = mTime.currentTimestamp;
 
@@ -215,18 +218,16 @@ void RenderSystem::drawLights(SpatialEntityManager& managerGroup, Vector2D playe
 	}
 
 	// get all the collidable components
-	TupleVector<CollisionComponent*, TransformComponent*> collidableComponents;
-	managerGroup.getComponents<CollisionComponent, TransformComponent>(collidableComponents);
-
-	// remove entities that can't cast shadows
-	collidableComponents.erase(
-		std::remove_if(
-			std::begin(collidableComponents),
-			std::end(collidableComponents),
-			[](auto& a){ return std::get<0>(a)->getGeometry().type != HullType::Angular; }
-		),
-		std::end(collidableComponents)
-	);
+	std::vector<LightBlockingGeometryComponent*> lightBlockingComponents;
+	lightBlockingComponents.reserve(cells.size());
+	for (WorldCell* cell : cells)
+	{
+		auto [lightBlockingGeometry] = cell->getCellComponents().getComponents<LightBlockingGeometryComponent>();
+		if ALMOST_ALWAYS(lightBlockingGeometry)
+		{
+			lightBlockingComponents.push_back(lightBlockingGeometry);
+		}
+	}
 
 	// get lights
 	TupleVector<LightComponent*, TransformComponent*> lightComponentSets;
@@ -276,7 +277,7 @@ void RenderSystem::drawLights(SpatialEntityManager& managerGroup, Vector2D playe
 		{
 			if (chunkItemIndex == 0)
 			{
-				jobs.emplace_back(new VisibilityPolygonCalculationJob(maxFov, collidableComponents, timestampNow, finalizeFn));
+				jobs.emplace_back(new VisibilityPolygonCalculationJob(maxFov, lightBlockingComponents, timestampNow, finalizeFn));
 			}
 
 			VisibilityPolygonCalculationJob* jobData = static_cast<VisibilityPolygonCalculationJob*>(jobs.rbegin()->get());
@@ -318,6 +319,6 @@ void RenderSystem::drawLights(SpatialEntityManager& managerGroup, Vector2D playe
 	// draw player visibility polygon
 	//VisibilityPolygonCalculator visibilityPolygonCalculator;
 	//std::vector<Vector2D> polygon;
-	//visibilityPolygonCalculator.calculateVisibilityPolygon(polygon, collidableComponents, playerSightPosition, maxFov);
-	//drawVisibilityPolygon(lightSprite, polygon, maxFov, drawShift + playerSightPosition.pos);
+	//visibilityPolygonCalculator.calculateVisibilityPolygon(polygon, lightBlockingComponents, playerSightPosition, maxFov);
+	//drawVisibilityPolygon(lightSprite, polygon, maxFov, drawShift + playerSightPosition);
 }

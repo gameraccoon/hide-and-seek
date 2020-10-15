@@ -8,12 +8,6 @@
 
 static const float VECTOR_ERROR = 0.0001f;
 
-const Vector2D LEFT_DIRECTION(-1.0f, 0.0f);
-const Vector2D RIGHT_DIRECTION(1.0f, 0.0f);
-const Vector2D UP_DIRECTION(0.0f, -1.0f);
-const Vector2D DOWN_DIRECTION(0.0f, 1.0f);
-const Vector2D ZERO_VECTOR(0.0f, 0.0f);
-
 
 Vector2D::Vector2D(Rotator rotator) noexcept
 {
@@ -50,6 +44,14 @@ Vector2D Vector2D::unit() const noexcept
 Rotator Vector2D::rotation() const noexcept
 {
 	return Rotator(atan2(y, x));
+}
+
+Vector2D Vector2D::getRotated(Rotator rotation) const
+{
+	float angle = rotation.getValue();
+	float sine = std::sin(angle);
+	float cosine = std::cos(angle);
+	return Vector2D(cosine * x - sine * y, sine * x + cosine * y);
 }
 
 Vector2D Vector2D::mirrorH() const noexcept
@@ -104,6 +106,11 @@ bool Vector2D::operator!=(Vector2D other) const noexcept
 bool Vector2D::isNearlyEqualTo(Vector2D other) const noexcept
 {
 	return (std::fabs(x - other.x) + std::fabs(y - other.y)) <= VECTOR_ERROR;
+}
+
+bool Vector2D::isNearlyEqualTo(Vector2D other, float error) const noexcept
+{
+	return (std::fabs(x - other.x) + std::fabs(y - other.y)) <= error;
 }
 
 Vector2D Vector2D::operator+(Vector2D other) const noexcept

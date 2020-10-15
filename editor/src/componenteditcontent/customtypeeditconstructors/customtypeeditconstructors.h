@@ -6,12 +6,13 @@
 #include "GameData/Resources/AnimationClipDescription.h"
 #include "GameData/Spatial/CellPos.h"
 #include "ECS/Entity.h"
+#include "GameData/Core/Border.h"
 #include "GameData/Core/Hull.h"
 #include "GameData/Core/Rotator.h"
+#include "GameData/Core/Vector2D.h"
 #include "GameData/Spatial/SpatialEntity.h"
 #include "GameData/Resources/SpriteDescription.h"
 #include "GameData/Resources/SpriteParams.h"
-#include "GameData/Core/Vector2D.h"
 
 namespace TypesEditConstructor
 {
@@ -26,6 +27,9 @@ namespace TypesEditConstructor
 
 	template<>
 	Edit<Entity>::Ptr FillEdit<Entity>::Call(QLayout* layout, const QString& label, const Entity& initialValue);
+
+	template<>
+	Edit<SimpleBorder>::Ptr FillEdit<SimpleBorder>::Call(QLayout* layout, const QString& label, const SimpleBorder& initialValue);
 
 	template<>
 	Edit<Hull>::Ptr FillEdit<Hull>::Call(QLayout* layout, const QString& label, const Hull& initialValue);

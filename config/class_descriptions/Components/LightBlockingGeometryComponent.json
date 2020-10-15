@@ -1,0 +1,12 @@
+{
+	"component": "lightBlockingGeometry",
+	"description": "Component for storing light-blocking geometry for a particular cell or an entity",
+	"attributes": [
+		{
+			"name": "borders",
+			"type": "std::vector<SimpleBorder>",
+			"includes": ["\"GameData/Core/Border.h\"", "<vector>"],
+			"flags": ["get_by_ref"]
+		}
+	]
+}

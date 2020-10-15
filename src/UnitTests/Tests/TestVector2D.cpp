@@ -195,3 +195,14 @@ TEST(Vector2D, Project)
 
 	EXPECT_TRUE(projectAB.isNearlyEqualTo(testVectorB.project(testVectorA)));
 }
+
+TEST(Vector2D, Rotate)
+{
+	Vector2D testVectorA(30, 30);
+
+	EXPECT_TRUE(Vector2D(30, 30).isNearlyEqualTo(testVectorA.getRotated(Rotator(0.0f))));
+	EXPECT_TRUE(Vector2D(-30, 30).isNearlyEqualTo(testVectorA.getRotated(Rotator(PI * 0.5f))));
+	EXPECT_TRUE(Vector2D(-30, -30).isNearlyEqualTo(testVectorA.getRotated(Rotator(PI))));
+	EXPECT_TRUE(Vector2D(30, -30).isNearlyEqualTo(testVectorA.getRotated(Rotator(PI * 1.5f))));
+	EXPECT_TRUE(Vector2D(30, 30).isNearlyEqualTo(testVectorA.getRotated(Rotator(PI * 2.0f))));
+}

@@ -27,3 +27,18 @@ private:
 	/** Normal of this border */
 	Vector2D normal;
 };
+
+struct SimpleBorder
+{
+	SimpleBorder() = default;
+	SimpleBorder(Vector2D a, Vector2D b) : a(a), b(b) {}
+
+	[[nodiscard]] bool operator==(const SimpleBorder& other) const noexcept;
+	[[nodiscard]] bool operator!=(const SimpleBorder& other) const noexcept;
+
+	friend void to_json(nlohmann::json& outJson, const SimpleBorder& border);
+	friend void from_json(const nlohmann::json& json, SimpleBorder& border);
+
+	Vector2D a;
+	Vector2D b;
+};

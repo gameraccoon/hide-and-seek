@@ -41,11 +41,15 @@ struct Vector2D
 	/** Get angle between vector and OX axis */
 	[[nodiscard]] Rotator rotation() const noexcept;
 
+	/** Get a copy of this vector rotated about origin */
+	[[nodiscard]] Vector2D getRotated(Rotator rotation) const;
+
 	// check for exact equality
 	[[nodiscard]] bool operator==(Vector2D other) const noexcept;
 	[[nodiscard]] bool operator!=(Vector2D other) const noexcept;
 
 	[[nodiscard]] bool isNearlyEqualTo(Vector2D other) const noexcept;
+	[[nodiscard]] bool isNearlyEqualTo(Vector2D other, float error) const noexcept;
 
 	[[nodiscard]] Vector2D operator-() const noexcept;
 
@@ -69,11 +73,11 @@ struct Vector2D
 	friend void from_json(const nlohmann::json& json, Vector2D& outVector);
 };
 
-extern const Vector2D LEFT_DIRECTION;
-extern const Vector2D RIGHT_DIRECTION;
-extern const Vector2D UP_DIRECTION;
-extern const Vector2D DOWN_DIRECTION;
-extern const Vector2D ZERO_VECTOR;
+constexpr Vector2D LEFT_DIRECTION(-1.0f, 0.0f);
+constexpr Vector2D RIGHT_DIRECTION(1.0f, 0.0f);
+constexpr Vector2D UP_DIRECTION(0.0f, -1.0f);
+constexpr Vector2D DOWN_DIRECTION(0.0f, 1.0f);
+constexpr Vector2D ZERO_VECTOR(0.0f, 0.0f);
 
 namespace std
 {

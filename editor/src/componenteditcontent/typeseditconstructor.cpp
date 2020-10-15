@@ -114,6 +114,35 @@ namespace TypesEditConstructor
 	}
 
 	template<>
+	Edit<unsigned long>::Ptr FillEdit<unsigned long>::Call(QLayout* layout, const QString& label, const unsigned long& initialValue)
+	{
+		FillLabel(layout, label);
+
+		QLineEdit* longEdit = new QLineEdit();
+
+		longEdit->setText(QString::number(initialValue));
+
+		Edit<unsigned long>::Ptr edit = std::make_shared<Edit<unsigned long>>(initialValue);
+		Edit<unsigned long>::WeakPtr editWeakPtr = edit;
+
+		QObject::connect(longEdit, &QLineEdit::textChanged, edit->getOwner(), [editWeakPtr](const QString& newValueStr)
+		{
+			if (Edit<unsigned long>::Ptr edit = editWeakPtr.lock())
+			{
+				bool ok;
+				unsigned long newValue = newValueStr.toUInt(&ok);
+				if (ok)
+				{
+					edit->transmitValueChange(newValue);
+				}
+			}
+		});
+
+		layout->addWidget(longEdit);
+		return edit;
+	}
+
+	template<>
 	Edit<bool>::Ptr FillEdit<bool>::Call(QLayout* layout, const QString& label, const bool& initialValue)
 	{
 		FillLabel(layout, label);

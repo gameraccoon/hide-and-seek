@@ -132,6 +132,18 @@ void EntityManager::getAllEntityComponents(Entity entity, std::vector<BaseCompon
 	}
 }
 
+bool EntityManager::doesEntityHaveComponent(Entity entity, StringID typeID)
+{
+	auto entityIdxItr = mEntityIndexMap.find(entity.getID());
+	if (entityIdxItr != mEntityIndexMap.end())
+	{
+		std::vector<BaseComponent*>& componentArray = mComponents.getComponentVectorByID(typeID);
+		EntityIndex index = entityIdxItr->second;
+		return (componentArray.size() > index && componentArray[index] != nullptr);
+	}
+	return false;
+}
+
 void EntityManager::addComponent(Entity entity, BaseComponent* component, StringID typeID)
 {
 	auto entityIdxItr = mEntityIndexMap.find(entity.getID());

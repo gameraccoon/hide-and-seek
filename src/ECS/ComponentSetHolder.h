@@ -39,6 +39,17 @@ public:
 		return component;
 	}
 
+	template<typename T>
+	T* getOrAddComponent()
+	{
+		auto it = mComponents.find(T::GetTypeName());
+		if (it == mComponents.end())
+		{
+			it = mComponents.emplace(T::GetTypeName(), new T()).first;
+		}
+		return static_cast<T*>(it->second);
+	}
+
 	void addComponent(BaseComponent* component, StringID typeID);
 	void removeComponent(StringID typeID);
 
@@ -54,5 +65,5 @@ public:
 	[[nodiscard]] bool hasAnyComponents() const;
 
 private:
-	std::map<StringID, BaseComponent*> mComponents;
+	std::unordered_map<StringID, BaseComponent*> mComponents;
 };

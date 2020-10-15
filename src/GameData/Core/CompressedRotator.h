@@ -30,13 +30,13 @@ public:
 	static T Compress(Rotator rotator, unsigned int bitsCount = MaxBitsCount)
 	{
 		// comvert the value to the range from 0 to max
-		Rotator::UnderlyingType zeroToMaxRotation = rotator.getValue() >= 0 ? rotator.getValue() : MaxRotationFromZero+rotator.getValue();
-		return Utils::CompressFloatToIntCL<T, Rotator::UnderlyingType>(zeroToMaxRotation, 0, MaxRotationFromZero, bitsCount);
+		float zeroToMaxRotation = rotator.getValue() >= 0 ? rotator.getValue() : MaxRotationFromZero+rotator.getValue();
+		return Utils::CompressFloatToIntCL<T, float>(zeroToMaxRotation, 0, MaxRotationFromZero, bitsCount);
 	}
 
 	static Rotator Decompress(T value, unsigned int bitsCount = MaxBitsCount)
 	{
-		Rotator::UnderlyingType zeroToMaxRotation = Utils::DecompressFloatFromIntCL<Rotator::UnderlyingType, T>(value, 0, MaxRotationFromZero, bitsCount);
+		float zeroToMaxRotation = Utils::DecompressFloatFromIntCL<float, T>(value, 0, MaxRotationFromZero, bitsCount);
 		// convert the value back to the Rotator value range
 		// rotator will by itself normalize the value
 		return Rotator((zeroToMaxRotation <= Rotator::MaxValue) ? zeroToMaxRotation : (zeroToMaxRotation-MaxRotationFromZero));
@@ -47,5 +47,5 @@ private:
 
 	static constexpr unsigned int MaxBitsCount = std::numeric_limits<T>::digits;
 	// max value that we can get if we transform the range to [0;1]
-	static constexpr Rotator::UnderlyingType MaxRotationFromZero = Rotator::MaxValue - Rotator::MinValue;
+	static constexpr float MaxRotationFromZero = Rotator::MaxValue - Rotator::MinValue;
 };

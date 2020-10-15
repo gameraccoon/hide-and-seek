@@ -15,7 +15,6 @@ inline constexpr float HalfPI = PI * 0.5f;
 class Rotator
 {
 public:
-	using UnderlyingType = float;
 	static constexpr float MinValue = -PI;
 	static constexpr float MaxValue = PI;
 
@@ -31,6 +30,7 @@ public:
 
 	[[nodiscard]] bool isNearlyEqualTo(Rotator other) const noexcept;
 
+	/** returns the angle value representing the clockwise rotation */
 	[[nodiscard]] constexpr float getValue() const noexcept { return mValue; }
 
 	[[nodiscard]] bool operator==(Rotator other) const noexcept;
@@ -43,17 +43,23 @@ public:
 	friend void to_json(nlohmann::json& outJson, const Rotator& rotator);
 	friend void from_json(const nlohmann::json& json, Rotator& outRotator);
 
+	static constexpr float NormalizeRawAngle(float rawAngle)
+	{
+		while (rawAngle <= -PI)
+		{
+			rawAngle += 2 * PI;
+		}
+		while (rawAngle > PI)
+		{
+			rawAngle -= 2 * PI;
+		}
+		return rawAngle;
+	}
+
 private:
 	constexpr void normalize() noexcept
 	{
-		while (mValue <= -PI)
-		{
-			mValue += 2 * PI;
-		}
-		while (mValue > PI)
-		{
-			mValue -= 2 * PI;
-		}
+		mValue = NormalizeRawAngle(mValue);
 	}
 
 private:

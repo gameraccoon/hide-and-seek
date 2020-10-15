@@ -34,6 +34,8 @@ public:
 
 	void getAllEntityComponents(Entity entity, std::vector<BaseComponent*>& outComponents);
 
+	bool doesEntityHaveComponent(Entity entity, StringID typeID);
+
 	template<typename ComponentType>
 	bool doesEntityHaveComponent(Entity entity)
 	{

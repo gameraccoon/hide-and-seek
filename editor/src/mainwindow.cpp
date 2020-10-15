@@ -5,6 +5,7 @@
 
 #include "src/editorcommands/addentitycommand.h"
 #include "src/editorcommands/addspatialentitycommand.h"
+#include "src/editorutils/worldsaveutils.h"
 
 #include "DockManager.h"
 #include "DockWidget.h"
@@ -209,8 +210,7 @@ void MainWindow::on_actionSave_World_As_triggered()
 		return;
 	}
 
-	mCurrentWorld->clearCaches();
-	GameDataLoader::SaveWorld(*mCurrentWorld.get(), fileName, mComponentSerializationHolder);
+	Utils::SaveWorld(*mCurrentWorld.get(), fileName, mComponentSerializationHolder);
 	mOpenedWorldPath = fileName;
 	ui->actionSave_World->setEnabled(true);
 }
@@ -222,8 +222,8 @@ void MainWindow::on_actionSave_World_triggered()
 		return;
 	}
 
-	mCurrentWorld->clearCaches();
-	GameDataLoader::SaveWorld(*mCurrentWorld.get(), mOpenedWorldPath, mComponentSerializationHolder);
+
+	Utils::SaveWorld(*mCurrentWorld.get(), mOpenedWorldPath, mComponentSerializationHolder);
 }
 
 void MainWindow::on_actionRun_Game_triggered()
@@ -233,7 +233,7 @@ void MainWindow::on_actionRun_Game_triggered()
 		QDir().mkdir("./tmp");
 	}
 	static std::string tempWorldName = "./tmp/temp-editor-world.json";
-	GameDataLoader::SaveWorld(*mCurrentWorld.get(), tempWorldName, mComponentSerializationHolder);
+	Utils::SaveWorld(*mCurrentWorld.get(), tempWorldName, mComponentSerializationHolder);
 	QProcess::startDetached("./GameMain", {"--world", QString::fromStdString(tempWorldName)});
 }
 
