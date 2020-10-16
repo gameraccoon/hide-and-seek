@@ -4,6 +4,16 @@
 inline std::function<void()> GlobalAssertHandler = [](){};
 inline std::function<void()> GlobalFatalAssertHandler = [](){ std::terminate(); };
 
+inline bool GlobalAllowAssertLogs = true;
+template<typename... Args>
+void LogAssertHelper(const char* condition, const char* file, size_t line, const std::string& message, Args... args) noexcept
+{
+	if (GlobalAllowAssertLogs)
+	{
+		Log::Instance().writeError(FormatString(std::string("Assertion failed '%s' %s:%d with message: '").append(message).append("'"), condition, file, line, std::forward<Args>(args)...));
+	}
+}
+
 #ifdef DEBUG_CHECKS
 	#define ReportError(...) \
 		do \
