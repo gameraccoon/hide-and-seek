@@ -196,6 +196,16 @@ TEST(Vector2D, Project)
 	EXPECT_TRUE(projectAB.isNearlyEqualTo(testVectorB.project(testVectorA)));
 }
 
+TEST(Vector2D, Normal)
+{
+	EXPECT_TRUE(Vector2D(1.0f, 0.0f).isNearlyEqualTo(Vector2D(0.0f, 500.0f).normal()));
+	EXPECT_TRUE(Vector2D(-0.0748f, -0.99719f).isNearlyEqualTo(Vector2D(5.2f, -0.39f).normal()));
+	EXPECT_TRUE(Vector2D(-0.9998f, -0.021f).isNearlyEqualTo(Vector2D(16.9f, -803.27f).normal()));
+
+	Vector2D testVector(-1234.321f, 184.99f);
+	EXPECT_TRUE(Vector2D(testVector.rotation() - Rotator(HalfPI)).isNearlyEqualTo(testVector.normal()));
+}
+
 TEST(Vector2D, Rotate)
 {
 	Vector2D testVectorA(30, 30);

@@ -66,7 +66,8 @@ Vector2D Vector2D::mirrorV() const noexcept
 
 Vector2D Vector2D::normal() const noexcept
 {
-	return Vector2D(rotation() - Rotator(HalfPI));
+	float sizeInvevrse = 1.0f/size();
+	return Vector2D(y * sizeInvevrse, -x * sizeInvevrse);
 }
 
 Vector2D Vector2D::project(Vector2D base) const noexcept
