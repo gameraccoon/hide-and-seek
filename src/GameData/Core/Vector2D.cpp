@@ -2,6 +2,8 @@
 
 #include "GameData/Core/Vector2D.h"
 
+#include "Base/Math/Float.h"
+
 #include <cmath>
 
 #include <nlohmann/json.hpp>
@@ -171,14 +173,33 @@ Vector2D Vector2D::operator/=(float scalar) noexcept
 	return *this;
 }
 
-float Vector2D::DotProduct(const Vector2D& left, const Vector2D& right) noexcept
+float Vector2D::DotProduct(Vector2D left, Vector2D right) noexcept
 {
 	return left.x * right.x + left.y * right.y;
 }
 
-Vector2D Vector2D::HadamardProduct(const Vector2D& left, const Vector2D& right) noexcept
+Vector2D Vector2D::HadamardProduct(Vector2D left, Vector2D right) noexcept
 {
 	return Vector2D(left.x * right.x, left.y * right.y);
+}
+
+Vector2D Vector2D::Lerp(Vector2D left, Vector2D right, float t)
+{
+	return Vector2D(left.x + (right.x - left.x) * t, left.y + (right.y - left.y) * t);
+}
+
+float Vector2D::InvLerp(Vector2D left, Vector2D right, Vector2D point)
+{
+	float distanceX = right.x - left.x;
+	float distanceY = right.y - left.y;
+	if (std::fabs(distanceX) > std::fabs(distanceY))
+	{
+		return (point.x - left.x) / distanceX;
+	}
+	else
+	{
+		return (point.y - left.y) / distanceY;
+	}
 }
 
 void to_json(nlohmann::json& outJson, const Vector2D& vector)

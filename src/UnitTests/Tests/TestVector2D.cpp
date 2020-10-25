@@ -174,7 +174,7 @@ TEST(Vector2D, DotProduct)
 	Vector2D testVectorA(5.2f, -0.39f);
 	Vector2D testVectorB(16.9f, 803.27f);
 
-	EXPECT_EQ(-225.3953f, Vector2D::DotProduct(testVectorA, testVectorB));
+	EXPECT_FLOAT_EQ(-225.3953f, Vector2D::DotProduct(testVectorA, testVectorB));
 }
 
 TEST(Vector2D, Project)
@@ -208,11 +208,63 @@ TEST(Vector2D, Normal)
 
 TEST(Vector2D, Rotate)
 {
-	Vector2D testVectorA(30, 30);
+	Vector2D testVectorA(30, 40);
 
-	EXPECT_TRUE(Vector2D(30, 30).isNearlyEqualTo(testVectorA.getRotated(Rotator(0.0f))));
-	EXPECT_TRUE(Vector2D(-30, 30).isNearlyEqualTo(testVectorA.getRotated(Rotator(PI * 0.5f))));
-	EXPECT_TRUE(Vector2D(-30, -30).isNearlyEqualTo(testVectorA.getRotated(Rotator(PI))));
-	EXPECT_TRUE(Vector2D(30, -30).isNearlyEqualTo(testVectorA.getRotated(Rotator(PI * 1.5f))));
-	EXPECT_TRUE(Vector2D(30, 30).isNearlyEqualTo(testVectorA.getRotated(Rotator(PI * 2.0f))));
+	EXPECT_TRUE(Vector2D(30, 40).isNearlyEqualTo(testVectorA.getRotated(Rotator(0.0f))));
+	EXPECT_TRUE(Vector2D(-40, 30).isNearlyEqualTo(testVectorA.getRotated(Rotator(PI * 0.5f))));
+	EXPECT_TRUE(Vector2D(-30, -40).isNearlyEqualTo(testVectorA.getRotated(Rotator(PI))));
+	EXPECT_TRUE(Vector2D(40, -30).isNearlyEqualTo(testVectorA.getRotated(Rotator(PI * 1.5f))));
+	EXPECT_TRUE(Vector2D(30, 40).isNearlyEqualTo(testVectorA.getRotated(Rotator(PI * 2.0f))));
+}
+
+TEST(Vector2D, HadamardProduct)
+{
+	Vector2D testVectorA(10.0f, 20.0f);
+	Vector2D testVectorB(-3.0f, 2.0f);
+
+	EXPECT_TRUE(Vector2D(-30, 40).isNearlyEqualTo(Vector2D::HadamardProduct(testVectorA, testVectorB)));
+}
+
+TEST(Vector2D, Lerp)
+{
+	{
+		Vector2D testVectorA(10.0f, 20.0f);
+		Vector2D testVectorB(-3.0f, 2.0f);
+
+		EXPECT_TRUE(Vector2D(10.0f, 20.0f).isNearlyEqualTo(Vector2D::Lerp(testVectorA, testVectorB, 0.0f)));
+		EXPECT_TRUE(Vector2D(-3.0f, 2.0f).isNearlyEqualTo(Vector2D::Lerp(testVectorA, testVectorB, 1.0f)));
+		EXPECT_TRUE(Vector2D(3.5f, 11.0f).isNearlyEqualTo(Vector2D::Lerp(testVectorA, testVectorB, 0.5f)));
+	}
+
+	{
+		Vector2D testVectorA(10.0f, 10.0f);
+		Vector2D testVectorB(10.0f, 10.0f);
+
+		EXPECT_TRUE(Vector2D(10.0f, 10.0f).isNearlyEqualTo(Vector2D::Lerp(testVectorA, testVectorB, 0.0f)));
+		EXPECT_TRUE(Vector2D(10.0f, 10.0f).isNearlyEqualTo(Vector2D::Lerp(testVectorA, testVectorB, 1.0f)));
+		EXPECT_TRUE(Vector2D(10.0f, 10.0f).isNearlyEqualTo(Vector2D::Lerp(testVectorA, testVectorB, 0.5f)));
+	}
+}
+
+TEST(Vector2D, InvLerp)
+{
+	{
+		Vector2D testVectorA(10.0f, 20.0f);
+		Vector2D testVectorB(-3.0f, 2.0f);
+
+		EXPECT_FLOAT_EQ(0.0f, Vector2D::InvLerp(testVectorA, testVectorB, Vector2D::Lerp(testVectorA, testVectorB, 0.0f)));
+		EXPECT_FLOAT_EQ(1.0f, Vector2D::InvLerp(testVectorA, testVectorB, Vector2D::Lerp(testVectorA, testVectorB, 1.0f)));
+		EXPECT_FLOAT_EQ(0.3f, Vector2D::InvLerp(testVectorA, testVectorB, Vector2D::Lerp(testVectorA, testVectorB, 0.3f)));
+		EXPECT_FLOAT_EQ(0.9f, Vector2D::InvLerp(testVectorA, testVectorB, Vector2D::Lerp(testVectorA, testVectorB, 0.9f)));
+	}
+
+	{
+		Vector2D testVectorA(10.000001f, 10.0f);
+		Vector2D testVectorB(10.0f, -20.0f);
+
+		EXPECT_FLOAT_EQ(0.0f, Vector2D::InvLerp(testVectorA, testVectorB, Vector2D::Lerp(testVectorA, testVectorB, 0.0f)));
+		EXPECT_FLOAT_EQ(1.0f, Vector2D::InvLerp(testVectorA, testVectorB, Vector2D::Lerp(testVectorA, testVectorB, 1.0f)));
+		EXPECT_FLOAT_EQ(0.3f, Vector2D::InvLerp(testVectorA, testVectorB, Vector2D::Lerp(testVectorA, testVectorB, 0.3f)));
+		EXPECT_FLOAT_EQ(0.9f, Vector2D::InvLerp(testVectorA, testVectorB, Vector2D::Lerp(testVectorA, testVectorB, 0.9f)));
+	}
 }

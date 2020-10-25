@@ -66,8 +66,12 @@ struct Vector2D
 	[[nodiscard]] Vector2D operator/(float scalar) const noexcept;
 	Vector2D operator/=(float scalar) noexcept;
 
-	[[nodiscard]] static float DotProduct(const Vector2D& left, const Vector2D& right) noexcept;
-	[[nodiscard]] static Vector2D HadamardProduct(const Vector2D& left, const Vector2D& right) noexcept;
+	[[nodiscard]] static float DotProduct(Vector2D left, Vector2D right) noexcept;
+	[[nodiscard]] static Vector2D HadamardProduct(Vector2D left, Vector2D right) noexcept;
+
+	[[nodiscard]] static Vector2D Lerp(Vector2D left, Vector2D right, float t);
+	/** If the given point is not on the line betwen two point then the result is not specified */
+	[[nodiscard]] static float InvLerp(Vector2D left, Vector2D right, Vector2D point);
 
 	friend void to_json(nlohmann::json& outJson, const Vector2D& vector);
 	friend void from_json(const nlohmann::json& json, Vector2D& outVector);
