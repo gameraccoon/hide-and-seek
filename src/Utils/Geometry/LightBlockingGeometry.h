@@ -9,6 +9,7 @@
 #include "GameData/Core/Hull.h"
 
 #include "GameData/Core/Vector2D.h"
+#include "GameData/Spatial/CellPos.h"
 
 class WorldCell;
 class CollisionComponent;
@@ -16,18 +17,8 @@ class TransformComponent;
 
 namespace LightBlockingGeometry
 {
-	using CollisionGeometry = TupleVector<Entity, WorldCell*, CollisionComponent*, TransformComponent*>;
+	using CollisionGeometry = TupleVector<WorldCell*, CollisionComponent*, TransformComponent*>;
+	using CalculatedGeometry = std::unordered_map<CellPos, std::vector<SimpleBorder>>;
 
-	struct CalculatedGeometry
-	{
-		CalculatedGeometry(const Hull& hull, const Vector2D& location)
-			: hull(hull)
-			, location(location)
-		{}
-
-		Hull hull;
-		Vector2D location;
-	};
-
-	void CalculateLightGeometry(std::vector<CalculatedGeometry>& outGeometry, const CollisionGeometry& collisionGeometry);
+	void CalculateLightGeometry(CalculatedGeometry& outGeometry, const CollisionGeometry& collisionGeometry);
 }

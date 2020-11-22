@@ -2,8 +2,8 @@
 
 #include "GameData/World.h"
 
-#include "GameData/Components/TransformComponent.generated.h"
 #include "GameData/Components/CollisionComponent.generated.h"
+#include "GameData/Components/TransformComponent.generated.h"
 #include "GameData/Components/LightBlockingGeometryComponent.generated.h"
 
 #include "Utils/World/GameDataLoader.h"
@@ -25,23 +25,12 @@ namespace Utils
 	{
 		RemoveCellComponent<LightBlockingGeometryComponent>(world);
 
-		TupleVector<Entity, WorldCell*, CollisionComponent*, TransformComponent*> components;
-		world.getSpatialData().getAllCellManagers().getSpatialComponentsWithEntities<CollisionComponent, TransformComponent>(components);
-		std::vector<LightBlockingGeometry::CalculatedGeometry> lightBlockingGeometryPieces;
+		TupleVector<WorldCell*, CollisionComponent*, TransformComponent*> components;
+		world.getSpatialData().getAllCellManagers().getSpatialComponents<CollisionComponent, TransformComponent>(components);
+		std::unordered_map<CellPos, std::vector<SimpleBorder>> lightBlockingGeometryPieces;
 		LightBlockingGeometry::CalculateLightGeometry(lightBlockingGeometryPieces, components);
 
-		std::unordered_map<CellPos, std::vector<SimpleBorder>> lightBlockingBorders;
-		for (const auto& lightBlockingPiece : lightBlockingGeometryPieces)
-		{
-			CellPos cellPos = SpatialWorldData::GetCellForPos(lightBlockingPiece.location);
-			std::vector<SimpleBorder>& cellBlockingBorders = lightBlockingBorders[cellPos];
-			for (const Border& border : lightBlockingPiece.hull.borders)
-			{
-				cellBlockingBorders.emplace_back(border.getA() + lightBlockingPiece.location, border.getB() + lightBlockingPiece.location);
-			}
-		}
-
-		for (auto& [cellPos, borders] : lightBlockingBorders)
+		for (auto& [cellPos, borders] : lightBlockingGeometryPieces)
 		{
 			WorldCell& cell = world.getSpatialData().getOrCreateCell(cellPos);
 			ComponentSetHolder& cellComponents = cell.getCellComponents();

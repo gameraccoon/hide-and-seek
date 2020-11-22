@@ -161,16 +161,13 @@ namespace Collide
 	}
 
 	bool DoCollide(const CollisionComponent* collisionA, const Vector2D& locationA,
-				   const CollisionComponent* collisionB, const Vector2D& locationB, Vector2D& outResist)
+		const CollisionComponent* collisionB, const Vector2D& locationB, Vector2D& outResist)
 	{
 		// get AABB of the actors
 		const BoundingBox box = collisionA->getBoundingBox() + locationA;
 		const BoundingBox ourBox = collisionB->getBoundingBox() + locationB;
 		// if the actor's AABB intersects with the Man's AABB (in new Man location)
-		if ((box.minX < ourBox.maxX
-			&& ourBox.minX < box.maxX)
-			&& (box.minY < ourBox.maxY
-			&& ourBox.minY < box.maxY))
+		if (AreAABBsIntersect(box, ourBox))
 		{
 			return IsCollideGeometry(collisionA->getGeometry(), collisionB->getGeometry(),
 				locationA, locationB, outResist);
@@ -237,6 +234,12 @@ namespace Collide
 			|
 			((dot.y > box.maxY) << BOTTOM_BIT)
 		);
+	}
+
+	bool AreAABBsIntersect(const BoundingBox& boxA, const BoundingBox& boxB)
+	{
+		return (boxA.minX < boxB.maxX && boxA.maxX > boxB.minX)
+			&& (boxA.minY < boxB.maxY && boxA.maxY > boxB.minY);
 	}
 
 	bool AreLinesIntersect(const Vector2D& A1, const Vector2D& A2, const Vector2D& B1, const Vector2D& B2)

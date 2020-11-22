@@ -122,6 +122,11 @@ Vector2D SpatialWorldData::GetCellRealDistance(const CellPosDiff& cellDiff)
 	return Vector2D(cellDiff.x * CellSize, cellDiff.y * CellSize);
 }
 
+BoundingBox SpatialWorldData::GetCellAABB(CellPos pos)
+{
+	return BoundingBox(pos.x * CellSize, pos.y * CellSize, (pos.x + 1) * CellSize, (pos.y + 1) * CellSize);
+}
+
 nlohmann::json SpatialWorldData::toJson(const ComponentSerializersHolder& componentSerializers) const
 {
 	nlohmann::json cellsJson;

@@ -25,10 +25,10 @@ public:
 
 public:
 	RenderSystem(WorldHolder& worldHolder,
-				 const TimeData& timeData,
-				 HAL::Engine& engine,
-				 HAL::ResourceManager& resourceManager,
-				 Jobs::WorkerManager& jobsWorkerManager);
+		const TimeData& timeData,
+		HAL::Engine& engine,
+		HAL::ResourceManager& resourceManager,
+		Jobs::WorkerManager& jobsWorkerManager);
 
 	~RenderSystem() override = default;
 

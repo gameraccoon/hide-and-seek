@@ -17,7 +17,8 @@ namespace PathFinding
 
 	bool IsPointInsideConvexHull(Vector2D point, const std::vector<Vector2D>& hull)
 	{
-		FOR_EACH_BORDER(hull.size(),
+		size_t hullSize = hull.size();
+		FOR_EACH_BORDER(hullSize,
 		{
 			if (Collide::SignedArea(point, hull[i], hull[j]) < 0.0f)
 			{

@@ -7,6 +7,7 @@
 #include "GameData/Spatial/WorldCell.h"
 #include "GameData/Spatial/CellPos.h"
 #include "GameData/Core/Vector2D.h"
+#include "GameData/Core/BoundingBox.h"
 
 struct ComponentSerializersHolder;
 
@@ -40,6 +41,8 @@ public:
 	static std::pair<CellPos, Vector2D> TransformCellFromOldSize(const Vector2D& pos, const CellPos& oldPos, const Vector2D& oldSize);
 
 	static Vector2D GetCellRealDistance(const CellPosDiff& cellDiff);
+
+	static BoundingBox GetCellAABB(CellPos pos);
 
 	nlohmann::json toJson(const ComponentSerializersHolder& componentSerializers) const;
 	void fromJson(const nlohmann::json& json, const ComponentSerializersHolder& componentSerializers);
