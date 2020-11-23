@@ -31,6 +31,11 @@ static std::vector<SimpleBorder> GenerateSimpleShape(const std::vector<Vector2D>
 
 static bool AreShapesEqual(const std::vector<SimpleBorder>& a, const std::vector<SimpleBorder>& b)
 {
+	if (a.size() != b.size())
+	{
+		return false;
+	}
+
 	auto a_copy = a;
 
 	for (const SimpleBorder& border : b)
@@ -64,5 +69,56 @@ TEST(ShapeOperations, Union_TwoAxisAlignedRects)
 	std::vector<Vector2D> shape2{{60.0f, -10.0f}, {60.0f, 10.0f}, {-60.0f, 10.0f}, {-60.0f, -10.0f}};
 	std::vector<SimpleBorder> resultingShape = ShapeOperations::GetUnion(GenerateShape(shape1), GenerateShape(shape2));
 	std::vector<Vector2D> expectedResult{{10.0f, -60.0f}, {10.0f, -10.0f}, {60.0f, -10.0f}, {60.0f, 10.0f}, {10.0f, 10.0f}, {10.0f, 60.0f}, {-10.0f, 60.0f}, {-10.0f, 10.0f}, {-60.0f, 10.0f}, {-60.0f, -10.0f}, {-10.0f, -10.0f}, {-10.0f, -60.0f}};
+	EXPECT_TRUE(AreShapesEqual(GenerateSimpleShape(expectedResult), resultingShape));
+}
+
+TEST(ShapeOperations, Union_TwoRectsWithOneSameBorder)
+{
+	std::vector<Vector2D> shape1{{10.0f, -60.0f}, {10.0f, -10.0f}, {-10.0f, -10.0f}, {-10.0f, -60.0f}};
+	std::vector<Vector2D> shape2{{10.0f, -10.0f}, {10.0f, 110.0f}, {-10.0f, 110.0f}, {-10.0f, -10.0f}};
+	std::vector<SimpleBorder> resultingShape = ShapeOperations::GetUnion(GenerateShape(shape1), GenerateShape(shape2));
+	std::vector<Vector2D> expectedResult{{10.0f, -60.0f}, {10.0f, 110.0f}, {-10.0f, 110.0f}, {-10.0f, -60.0f}};
+	EXPECT_TRUE(AreShapesEqual(GenerateSimpleShape(expectedResult), resultingShape));
+}
+
+TEST(ShapeOperations, Union_TwoRectsWithOneOverlappingBorder)
+{
+	std::vector<Vector2D> shape1{{10.0f, -60.0f}, {10.0f, -10.0f}, {-10.0f, -10.0f}, {-10.0f, -60.0f}};
+	std::vector<Vector2D> shape2{{30.0f, -10.0f}, {30.0f, 110.0f}, {-30.0f, 110.0f}, {-30.0f, -10.0f}};
+	std::vector<SimpleBorder> resultingShape = ShapeOperations::GetUnion(GenerateShape(shape1), GenerateShape(shape2));
+	std::vector<Vector2D> expectedResult{{30.0f, -10.0f}, {30.0f, 110.0f}, {-30.0f, 110.0f}, {-30.0f, -10.0f}, {-10.0f, -10.0f}, {-10.0f, -60.0f}, {10.0f, -60.0f}, {10.0f, -10.0f}};
+	EXPECT_TRUE(AreShapesEqual(GenerateSimpleShape(expectedResult), resultingShape));
+}
+
+TEST(ShapeOperations, Union_TwoRectsWithOneOverlappingBorderOneDirection)
+{
+	std::vector<Vector2D> shape1{{10.0f, -60.0f}, {10.0f, 20.0f}, {-10.0f, 20.0f}, {-10.0f, -60.0f}};
+	std::vector<Vector2D> shape2{{30.0f, -60.0f}, {30.0f, 10.0f}, {-30.0f, 10.0f}, {-30.0f, -60.0f}};
+	std::vector<SimpleBorder> resultingShape = ShapeOperations::GetUnion(GenerateShape(shape1), GenerateShape(shape2));
+	std::vector<Vector2D> expectedResult{{30.0f, -60.0f}, {30.0f, 10.0f}, {10.0f, 10.0f}, {10.0f, 20.0f}, {-10.0f, 20.0f}, {-10.0f, 10.0f}, {-30.0f, 10.0f}, {-30.0f, -60.0f}};
+	EXPECT_TRUE(AreShapesEqual(GenerateSimpleShape(expectedResult), resultingShape));
+}
+
+TEST(ShapeOperations, Union_TwoRectsWithOneOverlappingBorderOneDirectionFullyInside)
+{
+	std::vector<Vector2D> shape1{{10.0f, -60.0f}, {10.0f, -10.0f}, {-10.0f, -10.0f}, {-10.0f, -60.0f}};
+	std::vector<Vector2D> shape2{{30.0f, -60.0f}, {30.0f, 10.0f}, {-30.0f, 10.0f}, {-30.0f, -60.0f}};
+	std::vector<SimpleBorder> resultingShape = ShapeOperations::GetUnion(GenerateShape(shape1), GenerateShape(shape2));
+	std::vector<Vector2D> expectedResult{{30.0f, -60.0f}, {30.0f, 10.0f}, {-30.0f, 10.0f}, {-30.0f, -60.0f}};
+	EXPECT_TRUE(AreShapesEqual(GenerateSimpleShape(expectedResult), resultingShape));
+}
+
+TEST(ShapeOperations, Union_TwoRectsWithTwoOverlappingBorders)
+{
+	std::vector<Vector2D> shape1{{10.0f, -60.0f}, {10.0f, 60.0f}, {-10.0f, 60.0f}, {-10.0f, -60.0f}};
+	std::vector<Vector2D> shape2{{10.0f, -10.0f}, {10.0f, 110.0f}, {-10.0f, 110.0f}, {-10.0f, -10.0f}};
+	std::vector<SimpleBorder> resultingShape = ShapeOperations::GetUnion(GenerateShape(shape1), GenerateShape(shape2));
+	std::vector<Vector2D> expectedResult{{10.0f, -60.0f}, {10.0f, 110.0f}, {-10.0f, 110.0f}, {-10.0f, -60.0f}};
+TEST(ShapeOperations, Union_TwoRectsIntersectionOnCorner)
+{
+	std::vector<Vector2D> shape1{{10.0f, -60.0f}, {10.0f, 60.0f}, {-10.0f, 60.0f}, {-10.0f, -60.0f}};
+	std::vector<Vector2D> shape2{{-30.0f, 10.0f}, {10.0f, -30.0f}, {20.0f, -20.0f}, {-20.0f, 20.0f}};
+	std::vector<SimpleBorder> resultingShape = ShapeOperations::GetUnion(GenerateShape(shape1), GenerateShape(shape2));
+	std::vector<Vector2D> expectedResult{{10.0f, -60.0f}, {10.0f, -10.0f}, {10.0f, -30.0f}, {20.0f, -20.0f}, {10.0f, 60.0f}, {-10.0f, 60.0f}, {-10.0f, 10.0f}, {-20.0f, 20.0f}, {-30.0f, 10.0f}, {-10.0f, -10.0f}, {-10.0f, -60.0f}};
 	EXPECT_TRUE(AreShapesEqual(GenerateSimpleShape(expectedResult), resultingShape));
 }
