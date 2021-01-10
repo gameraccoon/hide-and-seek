@@ -8,4 +8,6 @@
 namespace ShapeOperations
 {
 	std::vector<SimpleBorder> GetUnion(const std::vector<SimpleBorder>& shape1, const std::vector<SimpleBorder>& shape2);
+	// join all borders that make a straight line
+	void OptimizeShape(std::vector<SimpleBorder>& inOutShape);
 }

@@ -283,7 +283,8 @@ namespace ShapeOperations
 			for (size_t i = 1; i < borderPoints.size(); ++i)
 			{
 				float thisFraction = borderPointFractions[i];
-				if (thisFraction == previousFraction) {
+				if (thisFraction == previousFraction)
+				{
 					if (i > 1)
 					{
 						previousCutDirection = CalcBetterPreviousCutDirection(borderPoints[i-1].cutDirection, previousCutDirection);
@@ -345,5 +346,103 @@ namespace ShapeOperations
 		}
 
 		return fracturedBorders;
+	}
+
+	struct BorderInfo
+	{
+		BorderInfo(Vector2D secondBorderPoint, size_t borderIndex, bool isFirstPoint)
+			: secondBorderPoint(secondBorderPoint)
+			, borderIndex(borderIndex)
+			, isFirstPoint(isFirstPoint)
+		{}
+
+		Vector2D secondBorderPoint;
+		size_t borderIndex;
+		bool isFirstPoint;
+	};
+
+	void OptimizeShape(std::vector<SimpleBorder>& inOutShape)
+	{
+		// collect neighboring borders
+		std::unordered_map<Vector2D, std::vector<BorderInfo>> points;
+		for (int i = 0, iSize = inOutShape.size(); i < iSize; ++i)
+		{
+			const SimpleBorder& border = inOutShape[i];
+			points[border.a].emplace_back(border.b, i, true);
+			points[border.b].emplace_back(border.a, i, false);
+		}
+
+		// iterate over all neighboring border pairs and join ones that produce a straight line
+		std::vector<size_t> bordersToRemove;
+		while (!points.empty())
+		{
+			auto& [pos, borders] = *points.begin();
+
+			const size_t bordersCount = borders.size();
+			// iterate over pairs
+			for (size_t i = 1; i < bordersCount; ++i)
+			{
+				for (size_t j = 0; j < i; ++j)
+				{
+					// skip borders that have opposite directions
+					if (borders[i].isFirstPoint != borders[j].isFirstPoint)
+					{
+						// process borders that produce a straight line
+						float area = Collide::SignedArea(pos, borders[i].secondBorderPoint, borders[j].secondBorderPoint);
+						if (Math::IsNearZero(area))
+						{
+							size_t iBorderIdx = borders[i].borderIndex;
+							size_t jBorderIdx = borders[j].borderIndex;
+							// replace border i with the merged border
+							{
+								SimpleBorder& finalBorder = inOutShape[iBorderIdx];
+								if (finalBorder.a == pos)
+								{
+									finalBorder.a = borders[j].secondBorderPoint;
+								}
+								else
+								{
+									finalBorder.b = borders[j].secondBorderPoint;
+								}
+							}
+
+							// link the final border instead of border j
+							{
+								const SimpleBorder borderToRemove = inOutShape[jBorderIdx];
+								Vector2D anotherIntersectionPoint = (borderToRemove.a == pos) ? borderToRemove.b : borderToRemove.a;
+								auto pointsIt = points.find(anotherIntersectionPoint);
+								// ignore if the other border was already processed
+								if (pointsIt != points.end())
+								{
+									for (auto& borderInfo : pointsIt->second)
+									{
+										if (borderInfo.borderIndex == jBorderIdx)
+										{
+											borderInfo.borderIndex = iBorderIdx;
+											break;
+										}
+									}
+								}
+							}
+							// border j is unlinked so we won't refer to it anymore, but we'll delete it later
+							bordersToRemove.push_back(jBorderIdx);
+
+							// there can't be more than one valid straight line going through one point
+							goto pair_loop_exit;
+						}
+					}
+				}
+			}
+			pair_loop_exit:
+
+			points.erase(points.begin());
+		}
+
+		// remove extra borders that have left
+		std::sort(bordersToRemove.begin(), bordersToRemove.end(), std::greater());
+		for (size_t index : bordersToRemove)
+		{
+			inOutShape.erase(inOutShape.begin() + index);
+		}
 	}
 }

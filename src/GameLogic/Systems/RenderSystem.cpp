@@ -317,8 +317,8 @@ void RenderSystem::drawLights(SpatialEntityManager& managerGroup, std::vector<Wo
 	}
 
 	// draw player visibility polygon
-	//VisibilityPolygonCalculator visibilityPolygonCalculator;
-	//std::vector<Vector2D> polygon;
-	//visibilityPolygonCalculator.calculateVisibilityPolygon(polygon, lightBlockingComponents, playerSightPosition, maxFov);
-	//drawVisibilityPolygon(lightSprite, polygon, maxFov, drawShift + playerSightPosition);
+	VisibilityPolygonCalculator visibilityPolygonCalculator;
+	std::vector<Vector2D> polygon;
+	visibilityPolygonCalculator.calculateVisibilityPolygon(polygon, lightBlockingComponents, playerSightPosition, maxFov);
+	drawVisibilityPolygon(lightSprite, polygon, maxFov, drawShift + playerSightPosition);
 }

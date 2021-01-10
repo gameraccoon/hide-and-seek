@@ -22,4 +22,7 @@ namespace Math
 	bool IsGreaterOrEqualWithEpsilon(float a, float b, float epsilon = DEFAULT_EPSILON);
 	bool IsLessWithEpsilon(float a, float b, float epsilon = DEFAULT_EPSILON);
 	bool IsLessOrEqualWithEpsilon(float a, float b, float epsilon = DEFAULT_EPSILON);
+
+	// special case of AreEqualWithEpsilon with a = v and b = 0
+	bool IsNearZero(float v, float epsilon = DEFAULT_EPSILON);
 }

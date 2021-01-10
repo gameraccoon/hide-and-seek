@@ -56,4 +56,12 @@ namespace Math
 #endif // DEBUG_CHECKS
 		return a - epsilon <= b;
 	}
+
+	bool IsNearZero(float v, float epsilon)
+	{
+#ifdef DEBUG_CHECKS
+		Assert(isfinite(v), "Comparison with NaN or Inf is not allowed");
+#endif // DEBUG_CHECKS
+		return fabs(v) < epsilon;
+	}
 }
