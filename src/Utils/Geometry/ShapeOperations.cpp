@@ -5,38 +5,203 @@
 #include <unordered_map>
 #include <unordered_set>
 
+#include "Base/Math/Float.h"
+
 #include "Utils/Geometry/Collide.h"
 
 namespace ShapeOperations
 {
 	struct BorderPoint
 	{
-		enum class Direction
+		enum class CutDirection
 		{
-			Previous,
-			Next,
+			PreviousOutside,
+			NextOutside,
 			None
 		};
 
-		explicit BorderPoint(Vector2D pos, Direction direction = Direction::None)
+		explicit BorderPoint(Vector2D pos, CutDirection direction = CutDirection::None)
 			: pos(pos)
 			, cutDirection(direction)
 		{}
 
 		Vector2D pos;
-		Direction cutDirection;
+		CutDirection cutDirection;
 	};
 
 	struct BorderIntersection
 	{
-		BorderIntersection(size_t intersectionPoint, bool isFirstOutside)
+		BorderIntersection(size_t intersectionPoint, bool isFirstOutside, bool isSecondOutside)
 			: intersectionPoint(intersectionPoint)
 			, isFirstOutside(isFirstOutside)
+			, isSecondOutside(isSecondOutside)
 		{}
 
 		size_t intersectionPoint;
 		bool isFirstOutside;
+		bool isSecondOutside;
 	};
+
+	size_t addIntersectionPoint(Vector2D intersectionPoint, std::unordered_set<Vector2D>& intersectionPointsSet, std::vector<Vector2D>& intersectionPoints)
+	{
+		auto insertionResult = intersectionPointsSet.insert(intersectionPoint);
+
+		if (!insertionResult.second)
+		{
+			auto it = std::find(intersectionPoints.begin(), intersectionPoints.end(), intersectionPoint);
+			if (it != intersectionPoints.end())
+			{
+				return std::distance(intersectionPoints.begin(), it);
+			}
+			else
+			{
+				ReportError("intersectionPointsSet and intersectionPoints has diverged");
+				return 0;
+			}
+		}
+		else
+		{
+			intersectionPoints.push_back(intersectionPoint);
+			return intersectionPoints.size() - 1;
+		}
+	}
+
+	static Vector2D ChangePointBasis(const std::array<float, 4>& matrix, Vector2D point)
+	{
+		return Vector2D(
+			point.x * matrix[0] + point.y * matrix[1],
+			point.x * matrix[2] + point.y * matrix[3]
+		);
+	}
+
+	static SimpleBorder ChangeBorderBasis(const std::array<float, 4>& baisisTransformMatrix, const SimpleBorder& border)
+	{
+		return SimpleBorder(ChangePointBasis(baisisTransformMatrix, border.a), ChangePointBasis(baisisTransformMatrix, border.b));
+	}
+
+	static const std::array<float, 4> InverseMatrix(std::array<float, 4> matrix)
+	{
+		const float determinant = matrix[0]*matrix[3] - matrix[1]*matrix[2];
+		Assert(determinant != 0.0f, "Determinant should never be equal to zero");
+		const float inverseDeterminant = 1/determinant;
+
+		return { matrix[3] * inverseDeterminant, -matrix[1] * inverseDeterminant, -matrix[2] * inverseDeterminant, matrix[0] * inverseDeterminant };
+	}
+
+	static bool IsInside(float value, float a, float b)
+	{
+		return Math::IsGreaterOrEqualWithEpsilon(value, std::min(a, b)) && Math::IsLessOrEqualWithEpsilon(value, std::max(a, b));
+	}
+
+	static bool FindBordersRotationAroundPoint(SimpleBorder border1, SimpleBorder border2, Vector2D intersectionPoint)
+	{
+		bool isCheckInversed = false;
+		Vector2D firstPoint;
+		Vector2D secondPoint;
+
+		if (border1.a.isNearlyEqualTo(intersectionPoint))
+		{
+			firstPoint = border1.b;
+			isCheckInversed = !isCheckInversed;
+		}
+		else
+		{
+			firstPoint = border1.a;
+		}
+
+		if (border2.b.isNearlyEqualTo(intersectionPoint))
+		{
+			secondPoint = border2.a;
+			isCheckInversed = !isCheckInversed;
+		}
+		else
+		{
+			secondPoint = border2.b;
+		}
+
+		float signedArea = Collide::SignedArea(firstPoint, secondPoint, intersectionPoint);
+
+		return isCheckInversed ? (signedArea < 0) : (signedArea > 0);
+	}
+
+	static void AddOverlappingLinesIntersectionPoints(const SimpleBorder& borderA, const SimpleBorder& borderB, std::unordered_set<Vector2D>& intersectionPointsSet, std::vector<Vector2D>& intersectionPoints, std::vector<BorderIntersection>& borderAIntersections, std::vector<BorderIntersection>& borderBIntersections)
+	{
+		// project borderB into coordigante system based on a borderA
+		Vector2D basisX = (borderA.b - borderA.a).unit();
+		Vector2D basisY = -basisX.normal();
+		std::array<float, 4> basisTransformMatrix = InverseMatrix({basisX.x, basisY.x, basisX.y, basisY.y});
+		SimpleBorder transformedA = ChangeBorderBasis(basisTransformMatrix, borderA);
+		SimpleBorder transformedB = ChangeBorderBasis(basisTransformMatrix, borderB);
+		Assert(transformedA.a.x < transformedA.b.x, "The line segment should have the same direction with the 0X origin");
+		// check borderB direction
+		const bool bHasSameDirection = transformedB.a.x < transformedB.b.x;
+
+		if (Math::AreEqualWithEpsilon(transformedA.b.x, std::min(transformedB.a.x, transformedB.b.x)))
+		{
+
+		}
+		else if (Math::AreEqualWithEpsilon(transformedA.a.x, std::max(transformedB.a.x, transformedB.b.x)))
+		{
+
+		}
+		else
+		{
+			if (IsInside(transformedB.a.x, transformedA.a.x, transformedA.b.x))
+			{
+				size_t pointIdx = addIntersectionPoint(borderB.a, intersectionPointsSet, intersectionPoints);
+				borderAIntersections.emplace_back(pointIdx, !bHasSameDirection, bHasSameDirection);
+				borderBIntersections.emplace_back(pointIdx, bHasSameDirection, !bHasSameDirection);
+			}
+
+			if (IsInside(transformedB.b.x, transformedA.a.x, transformedA.b.x))
+			{
+				//size_t pointIdx = addIntersectionPoint(borderB.b, intersectionPointsSet, intersectionPoints);
+				//intersections.emplace_back(pointIdx, !isClockwiseRotation);
+				//borderIntersections[shape1BordersCount + j].emplace_back(pointIdx, isClockwiseRotation);
+			}
+
+			if (IsInside(transformedA.a.x, transformedB.a.x, transformedB.b.x))
+			{
+				//size_t pointIdx = addIntersectionPoint(borderA.a, intersectionPointsSet, intersectionPoints);
+				//intersections.emplace_back(pointIdx, !isClockwiseRotation);
+				//borderIntersections[shape1BordersCount + j].emplace_back(pointIdx, isClockwiseRotation);
+			}
+
+			if (IsInside(transformedA.b.x, transformedB.a.x, transformedB.b.x))
+			{
+				//size_t pointIdx = addIntersectionPoint(borderA.b, intersectionPointsSet, intersectionPoints);
+				//intersections.emplace_back(pointIdx, !isClockwiseRotation, isClockwiseRotation);
+				//borderIntersections[shape1BordersCount + j].emplace_back(pointIdx, isClockwiseRotation, !isClockwiseRotation);
+			}
+		}
+	}
+
+	static BorderPoint::CutDirection GetCutDirection(bool isPreviousOutside, bool isNextOutside)
+	{
+		if (isPreviousOutside && isNextOutside) return BorderPoint::CutDirection::None;
+		if (!isPreviousOutside && !isNextOutside) return BorderPoint::CutDirection::None;
+		return isPreviousOutside ? BorderPoint::CutDirection::NextOutside : BorderPoint::CutDirection::PreviousOutside;
+	}
+
+	static BorderPoint::CutDirection CalcBetterPreviousCutDirection(BorderPoint::CutDirection cached, BorderPoint::CutDirection real)
+	{
+		if (real == BorderPoint::CutDirection::None)
+		{
+			return cached;
+		}
+
+		if (real == BorderPoint::CutDirection::NextOutside && cached == BorderPoint::CutDirection::PreviousOutside)
+		{
+			return BorderPoint::CutDirection::None;
+		}
+
+		if (real == BorderPoint::CutDirection::PreviousOutside && cached == BorderPoint::CutDirection::NextOutside)
+		{
+			return BorderPoint::CutDirection::None;
+		}
+
+		return real;
+	}
 
 	std::vector<SimpleBorder> GetUnion(const std::vector<SimpleBorder>& shape1, const std::vector<SimpleBorder>& shape2)
 	{
@@ -48,27 +213,34 @@ namespace ShapeOperations
 		// find all intersections
 		for (size_t i = 0; i < shape1.size(); ++i)
 		{
-			const SimpleBorder& border = shape1[i];
+			SimpleBorder border = shape1[i];
 			// create items even for the borders without intersections
-			std::vector<BorderIntersection>& intersections1 = borderIntersections[i];
+			std::vector<BorderIntersection>& intersections = borderIntersections[i];
 			for (size_t j = 0; j < shape2.size(); ++j)
 			{
-				const SimpleBorder& otherBorder = shape2[j];
+				SimpleBorder otherBorder = shape2[j];
 				if (!Collide::AreLinesIntersect(border.a, border.b, otherBorder.a, otherBorder.b))
 				{
 					continue;
 				}
-				Vector2D intersectionPoint = Collide::GetPointIntersect2Lines(border.a, border.b, otherBorder.a, otherBorder.b);
 
-				intersectionPointsSet.insert(intersectionPoint);
-				intersectionPoints.push_back(intersectionPoint);
-				size_t pointIdx = intersectionPoints.size() - 1;
-				// we can calculate wether a border part inside the resulting figure or outside from calculating
-				// on which point of another border lies it point, we can do that by determining whether any three points
-				// are in clockwise or counterclockwise order
-				bool isClockwiseRotation = Collide::SignedArea(border.a, otherBorder.b, intersectionPoint) > 0;
-				intersections1.emplace_back(pointIdx, !isClockwiseRotation);
-				borderIntersections[shape1BordersCount + j].emplace_back(pointIdx, isClockwiseRotation);
+				if (Collide::AreLinesParallel(border.a, border.b, otherBorder.a, otherBorder.b))
+				{
+					AddOverlappingLinesIntersectionPoints(border, otherBorder, intersectionPointsSet, intersectionPoints, intersections, borderIntersections[shape1BordersCount + j]);
+				}
+				else
+				{
+					Vector2D intersectionPoint = Collide::GetPointIntersect2Lines(border.a, border.b, otherBorder.a, otherBorder.b);
+
+					// we can calculate whether a border part inside the resulting figure or outside from calculating
+					// on which point of another border lies it point, we can do that by determining whether any three points
+					// are in clockwise or counterclockwise order
+					bool isClockwiseRotation = FindBordersRotationAroundPoint(border, otherBorder, intersectionPoint);
+
+					size_t pointIdx = addIntersectionPoint(intersectionPoint, intersectionPointsSet, intersectionPoints);
+					intersections.emplace_back(pointIdx, !isClockwiseRotation, isClockwiseRotation);
+					borderIntersections[shape1BordersCount + j].emplace_back(pointIdx, isClockwiseRotation, !isClockwiseRotation);
+				}
 			}
 		}
 
@@ -93,27 +265,41 @@ namespace ShapeOperations
 				BorderPoint(border.b)
 			});
 			std::vector<float> borderPointFractions({0.0f, 1.0f});
-			for (auto [intersectionIdx, isPreviousOutside] : intersections)
+			for (auto [intersectionIdx, isPreviousOutside, isNextOutside] : intersections)
 			{
-				Vector2D intersectionPoint = intersectionPoints[intersectionIdx];
-				float intersectionFraction = Vector2D::InvLerp(border.a, border.b, intersectionPoint);
+				const Vector2D intersectionPoint = intersectionPoints[intersectionIdx];
+				const float intersectionFraction = Vector2D::InvLerp(border.a, border.b, intersectionPoint);
 				// ToDo: replace binary search with linear (it's likely to have a very small amount of intersections)
-				auto it = std::lower_bound(borderPointFractions.begin(), borderPointFractions.end(), intersectionFraction);
-				size_t newPosition = std::distance(borderPointFractions.begin(), it);
+				const auto it = std::lower_bound(borderPointFractions.begin(), borderPointFractions.end(), intersectionFraction);
+				const size_t newPosition = std::distance(borderPointFractions.begin(), it);
 				borderPointFractions.insert(it, intersectionFraction);
-				BorderPoint::Direction cutDirection = isPreviousOutside ? BorderPoint::Direction::Next : BorderPoint::Direction::Previous;
+				const BorderPoint::CutDirection cutDirection = GetCutDirection(isPreviousOutside, isNextOutside);
 				borderPoints.emplace(borderPoints.begin() + newPosition, intersectionPoint, cutDirection);
 			}
 
+			float previousFraction = 0.0f;
+			AssertFatal(!borderPoints.empty(), "borderPoints should always contain at least two elements");
+			BorderPoint::CutDirection previousCutDirection = borderPoints[0].cutDirection;
 			for (size_t i = 1; i < borderPoints.size(); ++i)
 			{
+				float thisFraction = borderPointFractions[i];
+				if (thisFraction == previousFraction) {
+					if (i > 1)
+					{
+						previousCutDirection = CalcBetterPreviousCutDirection(borderPoints[i-1].cutDirection, previousCutDirection);
+					}
+					continue;
+				}
 				fracturedBorders.emplace_back(borderPoints[i-1].pos, borderPoints[i].pos);
+				previousFraction = thisFraction;
 
-				if (borderPoints[i-1].cutDirection != BorderPoint::Direction::Next
-					&& borderPoints[i].cutDirection != BorderPoint::Direction::Previous)
+				if (previousCutDirection != BorderPoint::CutDirection::NextOutside
+					&& borderPoints[i].cutDirection != BorderPoint::CutDirection::PreviousOutside)
 				{
 					borderConnections[fracturedBorders.back().a].push_back(fracturedBorders.size() - 1);
 				}
+
+				previousCutDirection = borderPoints[i].cutDirection;
 			}
 		}
 
