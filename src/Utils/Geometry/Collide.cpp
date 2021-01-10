@@ -253,6 +253,24 @@ namespace Collide
 		);
 	}
 
+	bool AreLinesParallel(const Vector2D& A1, const Vector2D& A2, const Vector2D& B1, const Vector2D& B2)
+	{
+		Vector2D diffA = A2 - A1;
+		Vector2D diffB = B2 - B1;
+		if (diffA.y == 0 || diffB.y == 0)
+		{
+			if (diffA.x == 0 || diffB.x == 0)
+			{
+				return false;
+			}
+			return Math::AreEqualWithEpsilon(diffA.y/diffA.x, diffB.y/diffB.x);
+		}
+		else
+		{
+			return Math::AreEqualWithEpsilon(diffA.x/diffA.y, diffB.x/diffB.y);
+		}
+	}
+
 	bool IsLineIntersectAABB(const BoundingBox& box, const Vector2D& start, const Vector2D& finish)
 	{
 		// get Cohen's code for start point
