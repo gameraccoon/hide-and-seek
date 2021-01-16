@@ -186,3 +186,19 @@ TEST(ShapeOperations, OptimizeShape_TwoFiguresTouchingWithMirroredAngle)
 	ShapeOperations::OptimizeShape(testShape);
 	EXPECT_TRUE(AreShapesEqual(expectedShape, testShape));
 }
+
+TEST(ShapeOperations, OptimizeShape_BorderSplitTwice)
+{
+	std::vector<SimpleBorder> testShape{
+		{{-30.0f, 10.0f}, {-30.0f, -60.0f}},
+		{{30.0f, 10.0f}, {-30.0f, 10.0f}},
+		{{30.0f, -60.0f}, {30.0f, 10.0f}},
+		{{-10.0f, -60.0f}, {10.0f, -60.0f}},
+		{{-30.0f, -60.0f}, {-10.0f, -60.0f}},
+		{{10.0f, -60.0f}, {30.0f, -60.0f}}
+	};
+
+	std::vector<SimpleBorder> expectedShape = GenerateShape(std::vector<Vector2D>{{30.0f, -60.0f}, {30.0f, 10.0f}, {-30.0f, 10.0f}, {-30.0f, -60.0f}});
+	ShapeOperations::OptimizeShape(testShape);
+	EXPECT_TRUE(AreShapesEqual(expectedShape, testShape));
+}

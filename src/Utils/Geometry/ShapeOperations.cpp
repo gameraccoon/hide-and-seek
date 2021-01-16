@@ -393,16 +393,37 @@ namespace ShapeOperations
 						{
 							size_t iBorderIdx = borders[i].borderIndex;
 							size_t jBorderIdx = borders[j].borderIndex;
-							// replace border i with the merged border
+							Vector2D iBorderPoint = borders[i].secondBorderPoint;
+							Vector2D jBorderPoint = borders[j].secondBorderPoint;
+
 							{
+								Vector2D anotherIntersectionPoint;
+								// replace border i with the merged border in the final shape
 								SimpleBorder& finalBorder = inOutShape[iBorderIdx];
 								if (finalBorder.a == pos)
 								{
-									finalBorder.a = borders[j].secondBorderPoint;
+									finalBorder.a = jBorderPoint;
+									anotherIntersectionPoint = finalBorder.b;
 								}
 								else
 								{
-									finalBorder.b = borders[j].secondBorderPoint;
+									finalBorder.b = jBorderPoint;
+									anotherIntersectionPoint = finalBorder.a;
+								}
+
+								// link the final border instead of border i
+								auto pointsIt = points.find(anotherIntersectionPoint);
+								// ignore if the other border was already processed
+								if (pointsIt != points.end())
+								{
+									for (auto& borderInfo : pointsIt->second)
+									{
+										if (borderInfo.borderIndex == jBorderIdx)
+										{
+											borderInfo.secondBorderPoint = jBorderPoint;
+											break;
+										}
+									}
 								}
 							}
 
@@ -419,6 +440,7 @@ namespace ShapeOperations
 										if (borderInfo.borderIndex == jBorderIdx)
 										{
 											borderInfo.borderIndex = iBorderIdx;
+											borderInfo.secondBorderPoint = iBorderPoint;
 											break;
 										}
 									}
