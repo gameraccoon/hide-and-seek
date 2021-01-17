@@ -49,18 +49,20 @@ static std::vector<T> JoinVectors(std::vector<T>&& a, std::vector<T>&& b)
 	return std::move(a);
 }
 
-static void TestShapesUnionResultIsCorrect(const std::vector<Vector2D>& shape1, const std::vector<Vector2D>& shape2, const std::vector<SimpleBorder>& expectedResult)
+
+static bool TestShapesUnionResultIsCorrect(const std::vector<Vector2D>& shape1, const std::vector<Vector2D>& shape2, const std::vector<SimpleBorder>& expectedResult)
 {
 	{
 		std::vector<SimpleBorder> resultingShape = ShapeOperations::GetUnion(GenerateShape(shape1), GenerateShape(shape2));
 		ShapeOperations::OptimizeShape(resultingShape);
-		EXPECT_TRUE(AreShapesEqual(expectedResult, resultingShape));
+		if (!AreShapesEqual(expectedResult, resultingShape)) { return false; }
 	}
 	{
 		std::vector<SimpleBorder> resultingShape = ShapeOperations::GetUnion(GenerateShape(shape2), GenerateShape(shape1));
 		ShapeOperations::OptimizeShape(resultingShape);
-		EXPECT_TRUE(AreShapesEqual(expectedResult, resultingShape));
+		if (!AreShapesEqual(expectedResult, resultingShape)) { return false; }
 	}
+	return true;
 }
 
 TEST(ShapeOperations, Union_TwoTriangles)
@@ -84,103 +86,134 @@ TEST(ShapeOperations, Union_TwoTriangles)
 	}
 }
 
-TEST(ShapeOperations, Union_TwoAxisAlignedRects)
+/*bool Union_TwoAxisAlignedRects()
 {
 	std::vector<Vector2D> shape1{{10.0f, -60.0f}, {10.0f, 60.0f}, {-10.0f, 60.0f}, {-10.0f, -60.0f}};
 	std::vector<Vector2D> shape2{{60.0f, -10.0f}, {60.0f, 10.0f}, {-60.0f, 10.0f}, {-60.0f, -10.0f}};
 	std::vector<Vector2D> expectedResult{{10.0f, -60.0f}, {10.0f, -10.0f}, {60.0f, -10.0f}, {60.0f, 10.0f}, {10.0f, 10.0f}, {10.0f, 60.0f}, {-10.0f, 60.0f}, {-10.0f, 10.0f}, {-60.0f, 10.0f}, {-60.0f, -10.0f}, {-10.0f, -10.0f}, {-10.0f, -60.0f}};
 
-	TestShapesUnionResultIsCorrect(shape1, shape2, GenerateShape(expectedResult));
-}
+	return TestShapesUnionResultIsCorrect(shape1, shape2, GenerateShape(expectedResult));
+}*/
 
-TEST(ShapeOperations, Union_TwoRectsWithOneSameBorder)
+bool Union_TwoRectsWithOneSameBorder()
 {
 	std::vector<Vector2D> shape1{{10.0f, -60.0f}, {10.0f, -10.0f}, {-10.0f, -10.0f}, {-10.0f, -60.0f}};
 	std::vector<Vector2D> shape2{{10.0f, -10.0f}, {10.0f, 110.0f}, {-10.0f, 110.0f}, {-10.0f, -10.0f}};
 	std::vector<Vector2D> expectedResult{{10.0f, -60.0f}, {10.0f, 110.0f}, {-10.0f, 110.0f}, {-10.0f, -60.0f}};
 
-	TestShapesUnionResultIsCorrect(shape1, shape2, GenerateShape(expectedResult));
+	return TestShapesUnionResultIsCorrect(shape1, shape2, GenerateShape(expectedResult));
 }
 
-TEST(ShapeOperations, Union_TwoRectsWithOneOverlappingBorder)
+bool Union_TwoRectsWithOneOverlappingBorder()
 {
 	std::vector<Vector2D> shape1{{10.0f, -60.0f}, {10.0f, -10.0f}, {-10.0f, -10.0f}, {-10.0f, -60.0f}};
 	std::vector<Vector2D> shape2{{30.0f, -10.0f}, {30.0f, 110.0f}, {-30.0f, 110.0f}, {-30.0f, -10.0f}};
 	std::vector<Vector2D> expectedResult{{30.0f, -10.0f}, {30.0f, 110.0f}, {-30.0f, 110.0f}, {-30.0f, -10.0f}, {-10.0f, -10.0f}, {-10.0f, -60.0f}, {10.0f, -60.0f}, {10.0f, -10.0f}};
 
-	TestShapesUnionResultIsCorrect(shape1, shape2, GenerateShape(expectedResult));
+	return TestShapesUnionResultIsCorrect(shape1, shape2, GenerateShape(expectedResult));
 }
 
-TEST(ShapeOperations, Union_TwoRectsWithOneOverlappingBorderOneDirection)
+bool Union_TwoRectsWithOneOverlappingBorderOneDirection()
 {
 	std::vector<Vector2D> shape1{{10.0f, -60.0f}, {10.0f, 20.0f}, {-10.0f, 20.0f}, {-10.0f, -60.0f}};
 	std::vector<Vector2D> shape2{{30.0f, -60.0f}, {30.0f, 10.0f}, {-30.0f, 10.0f}, {-30.0f, -60.0f}};
 	std::vector<Vector2D> expectedResult{{30.0f, -60.0f}, {30.0f, 10.0f}, {10.0f, 10.0f}, {10.0f, 20.0f}, {-10.0f, 20.0f}, {-10.0f, 10.0f}, {-30.0f, 10.0f}, {-30.0f, -60.0f}};
 
-	TestShapesUnionResultIsCorrect(shape1, shape2, GenerateShape(expectedResult));
+	return TestShapesUnionResultIsCorrect(shape1, shape2, GenerateShape(expectedResult));
 }
 
-TEST(ShapeOperations, Union_TwoRectsWithOneOverlappingBorderOneDirectionFullyInside)
+bool Union_TwoRectsWithOneOverlappingBorderOneDirectionFullyInside()
 {
 	std::vector<Vector2D> shape1{{10.0f, -60.0f}, {10.0f, -10.0f}, {-10.0f, -10.0f}, {-10.0f, -60.0f}};
 	std::vector<Vector2D> shape2{{30.0f, -60.0f}, {30.0f, 10.0f}, {-30.0f, 10.0f}, {-30.0f, -60.0f}};
 	std::vector<Vector2D> expectedResult{{30.0f, -60.0f}, {30.0f, 10.0f}, {-30.0f, 10.0f}, {-30.0f, -60.0f}};
 
-	TestShapesUnionResultIsCorrect(shape1, shape2, GenerateShape(expectedResult));
+	return TestShapesUnionResultIsCorrect(shape1, shape2, GenerateShape(expectedResult));
 }
 
-TEST(ShapeOperations, Union_TwoRectsWithTwoOverlappingBorders)
+bool Union_TwoRectsWithTwoOverlappingBorders()
 {
 	std::vector<Vector2D> shape1{{10.0f, -60.0f}, {10.0f, 60.0f}, {-10.0f, 60.0f}, {-10.0f, -60.0f}};
 	std::vector<Vector2D> shape2{{10.0f, -10.0f}, {10.0f, 110.0f}, {-10.0f, 110.0f}, {-10.0f, -10.0f}};
 	std::vector<Vector2D> expectedResult{{10.0f, -60.0f}, {10.0f, 110.0f}, {-10.0f, 110.0f}, {-10.0f, -60.0f}};
 
-	TestShapesUnionResultIsCorrect(shape1, shape2, GenerateShape(expectedResult));
+	return TestShapesUnionResultIsCorrect(shape1, shape2, GenerateShape(expectedResult));
 }
 
-TEST(ShapeOperations, Union_TwoRectsIntersectionOnCorner)
+/*bool Union_TwoRectsIntersectionOnCorner()
 {
 	std::vector<Vector2D> shape1{{10.0f, -60.0f}, {10.0f, 60.0f}, {-10.0f, 60.0f}, {-10.0f, -60.0f}};
 	std::vector<Vector2D> shape2{{-30.0f, 10.0f}, {10.0f, -30.0f}, {20.0f, -20.0f}, {-20.0f, 20.0f}};
 	std::vector<Vector2D> expectedResult{{10.0f, -60.0f}, {10.0f, -30.0f}, {20.0f, -20.0f}, {10.0f, -10.0f}, {10.0f, 60.0f}, {-10.0f, 60.0f}, {-10.0f, 10.0f}, {-20.0f, 20.0f}, {-30.0f, 10.0f}, {-10.0f, -10.0f}, {-10.0f, -60.0f}};
+	return TestShapesUnionResultIsCorrect(shape1, shape2, GenerateShape(expectedResult));
+}*/
 
-	TestShapesUnionResultIsCorrect(shape1, shape2, GenerateShape(expectedResult));
-}
-
-TEST(ShapeOperations, Union_TwoRectsTouchingCornerAndBorder)
+bool Union_TwoRectsTouchingCornerAndBorder()
 {
 	std::vector<Vector2D> shape1{{10.0f, -60.0f}, {10.0f, 60.0f}, {-10.0f, 60.0f}, {-10.0f, -60.0f}};
 	std::vector<Vector2D> shape2{{10.0f, 10.0f}, {50.0f, -30.0f}, {60.0f, -20.0f}, {20.0f, 20.0f}};
 	std::vector<SimpleBorder> expectedShape = JoinVectors(GenerateShape(shape1), GenerateShape(shape2));
 
-	TestShapesUnionResultIsCorrect(shape1, shape2, expectedShape);
+	return TestShapesUnionResultIsCorrect(shape1, shape2, expectedShape);
 }
 
-TEST(ShapeOperations, Union_NonConvexShape)
-{
-	std::vector<Vector2D> shape1{{-20.0f, 20.0f}, {-20.0f, -20.0f}, {20.0f, -20.0f}, {20.0f, 20.0f}, {10.0f, 20.0f}, {10.0f, 0.0f}, {-10.0f, 0.0f}, {-10.0f, 20.0f}};
-	std::vector<Vector2D> shape2{{-30.0f, 5.0f}, {-30.0f, -5.0f}, {30.0f, -5.0f}, {30.0f, 5.0f}};
-	std::vector<Vector2D> expectedResult{{-20.0f, 20.0f}, {-20.0f, 5.0f}, {-30.0f, 5.0f}, {-30.0f, -5.0f}, {-20.0f, -5.0f}, {-20.0f, -20.0f}, {20.0f, -20.0f}, {20.0f, -5.0f}, {30.0f, -5.0f}, {30.0f, 5.0f}, {20.0f, 5.0f}, {20.0f, 20.0f}, {10.0f, 20.0f}, {10.0f, 5.0f}, {-10.0f, 5.0f}, {-10.0f, 20.0f}};
 
-	TestShapesUnionResultIsCorrect(shape1, shape2, GenerateShape(expectedResult));
-}
-
-TEST(ShapeOperations, Union_NonConvexShapeOneOverlappingBorder)
+bool Union_NonConvexShapeOneOverlappingBorder()
 {
 	std::vector<Vector2D> shape1{{-20.0f, 20.0f}, {-20.0f, -20.0f}, {20.0f, -20.0f}, {20.0f, 20.0f}, {10.0f, 20.0f}, {10.0f, 0.0f}, {-10.0f, 0.0f}, {-10.0f, 20.0f}};
 	std::vector<Vector2D> shape2{{-30.0f, 10.0f}, {-30.0f, 0.0f}, {30.0f, 0.0f}, {30.0f, 10.0f}};
 	std::vector<Vector2D> expectedResult{{-20.0f, 20.0f}, {-20.0f, 10.0f}, {-30.0f, 10.0f}, {-30.0f, 0.0f}, {-20.0f, 0.0f}, {-20.0f, -20.0f}, {20.0f, -20.0f}, {20.0f, 0.0f}, {30.0f, 0.0f}, {30.0f, 10.0f}, {20.0f, 10.0f}, {20.0f, 20.0f}, {10.0f, 20.0f}, {10.0f, 10.0f}, {-10.0f, 10.0f}, {-10.0f, 20.0f}};
 
-	TestShapesUnionResultIsCorrect(shape1, shape2, GenerateShape(expectedResult));
+	return TestShapesUnionResultIsCorrect(shape1, shape2, GenerateShape(expectedResult));
 }
 
-TEST(ShapeOperations, Union_NonConvexShapeOneOverlappingBorderOneDirection)
+bool Union_NonConvexShapeOneOverlappingBorderOneDirection()
 {
 	std::vector<Vector2D> shape1{{-20.0f, 20.0f}, {-20.0f, -20.0f}, {20.0f, -20.0f}, {20.0f, 20.0f}, {10.0f, 20.0f}, {10.0f, 0.0f}, {-10.0f, 0.0f}, {-10.0f, 20.0f}};
 	std::vector<Vector2D> shape2{{-30.0f, 0.0f}, {-30.0f, -10.0f}, {30.0f, -10.0f}, {30.0f, 0.0f}};
 	std::vector<Vector2D> expectedResult{{-20.0f, 20.0f}, {-20.0f, 0.0f}, {-30.0f, 0.0f}, {-30.0f, -10.0f}, {-20.0f, -10.0f}, {-20.0f, -20.0f}, {20.0f, -20.0f}, {20.0f, -10.0f}, {30.0f, -10.0f}, {30.0f, 0.0f}, {20.0f, 0.0f}, {20.0f, 20.0f}, {10.0f, 20.0f}, {10.0f, 0.0f}, {-10.0f, 0.0f}, {-10.0f, 20.0f}};
 
-	TestShapesUnionResultIsCorrect(shape1, shape2, GenerateShape(expectedResult));
+	return TestShapesUnionResultIsCorrect(shape1, shape2, GenerateShape(expectedResult));
+}
+
+void Union_TestAll()
+{
+	using boolFnPtr = bool(*)();
+	std::vector<boolFnPtr> testFns;
+	testFns.push_back(&Union_TwoRectsWithOneSameBorder);
+	testFns.push_back(&Union_TwoRectsWithOneOverlappingBorder);
+	testFns.push_back(&Union_TwoRectsWithOneOverlappingBorderOneDirection);
+	testFns.push_back(&Union_TwoRectsWithOneOverlappingBorderOneDirectionFullyInside);
+	testFns.push_back(&Union_TwoRectsWithTwoOverlappingBorders);
+	testFns.push_back(&Union_TwoRectsTouchingCornerAndBorder);
+	testFns.push_back(&Union_NonConvexShapeOneOverlappingBorder);
+	testFns.push_back(&Union_NonConvexShapeOneOverlappingBorderOneDirection);
+
+	for (uint32_t i = 100000u; i != 0; ++i)
+	{
+		std::array<bool, 32> flags;
+		for (size_t j = 0; j < 32; ++j)
+		{
+			flags[j] = (i >> j) & 0x1;
+		}
+		ShapeOperations::setFlags(flags);
+
+		for (auto fn : testFns)
+		{
+			bool res = fn();
+			if (!res)
+			{
+				goto bad_label;
+			}
+		}
+		ShapeOperations::printFlags();
+
+		bad_label:
+		if (i % 100000 == 0) {
+			LogInfo("log %u %f%%", i, (static_cast<float>(i) / static_cast<float>(std::numeric_limits<uint32_t>::max()) * 100.0f ));
+		}
+		continue;
+	}
 }
 
 TEST(ShapeOperations, OptimizeShape_OneExtraPoint)

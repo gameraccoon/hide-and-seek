@@ -81,16 +81,20 @@ void TestInfoLogger::OnTestEnd(const TestInfo& /*test_info*/)
 	EnableFailOnAssert();
 }
 
-int main(int argc, char* argv[])
+extern void Union_TestAll();
+
+int main(int /*argc*/, char** /*argv[]*/)
 {
-	InitGoogleTest(&argc, argv);
+	/*InitGoogleTest(&argc, argv);
 
 	AddGlobalTestEnvironment(new SGTestingEnvironment());
 
 	TestEventListeners& listeners = UnitTest::GetInstance()->listeners();
 	listeners.Append(new TestInfoLogger());
 
-	int ret_val = RUN_ALL_TESTS();
+	int ret_val = RUN_ALL_TESTS();*/
 
-	return ret_val;
+	Union_TestAll();
+
+	return 0;
 }

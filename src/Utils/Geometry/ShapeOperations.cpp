@@ -4,6 +4,7 @@
 
 #include <unordered_map>
 #include <unordered_set>
+#include <sstream>
 
 #include "Base/Math/Float.h"
 
@@ -11,6 +12,32 @@
 
 namespace ShapeOperations
 {
+	static std::array<bool, 32> gFlags;
+
+	void setFlags(const std::array<bool, 32>& flags)
+	{
+		gFlags = flags;
+	}
+
+	static bool getFlag(int intersectionCase, bool isA, bool isFirstOutside, bool areSameDirection)
+	{
+		int directionShift = areSameDirection ? 0 : 16;
+		int caseShift = intersectionCase * 4;
+		int aShift = isA ? 0 : 2;
+		int firstOutsideShift = isFirstOutside ? 0 : 1;
+		return gFlags[directionShift + caseShift + aShift + firstOutsideShift];
+	}
+
+	void printFlags()
+	{
+		std::stringstream ss;
+		for (int i = 0; i < 32; ++i)
+		{
+			ss << static_cast<int>(gFlags[i]);
+		}
+		LogInfo(ss.str());
+	}
+
 	struct BorderPoint
 	{
 		enum class CutDirection
@@ -150,29 +177,32 @@ namespace ShapeOperations
 			if (IsInside(transformedB.a.x, transformedA.a.x, transformedA.b.x))
 			{
 				size_t pointIdx = addIntersectionPoint(borderB.a, intersectionPointsSet, intersectionPoints);
-				borderAIntersections.emplace_back(pointIdx, bHasSameDirection, false);
-				borderBIntersections.emplace_back(pointIdx, !bHasSameDirection, true);
+
+				borderAIntersections.emplace_back(pointIdx, getFlag(0, true, true, bHasSameDirection), getFlag(0, true, false, bHasSameDirection));
+				borderBIntersections.emplace_back(pointIdx, getFlag(0, false, true, bHasSameDirection), getFlag(0, false, false, bHasSameDirection));
 			}
 
 			if (IsInside(transformedB.b.x, transformedA.a.x, transformedA.b.x))
 			{
 				size_t pointIdx = addIntersectionPoint(borderB.b, intersectionPointsSet, intersectionPoints);
-				borderAIntersections.emplace_back(pointIdx, false, bHasSameDirection);
-				borderBIntersections.emplace_back(pointIdx, true, false);
+
+				borderAIntersections.emplace_back(pointIdx, getFlag(0, true, true, bHasSameDirection), getFlag(1, true, false, bHasSameDirection));
+				borderBIntersections.emplace_back(pointIdx, getFlag(0, false, true, bHasSameDirection), getFlag(1, false, false, bHasSameDirection));
 			}
 
 			if (IsInside(transformedA.a.x, transformedB.a.x, transformedB.b.x))
 			{
 				size_t pointIdx = addIntersectionPoint(borderA.a, intersectionPointsSet, intersectionPoints);
-				borderAIntersections.emplace_back(pointIdx, false, true);
-				borderBIntersections.emplace_back(pointIdx, bHasSameDirection, false);
+
+				borderAIntersections.emplace_back(pointIdx, getFlag(0, true, true, bHasSameDirection), getFlag(2, true, false, bHasSameDirection));
+				borderBIntersections.emplace_back(pointIdx, getFlag(0, false, true, bHasSameDirection), getFlag(2, false, false, bHasSameDirection));
 			}
 
 			if (IsInside(transformedA.b.x, transformedB.a.x, transformedB.b.x))
 			{
 				size_t pointIdx = addIntersectionPoint(borderA.b, intersectionPointsSet, intersectionPoints);
-				borderAIntersections.emplace_back(pointIdx, true, !bHasSameDirection);
-				borderBIntersections.emplace_back(pointIdx, false, bHasSameDirection);
+				borderAIntersections.emplace_back(pointIdx, getFlag(0, true, true, bHasSameDirection), getFlag(3, true, false, bHasSameDirection));
+				borderBIntersections.emplace_back(pointIdx, getFlag(0, false, true, bHasSameDirection), getFlag(3, false, false, bHasSameDirection));
 			}
 		}
 	}
