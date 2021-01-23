@@ -28,7 +28,7 @@
 
 MainWindow::MainWindow(QWidget* parent)
 	: QMainWindow(parent)
-	, ui(new Ui::mainwindow)
+	, ui(HS_NEW Ui::mainwindow)
 {
 	ui->setupUi(this);
 

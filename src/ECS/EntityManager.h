@@ -59,7 +59,7 @@ public:
 			return nullptr;
 		}
 
-		ComponentType* component = new ComponentType();
+		ComponentType* component = HS_NEW ComponentType();
 
 		addComponentToEntity(entityIdxItr->second, component, ComponentType::GetTypeName());
 
@@ -79,7 +79,7 @@ public:
 	template<typename ComponentType>
 	ComponentType* scheduleAddComponent(Entity entity)
 	{
-		ComponentType* component = new ComponentType();
+		ComponentType* component = HS_NEW ComponentType();
 		scheduleAddComponentToEntity(entity, component, ComponentType::GetTypeName());
 		return component;
 	}

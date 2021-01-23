@@ -19,7 +19,7 @@ public:
 	void registerComponent()
 	{
 		mComponentCreators[T::GetTypeName()] = []{
-			return new T();
+			return HS_NEW T();
 		};
 	}
 

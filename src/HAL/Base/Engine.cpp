@@ -56,7 +56,7 @@ namespace HAL
 	Engine::Engine(int windowWidth, int windowHeight)
 		: WindowWidth(windowWidth)
 		, WindowHeight(windowHeight)
-		, mPimpl(new Impl(windowWidth, windowHeight))
+		, mPimpl(HS_NEW Impl(windowWidth, windowHeight))
 	{
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);

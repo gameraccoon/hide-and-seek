@@ -50,8 +50,8 @@ void ComponentsListToolbox::show()
 		}
 	}
 
-	QWidget* containerWidget = new QWidget();
-	ads::CDockWidget* dockWidget = new ads::CDockWidget(QString("Components List"));
+	QWidget* containerWidget = HS_NEW QWidget();
+	ads::CDockWidget* dockWidget = HS_NEW ads::CDockWidget(QString("Components List"));
 	dockWidget->setObjectName(ToolboxName);
 	dockWidget->setWidget(containerWidget);
 	dockWidget->setToggleViewActionMode(ads::CDockWidget::ActionModeShow);
@@ -61,14 +61,14 @@ void ComponentsListToolbox::show()
 
 	containerWidget->setObjectName(ContainerName);
 
-	QVBoxLayout* layout = new QVBoxLayout();
+	QVBoxLayout* layout = HS_NEW QVBoxLayout();
 	containerWidget->setLayout(layout);
-	QListWidget* componentList = new QListWidget();
+	QListWidget* componentList = HS_NEW QListWidget();
 	layout->addWidget(componentList);
 	componentList->setObjectName(ListName);
 	componentList->setContextMenuPolicy(Qt::CustomContextMenu);
 
-	mAddComponentButton = new QPushButton();
+	mAddComponentButton = HS_NEW QPushButton();
 	mAddComponentButton->setText("Add Component");
 	QObject::connect(mAddComponentButton, &QPushButton::pressed, this, &ComponentsListToolbox::addComponentCommand);
 	mAddComponentButton->setEnabled(false);
@@ -170,7 +170,7 @@ void ComponentsListToolbox::removeSelectedComponent()
 
 void ComponentsListToolbox::addComponentCommand()
 {
-	QInputDialog* dialog = new QInputDialog();
+	QInputDialog* dialog = HS_NEW QInputDialog();
 	dialog->setLabelText("Select Component Type:");
 	dialog->setCancelButtonText("Cancel");
 	dialog->setComboBoxEditable(false);

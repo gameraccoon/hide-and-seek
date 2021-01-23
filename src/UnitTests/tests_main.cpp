@@ -85,10 +85,10 @@ int main(int argc, char* argv[])
 {
 	InitGoogleTest(&argc, argv);
 
-	AddGlobalTestEnvironment(new SGTestingEnvironment());
+	AddGlobalTestEnvironment(HS_NEW SGTestingEnvironment());
 
 	TestEventListeners& listeners = UnitTest::GetInstance()->listeners();
-	listeners.Append(new TestInfoLogger());
+	listeners.Append(HS_NEW TestInfoLogger());
 
 	int ret_val = RUN_ALL_TESTS();
 

@@ -43,8 +43,8 @@ void ComponentAttributesToolbox::show()
 		}
 	}
 
-	QWidget* containerWidget = new QWidget();
-	ads::CDockWidget* dockWidget = new ads::CDockWidget(QString("Component Attributes"));
+	QWidget* containerWidget = HS_NEW QWidget();
+	ads::CDockWidget* dockWidget = HS_NEW ads::CDockWidget(QString("Component Attributes"));
 	dockWidget->setObjectName(ToolboxName);
 	dockWidget->setWidget(containerWidget);
 	dockWidget->setToggleViewActionMode(ads::CDockWidget::ActionModeShow);
@@ -54,7 +54,7 @@ void ComponentAttributesToolbox::show()
 
 	containerWidget->setObjectName(ContainerName);
 
-	QVBoxLayout* layout = new QVBoxLayout();
+	QVBoxLayout* layout = HS_NEW QVBoxLayout();
 	containerWidget->setLayout(layout);
 }
 

@@ -34,7 +34,7 @@ public:
 	template<typename T>
 	T* addComponent()
 	{
-		T* component = new T();
+		T* component = HS_NEW T();
 		addComponent(component, T::GetTypeName());
 		return component;
 	}

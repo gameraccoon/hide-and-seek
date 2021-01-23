@@ -50,8 +50,8 @@ void PrefabListToolbox::show()
 		}
 	}
 
-	QWidget* containerWidget = new QWidget();
-	ads::CDockWidget* dockWidget = new ads::CDockWidget(QString("Prefabs Library"));
+	QWidget* containerWidget = HS_NEW QWidget();
+	ads::CDockWidget* dockWidget = HS_NEW ads::CDockWidget(QString("Prefabs Library"));
 	dockWidget->setObjectName(ToolboxName);
 	dockWidget->setWidget(containerWidget);
 	dockWidget->setToggleViewActionMode(ads::CDockWidget::ActionModeShow);
@@ -60,9 +60,9 @@ void PrefabListToolbox::show()
 
 	containerWidget->setObjectName(ContainerName);
 
-	QVBoxLayout* layout = new QVBoxLayout();
+	QVBoxLayout* layout = HS_NEW QVBoxLayout();
 	containerWidget->setLayout(layout);
-	QListWidget* entityList = new QListWidget();
+	QListWidget* entityList = HS_NEW QListWidget();
 	layout->addWidget(entityList);
 	entityList->setObjectName(ListName);
 	entityList->setContextMenuPolicy(Qt::CustomContextMenu);

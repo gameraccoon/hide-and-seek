@@ -277,7 +277,7 @@ void RenderSystem::drawLights(SpatialEntityManager& managerGroup, std::vector<Wo
 		{
 			if (chunkItemIndex == 0)
 			{
-				jobs.emplace_back(new VisibilityPolygonCalculationJob(maxFov, lightBlockingComponents, timestampNow, finalizeFn));
+				jobs.emplace_back(HS_NEW VisibilityPolygonCalculationJob(maxFov, lightBlockingComponents, timestampNow, finalizeFn));
 			}
 
 			VisibilityPolygonCalculationJob* jobData = static_cast<VisibilityPolygonCalculationJob*>(jobs.rbegin()->get());

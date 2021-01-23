@@ -59,8 +59,8 @@ void TransformEditorToolbox::show()
 		}
 	}
 
-	mContent = new TransformEditorWidget(mMainWindow);
-	ads::CDockWidget* dockWidget = new ads::CDockWidget(QString("Transform Editor"));
+	mContent = HS_NEW TransformEditorWidget(mMainWindow);
+	ads::CDockWidget* dockWidget = HS_NEW ads::CDockWidget(QString("Transform Editor"));
 	dockWidget->setObjectName(ToolboxName);
 	dockWidget->setWidget(mContent);
 	dockWidget->setToggleViewActionMode(ads::CDockWidget::ActionModeShow);
@@ -70,18 +70,18 @@ void TransformEditorToolbox::show()
 	dockWidget->setContextMenuPolicy(Qt::CustomContextMenu);
 	QObject::connect(dockWidget, &QListWidget::customContextMenuRequested, this, &TransformEditorToolbox::showContextMenu);
 
-	QHBoxLayout* layout = new QHBoxLayout();
+	QHBoxLayout* layout = HS_NEW QHBoxLayout();
 	layout->addStretch();
 	layout->setAlignment(Qt::AlignmentFlag::AlignBottom | Qt::AlignmentFlag::AlignRight);
 	mContent->setLayout(layout);
 
-	QCheckBox* freeMoveCheckbox = new QCheckBox();
+	QCheckBox* freeMoveCheckbox = HS_NEW QCheckBox();
 	freeMoveCheckbox->setText("Free Move");
 	freeMoveCheckbox->setChecked(mContent->mFreeMove);
 	QObject::connect(freeMoveCheckbox, &QCheckBox::stateChanged, this, &TransformEditorToolbox::onFreeMoveChanged);
 	layout->addWidget(freeMoveCheckbox);
 
-	QSlider* scaleSlider = new QSlider();
+	QSlider* scaleSlider = HS_NEW QSlider();
 	scaleSlider->setRange(10, 1000);
 	scaleSlider->setValue(100);
 	scaleSlider->setOrientation(Qt::Orientation::Horizontal);
