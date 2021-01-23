@@ -205,7 +205,7 @@ namespace LightBlockingGeometry
 		}
 
 		// collect intersections inside cells
-		for ([[maybe_unused]] auto& [pos, oneCellGeometry] : cellGeometry)
+		for (auto& [pos, oneCellGeometry] : cellGeometry)
 		{
 			BoundingBox cellAABB = SpatialWorldData::GetCellAABB(pos);
 			MergeGeometry(outGeometry[pos], oneCellGeometry, cellAABB);

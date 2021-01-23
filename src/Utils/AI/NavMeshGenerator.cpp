@@ -22,10 +22,12 @@ namespace NavMeshGenerator
 		return IntVector2D(static_cast<int>(std::round(point.x)), static_cast<int>(std::round(point.y)));
 	}
 
-	[[maybe_unused]] static Vector2D VecFromTPPLPoint(TPPLPoint point)
+#ifdef DEBUG_CHECKS
+	static Vector2D VecFromTPPLPoint(TPPLPoint point)
 	{
 		return Vector2D(point.x, point.y);
 	}
+#endif // DEBUG_CHECKS
 
 	void GenerateNavMeshGeometry(NavMesh::Geometry& outGeometry, const TupleVector<CollisionComponent*, TransformComponent*>& collidableComponents, Vector2D start, Vector2D size)
 	{
