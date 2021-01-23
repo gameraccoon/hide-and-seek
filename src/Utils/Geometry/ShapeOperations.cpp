@@ -11,18 +11,38 @@
 
 namespace ShapeOperations
 {
+	enum class SidePosition : short
+	{
+		Outside,
+		Inside,
+		OutsideOverride,
+		InsideOverride,
+		Unknown
+	};
+
+	struct CutDirection
+	{
+		CutDirection(size_t intersectedBorderIdx, SidePosition firstSidePosition, SidePosition secondSidePosition)
+			: intersectedBorderIdx(intersectedBorderIdx)
+			, firstSidePosition(firstSidePosition)
+			, secondSidePosition(secondSidePosition)
+		{}
+
+		size_t intersectedBorderIdx;
+		SidePosition firstSidePosition;
+		SidePosition secondSidePosition;
+	};
+
 	struct BorderPoint
 	{
-		enum class CutDirection
-		{
-			PreviousOutside,
-			NextOutside,
-			None
-		};
-
-		explicit BorderPoint(Vector2D pos, CutDirection direction = CutDirection::None)
+		explicit BorderPoint(Vector2D pos)
 			: pos(pos)
-			, cutDirection(direction)
+			, cutDirection(0, SidePosition::Unknown, SidePosition::Unknown)
+		{}
+
+		explicit BorderPoint(Vector2D pos, CutDirection cutDirection)
+			: pos(pos)
+			, cutDirection(cutDirection)
 		{}
 
 		Vector2D pos;
@@ -31,15 +51,13 @@ namespace ShapeOperations
 
 	struct BorderIntersection
 	{
-		BorderIntersection(size_t intersectionPoint, bool isFirstOutside, bool isSecondOutside)
+		BorderIntersection(size_t intersectionPoint, CutDirection cutDirection)
 			: intersectionPoint(intersectionPoint)
-			, isFirstOutside(isFirstOutside)
-			, isSecondOutside(isSecondOutside)
+			, cutDirection(cutDirection)
 		{}
 
 		size_t intersectionPoint;
-		bool isFirstOutside;
-		bool isSecondOutside;
+		CutDirection cutDirection;
 	};
 
 	size_t addIntersectionPoint(Vector2D intersectionPoint, std::unordered_set<Vector2D>& intersectionPointsSet, std::vector<Vector2D>& intersectionPoints)
@@ -124,7 +142,15 @@ namespace ShapeOperations
 		return std::min(a, b) < value && value <= std::max(a, b);
 	}
 
-	static void AddOverlappingLinesIntersectionPoints(const SimpleBorder& borderA, const SimpleBorder& borderB, std::unordered_set<Vector2D>& intersectionPointsSet, std::vector<Vector2D>& intersectionPoints, std::vector<BorderIntersection>& borderAIntersections, std::vector<BorderIntersection>& borderBIntersections)
+	static void AddOverlappingLinesIntersectionPoints(
+			const size_t borderAIdx,
+			const size_t borderBIdx,
+			const SimpleBorder& borderA,
+			const SimpleBorder& borderB,
+			std::unordered_set<Vector2D>& intersectionPointsSet,
+			std::vector<Vector2D>& intersectionPoints,
+			std::vector<BorderIntersection>& borderAIntersections,
+			std::vector<BorderIntersection>& borderBIntersections)
 	{
 		// project borderB into coordigante system based on a borderA
 		Vector2D basisX = (borderA.b - borderA.a).unit();
@@ -150,58 +176,158 @@ namespace ShapeOperations
 			if (IsInside(transformedB.a.x, transformedA.a.x, transformedA.b.x))
 			{
 				size_t pointIdx = addIntersectionPoint(borderB.a, intersectionPointsSet, intersectionPoints);
-				borderAIntersections.emplace_back(pointIdx, bHasSameDirection, false);
-				borderBIntersections.emplace_back(pointIdx, !bHasSameDirection, true);
+
+				borderAIntersections.emplace_back(
+					pointIdx,
+					CutDirection(
+						borderBIdx,
+						bHasSameDirection ? SidePosition::Unknown : SidePosition::InsideOverride,
+						bHasSameDirection ? SidePosition::OutsideOverride : SidePosition::Unknown
+					)
+				);
+
+				borderBIntersections.emplace_back(
+					pointIdx,
+					CutDirection(
+						borderAIdx,
+						SidePosition::Unknown,
+						SidePosition::InsideOverride
+					)
+				);
 			}
 
 			if (IsInside(transformedB.b.x, transformedA.a.x, transformedA.b.x))
 			{
 				size_t pointIdx = addIntersectionPoint(borderB.b, intersectionPointsSet, intersectionPoints);
-				borderAIntersections.emplace_back(pointIdx, false, bHasSameDirection);
-				borderBIntersections.emplace_back(pointIdx, true, false);
+
+				borderAIntersections.emplace_back(
+					pointIdx,
+					CutDirection(
+						borderBIdx,
+						bHasSameDirection ? SidePosition::OutsideOverride : SidePosition::Unknown,
+						bHasSameDirection ? SidePosition::Unknown : SidePosition::InsideOverride
+					)
+				);
+
+				borderBIntersections.emplace_back(
+					pointIdx,
+					CutDirection(
+						borderAIdx,
+						SidePosition::InsideOverride,
+						SidePosition::Unknown
+					)
+				);
 			}
 
 			if (IsInside(transformedA.a.x, transformedB.a.x, transformedB.b.x))
 			{
 				size_t pointIdx = addIntersectionPoint(borderA.a, intersectionPointsSet, intersectionPoints);
-				borderAIntersections.emplace_back(pointIdx, false, true);
-				borderBIntersections.emplace_back(pointIdx, bHasSameDirection, false);
+
+				borderAIntersections.emplace_back(
+					pointIdx,
+					CutDirection(
+						borderBIdx,
+						SidePosition::Unknown,
+						bHasSameDirection ? SidePosition::OutsideOverride : SidePosition::InsideOverride
+					)
+				);
+
+				borderBIntersections.emplace_back(
+					pointIdx,
+					CutDirection(
+						borderAIdx,
+						bHasSameDirection ? SidePosition::Unknown : SidePosition::InsideOverride,
+						bHasSameDirection ? SidePosition::InsideOverride : SidePosition::Unknown
+					)
+				);
 			}
 
 			if (IsInside(transformedA.b.x, transformedB.a.x, transformedB.b.x))
 			{
 				size_t pointIdx = addIntersectionPoint(borderA.b, intersectionPointsSet, intersectionPoints);
-				borderAIntersections.emplace_back(pointIdx, true, !bHasSameDirection);
-				borderBIntersections.emplace_back(pointIdx, false, bHasSameDirection);
+
+				borderAIntersections.emplace_back(
+					pointIdx,
+					CutDirection(
+						borderBIdx,
+						bHasSameDirection ? SidePosition::OutsideOverride : SidePosition::InsideOverride,
+						SidePosition::Unknown
+					)
+				);
+
+				borderBIntersections.emplace_back(
+					pointIdx,
+					CutDirection(
+						borderAIdx,
+						bHasSameDirection ? SidePosition::InsideOverride : SidePosition::Unknown,
+						bHasSameDirection ? SidePosition::Unknown : SidePosition::InsideOverride
+					)
+				);
 			}
 		}
 	}
 
-	static BorderPoint::CutDirection GetCutDirection(bool isPreviousOutside, bool isNextOutside)
+	static SidePosition GetBetterSidePosition(bool resolveToNew, SidePosition oldPosition, SidePosition newPosition)
 	{
-		if (isPreviousOutside && isNextOutside) return BorderPoint::CutDirection::None;
-		if (!isPreviousOutside && !isNextOutside) return BorderPoint::CutDirection::None;
-		return isPreviousOutside ? BorderPoint::CutDirection::PreviousOutside : BorderPoint::CutDirection::NextOutside;
+		if (newPosition == SidePosition::Unknown)
+		{
+			return oldPosition;
+		}
+
+//		Assert(newPosition != SidePosition::Inside || oldPosition != SidePosition::Outside, "Conflicting side positions, this should not happen");
+//		Assert(newPosition != SidePosition::Outside || oldPosition != SidePosition::Inside, "Conflicting side positions, this should not happen");
+
+		if (newPosition == SidePosition::Inside && oldPosition == SidePosition::Outside)
+		{
+			return resolveToNew ? newPosition : oldPosition;
+		}
+
+		if (newPosition == SidePosition::Outside && oldPosition == SidePosition::Inside)
+		{
+			return resolveToNew ? newPosition : oldPosition;
+		}
+
+		Assert(newPosition != SidePosition::InsideOverride || oldPosition != SidePosition::OutsideOverride, "Conflicting side positions, this should not happen");
+		Assert(newPosition != SidePosition::OutsideOverride || oldPosition != SidePosition::InsideOverride, "Conflicting side positions, this should not happen");
+
+		if (oldPosition == SidePosition::InsideOverride || oldPosition == SidePosition::OutsideOverride)
+		{
+			return oldPosition;
+		}
+
+		return newPosition;
 	}
 
-	static BorderPoint::CutDirection CalcBetterPreviousCutDirection(BorderPoint::CutDirection cached, BorderPoint::CutDirection real)
+	static bool IsFirstIndexGreaterByOne(size_t idx1, size_t idx2)
 	{
-		if (real == BorderPoint::CutDirection::None)
-		{
-			return cached;
-		}
+		return (idx1 - idx2 == 1u) || ((idx2 - idx1 != 1u) || idx1 == 0);
+	}
 
-		if (real == BorderPoint::CutDirection::NextOutside && cached == BorderPoint::CutDirection::PreviousOutside)
-		{
-			return BorderPoint::CutDirection::None;
-		}
+	static CutDirection CalcBetterCutDirection(CutDirection oldDirection, CutDirection newDirection)
+	{
+		return CutDirection(
+			newDirection.intersectedBorderIdx,
+			GetBetterSidePosition(
+				!IsFirstIndexGreaterByOne(newDirection.intersectedBorderIdx, oldDirection.intersectedBorderIdx),
+				oldDirection.firstSidePosition,
+				newDirection.firstSidePosition
+			),
+			GetBetterSidePosition(
+				IsFirstIndexGreaterByOne(newDirection.intersectedBorderIdx, oldDirection.intersectedBorderIdx),
+				oldDirection.secondSidePosition,
+				newDirection.secondSidePosition
+			)
+		);
+	}
 
-		if (real == BorderPoint::CutDirection::PreviousOutside && cached == BorderPoint::CutDirection::NextOutside)
-		{
-			return BorderPoint::CutDirection::None;
-		}
+	static SidePosition GetSidePostionForNormalCut(bool isOutside)
+	{
+		return isOutside ? SidePosition::Outside : SidePosition::Inside;
+	}
 
-		return real;
+	static bool IsSideOutside(SidePosition sidePos)
+	{
+		return sidePos == SidePosition::Outside || sidePos == SidePosition::OutsideOverride;
 	}
 
 	std::vector<SimpleBorder> GetUnion(const std::vector<SimpleBorder>& shape1, const std::vector<SimpleBorder>& shape2)
@@ -227,7 +353,16 @@ namespace ShapeOperations
 
 				if (Collide::AreLinesParallel(border.a, border.b, otherBorder.a, otherBorder.b))
 				{
-					AddOverlappingLinesIntersectionPoints(border, otherBorder, intersectionPointsSet, intersectionPoints, intersections, borderIntersections[shape1BordersCount + j]);
+					AddOverlappingLinesIntersectionPoints(
+						i,
+						shape1BordersCount + j,
+						border,
+						otherBorder,
+						intersectionPointsSet,
+						intersectionPoints,
+						intersections,
+						borderIntersections[shape1BordersCount + j]
+					);
 				}
 				else
 				{
@@ -239,8 +374,23 @@ namespace ShapeOperations
 					bool isClockwiseRotation = FindBordersRotationAroundPoint(border, otherBorder, intersectionPoint);
 
 					size_t pointIdx = addIntersectionPoint(intersectionPoint, intersectionPointsSet, intersectionPoints);
-					intersections.emplace_back(pointIdx, isClockwiseRotation, !isClockwiseRotation);
-					borderIntersections[shape1BordersCount + j].emplace_back(pointIdx, !isClockwiseRotation, isClockwiseRotation);
+					intersections.emplace_back(
+						pointIdx,
+						CutDirection(
+							shape1BordersCount + j,
+							GetSidePostionForNormalCut(isClockwiseRotation),
+							GetSidePostionForNormalCut(!isClockwiseRotation)
+						)
+					);
+
+					borderIntersections[shape1BordersCount + j].emplace_back(
+						pointIdx,
+						CutDirection(
+							i,
+							GetSidePostionForNormalCut(!isClockwiseRotation),
+							GetSidePostionForNormalCut(isClockwiseRotation)
+						)
+					);
 				}
 			}
 		}
@@ -266,42 +416,39 @@ namespace ShapeOperations
 				BorderPoint(border.b)
 			});
 			std::vector<float> borderPointFractions({0.0f, 1.0f});
-			for (auto [intersectionIdx, isPreviousOutside, isNextOutside] : intersections)
+			for (auto [intersectionIdx, cutDirection] : intersections)
 			{
 				const Vector2D intersectionPoint = intersectionPoints[intersectionIdx];
 				const float intersectionFraction = Vector2D::InvLerp(border.a, border.b, intersectionPoint);
 				// ToDo: replace binary search with linear (it's likely to have a very small amount of intersections)
 				const auto it = std::lower_bound(borderPointFractions.begin(), borderPointFractions.end(), intersectionFraction);
 				const size_t newPosition = std::distance(borderPointFractions.begin(), it);
-				borderPointFractions.insert(it, intersectionFraction);
-				const BorderPoint::CutDirection cutDirection = GetCutDirection(isPreviousOutside, isNextOutside);
-				borderPoints.emplace(borderPoints.begin() + newPosition, intersectionPoint, cutDirection);
+
+				if (newPosition >= 1 && borderPointFractions[newPosition - 1] == intersectionFraction)
+				{
+					borderPoints[newPosition - 1].cutDirection = CalcBetterCutDirection(borderPoints[newPosition - 1].cutDirection, cutDirection);
+				}
+				else if (newPosition < borderPointFractions.size() && borderPointFractions[newPosition] == intersectionFraction)
+				{
+					borderPoints[newPosition].cutDirection = CalcBetterCutDirection(borderPoints[newPosition].cutDirection, cutDirection);
+				}
+				else
+				{
+					borderPointFractions.insert(it, intersectionFraction);
+					borderPoints.emplace(borderPoints.begin() + newPosition, intersectionPoint, cutDirection);
+				}
 			}
 
-			float previousFraction = 0.0f;
 			AssertFatal(!borderPoints.empty(), "borderPoints should always contain at least two elements");
-			BorderPoint::CutDirection previousCutDirection = borderPoints[0].cutDirection;
 			for (size_t i = 1; i < borderPoints.size(); ++i)
 			{
-				float thisFraction = borderPointFractions[i];
-				if (thisFraction == previousFraction)
-				{
-					if (i > 1)
-					{
-						previousCutDirection = CalcBetterPreviousCutDirection(previousCutDirection, borderPoints[i].cutDirection);
-					}
-					continue;
-				}
-				fracturedBorders.emplace_back(borderPoints[i-1].pos, borderPoints[i].pos);
-				previousFraction = thisFraction;
+				fracturedBorders.emplace_back(borderPoints[i - 1].pos, borderPoints[i].pos);
 
-				if (previousCutDirection != BorderPoint::CutDirection::NextOutside
-					&& borderPoints[i].cutDirection != BorderPoint::CutDirection::PreviousOutside)
+				if (!IsSideOutside(borderPoints[i - 1].cutDirection.secondSidePosition)
+					&& !IsSideOutside(borderPoints[i].cutDirection.firstSidePosition))
 				{
 					borderConnections[fracturedBorders.back().a].push_back(fracturedBorders.size() - 1);
 				}
-
-				previousCutDirection = borderPoints[i].cutDirection;
 			}
 		}
 
