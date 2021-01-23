@@ -19,70 +19,51 @@ public:
 	~LeakDetectorClass();
 
 	void AddAllocated(void* p, size_t size, const char* file, int line) noexcept;
-	void AddDeallocated(void* p, const char* file, int line) noexcept;
+	void RemoveAllocated(void* p) noexcept;
 
 private:
 	// single-linked list node
-    struct AllocatedPtr
-    {
-        AllocatedPtr(void* pointer, size_t size, const char* file, int line, AllocatedPtr* next)
+	struct AllocatedPtr
+	{
+		AllocatedPtr(void* pointer, size_t size, const char* file, int line, AllocatedPtr* next)
 			: pointer(pointer), next(next), size(size), file(file), line(line) {}
 
-        void* pointer;
-		AllocatedPtr* next;
-        size_t size;
-        const char* file;
-        int line;
-    };
-
-	enum class IssueType
-	{
-		Leak,
-		DoubleDeallocation,
-		DeallocationNotAllocated
-	};
-
-	// double-linked list node
-	struct MemoryIssue
-	{
-		MemoryIssue(void* pointer, IssueType type, size_t size, const char* file, int line, const char* file2, int line2)
-			: pointer(pointer), type(type), size(size), file(file), line(line), file2(file2), line2(line2) {}
-
-		MemoryIssue* next = nullptr;
 		void* pointer;
-		IssueType type;
+		AllocatedPtr* next;
 		size_t size;
 		const char* file;
 		int line;
-		const char* file2;
-		int line2;
 	};
 
-	void freeAllocatedItem(AllocatedPtr* item);
-	void clearFreedPointer(void* p);
+	// linked list node
+	struct MemoryLeak
+	{
+		MemoryLeak(void* pointer, size_t size, const char* file, int line)
+			: pointer(pointer), size(size), file(file), line(line) {}
 
-	void exploreNotAllocatedPtr(void* p, const char* file, int line);
+		MemoryLeak* next = nullptr;
+		void* pointer;
+		size_t size;
+		const char* file;
+		int line;
+	};
 
-	void addIssue(void* pointer, IssueType type, size_t size, const char* file, int line, const char* file2 = nullptr, int line2 = 0);
-	void printIssues() noexcept;
+	void addLeakInfo(void* pointer, size_t size, const char* file, int line);
+	void printLeaks() noexcept;
 
 	void freeAllocatedList();
-	void freeFreedList();
-	void freeIssuesList(MemoryIssue* listBegin);
+	static void freeLeaksList(MemoryLeak* listBegin);
 
 	AllocatedPtr* allocatedList = nullptr;
-	AllocatedPtr* freedList = nullptr;
 
-	MemoryIssue* memoryIssuesFirst = nullptr;
-	MemoryIssue* memoryIssuesLast = nullptr;
+	MemoryLeak* memoryLeaksFirst = nullptr;
+	MemoryLeak* memoryLeaksLast = nullptr;
 
 	std::recursive_mutex mutex;
 };
 
 void* operator new(size_t size, const char* file, int line);
 void* operator new[](size_t size, const char* file, int line);
-void operator delete(void* ptr, const char* file, int line) noexcept;
-void operator delete[](void* ptr, const char* file, int line) noexcept;
 
 void* operator new(size_t size);
 void* operator new[](size_t size);
@@ -93,12 +74,15 @@ void operator delete(void* p, size_t /*size*/) noexcept;
 void operator delete[](void* p) noexcept;
 void operator delete[](void* p, size_t /*size*/) noexcept;
 
-#define DEBUG_NEW new(__FILE__, __LINE__)
+#define HS_NEW new(__FILE__, __LINE__)
 
 #ifdef REDEFINE_NEW
-#define new DEBUG_NEW
+#define new HS_NEW
 #endif
 
-#define DEBUG_DELETE(p) operator delete(p, __FILE__, __LINE__)
+#else
+
+// use it instead of 'new' to ease memory leak detection (HS stands for Hide&Seak)
+#define HS_NEW new
 
 #endif // DETECT_MEMORY_LEAKS
