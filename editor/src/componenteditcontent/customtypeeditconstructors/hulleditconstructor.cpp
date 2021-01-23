@@ -50,6 +50,7 @@ namespace TypesEditConstructor
 			{
 				Hull hull = edit->getPreviousValue();
 				hull.points = newValue;
+				hull.generateBorders();
 				edit->transmitValueChange(hull, needLayoutUpdate);
 			}
 		});
