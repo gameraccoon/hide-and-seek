@@ -56,13 +56,28 @@ public:
 	template<typename... Components>
 	std::tuple<Components*...> getComponents()
 	{
-		return std::make_tuple(static_cast<Components*>(mComponents[Components::GetTypeName()])...);
+		return std::make_tuple(getSingleComponent<Components>()...);
 	}
 
 	nlohmann::json toJson(const ComponentSerializersHolder& componentSerializers) const;
 	void fromJson(const nlohmann::json& json, const ComponentSerializersHolder& componentSerializers);
 
 	[[nodiscard]] bool hasAnyComponents() const;
+
+private:
+	template<typename Component>
+	Component* getSingleComponent()
+	{
+		auto it = mComponents.find(Component::GetTypeName());
+		if (it != mComponents.end())
+		{
+			return static_cast<Component*>(it->second);
+		}
+		else
+		{
+			return nullptr;
+		}
+	}
 
 private:
 	std::unordered_map<StringID, BaseComponent*> mComponents;
