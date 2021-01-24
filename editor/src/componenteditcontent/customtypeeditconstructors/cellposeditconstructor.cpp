@@ -15,7 +15,7 @@ namespace TypesEditConstructor
 	{
 		FillLabel(layout, label);
 
-		QHBoxLayout *innerLayout = new QHBoxLayout;
+		QHBoxLayout *innerLayout = HS_NEW QHBoxLayout;
 
 		Edit<CellPos>::Ptr edit = std::make_shared<Edit<CellPos>>(initialValue);
 		Edit<CellPos>::WeakPtr editWeakPtr = edit;
@@ -41,7 +41,7 @@ namespace TypesEditConstructor
 		edit->addChild(editY);
 
 		innerLayout->addStretch();
-		QWidget* container = new QWidget();
+		QWidget* container = HS_NEW QWidget();
 		container->setLayout(innerLayout);
 		layout->addWidget(container);
 		return edit;

@@ -63,7 +63,7 @@ namespace TypesEditConstructor
 	private:
 		T mPrevValue;
 		OnChangeFn mOnChange;
-		QObject* mOwner = new QObject();
+		QObject* mOwner = HS_NEW QObject();
 		std::vector<BaseEdit::Ptr> mChildObjects;
 	};
 }

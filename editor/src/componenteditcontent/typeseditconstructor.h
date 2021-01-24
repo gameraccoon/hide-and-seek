@@ -66,7 +66,7 @@ namespace TypesEditConstructor
 		{
 			FillLabel(layout, label);
 
-			QComboBox* stringList = new QComboBox();
+			QComboBox* stringList = HS_NEW QComboBox();
 			for (StringID value : get_all_enum_value_names<T>())
 			{
 				stringList->addItem(QString::fromStdString(ID_TO_STR(value)));
@@ -119,7 +119,7 @@ namespace TypesEditConstructor
 				});
 				edit->addChild(editItem);
 
-				QPushButton* removeButton = new QPushButton();
+				QPushButton* removeButton = HS_NEW QPushButton();
 				removeButton->setText("x");
 				Edit<bool>::Ptr removeItem = std::make_shared<Edit<bool>>(false);
 				QObject::connect(removeButton, &QPushButton::pressed, edit->getOwner(), [editWeakPtr, index]()
@@ -136,7 +136,7 @@ namespace TypesEditConstructor
 				index++;
 			}
 
-			QPushButton* addButton = new QPushButton();
+			QPushButton* addButton = HS_NEW QPushButton();
 			addButton->setText("add item");
 			Edit<bool>::Ptr addItem = std::make_shared<Edit<bool>>(false);
 			QObject::connect(addButton, &QPushButton::pressed, edit->getOwner(), [editWeakPtr]()
@@ -201,7 +201,7 @@ namespace TypesEditConstructor
 				});
 				edit->addChild(editValue);
 
-				QPushButton* removeButton = new QPushButton();
+				QPushButton* removeButton = HS_NEW QPushButton();
 				removeButton->setText("x");
 				Edit<bool>::Ptr removeItem = std::make_shared<Edit<bool>>(false);
 				QObject::connect(removeButton, &QPushButton::pressed, edit->getOwner(), [editWeakPtr, key = pair.first]()

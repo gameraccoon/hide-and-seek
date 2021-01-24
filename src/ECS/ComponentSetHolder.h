@@ -45,7 +45,7 @@ public:
 		auto it = mComponents.find(T::GetTypeName());
 		if (it == mComponents.end())
 		{
-			it = mComponents.emplace(T::GetTypeName(), new T()).first;
+			it = mComponents.emplace(T::GetTypeName(), HS_NEW T()).first;
 		}
 		return static_cast<T*>(it->second);
 	}

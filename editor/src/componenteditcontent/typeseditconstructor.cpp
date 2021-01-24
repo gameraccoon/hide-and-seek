@@ -14,7 +14,7 @@ namespace TypesEditConstructor
 {
 	void FillLabel(QLayout* layout, const QString& label)
 	{
-		QLabel* editLabel = new QLabel();
+		QLabel* editLabel = HS_NEW QLabel();
 		editLabel->setText(label + ":");
 		layout->addWidget(editLabel);
 	}
@@ -24,9 +24,9 @@ namespace TypesEditConstructor
 	{
 		FillLabel(layout, label);
 
-		QLineEdit* floatEdit = new QLineEdit();
+		QLineEdit* floatEdit = HS_NEW QLineEdit();
 
-		auto dv = new QDoubleValidator(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), 10);
+		auto dv = HS_NEW QDoubleValidator(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), 10);
 		dv->setNotation(QDoubleValidator::StandardNotation);
 		floatEdit->setValidator(dv);
 
@@ -57,9 +57,9 @@ namespace TypesEditConstructor
 	{
 		FillLabel(layout, label);
 
-		QLineEdit* intEdit = new QLineEdit();
+		QLineEdit* intEdit = HS_NEW QLineEdit();
 
-		auto iv = new QIntValidator(std::numeric_limits<int>::lowest(), std::numeric_limits<int>::max());
+		auto iv = HS_NEW QIntValidator(std::numeric_limits<int>::lowest(), std::numeric_limits<int>::max());
 		intEdit->setValidator(iv);
 
 		intEdit->setText(QString::number(initialValue));
@@ -89,7 +89,7 @@ namespace TypesEditConstructor
 	{
 		FillLabel(layout, label);
 
-		QLineEdit* intEdit = new QLineEdit();
+		QLineEdit* intEdit = HS_NEW QLineEdit();
 
 		intEdit->setText(QString::number(initialValue));
 
@@ -118,7 +118,7 @@ namespace TypesEditConstructor
 	{
 		FillLabel(layout, label);
 
-		QLineEdit* longEdit = new QLineEdit();
+		QLineEdit* longEdit = HS_NEW QLineEdit();
 
 		longEdit->setText(QString::number(initialValue));
 
@@ -147,7 +147,7 @@ namespace TypesEditConstructor
 	{
 		FillLabel(layout, label);
 
-		QCheckBox* checkbox = new QCheckBox();
+		QCheckBox* checkbox = HS_NEW QCheckBox();
 		checkbox->setChecked(initialValue);
 
 		Edit<bool>::Ptr edit = std::make_shared<Edit<bool>>(initialValue);
@@ -170,7 +170,7 @@ namespace TypesEditConstructor
 	{
 		FillLabel(layout, label);
 
-		QLineEdit* stringEdit = new QLineEdit();
+		QLineEdit* stringEdit = HS_NEW QLineEdit();
 		stringEdit->setText(QString::fromStdString(initialValue));
 
 		Edit<std::string>::Ptr edit = std::make_shared<Edit<std::string>>(initialValue);
@@ -193,7 +193,7 @@ namespace TypesEditConstructor
 	{
 		FillLabel(layout, label);
 
-		QLineEdit* stringEdit = new QLineEdit();
+		QLineEdit* stringEdit = HS_NEW QLineEdit();
 		stringEdit->setText(QString::fromStdString(initialValue));
 
 		Edit<ResourcePath>::Ptr edit = std::make_shared<Edit<ResourcePath>>(initialValue.c_str());

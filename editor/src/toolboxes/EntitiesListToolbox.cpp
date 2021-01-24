@@ -121,7 +121,7 @@ void EntitiesListToolbox::updateContent()
 	{
 		for (auto& entity : entities)
 		{
-			QListWidgetItem* newItem = new QListWidgetItem(QString::number(entity.first));
+			QListWidgetItem* newItem = HS_NEW QListWidgetItem(QString::number(entity.first));
 			newItem->setData(0, entity.first);
 			newItem->setData(1, false);
 			entitiesList->addItem(newItem);
@@ -204,7 +204,7 @@ void EntitiesListToolbox::removeSelectedEntity()
 
 void EntitiesListToolbox::createPrefabRequested()
 {
-	QInputDialog* dialog = new QInputDialog();
+	QInputDialog* dialog = HS_NEW QInputDialog();
 	dialog->setLabelText("Choose a name for the prefab:");
 	dialog->setCancelButtonText("Cancel");
 	connect(dialog, &QInputDialog::textValueSelected, this, &EntitiesListToolbox::createPrefab);

@@ -20,8 +20,8 @@ void ComponentContentFactory::replaceEditContent(QLayout* layout, const Componen
 	if (it != mFactories.end())
 	{
 		mCurrentEdit = it->second->getEditData();
-		newContent = new QWidget();
-		QVBoxLayout* innerLayout = new QVBoxLayout();
+		newContent = HS_NEW QWidget();
+		QVBoxLayout* innerLayout = HS_NEW QVBoxLayout();
 		mCurrentEdit->fillContent(innerLayout, sourceReference, component, commandStack, world);
 		innerLayout->addStretch();
 		newContent->setLayout(innerLayout);
