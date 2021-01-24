@@ -5,6 +5,8 @@
 #include <unordered_map>
 #include <unordered_set>
 
+#include <cstring>
+
 #include "Base/Math/Float.h"
 
 #include "Utils/Geometry/Collide.h"
@@ -492,6 +494,16 @@ namespace ShapeOperations
 		{
 			fracturedBorders.erase(fracturedBorders.begin() + index);
 		}
+
+		// remove any duplicated borders
+		// ToDo: probably need to correct the logic above to normally elliminate such borders
+		// instead of doing this NlogN overcomplicated and not always correct (-0) stuff to fight a super-rare case
+		static_assert(sizeof(SimpleBorder) == sizeof(float)*4, "SimpleBorder should have size of 4 floats");
+		std::sort(fracturedBorders.begin(), fracturedBorders.end(), [](const SimpleBorder left, const SimpleBorder right) {
+			return std::memcmp(&left, &right, 1);
+		});
+		auto last = std::unique(fracturedBorders.begin(), fracturedBorders.end());
+		fracturedBorders.erase(last, fracturedBorders.end());
 
 		return fracturedBorders;
 	}
