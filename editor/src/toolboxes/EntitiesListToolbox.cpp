@@ -56,8 +56,8 @@ void EntitiesListToolbox::show()
 	dockWidget->setWidget(containerWidget);
 	dockWidget->setToggleViewActionMode(ads::CDockWidget::ActionModeShow);
 	dockWidget->setIcon(mMainWindow->style()->standardIcon(QStyle::SP_DialogOpenButton));
-	dockWidget->setFeature(ads::CDockWidget::DockWidgetClosable, false);
-	dockWidget->setFeature(ads::CDockWidget::DockWidgetMovable, false);
+	dockWidget->setFeature(ads::CDockWidget::DockWidgetClosable, true);
+	dockWidget->setFeature(ads::CDockWidget::DockWidgetMovable, true);
 	mDockManager->addDockWidget(ads::RightDockWidgetArea, dockWidget);
 
 	containerWidget->setObjectName(ContainerName);

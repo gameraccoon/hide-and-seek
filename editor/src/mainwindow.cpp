@@ -71,19 +71,18 @@ void MainWindow::initCommandStack()
 void MainWindow::initToolboxes()
 {
 	mDockManager = std::make_unique<ads::CDockManager>(this);
-	mEntitiesListToolbox = std::make_unique<EntitiesListToolbox>(this, mDockManager.get());
-	mComponentAttributesToolbox = std::make_unique<ComponentAttributesToolbox>(this, mDockManager.get());
-	mComponentsListToolbox = std::make_unique<ComponentsListToolbox>(this, mDockManager.get());
-	mPrefabListToolbox = std::make_unique<PrefabListToolbox>(this, mDockManager.get());
 	mTransformEditorToolbox = std::make_unique<TransformEditorToolbox>(this, mDockManager.get());
+	mComponentsListToolbox = std::make_unique<ComponentsListToolbox>(this, mDockManager.get());
+	mComponentAttributesToolbox = std::make_unique<ComponentAttributesToolbox>(this, mDockManager.get());
+	mEntitiesListToolbox = std::make_unique<EntitiesListToolbox>(this, mDockManager.get());
+	mPrefabListToolbox = std::make_unique<PrefabListToolbox>(this, mDockManager.get());
 }
 
 void MainWindow::fillWindowContent()
 {
-	mEntitiesListToolbox->show();
+	mTransformEditorToolbox->show();
 	mComponentsListToolbox->show();
 	mComponentAttributesToolbox->show();
-	mTransformEditorToolbox->show();
 }
 
 void MainWindow::createWorld()
