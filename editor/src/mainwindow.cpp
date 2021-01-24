@@ -91,6 +91,8 @@ void MainWindow::createWorld()
 	mCurrentWorld = std::make_unique<World>();
 	mCommandStack.clear();
 	ui->actionRun_Game->setEnabled(true);
+	ui->actionSave_World->setEnabled(true);
+	ui->actionSave_World_As->setEnabled(true);
 }
 
 void MainWindow::updateUndoRedo()
@@ -173,7 +175,6 @@ void MainWindow::on_actionNew_World_triggered()
 {
 	createWorld();
 	mOpenedWorldPath.clear();
-	ui->actionSave_World->setEnabled(false);
 	ui->actionCreate->setEnabled(true);
 	ui->actionCreate_Spatial->setEnabled(true);
 
@@ -193,7 +194,6 @@ void MainWindow::on_actionOpen_World_triggered()
 	createWorld();
 	GameDataLoader::LoadWorld(*mCurrentWorld.get(), fileName, mComponentSerializationHolder);
 	mOpenedWorldPath = fileName;
-	ui->actionSave_World->setEnabled(true);
 	ui->actionCreate->setEnabled(true);
 	ui->actionCreate_Spatial->setEnabled(true);
 
@@ -212,7 +212,6 @@ void MainWindow::on_actionSave_World_As_triggered()
 
 	Utils::SaveWorld(*mCurrentWorld.get(), fileName, mComponentSerializationHolder);
 	mOpenedWorldPath = fileName;
-	ui->actionSave_World->setEnabled(true);
 }
 
 void MainWindow::on_actionSave_World_triggered()
@@ -222,6 +221,11 @@ void MainWindow::on_actionSave_World_triggered()
 		return;
 	}
 
+	if (mOpenedWorldPath.empty())
+	{
+		on_actionSave_World_As_triggered();
+		return;
+	}
 
 	Utils::SaveWorld(*mCurrentWorld.get(), mOpenedWorldPath, mComponentSerializationHolder);
 }
