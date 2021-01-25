@@ -9,14 +9,14 @@
 #include "DockWidget.h"
 #include "DockAreaWidget.h"
 
-#include <QPainter>
-#include <QMouseEvent>
-#include <QHBoxLayout>
-#include <QCheckBox>
-#include <QSlider>
-#include <QApplication>
 #include <QAction>
+#include <QApplication>
+#include <QCheckBox>
+#include <QHBoxLayout>
 #include <QMenu>
+#include <QMouseEvent>
+#include <QPainter>
+#include <QSlider>
 
 #include "GameData/Components/TransformComponent.generated.h"
 #include "GameData/Components/CollisionComponent.generated.h"
@@ -27,6 +27,44 @@ const QString TransformEditorToolbox::ToolboxName = TransformEditorToolbox::Widg
 static bool IsCtrlPressed()
 {
 	return (QApplication::keyboardModifiers() & Qt::ControlModifier) != 0;
+}
+
+static Vector2D GetEntityPosition(SpatialEntity entity, World* world)
+{
+	if (world == nullptr)
+	{
+		return ZERO_VECTOR;
+	}
+
+	WorldCell* cell = world->getSpatialData().getCell(entity.cell);
+
+	if (cell == nullptr)
+	{
+		return ZERO_VECTOR;
+	}
+
+	auto [transform] = cell->getEntityManager().getEntityComponents<TransformComponent>(entity.entity.getEntity());
+
+	if (transform)
+	{
+		return transform->getLocation();
+	}
+	else
+	{
+		return ZERO_VECTOR;
+	}
+}
+
+static Vector2D GetEntityGroupPosition(const std::vector<SpatialEntity>& entities, World* world)
+{
+	Vector2D result;
+	size_t entitiesProcessed = 0;
+	for (const SpatialEntity& entity : entities)
+	{
+		result = result * static_cast<float>(entitiesProcessed) / static_cast<float>(entitiesProcessed + 1) + GetEntityPosition(entity, world) / static_cast<float>(entitiesProcessed + 1);
+		++entitiesProcessed;
+	}
+	return result;
 }
 
 TransformEditorToolbox::TransformEditorToolbox(MainWindow* mainWindow, ads::CDockManager* dockManager)
@@ -75,6 +113,17 @@ void TransformEditorToolbox::show()
 	layout->setAlignment(Qt::AlignmentFlag::AlignBottom | Qt::AlignmentFlag::AlignRight);
 	mContent->setLayout(layout);
 
+	auto dv = HS_NEW QDoubleValidator(std::numeric_limits<float>::lowest(), std::numeric_limits<float>::max(), 10);
+	dv->setNotation(QDoubleValidator::StandardNotation);
+
+	mContent->mCoordinateXEdit = HS_NEW QLineEdit();
+	mContent->mCoordinateXEdit->setValidator(dv);
+	layout->addWidget(mContent->mCoordinateXEdit);
+
+	mContent->mCoordinateYEdit = HS_NEW QLineEdit();
+	mContent->mCoordinateYEdit->setValidator(dv);
+	layout->addWidget(mContent->mCoordinateYEdit);
+
 	QCheckBox* freeMoveCheckbox = HS_NEW QCheckBox();
 	freeMoveCheckbox->setText("Free Move");
 	freeMoveCheckbox->setChecked(mContent->mFreeMove);
@@ -119,6 +168,7 @@ void TransformEditorToolbox::updateContent(EditorCommand::EffectBitset effects, 
 	if (effects.hasAnyOf(EditorCommand::EffectType::ComponentAttributes, EditorCommand::EffectType::Entities))
 	{
 		mContent->repaint();
+		mContent->updateSelectedEntitiesPosition();
 	}
 }
 
@@ -145,6 +195,7 @@ void TransformEditorToolbox::onEntitySelected(const std::optional<EntityReferenc
 			mContent->mSelectedEntities.push_back(spatialEntity);
 		}
 	}
+	mContent->updateSelectedEntitiesPosition();
 	mContent->repaint();
 }
 
@@ -299,6 +350,7 @@ void TransformEditorWidget::mousePressEvent(QMouseEvent* event)
 			mSelectedEntities.clear();
 			mSelectedEntities.push_back(entityUnderCursor);
 			mIsCatchedSelectedEntity = true;
+			setGroupCenter(GetEntityPosition(entityUnderCursor, mWorld));
 		}
 	}
 	else
@@ -333,16 +385,23 @@ void TransformEditorWidget::mouseMoveEvent(QMouseEvent* event)
 
 void TransformEditorWidget::mouseReleaseEvent(QMouseEvent* event)
 {
+	bool needRepaint = true;
 	if (mIsMoved)
 	{
 		if (mIsCatchedSelectedEntity && !mSelectedEntities.empty())
 		{
-			OnEntitiesMoved.callSafe(mSelectedEntities, mMoveShift);
+			Vector2D cachedMoveShift = mMoveShift;
+			// need to reset the value before calling OnEntitiesMoved to correctly update visuals
 			mMoveShift = ZERO_VECTOR;
+			OnEntitiesMoved.callSafe(mSelectedEntities, cachedMoveShift);
+			setGroupCenter(mSelectedGroupCenter + cachedMoveShift);
+			// we've just triggered a repaint, no need to do it again
+			needRepaint = false;
 		}
 		else if (mIsRectangleSelection)
 		{
 			addEntitiesInRectToSelection(deprojectAbsolute(mPressMousePos), deprojectAbsolute(QVector2D(event->pos())));
+			setGroupCenter(GetEntityGroupPosition(mSelectedEntities, mWorld));
 		}
 	}
 	else
@@ -351,7 +410,10 @@ void TransformEditorWidget::mouseReleaseEvent(QMouseEvent* event)
 	}
 
 	mIsRectangleSelection = false;
-	repaint();
+	if (needRepaint)
+	{
+		repaint();
+	}
 }
 
 void TransformEditorWidget::paintEvent(QPaintEvent*)
@@ -498,6 +560,7 @@ void TransformEditorWidget::onClick(const QPoint& pos)
 			mMainWindow->OnSelectedEntityChanged.broadcast(EntityReference(findResult));
 		}
 	}
+	updateSelectedEntitiesPosition();
 }
 
 std::vector<WorldCell*> TransformEditorWidget::getCellsOnScreen()
@@ -533,6 +596,50 @@ SpatialEntity TransformEditorWidget::getEntityUnderPoint(const QPoint& pos)
 	}
 
 	return findResult;
+}
+
+void TransformEditorWidget::onCoordinateXChanged(const QString& newValueStr)
+{
+	World* world = mMainWindow->getCurrentWorld();
+	if (world == nullptr)
+	{
+		return;
+	}
+
+	bool conversionSuccessful = false;
+	float newValue = newValueStr.toFloat(&conversionSuccessful);
+
+	if (!conversionSuccessful)
+	{
+		return;
+	}
+
+	const Vector2D shift(newValue - mSelectedGroupCenter.x, 0.0f);
+
+	mMainWindow->getCommandStack().executeNewCommand<ChangeEntityGroupLocationCommand>(world, mSelectedEntities, shift);
+	mSelectedGroupCenter.x = newValue;
+}
+
+void TransformEditorWidget::onCoordinateYChanged(const QString& newValueStr)
+{
+	World* world = mMainWindow->getCurrentWorld();
+	if (world == nullptr)
+	{
+		return;
+	}
+
+	bool conversionSuccessful = false;
+	float newValue = newValueStr.toFloat(&conversionSuccessful);
+
+	if (!conversionSuccessful)
+	{
+		return;
+	}
+
+	const Vector2D shift(0.0f, newValue - mSelectedGroupCenter.y);
+
+	mMainWindow->getCommandStack().executeNewCommand<ChangeEntityGroupLocationCommand>(world, mSelectedEntities, shift);
+	mSelectedGroupCenter.y = newValue;
 }
 
 void TransformEditorWidget::addEntitiesInRectToSelection(const Vector2D& start, const Vector2D& end)
@@ -583,6 +690,41 @@ void TransformEditorWidget::addEntitiesInRectToSelection(const Vector2D& start, 
 				}
 			});
 		}
+	}
+}
+
+void TransformEditorWidget::setGroupCenter(Vector2D newCenter)
+{
+	mSelectedGroupCenter = newCenter;
+
+	QObject::disconnect(mCoordinateXEdit, &QLineEdit::textChanged, this, &TransformEditorWidget::onCoordinateXChanged);
+	QObject::disconnect(mCoordinateYEdit, &QLineEdit::textChanged, this, &TransformEditorWidget::onCoordinateYChanged);
+
+	mCoordinateXEdit->setText(QString::asprintf("%.2f", newCenter.x));
+	mCoordinateYEdit->setText(QString::asprintf("%.2f", newCenter.y));
+
+	QObject::connect(mCoordinateXEdit, &QLineEdit::textChanged, this, &TransformEditorWidget::onCoordinateXChanged);
+	QObject::connect(mCoordinateYEdit, &QLineEdit::textChanged, this, &TransformEditorWidget::onCoordinateYChanged);
+}
+
+void TransformEditorWidget::clearGroupCenter()
+{
+	QObject::disconnect(mCoordinateXEdit, &QLineEdit::textChanged, this, &TransformEditorWidget::onCoordinateXChanged);
+	QObject::disconnect(mCoordinateYEdit, &QLineEdit::textChanged, this, &TransformEditorWidget::onCoordinateYChanged);
+
+	mCoordinateXEdit->setText("");
+	mCoordinateYEdit->setText("");
+}
+
+void TransformEditorWidget::updateSelectedEntitiesPosition()
+{
+	if (!mSelectedEntities.empty())
+	{
+		setGroupCenter(GetEntityGroupPosition(mSelectedEntities, mWorld));
+	}
+	else
+	{
+		clearGroupCenter();
 	}
 }
 

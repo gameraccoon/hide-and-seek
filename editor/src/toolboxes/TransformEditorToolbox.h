@@ -4,9 +4,10 @@
 
 #include <nlohmann/json.hpp>
 
+#include <QLineEdit>
 #include <QString>
-#include <QWidget>
 #include <QVector2D>
+#include <QWidget>
 
 #include "ECS/Entity.h"
 #include "ECS/Delegates.h"
@@ -39,7 +40,13 @@ public:
 	std::vector<WorldCell*> getCellsOnScreen();
 	SpatialEntity getEntityUnderPoint(const QPoint& pos);
 
+	void onCoordinateXChanged(const QString& newValueStr);
+	void onCoordinateYChanged(const QString& newValueStr);
+
 	void addEntitiesInRectToSelection(const Vector2D& start, const Vector2D& end);
+	void setGroupCenter(Vector2D newCenter);
+	void clearGroupCenter();
+	void updateSelectedEntitiesPosition();
 
 	QVector2D projectAbsolute(const Vector2D& worldPos) const;
 	Vector2D deprojectAbsolute(const QVector2D& screenPos) const;
@@ -48,6 +55,9 @@ public:
 
 	class World* mWorld = nullptr;
 	MainWindow* mMainWindow;
+
+	QLineEdit* mCoordinateXEdit = nullptr;
+	QLineEdit* mCoordinateYEdit = nullptr;
 
 	QVector2D mLastMousePos = QVector2D(0.0f, 0.0f);
 	QVector2D mPressMousePos = QVector2D(0.0f, 0.0f);
@@ -60,6 +70,7 @@ public:
 	SinglecastDelegate<std::vector<SpatialEntity>, const Vector2D&> OnEntitiesMoved;
 
 	std::vector<SpatialEntity> mSelectedEntities;
+	Vector2D mSelectedGroupCenter;
 
 	bool mFreeMove = true;
 	bool mIsMoved = false;
