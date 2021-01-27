@@ -13,13 +13,19 @@ public:
 	using SetterFunction = void (World::*)(const OptionalEntity&);
 
 public:
-	ChangeEntityGroupLocationCommand(const std::vector<SpatialEntity>& entities, const Vector2D& shift);
+	ChangeEntityGroupLocationCommand(const std::vector<SpatialEntity>& entities, Vector2D shift);
 
 	void doCommand(World* world) override;
 	void undoCommand(World* world) override;
 
+	const std::vector<SpatialEntity>& getOriginalEntities() const { return mOriginalEntities; }
+	const std::vector<SpatialEntity>& getModifiedEntities() const { return mModifiedEntities; }
+
 private:
-	std::vector<SpatialEntity> mEntities;
-	std::vector<CellPos> mEntitiesCellPos;
-	Vector2D mShift;
+	const Vector2D mShift;
+	const std::vector<SpatialEntity> mOriginalEntities;
+	std::vector<Vector2D> mOriginalEntitiesPos;
+
+	std::vector<SpatialEntity> mModifiedEntities;
+	std::vector<Vector2D> mModifiedEntitiesPos;
 };

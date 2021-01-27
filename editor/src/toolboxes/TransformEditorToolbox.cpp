@@ -73,7 +73,7 @@ TransformEditorToolbox::TransformEditorToolbox(MainWindow* mainWindow, ads::CDoc
 {
 	mOnWorldChangedHandle = mMainWindow->OnWorldChanged.bind([this]{updateWorld();});
 	mOnSelectedEntityChangedHandle = mMainWindow->OnSelectedEntityChanged.bind([this](const auto& entityRef){onEntitySelected(entityRef);});
-	mOnCommandEffectHandle = mMainWindow->OnCommandEffectApplied.bind([this](EditorCommand::EffectBitset effects, bool originalCall){updateContent(effects, originalCall);});
+	mOnCommandEffectHandle = mMainWindow->OnCommandEffectApplied.bind([this](EditorCommand::EffectBitset effects, bool originalCall){onCommandExecuted(effects, originalCall);});
 }
 
 TransformEditorToolbox::~TransformEditorToolbox()
@@ -163,13 +163,51 @@ void TransformEditorToolbox::updateWorld()
 	mContent->repaint();
 }
 
-void TransformEditorToolbox::updateContent(EditorCommand::EffectBitset effects, bool /*originalCall*/)
+void TransformEditorToolbox::updateEntitiesFromChangeEntityGroupLocationCommand(const ChangeEntityGroupLocationCommand& command)
 {
-	if (effects.hasAnyOf(EditorCommand::EffectType::ComponentAttributes, EditorCommand::EffectType::Entities))
+	const bool isLastUndo = mMainWindow->getCommandStack().isLastExecutedUndo();
+
+	const std::vector<SpatialEntity>& oldEntities = isLastUndo ? command.getModifiedEntities() : command.getOriginalEntities();
+	const std::vector<SpatialEntity>& newEntities = isLastUndo ? command.getOriginalEntities() : command.getModifiedEntities();
+
+	std::unordered_map<Entity::EntityID, size_t> transformMap;
+
+	for (size_t i = 0; i < oldEntities.size(); ++i)
 	{
-		mContent->repaint();
-		mContent->updateSelectedEntitiesPosition();
+		const SpatialEntity& oldSpatialEntity = oldEntities[i];
+		transformMap[oldSpatialEntity.entity.getEntity().getID()] = i;
 	}
+
+	for (SpatialEntity& spatialEntity : mContent->mSelectedEntities)
+	{
+		if (const auto it = transformMap.find(spatialEntity.entity.getEntity().getID()); it != transformMap.end())
+		{
+			spatialEntity = newEntities[it->second];
+		}
+	}
+}
+
+void TransformEditorToolbox::onCommandExecuted(EditorCommand::EffectBitset effects, bool /*originalCall*/)
+{
+	// if we have any selected entities
+	if (!mContent->mSelectedEntities.empty())
+	{
+		// check that they didn't change their cells
+		if (effects.hasAnyOf(EditorCommand::EffectType::ComponentAttributes, EditorCommand::EffectType::Entities))
+		{
+			std::weak_ptr<const EditorCommand> lastCommand = mMainWindow->getCommandStack().getLastExecutedCommand();
+			if (std::shared_ptr<const EditorCommand> command = lastCommand.lock())
+			{
+				if (const auto changeLocationCommand = dynamic_cast<const ChangeEntityGroupLocationCommand*>(command.get()))
+				{
+					updateEntitiesFromChangeEntityGroupLocationCommand(*changeLocationCommand);
+				}
+			}
+			mContent->updateSelectedEntitiesPosition();
+		}
+	}
+
+	mContent->repaint();
 }
 
 void TransformEditorToolbox::onEntitySelected(const std::optional<EntityReference>& entityRef)

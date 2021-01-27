@@ -93,7 +93,8 @@ public:
 
 private:
 	void updateWorld();
-	void updateContent(EditorCommand::EffectBitset effects, bool originalCall);
+	void updateEntitiesFromChangeEntityGroupLocationCommand(const class ChangeEntityGroupLocationCommand& command);
+	void onCommandExecuted(EditorCommand::EffectBitset effects, bool originalCall);
 	void onEntitySelected(const std::optional<EntityReference>& entityRef);
 	void onEntitiesMoved(std::vector<SpatialEntity> entities, const Vector2D& shift);
 	void onFreeMoveChanged(int newValue);

@@ -3,32 +3,38 @@
 #include <GameData/World.h>
 #include <GameData/Components/TransformComponent.generated.h>
 
-ChangeEntityGroupLocationCommand::ChangeEntityGroupLocationCommand(const std::vector<SpatialEntity>& entities, const Vector2D& shift)
+ChangeEntityGroupLocationCommand::ChangeEntityGroupLocationCommand(const std::vector<SpatialEntity>& entities, Vector2D shift)
 	: EditorCommand({EffectType::ComponentAttributes, EffectType::EntityLocations})
-	, mEntities(entities)
 	, mShift(shift)
+	, mOriginalEntities(entities)
 {
 }
 
 void ChangeEntityGroupLocationCommand::doCommand(World* world)
 {
-	mEntitiesCellPos.resize(mEntities.size());
-	for (size_t i = 0; i < mEntities.size(); ++i)
+	mOriginalEntitiesPos.resize(mOriginalEntities.size());
+	mModifiedEntities.resize(mOriginalEntities.size());
+	mModifiedEntitiesPos.resize(mOriginalEntities.size());
+
+	for (size_t i = 0; i < mOriginalEntities.size(); ++i)
 	{
-		const SpatialEntity& spatialEntity = mEntities[i];
-		mEntitiesCellPos[i] = spatialEntity.cell;
+		const SpatialEntity& spatialEntity = mOriginalEntities[i];
 		if (WorldCell* cell = world->getSpatialData().getCell(spatialEntity.cell))
 		{
 			auto [component] = cell->getEntityManager().getEntityComponents<TransformComponent>(spatialEntity.entity.getEntity());
 			if (component)
 			{
-				Vector2D newPos = component->getLocation() + mShift;
-				CellPos newCellPos = SpatialWorldData::GetCellForPos(newPos);
+				const Vector2D originalPos = component->getLocation();
+				mOriginalEntitiesPos[i] = originalPos;
+				const Vector2D newPos = originalPos + mShift;
+				mModifiedEntitiesPos[i] = newPos;
+				const CellPos newCellPos = SpatialWorldData::GetCellForPos(newPos);
 				component->setLocation(newPos);
+				mModifiedEntities[i].cell = newCellPos;
+				mModifiedEntities[i].entity = spatialEntity.entity;
 
 				if (newCellPos != spatialEntity.cell)
 				{
-					mEntitiesCellPos[i] = newCellPos;
 					WorldCell& newCell = world->getSpatialData().getOrCreateCell(newCellPos);
 					cell->getEntityManager().transferEntityTo(newCell.getEntityManager(), spatialEntity.entity.getEntity());
 				}
@@ -39,23 +45,22 @@ void ChangeEntityGroupLocationCommand::doCommand(World* world)
 
 void ChangeEntityGroupLocationCommand::undoCommand(World* world)
 {
-	for (size_t i = 0; i < mEntities.size(); ++i)
+	for (size_t i = 0; i < mModifiedEntities.size(); ++i)
 	{
-		const SpatialEntity& spatialEntity = mEntities[i];
-		CellPos oldCellPos = mEntitiesCellPos[i];
-		if (WorldCell* cell = world->getSpatialData().getCell(oldCellPos))
+		const SpatialEntity& spatialEntity = mModifiedEntities[i];
+		if (WorldCell* cell = world->getSpatialData().getCell(spatialEntity.cell))
 		{
 			auto [component] = cell->getEntityManager().getEntityComponents<TransformComponent>(spatialEntity.entity.getEntity());
 			if (component)
 			{
-				Vector2D newLocation = component->getLocation() - mShift;
-				CellPos newCellPos = SpatialWorldData::GetCellForPos(newLocation);
+				const Vector2D newLocation = mOriginalEntitiesPos[i];
+				const CellPos newCellPos = SpatialWorldData::GetCellForPos(newLocation);
 				component->setLocation(newLocation);
 
-				if (oldCellPos != spatialEntity.cell)
+				if (newCellPos != spatialEntity.cell)
 				{
-					Assert(spatialEntity.cell == newCellPos, "Inconsistent undo/redo transformations in ChangeEntityGroupLocationCommand");
-					WorldCell& newCell = world->getSpatialData().getOrCreateCell(spatialEntity.cell);
+					Assert(mOriginalEntities[i].cell == newCellPos, "Inconsistent undo/redo transformations in ChangeEntityGroupLocationCommand");
+					WorldCell& newCell = world->getSpatialData().getOrCreateCell(newCellPos);
 					cell->getEntityManager().transferEntityTo(newCell.getEntityManager(), spatialEntity.entity.getEntity());
 				}
 			}

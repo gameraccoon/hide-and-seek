@@ -30,6 +30,9 @@ public:
 			clearOldCommands();
 		}
 
+		mLastExecutedCommandIdx = mCurrentHeadIndex;
+		mIsLastExecutedUndo = false;
+
 		if (mChangeHandler)
 		{
 			mChangeHandler(effects, true);
@@ -43,6 +46,9 @@ public:
 	void clear();
 	void bindFunctionToCommandChange(OnChangeFn handler);
 
+	std::weak_ptr<const EditorCommand> getLastExecutedCommand() const;
+	bool isLastExecutedUndo() const;
+
 private:
 	void clearOldCommands();
 
@@ -53,6 +59,9 @@ private:
 	// how ofter commands will be cleaned after reaching the limit
 	static const int mClearLag = 100;
 	OnChangeFn mChangeHandler;
+
+	int mLastExecutedCommandIdx = -1;
+	bool mIsLastExecutedUndo = false;
 
 	Delegates::Handle mOnCommandEffectHandle;
 };
