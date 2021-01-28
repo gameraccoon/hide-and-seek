@@ -18,6 +18,8 @@
 #include <QPainter>
 #include <QSlider>
 
+#include "Base/Math/Float.h"
+
 #include "GameData/Components/TransformComponent.generated.h"
 #include "GameData/Components/CollisionComponent.generated.h"
 
@@ -731,18 +733,25 @@ void TransformEditorWidget::addEntitiesInRectToSelection(const Vector2D& start, 
 	}
 }
 
+template<typename Func>
+void UpdateFieldIfChanged(QLineEdit* field, float newValue, TransformEditorWidget* receiver, Func method)
+{
+	bool conversionSuccessful = false;
+	float oldValue = field->text().toFloat(&conversionSuccessful);
+	if (!conversionSuccessful || !Math::AreEqualWithEpsilon(oldValue, newValue, 0.0101f))
+	{
+		QObject::disconnect(field, &QLineEdit::textChanged, receiver, method);
+		field->setText(QString::asprintf("%.2f", newValue));
+		QObject::connect(field, &QLineEdit::textChanged, receiver, method);
+	}
+}
+
 void TransformEditorWidget::setGroupCenter(Vector2D newCenter)
 {
 	mSelectedGroupCenter = newCenter;
 
-	QObject::disconnect(mCoordinateXEdit, &QLineEdit::textChanged, this, &TransformEditorWidget::onCoordinateXChanged);
-	QObject::disconnect(mCoordinateYEdit, &QLineEdit::textChanged, this, &TransformEditorWidget::onCoordinateYChanged);
-
-	mCoordinateXEdit->setText(QString::asprintf("%.2f", newCenter.x));
-	mCoordinateYEdit->setText(QString::asprintf("%.2f", newCenter.y));
-
-	QObject::connect(mCoordinateXEdit, &QLineEdit::textChanged, this, &TransformEditorWidget::onCoordinateXChanged);
-	QObject::connect(mCoordinateYEdit, &QLineEdit::textChanged, this, &TransformEditorWidget::onCoordinateYChanged);
+	UpdateFieldIfChanged(mCoordinateXEdit, newCenter.x, this, &TransformEditorWidget::onCoordinateXChanged);
+	UpdateFieldIfChanged(mCoordinateYEdit, newCenter.y, this, &TransformEditorWidget::onCoordinateXChanged);
 }
 
 void TransformEditorWidget::clearGroupCenter()
