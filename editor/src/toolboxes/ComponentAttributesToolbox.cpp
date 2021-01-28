@@ -90,12 +90,6 @@ void ComponentAttributesToolbox::clearContent()
 
 void ComponentAttributesToolbox::onSelectedComponentChange(const std::optional<ComponentReference>& componentReference)
 {
-	QListWidget* entitiesList = mDockManager->findChild<QListWidget*>("EntityList");
-	if (entitiesList == nullptr)
-	{
-		return;
-	}
-
 	QWidget* componentAttributesContainerWidget = mDockManager->findChild<QWidget*>(ContainerName);
 	if (componentAttributesContainerWidget == nullptr)
 	{
