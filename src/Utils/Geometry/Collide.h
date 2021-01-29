@@ -18,6 +18,7 @@ namespace Collide
 	void UpdateBoundingBox(CollisionComponent* collision);
 
 	bool AreAABBsIntersect(const BoundingBox& boxA, const BoundingBox& boxB);
+	bool AreAABBsIntersectInclusive(const BoundingBox& boxA, const BoundingBox& boxB);
 	bool AreLinesIntersect(const Vector2D& A1, const Vector2D& A2, const Vector2D& B1, const Vector2D& B2);
 	bool AreLinesParallel(const Vector2D& A1, const Vector2D& A2, const Vector2D& B1, const Vector2D& B2);
 	bool IsLineIntersectAABB(const BoundingBox& box, const Vector2D& start, const Vector2D& finish);

@@ -28,8 +28,8 @@ namespace LightBlockingGeometry
 
 	static bool isPointInsideAABB(const BoundingBox& box, Vector2D a)
 	{
-		return box.minX < a.x && a.x < box.maxX
-			&& box.minY < a.y && a.y < box.maxY;
+		return box.minX <= a.x && a.x < box.maxX
+			&& box.minY <= a.y && a.y < box.maxY;
 	}
 
 	struct MergedGeometry
@@ -48,7 +48,7 @@ namespace LightBlockingGeometry
 
 	static bool AreShapesIntersect(const MergedGeometry& firstGeometry, const MergedGeometry& secondGeometry)
 	{
-		if (!Collide::AreAABBsIntersect(firstGeometry.aabb, secondGeometry.aabb))
+		if (!Collide::AreAABBsIntersectInclusive(firstGeometry.aabb, secondGeometry.aabb))
 		{
 			return false;
 		}
@@ -166,9 +166,9 @@ namespace LightBlockingGeometry
 			BoundingBox cellAABB = SpatialWorldData::GetCellAABB(cell->getPos());
 
 			bool intersectsMinX = newGeometry.aabb.minX < cellAABB.minX;
-			bool intersectsMaxX = newGeometry.aabb.maxX > cellAABB.maxX;
+			bool intersectsMaxX = newGeometry.aabb.maxX >= cellAABB.maxX;
 			bool intersectsMinY = newGeometry.aabb.minY < cellAABB.minY;
-			bool intersectsMaxY = newGeometry.aabb.maxY > cellAABB.maxY;
+			bool intersectsMaxY = newGeometry.aabb.maxY >= cellAABB.maxY;
 
 			if (intersectsMinX)
 			{

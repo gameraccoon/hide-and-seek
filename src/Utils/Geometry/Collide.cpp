@@ -242,6 +242,12 @@ namespace Collide
 			&& (boxA.minY < boxB.maxY && boxA.maxY > boxB.minY);
 	}
 
+	bool AreAABBsIntersectInclusive(const BoundingBox& boxA, const BoundingBox& boxB)
+	{
+		return (boxA.minX <= boxB.maxX && boxA.maxX >= boxB.minX)
+			&& (boxA.minY <= boxB.maxY && boxA.maxY >= boxB.minY);
+	}
+
 	bool AreLinesIntersect(const Vector2D& A1, const Vector2D& A2, const Vector2D& B1, const Vector2D& B2)
 	{
 		return (
