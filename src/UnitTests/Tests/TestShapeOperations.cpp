@@ -170,7 +170,7 @@ TEST(ShapeOperations, Union_TwoRectsIntersectionOnCorner)
 	TestShapesUnionResultIsCorrect(shape1, shape2, expectedResult);
 }
 
-TEST(ShapeOperations, Union_TwoRectsTouchingCornerAndBorder)
+TEST(ShapeOperations, Union_TwoRectsCornerTouchingBorder)
 {
 	std::vector<Vector2D> shape1{{10.0f, -60.0f}, {10.0f, 60.0f}, {-10.0f, 60.0f}, {-10.0f, -60.0f}};
 	std::vector<Vector2D> shape2{{10.0f, 10.0f}, {50.0f, -30.0f}, {60.0f, -20.0f}, {20.0f, 20.0f}};
@@ -179,7 +179,7 @@ TEST(ShapeOperations, Union_TwoRectsTouchingCornerAndBorder)
 	TestShapesUnionResultIsCorrect(shape1, shape2, expectedShape);
 }
 
-TEST(ShapeOperations, Union_TwoRectsTouchingCornerAndBorderFullyInside)
+TEST(ShapeOperations, Union_TwoRectsCornerTouchingBorderFullyInside)
 {
 	std::vector<Vector2D> shape1{{10.0f, -20.0f}, {10.0f, 20.0f}, {-10.0f, 20.0f}, {-10.0f, -20.0f}};
 	std::vector<Vector2D> shape2{{20.0f, -30.0f}, {20.0f, 0.0f}, {10.0f, 10.0f}, {20.0f, 20.0f}, {20.0f, 30.0f}, {-20.0f, 30.0f}, {-20.0f, -30.0f}};
