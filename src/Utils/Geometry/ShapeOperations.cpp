@@ -523,6 +523,16 @@ namespace ShapeOperations
 
 	void OptimizeShape(std::vector<SimpleBorder>& inOutShape)
 	{
+		// remove empty borders
+		inOutShape.erase(
+			std::remove_if(
+				inOutShape.begin(),
+				inOutShape.end(),
+				[](const SimpleBorder& border) { return border.a == border.b; }
+			),
+			inOutShape.end()
+		);
+
 		// collect neighboring borders
 		std::unordered_map<Vector2D, std::vector<BorderInfo>> points;
 		for (int i = 0, iSize = inOutShape.size(); i < iSize; ++i)
