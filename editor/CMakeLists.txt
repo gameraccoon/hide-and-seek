@@ -124,16 +124,6 @@ link_directories(
 	${CMAKE_SOURCE_DIR}/vs_project
 )
 
-# Detour
-option(RECASTNAVIGATION_STATIC "Build static libraries for detour" ON)
-add_subdirectory(${EXTERNALS_DIR}/sources/recastnavigation/Detour
-	${INTERMEDIATES_DIR}/external/Detour
-	EXCLUDE_FROM_ALL)
-link_directories(${INTERMEDIATES_DIR}/external/Detour)
-add_dependencies(${APP_NAME} Detour)
-include_directories(${EXTERNALS_DIR}/sources/recastnavigation/Detour/Include)
-target_compile_options(Detour PRIVATE ${EXTERNALS_CXX_FLAGS})
-
 # Polypartition
 add_library(Polypartition ${EXTERNALS_DIR}/sources/polypartition/src/polypartition.cpp)
 add_dependencies(${APP_NAME} Polypartition)
@@ -147,7 +137,6 @@ set(APP_LIBS
 	Ecs
 	Base
 
-	Detour
 	Polypartition
 )
 

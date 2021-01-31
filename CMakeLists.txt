@@ -127,16 +127,6 @@ file(GLOB_RECURSE APP_SRC RELATIVE "" FOLLOW_SYMLINKS "${GAME_SRC_DIR}/GameMain/
 add_executable(${APP_NAME} "${APP_SRC}")
 target_compile_options(${APP_NAME} PRIVATE ${PROJECT_CXX_FLAGS})
 
-# Detour
-set(RECASTNAVIGATION_STATIC ON)
-add_subdirectory(${EXTERNALS_DIR}/sources/recastnavigation/Detour
-	${INTERMEDIATES_DIR}/external/Detour
-	EXCLUDE_FROM_ALL)
-link_directories(${INTERMEDIATES_DIR}/external/Detour)
-add_dependencies(${APP_NAME} Detour)
-include_directories(${EXTERNALS_DIR}/sources/recastnavigation/Detour/Include)
-target_compile_options(Detour PRIVATE ${EXTERNALS_CXX_FLAGS})
-
 # Polypartition
 add_library(Polypartition EXCLUDE_FROM_ALL ${EXTERNALS_DIR}/sources/polypartition/src/polypartition.cpp)
 add_dependencies(${APP_NAME} Polypartition)
@@ -164,7 +154,6 @@ set(GENERAL_PROJECT_LIBS
 	Ecs
 	Base
 
-	Detour
 	Polypartition
 	Imgui
 

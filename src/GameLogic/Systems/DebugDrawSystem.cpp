@@ -27,8 +27,6 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-#include <DetourNavMesh.h>
-
 
 DebugDrawSystem::DebugDrawSystem(WorldHolder& worldHolder, const TimeData& timeData, HAL::Engine& engine, HAL::ResourceManager& resourceManager)
 	: mWorldHolder(worldHolder)
