@@ -10,6 +10,7 @@
 #include "Base/Math/Float.h"
 
 #include "Utils/Geometry/Collide.h"
+#include "Utils/LazyEvaluatedWrapper.h"
 
 namespace ShapeOperations
 {
@@ -22,32 +23,44 @@ namespace ShapeOperations
 		Unknown
 	};
 
-	enum class PointPositionOnSide
+	// extra data may be used to resolve edge-cases related to several borders intersection in one point
+	struct CutExtraData
 	{
-		Start,
-		Middle,
-		End,
-		Unknown
+		CutExtraData() = default;
+		CutExtraData(size_t borderIdx, size_t anotherBorderIdx)
+			: borderIdx(borderIdx)
+			, anotherBorderIdx(anotherBorderIdx)
+		{}
+
+		CutExtraData(Vector2D cutPoint, size_t borderIdx, size_t anotherBorderIdx)
+			: cutPoint(cutPoint)
+			, borderIdx(borderIdx)
+			, anotherBorderIdx(anotherBorderIdx)
+		{}
+
+		Vector2D cutPoint;
+		size_t borderIdx;
+		size_t anotherBorderIdx;
 	};
 
 	struct CutDirection
 	{
-		CutDirection(SidePosition firstSidePosition, SidePosition secondSidePosition, PointPositionOnSide otherBorderPointPosition)
+		CutDirection(SidePosition firstSidePosition, SidePosition secondSidePosition, int extraDataIdx)
 			: firstSidePosition(firstSidePosition)
 			, secondSidePosition(secondSidePosition)
-			, otherBorderPointPosition(otherBorderPointPosition)
+			, extraDataIdx(extraDataIdx)
 		{}
 
 		SidePosition firstSidePosition;
 		SidePosition secondSidePosition;
-		PointPositionOnSide otherBorderPointPosition;
+		int extraDataIdx;
 	};
 
 	struct BorderPoint
 	{
 		explicit BorderPoint(Vector2D pos)
 			: pos(pos)
-			, cutDirection(SidePosition::Unknown, SidePosition::Unknown, PointPositionOnSide::Unknown)
+			, cutDirection(SidePosition::Unknown, SidePosition::Unknown, -1)
 		{}
 
 		explicit BorderPoint(Vector2D pos, CutDirection cutDirection)
@@ -152,29 +165,16 @@ namespace ShapeOperations
 		return std::min(a, b) < value && value <= std::max(a, b);
 	}
 
-	static PointPositionOnSide GetPointPositionOnSide(Vector2D start, Vector2D end, Vector2D point, bool shouldInverse)
-	{
-		if (point == start)
-		{
-			return shouldInverse ? PointPositionOnSide::End : PointPositionOnSide::Start;
-		}
-		else if (point == end)
-		{
-			return shouldInverse ? PointPositionOnSide::Start : PointPositionOnSide::End;
-		}
-		else
-		{
-			return PointPositionOnSide::Middle;
-		}
-	}
-
 	static void AddOverlappingLinesIntersectionPoints(
 			const SimpleBorder& borderA,
 			const SimpleBorder& borderB,
 			std::unordered_set<Vector2D>& intersectionPointsSet,
 			std::vector<Vector2D>& intersectionPoints,
 			std::vector<BorderIntersection>& borderAIntersections,
-			std::vector<BorderIntersection>& borderBIntersections)
+			std::vector<BorderIntersection>& borderBIntersections,
+			std::vector<CutExtraData>& cutsExtraData,
+			const size_t borderIndexA,
+			const size_t borderIndexB)
 	{
 		// project borderB into coordigante system based on a borderA
 		Vector2D basisX = (borderA.b - borderA.a).unit();
@@ -200,21 +200,25 @@ namespace ShapeOperations
 			{
 				size_t pointIdx = addIntersectionPoint(borderB.a, intersectionPointsSet, intersectionPoints);
 
+				cutsExtraData.emplace_back(borderB.a, borderIndexA, borderIndexB);
+
 				borderAIntersections.emplace_back(
 					pointIdx,
 					CutDirection(
 						bHasSameDirection ? SidePosition::Unknown : SidePosition::InsideOverride,
 						bHasSameDirection ? SidePosition::OutsideOverride : SidePosition::Unknown,
-						bHasSameDirection ? PointPositionOnSide::Start : PointPositionOnSide::End
+						cutsExtraData.size() - 1
 					)
 				);
+
+				cutsExtraData.emplace_back(borderB.a, borderIndexB, borderIndexA);
 
 				borderBIntersections.emplace_back(
 					pointIdx,
 					CutDirection(
 						SidePosition::Unknown,
 						SidePosition::InsideOverride,
-						GetPointPositionOnSide(borderA.a, borderA.b, borderB.a, !bHasSameDirection)
+						cutsExtraData.size() - 1
 					)
 				);
 			}
@@ -223,21 +227,25 @@ namespace ShapeOperations
 			{
 				size_t pointIdx = addIntersectionPoint(borderB.b, intersectionPointsSet, intersectionPoints);
 
+				cutsExtraData.emplace_back(borderB.b, borderIndexA, borderIndexB);
+
 				borderAIntersections.emplace_back(
 					pointIdx,
 					CutDirection(
 						bHasSameDirection ? SidePosition::OutsideOverride : SidePosition::Unknown,
 						bHasSameDirection ? SidePosition::Unknown : SidePosition::InsideOverride,
-						bHasSameDirection ? PointPositionOnSide::End : PointPositionOnSide::Start
+						cutsExtraData.size() - 1
 					)
 				);
+
+				cutsExtraData.emplace_back(borderB.b, borderIndexB, borderIndexA);
 
 				borderBIntersections.emplace_back(
 					pointIdx,
 					CutDirection(
 						SidePosition::InsideOverride,
 						SidePosition::Unknown,
-						GetPointPositionOnSide(borderA.a, borderA.b, borderB.b, !bHasSameDirection)
+						cutsExtraData.size() - 1
 					)
 				);
 			}
@@ -246,21 +254,25 @@ namespace ShapeOperations
 			{
 				size_t pointIdx = addIntersectionPoint(borderA.a, intersectionPointsSet, intersectionPoints);
 
+				cutsExtraData.emplace_back(borderA.a, borderIndexA, borderIndexB);
+
 				borderAIntersections.emplace_back(
 					pointIdx,
 					CutDirection(
 						SidePosition::Unknown,
 						bHasSameDirection ? SidePosition::OutsideOverride : SidePosition::InsideOverride,
-						GetPointPositionOnSide(borderB.a, borderB.b, borderA.a, !bHasSameDirection)
+						cutsExtraData.size() - 1
 					)
 				);
+
+				cutsExtraData.emplace_back(borderA.a, borderIndexB, borderIndexA);
 
 				borderBIntersections.emplace_back(
 					pointIdx,
 					CutDirection(
 						bHasSameDirection ? SidePosition::Unknown : SidePosition::InsideOverride,
 						bHasSameDirection ? SidePosition::InsideOverride : SidePosition::Unknown,
-						bHasSameDirection ? PointPositionOnSide::Start : PointPositionOnSide::End
+						cutsExtraData.size() - 1
 					)
 				);
 			}
@@ -269,21 +281,25 @@ namespace ShapeOperations
 			{
 				size_t pointIdx = addIntersectionPoint(borderA.b, intersectionPointsSet, intersectionPoints);
 
+				cutsExtraData.emplace_back(borderA.b, borderIndexA, borderIndexB);
+
 				borderAIntersections.emplace_back(
 					pointIdx,
 					CutDirection(
 						bHasSameDirection ? SidePosition::OutsideOverride : SidePosition::InsideOverride,
 						SidePosition::Unknown,
-						GetPointPositionOnSide(borderB.a, borderB.b, borderA.a, !bHasSameDirection)
+						cutsExtraData.size() - 1
 					)
 				);
+
+				cutsExtraData.emplace_back(borderA.b, borderIndexB, borderIndexA);
 
 				borderBIntersections.emplace_back(
 					pointIdx,
 					CutDirection(
 						bHasSameDirection ? SidePosition::InsideOverride : SidePosition::Unknown,
 						bHasSameDirection ? SidePosition::Unknown : SidePosition::InsideOverride,
-						bHasSameDirection ? PointPositionOnSide::End : PointPositionOnSide::Start
+						cutsExtraData.size() - 1
 					)
 				);
 			}
@@ -291,21 +307,21 @@ namespace ShapeOperations
 	}
 
 	template<typename Func>
-	static SidePosition GetBetterSidePosition(SidePosition oldPosition, SidePosition newPosition, Func shouldResolveToNew)
+	static bool IsNewSidePositionBetter(SidePosition oldPosition, SidePosition newPosition, Func& shouldResolveToNew, bool negatePredicate)
 	{
 		if (newPosition == SidePosition::Unknown)
 		{
-			return oldPosition;
+			return false;
 		}
 
 		if (newPosition == SidePosition::Inside && oldPosition == SidePosition::Outside)
 		{
-			return shouldResolveToNew() ? newPosition : oldPosition;
+			return negatePredicate ? shouldResolveToNew() : !shouldResolveToNew();
 		}
 
 		if (newPosition == SidePosition::Outside && oldPosition == SidePosition::Inside)
 		{
-			return shouldResolveToNew() ? newPosition : oldPosition;
+			return negatePredicate ? shouldResolveToNew() : !shouldResolveToNew();
 		}
 
 		Assert(newPosition != SidePosition::InsideOverride || oldPosition != SidePosition::OutsideOverride, "Conflicting side positions, this should not happen");
@@ -313,45 +329,47 @@ namespace ShapeOperations
 
 		if (oldPosition == SidePosition::InsideOverride || oldPosition == SidePosition::OutsideOverride)
 		{
-			return oldPosition;
+			return false;
 		}
 
-		return newPosition;
+		return true;
 	}
 
-	static bool IsFirstBorderGoesFirst(const PointPositionOnSide firstPos, const PointPositionOnSide secondPos)
+	static bool IsFirstBorderGoesFirst(const CutExtraData& firstCutData, const CutExtraData& secondCutData)
 	{
-		Assert(firstPos != PointPositionOnSide::Unknown, "If we got to this function with Unknown point position on side, something went wrong");
-		Assert(secondPos != PointPositionOnSide::Unknown, "If we got to this function with Unknown point position on side, something went wrong");
-		Assert(firstPos != PointPositionOnSide::Middle, "If we got to this function with point position in the middle, something is wrong with the shape");
-		Assert(secondPos != PointPositionOnSide::Middle, "If we got to this function with point position in the middle, something is wrong with the shape");
-		return (firstPos == PointPositionOnSide::End && secondPos == PointPositionOnSide::Start);
+//		Assert(firstPos != PointPositionOnSide::Unknown, "If we got to this function with Unknown point position on side, something went wrong");
+//		Assert(secondPos != PointPositionOnSide::Unknown, "If we got to this function with Unknown point position on side, something went wrong");
+//		Assert(firstPos != PointPositionOnSide::Middle, "If we got to this function with point position in the middle, something is wrong with the shape");
+//		Assert(secondPos != PointPositionOnSide::Middle, "If we got to this function with point position in the middle, something is wrong with the shape");
+//		return (firstPos == PointPositionOnSide::End && secondPos == PointPositionOnSide::Start);
+		return firstCutData.borderIdx < secondCutData.anotherBorderIdx;
 	}
 
-	static CutDirection CalcBetterCutDirection(const CutDirection oldDirection, const CutDirection newDirection)
+	static CutDirection CalcBetterCutDirection(const CutDirection oldDirection, const CutDirection newDirection, const std::vector<CutExtraData>& cutsExtraData)
 	{
-		auto firstSidePredicate = [newPos = newDirection.otherBorderPointPosition, oldPos = oldDirection.otherBorderPointPosition]
-		{
-			return !IsFirstBorderGoesFirst(newPos, oldPos);
-		};
+		auto isNewGoesFirst = LazyEvaluated([newIdx = newDirection.extraDataIdx, oldIdx = oldDirection.extraDataIdx, &cutsExtraData](){
+			return IsFirstBorderGoesFirst(cutsExtraData[newIdx], cutsExtraData[oldIdx]);
+		});
 
-		auto secondSidePredicate = [newPos = newDirection.otherBorderPointPosition, oldPos = oldDirection.otherBorderPointPosition]
-		{
-			return IsFirstBorderGoesFirst(newPos, oldPos);
-		};
+		const bool isNewBetterForFirst = IsNewSidePositionBetter(
+			oldDirection.firstSidePosition,
+			newDirection.firstSidePosition,
+			isNewGoesFirst,
+			true
+		);
+
+		const bool isNewBetterForSecond = IsNewSidePositionBetter(
+			oldDirection.secondSidePosition,
+			newDirection.secondSidePosition,
+			isNewGoesFirst,
+			false
+		);
 
 		return CutDirection(
-			GetBetterSidePosition(
-				oldDirection.firstSidePosition,
-				newDirection.firstSidePosition,
-				firstSidePredicate
-			),
-			GetBetterSidePosition(
-				oldDirection.secondSidePosition,
-				newDirection.secondSidePosition,
-				secondSidePredicate
-			),
-			newDirection.otherBorderPointPosition
+			isNewBetterForFirst ? newDirection.firstSidePosition : oldDirection.firstSidePosition,
+			isNewBetterForSecond ? newDirection.secondSidePosition : oldDirection.secondSidePosition,
+			// not sure about this, maybe we need to have min and max border or even an array
+			isNewBetterForSecond ? newDirection.extraDataIdx : oldDirection.extraDataIdx
 		);
 	}
 
@@ -371,6 +389,7 @@ namespace ShapeOperations
 		std::vector<Vector2D> intersectionPoints;
 		std::unordered_set<Vector2D> intersectionPointsSet;
 		std::unordered_map<size_t, std::vector<BorderIntersection>> borderIntersections;
+		std::vector<CutExtraData> cutsExtraData;
 
 		// find all intersections
 		for (size_t i = 0; i < shape1.size(); ++i)
@@ -394,7 +413,10 @@ namespace ShapeOperations
 						intersectionPointsSet,
 						intersectionPoints,
 						intersections,
-						borderIntersections[shape1BordersCount + j]
+						borderIntersections[shape1BordersCount + j],
+						cutsExtraData,
+						i,
+						shape1BordersCount + j
 					);
 				}
 				else
@@ -407,21 +429,26 @@ namespace ShapeOperations
 					bool isClockwiseRotation = FindBordersRotationAroundPoint(border, otherBorder, intersectionPoint);
 
 					size_t pointIdx = addIntersectionPoint(intersectionPoint, intersectionPointsSet, intersectionPoints);
+
+					cutsExtraData.emplace_back(intersectionPoint, i, shape1BordersCount + j);
+
 					intersections.emplace_back(
 						pointIdx,
 						CutDirection(
 							GetSidePostionForNormalCut(isClockwiseRotation),
 							GetSidePostionForNormalCut(!isClockwiseRotation),
-							GetPointPositionOnSide(otherBorder.a, otherBorder.b, intersectionPoint, isClockwiseRotation)
+							cutsExtraData.size() - 1
 						)
 					);
+
+					cutsExtraData.emplace_back(intersectionPoint, shape1BordersCount + j, i);
 
 					borderIntersections[shape1BordersCount + j].emplace_back(
 						pointIdx,
 						CutDirection(
 							GetSidePostionForNormalCut(!isClockwiseRotation),
 							GetSidePostionForNormalCut(isClockwiseRotation),
-							GetPointPositionOnSide(border.a, border.b, intersectionPoint, isClockwiseRotation)
+							cutsExtraData.size() - 1
 						)
 					);
 				}
@@ -459,11 +486,11 @@ namespace ShapeOperations
 
 				if (newPosition >= 1 && borderPointFractions[newPosition - 1] == intersectionFraction)
 				{
-					borderPoints[newPosition - 1].cutDirection = CalcBetterCutDirection(borderPoints[newPosition - 1].cutDirection, cutDirection);
+					borderPoints[newPosition - 1].cutDirection = CalcBetterCutDirection(borderPoints[newPosition - 1].cutDirection, cutDirection, cutsExtraData);
 				}
 				else if (newPosition < borderPointFractions.size() && borderPointFractions[newPosition] == intersectionFraction)
 				{
-					borderPoints[newPosition].cutDirection = CalcBetterCutDirection(borderPoints[newPosition].cutDirection, cutDirection);
+					borderPoints[newPosition].cutDirection = CalcBetterCutDirection(borderPoints[newPosition].cutDirection, cutDirection, cutsExtraData);
 				}
 				else
 				{
