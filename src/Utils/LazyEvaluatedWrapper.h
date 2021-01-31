@@ -10,6 +10,8 @@
 // * only callables without arguments
 // * the callable should be rvalue ref
 // * only single-thread usage
+//
+// check out the tests to see how it can be used
 template<typename CallableType, typename ReturnType = typename std::result_of<CallableType()>::type>
 class LazyEvaluated
 {

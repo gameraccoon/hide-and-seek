@@ -34,22 +34,48 @@ TEST(LazyEvaluatedWrapper, CallStdFunction)
 	EXPECT_EQ(1, runCount);
 }
 
-static int gLazyEvaluationWrapperTestInt = 0;
+static int gLazyEvaluationWrapperTestCallsCount = 0;
 
 static int LazyEvaluatedWrapperTestFn()
 {
-	++gLazyEvaluationWrapperTestInt;
+	++gLazyEvaluationWrapperTestCallsCount;
 	return 10;
 }
 
-TEST(LazyEvaluatedWrapper, CallRawFunctionWOArguments)
+TEST(LazyEvaluatedWrapper, CallRawFunction)
 {
-	gLazyEvaluationWrapperTestInt = 0;
+	gLazyEvaluationWrapperTestCallsCount = 0;
 	LazyEvaluated lazyEvaluatedFunction(&LazyEvaluatedWrapperTestFn);
 
-	EXPECT_EQ(0, gLazyEvaluationWrapperTestInt);
+	EXPECT_EQ(0, gLazyEvaluationWrapperTestCallsCount);
 	EXPECT_EQ(10, lazyEvaluatedFunction());
-	EXPECT_EQ(1, gLazyEvaluationWrapperTestInt);
+	EXPECT_EQ(1, gLazyEvaluationWrapperTestCallsCount);
 	EXPECT_EQ(10, lazyEvaluatedFunction());
-	EXPECT_EQ(1, gLazyEvaluationWrapperTestInt);
+	EXPECT_EQ(1, gLazyEvaluationWrapperTestCallsCount);
+}
+
+static int& LazyEvaluatedWrapperTestFnReturnRef()
+{
+	static int test = 0;
+	return test;
+}
+
+TEST(LazyEvaluatedWrapper, ReferenceReturnType)
+{
+	LazyEvaluated<int&(*)(), std::reference_wrapper<int>> lazyEvaluatedFunction(&LazyEvaluatedWrapperTestFnReturnRef);
+
+	LazyEvaluatedWrapperTestFnReturnRef() = 0;
+
+	{
+		int& test = lazyEvaluatedFunction();
+		EXPECT_EQ(0, test);
+		test = 1;
+	}
+
+	{
+		int& test = lazyEvaluatedFunction();
+		EXPECT_EQ(1, test);
+	}
+
+	static_assert(std::is_same<decltype(lazyEvaluatedFunction()), std::reference_wrapper<int>>::value, "Reference type should be returned");
 }
