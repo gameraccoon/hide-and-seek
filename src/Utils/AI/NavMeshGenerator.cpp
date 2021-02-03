@@ -295,16 +295,19 @@ namespace NavMeshGenerator
 		return false;
 	}
 
-	void BuildSpatialHash(NavMesh::SpatialHash& outSpatialHash, const NavMesh::Geometry& geometry)
+	void BuildSpatialHash(NavMesh::SpatialHash& outSpatialHash, const NavMesh::Geometry& geometry, HashGenerationType generationType)
 	{
 		Assert(geometry.isCalculated, "Geometry should be calculated before calculating spatial hash");
-
-		outSpatialHash.polygonsHash.clear();
 
 		Vector2D cellsCountFloat = Vector2D::HadamardProduct(geometry.navMeshSize, Vector2D(1.0f / outSpatialHash.cellSize, 1.0f / outSpatialHash.cellSize));
 		outSpatialHash.hashSize = IntVector2D(static_cast<int>(std::ceil(cellsCountFloat.x)), static_cast<int>(std::ceil(cellsCountFloat.y)));
 
 		outSpatialHash.polygonsHash.resize(outSpatialHash.hashSize.x * outSpatialHash.hashSize.y);
+		std::for_each(
+			outSpatialHash.polygonsHash.begin(),
+			outSpatialHash.polygonsHash.end(),
+			[](std::vector<size_t>& vector){ vector.clear(); }
+		);
 
 		std::vector<Vector2D> reusablePolygon(geometry.vertsPerPoly);
 
@@ -321,7 +324,8 @@ namespace NavMeshGenerator
 				size_t yShift = y * outSpatialHash.hashSize.x;
 				for (size_t x = leftCellIdx; x <= rightCellIdx; ++x)
 				{
-					if (DoesConvexPolygonIntersectCell(reusablePolygon, polygonIdx, x, y, geometry, outSpatialHash.cellSize))
+					if (generationType == HashGenerationType::Fast
+						|| DoesConvexPolygonIntersectCell(reusablePolygon, polygonIdx, x, y, geometry, outSpatialHash.cellSize))
 					{
 						outSpatialHash.polygonsHash[yShift + x].push_back(polygonIdx);
 					}

@@ -52,7 +52,7 @@ void AiSystem::update()
 		NavMesh& navMesh = navMeshComponent->getNavMeshRef();
 		NavMeshGenerator::GenerateNavMeshGeometry(navMesh.geometry, collisions, Vector2D(-5000.0f, -5000.0f), Vector2D(10000.0f, 10000.0f));
 		NavMeshGenerator::LinkNavMesh(navMesh.links, navMesh.geometry);
-		NavMeshGenerator::BuildSpatialHash(navMesh.spatialHash, navMesh.geometry);
+		NavMeshGenerator::BuildSpatialHash(navMesh.spatialHash, navMesh.geometry, NavMeshGenerator::HashGenerationType::Good);
 		navMeshComponent->setUpdateTimestamp(timestampNow);
 	}
 
