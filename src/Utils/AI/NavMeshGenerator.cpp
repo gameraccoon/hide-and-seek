@@ -250,12 +250,11 @@ namespace NavMeshGenerator
 		return result;
 	}
 
-	static bool DoesConvexPolygonIntersectCell(size_t polygonIdx, size_t cellX, size_t cellY, const NavMesh::Geometry& geometry, float cellSize)
+	static bool DoesConvexPolygonIntersectCell(std::vector<Vector2D>& inOutPolygon, size_t polygonIdx, size_t cellX, size_t cellY, const NavMesh::Geometry& geometry, float cellSize)
 	{
-		std::vector<Vector2D> polygon(geometry.vertsPerPoly);
 		for (size_t i = 0; i < geometry.vertsPerPoly; ++i)
 		{
-			polygon[i] = geometry.vertices[geometry.indexes[polygonIdx * geometry.vertsPerPoly + i]];
+			inOutPolygon[i] = geometry.vertices[geometry.indexes[polygonIdx * geometry.vertsPerPoly + i]];
 		}
 
 		BoundingBox aabb
@@ -268,13 +267,13 @@ namespace NavMeshGenerator
 
 		for (size_t i = 0; i < geometry.vertsPerPoly - 1; ++i)
 		{
-			if (polygon[i].x >= aabb.minX && polygon[i].x <= aabb.maxX
-				&& polygon[i].y >= aabb.minY && polygon[i].y <= aabb.maxY)
+			if (inOutPolygon[i].x >= aabb.minX && inOutPolygon[i].x <= aabb.maxX
+				&& inOutPolygon[i].y >= aabb.minY && inOutPolygon[i].y <= aabb.maxY)
 			{
 				return true;
 			}
 
-			if (Collide::IsLineIntersectAABB(aabb, polygon[i], polygon[i + 1]))
+			if (Collide::IsLineIntersectAABB(aabb, inOutPolygon[i], inOutPolygon[i + 1]))
 			{
 				return true;
 			}
@@ -282,13 +281,13 @@ namespace NavMeshGenerator
 
 		size_t lastIndex = geometry.vertsPerPoly - 1;
 
-		if (polygon[lastIndex].x >= aabb.minX && polygon[lastIndex].x <= aabb.maxX
-			&& polygon[lastIndex].y >= aabb.minY && polygon[lastIndex].y <= aabb.maxY)
+		if (inOutPolygon[lastIndex].x >= aabb.minX && inOutPolygon[lastIndex].x <= aabb.maxX
+			&& inOutPolygon[lastIndex].y >= aabb.minY && inOutPolygon[lastIndex].y <= aabb.maxY)
 		{
 			return true;
 		}
 
-		if (Collide::IsLineIntersectAABB(aabb, polygon[lastIndex], polygon[0]))
+		if (Collide::IsLineIntersectAABB(aabb, inOutPolygon[lastIndex], inOutPolygon[0]))
 		{
 			return true;
 		}
@@ -307,6 +306,8 @@ namespace NavMeshGenerator
 
 		outSpatialHash.polygonsHash.resize(outSpatialHash.hashSize.x * outSpatialHash.hashSize.y);
 
+		std::vector<Vector2D> reusablePolygon(geometry.vertsPerPoly);
+
 		for (size_t polygonIdx = 0; polygonIdx < geometry.polygonsCount; ++polygonIdx)
 		{
 			BoundingBox aabb = GetAABB(geometry, polygonIdx);
@@ -320,7 +321,7 @@ namespace NavMeshGenerator
 				size_t yShift = y * outSpatialHash.hashSize.x;
 				for (size_t x = leftCellIdx; x <= rightCellIdx; ++x)
 				{
-					if (DoesConvexPolygonIntersectCell(polygonIdx, x, y, geometry, outSpatialHash.cellSize))
+					if (DoesConvexPolygonIntersectCell(reusablePolygon, polygonIdx, x, y, geometry, outSpatialHash.cellSize))
 					{
 						outSpatialHash.polygonsHash[yShift + x].push_back(polygonIdx);
 					}
