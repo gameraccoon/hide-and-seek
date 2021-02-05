@@ -566,7 +566,7 @@ namespace ShapeOperations
 
 		// collect neighboring borders
 		std::unordered_map<Vector2D, std::vector<BorderInfo>> points;
-		for (int i = 0, iSize = inOutShape.size(); i < iSize; ++i)
+		for (size_t i = 0, iSize = inOutShape.size(); i < iSize; ++i)
 		{
 			const SimpleBorder& border = inOutShape[i];
 			points[border.a].emplace_back(border.b, i, true);

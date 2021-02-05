@@ -127,9 +127,9 @@ TEST(VisibilityPolygon, ApertureDirection1)
 			auto rotatedGeometry = geometry;
 			Vector2D rotatedLocation = location.getRotated(rotator);
 			// rotate around zero point
-			for (size_t i = 0; i < rotatedGeometry.points.size(); ++i)
+			for (size_t j = 0; j < rotatedGeometry.points.size(); ++j)
 			{
-				rotatedGeometry.points[i] = rotatedGeometry.points[i].getRotated(rotator);
+				rotatedGeometry.points[j] = rotatedGeometry.points[j].getRotated(rotator);
 			}
 			rotatedGeometry.generateBorders();
 			FillTestLightBlockingGeometry(component, rotatedGeometry, rotatedLocation);
@@ -179,9 +179,9 @@ TEST(VisibilityPolygon, ApertureDirection2)
 			auto rotatedGeometry = geometry;
 			Vector2D rotatedLocation = location.getRotated(rotator);
 			// rotate around zero point
-			for (size_t i = 0; i < rotatedGeometry.points.size(); ++i)
+			for (size_t j = 0; j < rotatedGeometry.points.size(); ++j)
 			{
-				rotatedGeometry.points[i] = rotatedGeometry.points[i].getRotated(rotator);
+				rotatedGeometry.points[j] = rotatedGeometry.points[j].getRotated(rotator);
 			}
 			rotatedGeometry.generateBorders();
 			FillTestLightBlockingGeometry(component, rotatedGeometry, rotatedLocation);
