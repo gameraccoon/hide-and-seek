@@ -25,7 +25,6 @@ set(GAME_BIN_DIR ${GAME_BASE_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${GAME_BIN_DIR})
 set(GAME_SRC_DIR ${GAME_BASE_DIR}/src)
 set(EXTERNALS_DIR ${GAME_BASE_DIR}/external)
-set(INTERMEDIATES_DIR ${GAME_BASE_DIR}/build/game)
 set(BIN_PLATFORM "x64")
 
 file (STRINGS "${GAME_BASE_DIR}/VersionInfo" EXECUTABLE_VERSION)
@@ -83,7 +82,7 @@ endif()
 
 # code generation
 execute_process(
-	COMMAND ${PYTHON_EXECUTABLE} ${GAME_BASE_DIR}/scripts/build/code_generate.py ${GAME_BASE_DIR}
+	COMMAND ${PYTHON_EXECUTABLE} "${GAME_BASE_DIR}/scripts/build/code_generate.py" WORKING_DIRECTORY "${GAME_BASE_DIR}"
 )
 
 # requirements
