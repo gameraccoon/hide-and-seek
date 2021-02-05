@@ -127,6 +127,12 @@ file(GLOB_RECURSE APP_SRC RELATIVE "" FOLLOW_SYMLINKS "${GAME_SRC_DIR}/GameMain/
 add_executable(${APP_NAME} "${APP_SRC}")
 target_compile_options(${APP_NAME} PRIVATE ${PROJECT_CXX_FLAGS})
 
+# configure VS specific project parameters
+if (MSVC)
+	set_target_properties(${APP_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${GAME_BIN_DIR}")
+	set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT ${APP_NAME})
+endif()
+
 # Polypartition
 add_library(Polypartition EXCLUDE_FROM_ALL ${EXTERNALS_DIR}/sources/polypartition/src/polypartition.cpp)
 add_dependencies(${APP_NAME} Polypartition)
