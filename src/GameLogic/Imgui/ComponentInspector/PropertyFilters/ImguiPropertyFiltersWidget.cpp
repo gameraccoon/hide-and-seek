@@ -3,6 +3,7 @@
 #include "GameLogic/Imgui/ComponentInspector/PropertyFilters/ImguiPropertyFiltersWidget.h"
 
 #include <algorithm>
+#include <cstring>
 #include <string>
 #include <sstream>
 

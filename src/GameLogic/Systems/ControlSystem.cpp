@@ -53,12 +53,13 @@ void ControlSystem::update()
 	if (auto [renderMode] = gameData.getGameComponents().getComponents<RenderModeComponent>(); renderMode)
 	{
 		UpdateRenderStateOnPressed(keyStates, SDLK_F2, renderMode->getIsDrawDebugCollisionsEnabledRef());
-		UpdateRenderStateOnPressed(keyStates, SDLK_F3, renderMode->getIsDrawDebugAiDataEnabledRef());
+		UpdateRenderStateOnPressed(keyStates, SDLK_F3, renderMode->getIsDrawBackgroundEnabledRef());
 		UpdateRenderStateOnPressed(keyStates, SDLK_F4, renderMode->getIsDrawLightsEnabledRef());
 		UpdateRenderStateOnPressed(keyStates, SDLK_F5, renderMode->getIsDrawVisibleEntitiesEnabledRef());
-		UpdateRenderStateOnPressed(keyStates, SDLK_F6, renderMode->getIsDrawDebugCharacterInfoEnabledRef());
-		UpdateRenderStateOnPressed(keyStates, SDLK_F7, renderMode->getIsDrawDebugPrimitivesEnabledRef());
-		UpdateRenderStateOnPressed(keyStates, SDLK_F8, renderMode->getIsDrawDebugCellInfoEnabledRef());
+		UpdateRenderStateOnPressed(keyStates, SDLK_F6, renderMode->getIsDrawDebugAiDataEnabledRef());
+		UpdateRenderStateOnPressed(keyStates, SDLK_F7, renderMode->getIsDrawDebugCharacterInfoEnabledRef());
+		UpdateRenderStateOnPressed(keyStates, SDLK_F8, renderMode->getIsDrawDebugPrimitivesEnabledRef());
+		UpdateRenderStateOnPressed(keyStates, SDLK_F9, renderMode->getIsDrawDebugCellInfoEnabledRef());
 	}
 }
 

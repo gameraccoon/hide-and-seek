@@ -45,6 +45,7 @@ namespace Graphics
 		void render(const Internal::Surface& surface, Vector2D pos, Vector2D size, Vector2D ancor, float rotation, QuadUV uv, float alpha = 1.0f);
 		void renderFan(const Internal::Surface& surface, const std::vector<DrawPoint>& points, const glm::mat4& transform, float alpha);
 		void renderStrip(const Internal::Surface& surface, const std::vector<DrawPoint>& points, const glm::mat4& transform, float alpha);
+		void renderTiled(const Internal::Surface& surface, Vector2D start, Vector2D size, Vector2D tiles, Vector2D uvShift);
 
 		void renderText(const Font& font, Vector2D pos, Color color, const char* text);
 		std::array<int, 2> getTextSize(const Font& font, const char* text);

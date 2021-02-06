@@ -9,6 +9,12 @@
 			"flags": ["transient", "get_by_ref"]
 		},
 		{
+			"name": "isDrawBackgroundEnabled",
+			"type": "bool",
+			"default": " = true",
+			"flags": ["transient", "get_by_ref"]
+		},
+		{
 			"name": "isDrawVisibleEntitiesEnabled",
 			"type": "bool",
 			"default": " = true",

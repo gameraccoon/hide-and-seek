@@ -92,6 +92,21 @@ namespace Graphics
 		glEnd();
 	}
 
+	void Renderer::renderTiled(const Internal::Surface& surface, Vector2D start, Vector2D size, Vector2D tiles, Vector2D uvShift)
+	{
+		glm::mat4 transform{ 1.0f };
+		glLoadMatrixf(reinterpret_cast<const float*>(&transform));
+		surface.bind();
+
+		glBegin(GL_QUADS);
+		glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+		glTexCoord2f(uvShift.x, uvShift.y + tiles.y); glVertex2f(start.x, start.y + size.y);
+		glTexCoord2f(uvShift.x + tiles.x, uvShift.y + tiles.y); glVertex2f(start.x + size.x, start.y + size.y);
+		glTexCoord2f(uvShift.x + tiles.x, uvShift.y); glVertex2f(start.x + size.x, start.y);
+		glTexCoord2f(uvShift.x, uvShift.y); glVertex2f(start.x, start.y);
+		glEnd();
+	}
+
 	void Renderer::renderText(const Graphics::Font& /*font*/, Vector2D /*pos*/, Graphics::Color /*color*/, const char* /*text*/)
 	{
 		//FC_DrawColor(font.getRawFont(), mRenderer, pos.x, pos.y, { color.R, color.G, color.B, color.A }, text);

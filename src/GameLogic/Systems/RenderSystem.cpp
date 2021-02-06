@@ -10,6 +10,7 @@
 #include "GameData/Components/LightBlockingGeometryComponent.generated.h"
 #include "GameData/Components/RenderModeComponent.generated.h"
 #include "GameData/Components/WorldCachedDataComponent.generated.h"
+#include "GameData/Components/BackgroundTextureComponent.generated.h"
 #include "GameData/GameData.h"
 #include "GameData/World.h"
 
@@ -47,7 +48,6 @@ void RenderSystem::update()
 	auto [worldCachedData] = world.getWorldComponents().getComponents<WorldCachedDataComponent>();
 	Vector2D workingRect = worldCachedData->getScreenSize();
 	Vector2D cameraLocation = worldCachedData->getCameraPos();
-	CellPos cameraCell = worldCachedData->getCameraCellPos();
 
 	static const Vector2D maxFov(500.0f, 500.0f);
 
@@ -60,6 +60,11 @@ void RenderSystem::update()
 	std::vector<WorldCell*> cells = world.getSpatialData().getCellsAround(cameraLocation, workingRect);
 	SpatialEntityManager spatialManager(cells);
 
+	if (!renderMode || renderMode->getIsDrawBackgroundEnabled())
+	{
+		drawBackground(renderer, world, drawShift);
+	}
+
 	if (!renderMode || renderMode->getIsDrawLightsEnabled())
 	{
 		drawLights(spatialManager, cells, cameraLocation, drawShift, maxFov, screenHalfSize);
@@ -67,7 +72,7 @@ void RenderSystem::update()
 
 	if (!renderMode || renderMode->getIsDrawVisibleEntitiesEnabled())
 	{
-		spatialManager.forEachComponentSet<RenderComponent, TransformComponent>([&drawShift, &resourceManager = mResourceManager, &renderer, cameraCell](RenderComponent* render, TransformComponent* transform)
+		spatialManager.forEachComponentSet<RenderComponent, TransformComponent>([&drawShift, &resourceManager = mResourceManager, &renderer](RenderComponent* render, TransformComponent* transform)
 		{
 			Vector2D location = transform->getLocation() + drawShift;
 			float rotation = transform->getRotation().getValue();
@@ -98,6 +103,27 @@ void RenderSystem::drawVisibilityPolygon(const Graphics::Sprite& lightSprite, co
 		glm::mat4 transform(1.0f);
 		transform = glm::translate(transform, glm::vec3(drawShift.x, drawShift.y, 0.0f));
 		mEngine.getRenderer().renderFan(*lightSprite.getSurface(), drawablePolygon, transform, 0.5f);
+	}
+}
+
+void RenderSystem::drawBackground(Graphics::Renderer& renderer, World& world, const Vector2D& drawShift)
+{
+	auto [backgroundTexture] = world.getWorldComponents().getComponents<BackgroundTextureComponent>();
+	if (backgroundTexture != nullptr)
+	{
+		if (!backgroundTexture->getSprite().spriteHandle.isValid())
+		{
+			backgroundTexture->getSpriteRef().spriteHandle = mResourceManager.lockSprite(backgroundTexture->getSpriteDesc().path);
+			backgroundTexture->getSpriteRef().params = backgroundTexture->getSpriteDesc().params;
+		}
+
+		const SpriteData& spriteData = backgroundTexture->getSpriteRef();
+		const Graphics::Sprite& backgroundSprite = mResourceManager.getResource<Graphics::Sprite>(spriteData.spriteHandle);
+		const Vector2D windowSize = mEngine.getWindowSize();
+		const Vector2D spriteSize(spriteData.params.size);
+		const Vector2D tiles(windowSize.x / spriteSize.x, windowSize.y / spriteSize.y);
+		const Vector2D uvShift(-drawShift.x / spriteSize.x, -drawShift.y / spriteSize.y);
+		renderer.renderTiled(*backgroundSprite.getSurface(), ZERO_VECTOR, windowSize, tiles, uvShift);
 	}
 }
 
