@@ -43,7 +43,6 @@ void RenderSystem::update()
 {
 	World& world = mWorldHolder.getWorld();
 	GameData& gameData = mWorldHolder.getGameData();
-	Graphics::Renderer& renderer = mEngine.getRenderer();
 
 	auto [worldCachedData] = world.getWorldComponents().getComponents<WorldCachedDataComponent>();
 	Vector2D workingRect = worldCachedData->getScreenSize();
@@ -62,7 +61,7 @@ void RenderSystem::update()
 
 	if (!renderMode || renderMode->getIsDrawBackgroundEnabled())
 	{
-		drawBackground(renderer, world, drawShift);
+		drawBackground(world, drawShift);
 	}
 
 	if (!renderMode || renderMode->getIsDrawLightsEnabled())
@@ -72,14 +71,14 @@ void RenderSystem::update()
 
 	if (!renderMode || renderMode->getIsDrawVisibleEntitiesEnabled())
 	{
-		spatialManager.forEachComponentSet<RenderComponent, TransformComponent>([&drawShift, &resourceManager = mResourceManager, &renderer](RenderComponent* render, TransformComponent* transform)
+		spatialManager.forEachComponentSet<RenderComponent, TransformComponent>([&drawShift, &resourceManager = mResourceManager](RenderComponent* render, TransformComponent* transform)
 		{
 			Vector2D location = transform->getLocation() + drawShift;
 			float rotation = transform->getRotation().getValue();
 			for (const auto& data : render->getSpriteDatas())
 			{
 				const Graphics::Sprite& spriteData = resourceManager.getResource<Graphics::Sprite>(data.spriteHandle);
-				renderer.render(*spriteData.getSurface(), location, data.params.size, data.params.anchor, rotation, spriteData.getUV(), 1.0f);
+				Graphics::Render::drawQuad(*spriteData.getSurface(), location, data.params.size, data.params.anchor, rotation, spriteData.getUV(), 1.0f);
 			}
 		});
 	}
@@ -102,11 +101,11 @@ void RenderSystem::drawVisibilityPolygon(const Graphics::Sprite& lightSprite, co
 
 		glm::mat4 transform(1.0f);
 		transform = glm::translate(transform, glm::vec3(drawShift.x, drawShift.y, 0.0f));
-		mEngine.getRenderer().renderFan(*lightSprite.getSurface(), drawablePolygon, transform, 0.5f);
+		Graphics::Render::drawFan(*lightSprite.getSurface(), drawablePolygon, transform, 0.5f);
 	}
 }
 
-void RenderSystem::drawBackground(Graphics::Renderer& renderer, World& world, const Vector2D& drawShift)
+void RenderSystem::drawBackground(World& world, const Vector2D& drawShift)
 {
 	auto [backgroundTexture] = world.getWorldComponents().getComponents<BackgroundTextureComponent>();
 	if (backgroundTexture != nullptr)
@@ -123,7 +122,7 @@ void RenderSystem::drawBackground(Graphics::Renderer& renderer, World& world, co
 		const Vector2D spriteSize(spriteData.params.size);
 		const Vector2D tiles(windowSize.x / spriteSize.x, windowSize.y / spriteSize.y);
 		const Vector2D uvShift(-drawShift.x / spriteSize.x, -drawShift.y / spriteSize.y);
-		renderer.renderTiled(*backgroundSprite.getSurface(), ZERO_VECTOR, windowSize, tiles, uvShift);
+		Graphics::Render::drawTiledQuad(*backgroundSprite.getSurface(), ZERO_VECTOR, windowSize, tiles, uvShift);
 	}
 }
 

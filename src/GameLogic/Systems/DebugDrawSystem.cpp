@@ -60,7 +60,7 @@ static Vector2D GetNavmeshPolygonCenter(size_t triangleIdx, const NavMesh::Geome
 	return polygonCenter;
 }
 
-static void DrawPath(const std::vector<Vector2D>& path, Graphics::Renderer& renderer, const Graphics::Sprite& navMeshSprite, const Graphics::QuadUV& quadUV, Vector2D drawShift)
+static void DrawPath(const std::vector<Vector2D>& path, const Graphics::Sprite& navMeshSprite, const Graphics::QuadUV& quadUV, Vector2D drawShift)
 {
 	if (path.size() > 1)
 	{
@@ -94,7 +94,7 @@ static void DrawPath(const std::vector<Vector2D>& path, Graphics::Renderer& rend
 
 		glm::mat4 transform(1.0f);
 		transform = glm::translate(transform, glm::vec3(drawShift.x, drawShift.y, 0.0f));
-		renderer.renderStrip(*navMeshSprite.getSurface(), drawablePolygon, transform, 0.5f);
+		Graphics::Render::drawStrip(*navMeshSprite.getSurface(), drawablePolygon, transform, 0.5f);
 	}
 }
 
@@ -129,7 +129,7 @@ void DebugDrawSystem::update()
 		{
 			CellPos cellPos = cell->getPos();
 			Vector2D location = SpatialWorldData::GetRelativeLocation(cameraCell, cellPos, drawShift);
-			renderer.render(*collisionSprite.getSurface(),
+			Graphics::Render::drawQuad(*collisionSprite.getSurface(),
 				location,
 				SpatialWorldData::CellSizeVector,
 				ZERO_VECTOR,
@@ -150,7 +150,7 @@ void DebugDrawSystem::update()
 		spatialManager.forEachComponentSet<CollisionComponent, TransformComponent>([&collisionSprite, &quadUV, drawShift, &renderer, cameraCell](CollisionComponent* collision, TransformComponent* transform)
 		{
 			Vector2D location = transform->getLocation() + drawShift;
-			renderer.render(*collisionSprite.getSurface(),
+			Graphics::Render::drawQuad(*collisionSprite.getSurface(),
 				Vector2D(collision->getBoundingBox().minX + location.x, collision->getBoundingBox().minY + location.y),
 				Vector2D(collision->getBoundingBox().maxX-collision->getBoundingBox().minX,
 						 collision->getBoundingBox().maxY-collision->getBoundingBox().minY),
@@ -186,7 +186,7 @@ void DebugDrawSystem::update()
 				}
 				glm::mat4 transform(1.0f);
 				transform = glm::translate(transform, glm::vec3(drawShift.x, drawShift.y, 0.0f));
-				renderer.renderFan(*navMeshSprite.getSurface(), drawablePolygon, transform, 0.3f);
+				Graphics::Render::drawFan(*navMeshSprite.getSurface(), drawablePolygon, transform, 0.3f);
 			}
 
 			const NavMesh::InnerLinks& navMeshLinks = navMesh.links;
@@ -197,14 +197,14 @@ void DebugDrawSystem::update()
 				{
 					Vector2D secondPolygonCenter = GetNavmeshPolygonCenter(link.neighbor, navMeshGeometry);
 					std::vector<Vector2D> line{firstPolygonCenter, secondPolygonCenter + (firstPolygonCenter - secondPolygonCenter)*0.52f};
-					DrawPath(line, renderer, navMeshSprite, quadUV, drawShift);
+					DrawPath(line, navMeshSprite, quadUV, drawShift);
 				}
 			}
 		}
 
-		spatialManager.forEachComponentSet<AiControllerComponent>([&renderer, &navMeshSprite, &quadUV, drawShift](AiControllerComponent* aiController)
+		spatialManager.forEachComponentSet<AiControllerComponent>([&navMeshSprite, &quadUV, drawShift](AiControllerComponent* aiController)
 		{
-			DrawPath(aiController->getPathRef().smoothPath, renderer, navMeshSprite, quadUV, drawShift);
+			DrawPath(aiController->getPathRef().smoothPath, navMeshSprite, quadUV, drawShift);
 		});
 	}
 
@@ -219,7 +219,7 @@ void DebugDrawSystem::update()
 			const Graphics::Font& font = mResourceManager.getResource<Graphics::Font>(mFontHandle);
 			for (const auto& screenPoint : debugDraw->getScreenPoints())
 			{
-				renderer.render(*pointSprite.getSurface(), screenPoint.screenPos, pointSize);
+				Graphics::Render::drawQuad(*pointSprite.getSurface(), screenPoint.screenPos, pointSize);
 				if (!screenPoint.name.empty())
 				{
 					renderer.renderText(font, screenPoint.screenPos, {255, 255, 255, 255}, screenPoint.name.c_str());
@@ -229,7 +229,7 @@ void DebugDrawSystem::update()
 			for (const auto& worldPoint : debugDraw->getWorldPoints())
 			{
 				Vector2D screenPos = worldPoint.pos - cameraLocation + screenHalfSize;
-				renderer.render(*pointSprite.getSurface(), screenPos, pointSize);
+				Graphics::Render::drawQuad(*pointSprite.getSurface(), screenPos, pointSize);
 				if (!worldPoint.name.empty())
 				{
 					renderer.renderText(font, screenPos, {255, 255, 255, 255}, worldPoint.name.c_str());
@@ -241,7 +241,7 @@ void DebugDrawSystem::update()
 				Vector2D screenPosStart = worldLineSegment.startPos - cameraLocation + screenHalfSize;
 				Vector2D screenPosEnd = worldLineSegment.endPos - cameraLocation + screenHalfSize;
 				Vector2D diff = screenPosEnd - screenPosStart;
-				renderer.render(
+				Graphics::Render::drawQuad(
 					*lineSprite.getSurface(),
 					(screenPosStart + screenPosEnd) * 0.5f,
 					Vector2D(diff.size(), pointSize.y),

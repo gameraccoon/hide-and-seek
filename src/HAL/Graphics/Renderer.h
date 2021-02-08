@@ -30,6 +30,16 @@ namespace Graphics
 		Vector2D texturePoint;
 	};
 
+	namespace Render
+	{
+		void drawQuad(const Internal::Surface& surface, const glm::mat4& transform, Vector2D size, QuadUV uv, float alpha = 1.0f);
+		void drawQuad(const Internal::Surface& surface, Vector2D pos, Vector2D size);
+		void drawQuad(const Internal::Surface& surface, Vector2D pos, Vector2D size, Vector2D ancor, float rotation, QuadUV uv, float alpha = 1.0f);
+		void drawFan(const Internal::Surface& surface, const std::vector<DrawPoint>& points, const glm::mat4& transform, float alpha);
+		void drawStrip(const Internal::Surface& surface, const std::vector<DrawPoint>& points, const glm::mat4& transform, float alpha);
+		void drawTiledQuad(const Internal::Surface& surface, Vector2D start, Vector2D size, Vector2D tiles, Vector2D uvShift);
+	}
+
 	class Renderer
 	{
 	public:
@@ -39,13 +49,6 @@ namespace Graphics
 		Renderer& operator=(const Renderer&) = delete;
 		Renderer(Renderer&&) = delete;
 		Renderer& operator=(Renderer&&) = delete;
-
-		void render(const Internal::Surface& surface, const glm::mat4& transform, Vector2D size, QuadUV uv, float alpha = 1.0f);
-		void render(const Internal::Surface& surface, Vector2D pos, Vector2D size);
-		void render(const Internal::Surface& surface, Vector2D pos, Vector2D size, Vector2D ancor, float rotation, QuadUV uv, float alpha = 1.0f);
-		void renderFan(const Internal::Surface& surface, const std::vector<DrawPoint>& points, const glm::mat4& transform, float alpha);
-		void renderStrip(const Internal::Surface& surface, const std::vector<DrawPoint>& points, const glm::mat4& transform, float alpha);
-		void renderTiled(const Internal::Surface& surface, Vector2D start, Vector2D size, Vector2D tiles, Vector2D uvShift);
 
 		void renderText(const Font& font, Vector2D pos, Color color, const char* text);
 		std::array<int, 2> getTextSize(const Font& font, const char* text);

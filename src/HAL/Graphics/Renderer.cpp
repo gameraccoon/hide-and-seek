@@ -19,7 +19,7 @@ static constexpr double MATH_PI = 3.14159265358979323846;
 
 namespace Graphics
 {
-	void Renderer::render(const Internal::Surface& surface, const glm::mat4& transform, Vector2D size, Graphics::QuadUV uv, float alpha)
+	void Render::drawQuad(const Internal::Surface& surface, const glm::mat4& transform, Vector2D size, Graphics::QuadUV uv, float alpha)
 	{
 		glLoadMatrixf(reinterpret_cast<const float*>(&transform));
 		surface.bind();
@@ -34,7 +34,7 @@ namespace Graphics
 		glEnd();
 	}
 
-	void Renderer::render(const Internal::Surface& surface, Vector2D pos, Vector2D size)
+	void Render::drawQuad(const Internal::Surface& surface, Vector2D pos, Vector2D size)
 	{
 		glm::mat4 transform{ 1.0f };
 		transform = glm::translate(transform, glm::vec3(pos.x, pos.y, 0.0f));
@@ -51,16 +51,16 @@ namespace Graphics
 		glEnd();
 	}
 
-	void Renderer::render(const Internal::Surface& surface, Vector2D pos, Vector2D size, Vector2D ancor, float rotation, Graphics::QuadUV uv, float alpha)
+	void Render::drawQuad(const Internal::Surface& surface, Vector2D pos, Vector2D size, Vector2D ancor, float rotation, Graphics::QuadUV uv, float alpha)
 	{
 		glm::mat4 transform{ 1.0f };
 		transform = glm::translate(transform, glm::vec3(pos.x, pos.y, 0.0f));
 		transform = glm::rotate(transform, rotation, glm::vec3(0.0f, 0.0f, 1.0f));
 		transform = glm::translate(transform, glm::vec3(-size.x * ancor.x, -size.y * ancor.y, 0.0f));
-		render(surface, transform, size, uv, alpha);
+		drawQuad(surface, transform, size, uv, alpha);
 	}
 
-	void Renderer::renderFan(const Internal::Surface& surface, const std::vector<DrawPoint>& points, const glm::mat4& transform, float alpha)
+	void Render::drawFan(const Internal::Surface& surface, const std::vector<DrawPoint>& points, const glm::mat4& transform, float alpha)
 	{
 		glLoadMatrixf(reinterpret_cast<const float*>(&transform));
 		surface.bind();
@@ -76,7 +76,7 @@ namespace Graphics
 		glEnd();
 	}
 
-	void Renderer::renderStrip(const Internal::Surface& surface, const std::vector<DrawPoint>& points, const glm::mat4& transform, float alpha)
+	void Render::drawStrip(const Internal::Surface& surface, const std::vector<DrawPoint>& points, const glm::mat4& transform, float alpha)
 	{
 		glLoadMatrixf(reinterpret_cast<const float*>(&transform));
 		surface.bind();
@@ -92,7 +92,7 @@ namespace Graphics
 		glEnd();
 	}
 
-	void Renderer::renderTiled(const Internal::Surface& surface, Vector2D start, Vector2D size, Vector2D tiles, Vector2D uvShift)
+	void Render::drawTiledQuad(const Internal::Surface& surface, Vector2D start, Vector2D size, Vector2D tiles, Vector2D uvShift)
 	{
 		glm::mat4 transform{ 1.0f };
 		glLoadMatrixf(reinterpret_cast<const float*>(&transform));
