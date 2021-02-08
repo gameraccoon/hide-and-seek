@@ -11,7 +11,6 @@
 
 #include "HAL/Base/Resource.h"
 #include "HAL/Base/Types.h"
-#include "HAL/EngineFwd.h"
 
 namespace HAL
 {
@@ -21,7 +20,7 @@ namespace HAL
 	class ResourceManager
 	{
 	public:
-		explicit ResourceManager(Engine& engine);
+		explicit ResourceManager();
 
 		~ResourceManager() = default;
 
@@ -84,8 +83,6 @@ namespace HAL
 		std::map<ResourceHandle::IndexType, ResourcePath> mPathFindMap;
 
 		std::unordered_map<ResourcePath, AtlasFrameData> mAtlasFrames;
-
-		Engine& mEngine;
 
 		int mHandleIdx = 0;
 

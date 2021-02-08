@@ -2,6 +2,8 @@
 
 #include "HAL/Base/Engine.h"
 
+#include "Base/Debug/ConcurrentAccessDetector.h"
+
 #include <algorithm>
 
 #include <glew/glew.h>
@@ -16,6 +18,10 @@
 
 namespace HAL
 {
+#ifdef CONCURRENT_ACCESS_DETECTION
+	ConcurrentAccessDetector gSDLAccessDetector;
+#endif
+
 	static const float MaxFrameTicks = 300.0f;
 
 	struct Engine::Impl
@@ -91,6 +97,7 @@ namespace HAL
 
 	Vector2D Engine::getMousePos() const
 	{
+		DETECT_CONCURRENT_ACCESS(gSDLAccessDetector);
 		return Vector2D(mPimpl->mMouseX, mPimpl->mMouseY);
 	}
 
@@ -109,26 +116,31 @@ namespace HAL
 
 	Graphics::Renderer& Engine::getRenderer()
 	{
+		DETECT_CONCURRENT_ACCESS(gSDLAccessDetector);
 		return mPimpl->mRenderer;
 	}
 
 	Vector2D Engine::getWindowSize() const
 	{
+		DETECT_CONCURRENT_ACCESS(gSDLAccessDetector);
 		return Vector2D(static_cast<float>(WindowWidth), static_cast<float>(WindowHeight));
 	}
 
 	SDL_Window* Engine::getRawWindow()
 	{
+		DETECT_CONCURRENT_ACCESS(gSDLAccessDetector);
 		return mPimpl->mWindow.getRawWindow();
 	}
 
 	void* Engine::getRawGlContext()
 	{
+		DETECT_CONCURRENT_ACCESS(gSDLAccessDetector);
 		return mPimpl->mGlContext.getRawGLContext();
 	}
 
 	SDL_Event& Engine::getLastEventRef()
 	{
+		DETECT_CONCURRENT_ACCESS(gSDLAccessDetector);
 		return mPimpl->mLastEvent;
 	}
 
@@ -162,6 +174,7 @@ namespace HAL
 
 	void Engine::Impl::parseEvents()
 	{
+		DETECT_CONCURRENT_ACCESS(gSDLAccessDetector);
 		SDL_Event event;
 		while (SDL_PollEvent(&event))
 		{

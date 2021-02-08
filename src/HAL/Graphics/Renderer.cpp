@@ -7,6 +7,8 @@
 
 #include "sdl/SDL_surface.h"
 
+#include "Base/Debug/ConcurrentAccessDetector.h"
+
 #include "HAL/Internal/GlContext.h"
 
 #include "HAL/Internal/SdlWindow.h"
@@ -17,10 +19,18 @@
 
 static constexpr double MATH_PI = 3.14159265358979323846;
 
+#ifdef CONCURRENT_ACCESS_DETECTION
+namespace HAL
+{
+	extern ConcurrentAccessDetector gSDLAccessDetector;
+}
+#endif
+
 namespace Graphics
 {
 	void Render::drawQuad(const Internal::Surface& surface, const glm::mat4& transform, Vector2D size, Graphics::QuadUV uv, float alpha)
 	{
+		DETECT_CONCURRENT_ACCESS(HAL::gSDLAccessDetector);
 		glLoadMatrixf(reinterpret_cast<const float*>(&transform));
 		surface.bind();
 
@@ -36,6 +46,7 @@ namespace Graphics
 
 	void Render::drawQuad(const Internal::Surface& surface, Vector2D pos, Vector2D size)
 	{
+		DETECT_CONCURRENT_ACCESS(HAL::gSDLAccessDetector);
 		glm::mat4 transform{ 1.0f };
 		transform = glm::translate(transform, glm::vec3(pos.x, pos.y, 0.0f));
 		glLoadMatrixf(reinterpret_cast<const float*>(&transform));
@@ -62,6 +73,7 @@ namespace Graphics
 
 	void Render::drawFan(const Internal::Surface& surface, const std::vector<DrawPoint>& points, const glm::mat4& transform, float alpha)
 	{
+		DETECT_CONCURRENT_ACCESS(HAL::gSDLAccessDetector);
 		glLoadMatrixf(reinterpret_cast<const float*>(&transform));
 		surface.bind();
 
@@ -78,6 +90,7 @@ namespace Graphics
 
 	void Render::drawStrip(const Internal::Surface& surface, const std::vector<DrawPoint>& points, const glm::mat4& transform, float alpha)
 	{
+		DETECT_CONCURRENT_ACCESS(HAL::gSDLAccessDetector);
 		glLoadMatrixf(reinterpret_cast<const float*>(&transform));
 		surface.bind();
 
@@ -94,6 +107,7 @@ namespace Graphics
 
 	void Render::drawTiledQuad(const Internal::Surface& surface, Vector2D start, Vector2D size, Vector2D tiles, Vector2D uvShift)
 	{
+		DETECT_CONCURRENT_ACCESS(HAL::gSDLAccessDetector);
 		glm::mat4 transform{ 1.0f };
 		glLoadMatrixf(reinterpret_cast<const float*>(&transform));
 		surface.bind();

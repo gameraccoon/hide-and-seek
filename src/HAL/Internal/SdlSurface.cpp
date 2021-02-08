@@ -2,12 +2,21 @@
 
 #include "SdlSurface.h"
 
+#include "Base/Debug/ConcurrentAccessDetector.h"
+
 #include <stdexcept>
 #include <string>
 #include <glew/glew.h>
 #include <sdl/SDL.h>
 #include <sdl/SDL_surface.h>
 #include <sdl/SDL_image.h>
+
+#ifdef CONCURRENT_ACCESS_DETECTION
+namespace HAL
+{
+	extern ConcurrentAccessDetector gSDLAccessDetector;
+}
+#endif
 
 namespace Graphics
 {
@@ -17,6 +26,7 @@ namespace Graphics
 			: mSurface(IMG_Load(filename.c_str()))
 			, mTextureID(0)
 		{
+			DETECT_CONCURRENT_ACCESS(HAL::gSDLAccessDetector);
 			AssertFatal(mSurface, "Unable to load texture %s", filename);
 
 			glGenTextures(1, &mTextureID);
@@ -51,16 +61,19 @@ namespace Graphics
 
 		int Surface::getWidth() const
 		{
+			DETECT_CONCURRENT_ACCESS(HAL::gSDLAccessDetector);
 			return mSurface->w;
 		}
 
 		int Surface::getHeight() const
 		{
+			DETECT_CONCURRENT_ACCESS(HAL::gSDLAccessDetector);
 			return mSurface->h;
 		}
 
 		void Surface::bind() const
 		{
+			DETECT_CONCURRENT_ACCESS(HAL::gSDLAccessDetector);
 			glBindTexture(GL_TEXTURE_2D, mTextureID);
 		}
 

@@ -18,7 +18,7 @@ namespace HAL
 				, height
 				, SDL_WINDOW_HIDDEN | SDL_WINDOW_OPENGL))
 		{
-            if (mSDLWindow == nullptr)
+			if (mSDLWindow == nullptr)
 			{
 				throw std::runtime_error(std::string("Error creating window: ") + SDL_GetError());
 			}

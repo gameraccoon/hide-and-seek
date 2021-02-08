@@ -9,7 +9,6 @@
 
 #include <nlohmann/json.hpp>
 
-#include "HAL/Base/Engine.h"
 #include "HAL/Internal/SdlSurface.h"
 
 #include "HAL/Audio/Music.h"
@@ -21,8 +20,7 @@
 
 namespace HAL
 {
-	ResourceManager::ResourceManager(Engine& engine)
-		: mEngine(engine)
+	ResourceManager::ResourceManager()
 	{
 	}
 

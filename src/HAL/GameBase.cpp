@@ -8,7 +8,7 @@ namespace HAL
 {
 	GameBase::GameBase(int windowWidth, int windowHeight)
 		: mEngine(HS_NEW Engine(windowWidth, windowHeight))
-		, mResourceManager(HS_NEW ResourceManager(*mEngine.get()))
+		, mResourceManager(HS_NEW ResourceManager())
 	{
 	}
 
