@@ -15,6 +15,12 @@ namespace Graphics
 		{
 		public:
 			explicit Surface(const std::string& filename);
+
+			Surface(const Surface&) = delete;
+			Surface& operator=(const Surface&) = delete;
+			Surface(Surface&&) = delete;
+			Surface& operator=(Surface&&) = delete;
+
 			~Surface();
 
 			int getWidth() const;

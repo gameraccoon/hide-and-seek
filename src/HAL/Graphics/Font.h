@@ -15,6 +15,12 @@ namespace Graphics
 		Font() = default;
 
 		explicit Font(const ResourcePath& path, int fontSize);
+
+		Font(const Font&) = delete;
+		Font& operator=(const Font&) = delete;
+		Font(Font&&) = delete;
+		Font& operator=(Font&&) = delete;
+
 		~Font() override;
 
 		bool isValid() const override;

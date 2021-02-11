@@ -13,6 +13,12 @@ namespace Audio
 	public:
 		Sound() = default;
 		explicit Sound(const ResourcePath& path);
+
+		Sound(const Sound&) = delete;
+		Sound& operator=(const Sound&) = delete;
+		Sound(Sound&&) = delete;
+		Sound& operator=(Sound&&) = delete;
+
 		~Sound() override;
 
 		Mix_Chunk* getRawSound() const;

@@ -16,6 +16,12 @@ namespace HAL
 	{
 	public:
 		Engine(int windowWidth, int windowHeight);
+
+		Engine(const Engine&) = delete;
+		Engine& operator=(const Engine&) = delete;
+		Engine(Engine&&) = delete;
+		Engine& operator=(Engine&&) = delete;
+
 		~Engine();
 
 		Vector2D getMousePos() const;
