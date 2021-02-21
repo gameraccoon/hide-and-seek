@@ -32,6 +32,21 @@ namespace Utils
 
 		for (auto& [cellPos, borders] : lightBlockingGeometryPieces)
 		{
+			// try to stabilize borders between saves
+			std::sort(
+				borders.begin(),
+				borders.end(),
+				[](const SimpleBorder& first, const SimpleBorder& second){
+					return first.a.x < second.a.x
+						|| (first.a.x == second.a.x &&
+							(first.b.x < second.b.x
+							|| (first.b.x == second.b.x &&
+								(first.a.y < second.a.y
+								|| (first.a.y == second.a.y &&
+									first.b.y < second.b.y)))));
+				}
+			);
+
 			WorldCell& cell = world.getSpatialData().getOrCreateCell(cellPos);
 			ComponentSetHolder& cellComponents = cell.getCellComponents();
 			LightBlockingGeometryComponent* lightBlockingGeometry = cellComponents.getOrAddComponent<LightBlockingGeometryComponent>();
