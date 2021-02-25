@@ -23,6 +23,11 @@ void WorldCell::fromJson(const nlohmann::json& json, const ComponentSerializersH
 	mCellComponents.fromJson(json.at("cell_components"), componentSerializers);
 }
 
+void WorldCell::packForJsonSaving()
+{
+	mEntityManager.stableSortEntitiesByID();
+}
+
 void WorldCell::clearCaches()
 {
 	mEntityManager.clearCaches();

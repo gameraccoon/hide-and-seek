@@ -214,6 +214,14 @@ void SpatialWorldData::fromJson(const nlohmann::json& json, const ComponentSeria
 	}
 }
 
+void SpatialWorldData::packForJsonSaving()
+{
+	for (auto& cellPair : mCells)
+	{
+		cellPair.second.packForJsonSaving();
+	}
+}
+
 void SpatialWorldData::clearCaches()
 {
 	for (auto it = mCells.begin(), itEnd = mCells.end(); it != itEnd;)

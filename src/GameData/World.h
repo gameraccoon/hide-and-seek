@@ -24,6 +24,7 @@ public:
 	EntityView createTrackedSpatialEntity(StringID entityStringID, CellPos pos);
 	EntityView createSpatialEntity(CellPos pos);
 
+	void packForJsonSaving();
 	void clearCaches();
 
 private:

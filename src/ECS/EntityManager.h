@@ -241,6 +241,8 @@ public:
 	nlohmann::json toJson(const ComponentSerializersHolder& componentSerializers) const;
 	void fromJson(const nlohmann::json& json, const ComponentSerializersHolder& componentSerializers);
 
+	// helper functions for cleanup before saving
+	void stableSortEntitiesByID();
 	void clearCaches();
 	[[nodiscard]] bool hasAnyEntities() const;
 

@@ -57,6 +57,7 @@ namespace Utils
 	void SaveWorld(World& world, const std::string& fileName, const ComponentSerializersHolder& serializationHolder)
 	{
 		RefreshLightBlockingGeometry(world);
+		world.packForJsonSaving();
 		world.clearCaches();
 		GameDataLoader::SaveWorld(world, fileName, serializationHolder);
 	}

@@ -85,6 +85,12 @@ EntityView World::createSpatialEntity(CellPos pos)
 	return EntityView(cell.getEntityManager().addEntity(), cell.getEntityManager());
 }
 
+void World::packForJsonSaving()
+{
+	mEntityManager.stableSortEntitiesByID();
+	mSpatialData.packForJsonSaving();
+}
+
 void World::clearCaches()
 {
 	mEntityManager.clearCaches();

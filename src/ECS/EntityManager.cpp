@@ -6,6 +6,8 @@
 
 #include <nlohmann/json.hpp>
 
+#include <soasort.h>
+
 #include "Base/Random/Random.h"
 
 #include "ECS/ComponentFactory.h"
@@ -411,6 +413,36 @@ void EntityManager::fromJson(const nlohmann::json& json, const ComponentSerializ
 				}
 			}
 		}
+	}
+}
+
+void EntityManager::stableSortEntitiesByID()
+{
+	std::vector<Entity::EntityID> ids;
+	ids.resize(mNextEntityIndex);
+	for (auto [entityID, idx] : mEntityIndexMap)
+	{
+		ids[idx] = entityID;
+	}
+
+	std::vector<size_t> positions;
+	soasort::getSortedPositions(positions, ids);
+
+	std::vector<soasort::Swap> swaps;
+	soasort::generateSwaps(swaps, positions);
+
+	for (auto& componentVectorPair : mComponents)
+	{
+		componentVectorPair.second.resize(mNextEntityIndex, nullptr);
+		soasort::applySwaps(componentVectorPair.second, swaps);
+	}
+
+	soasort::applySwaps(ids, swaps);
+	for (EntityIndex idx = 0u; idx < mNextEntityIndex; ++idx)
+	{
+		Entity::EntityID id = ids[idx];
+		mEntityIndexMap[id] = idx;
+		mIndexEntityMap[idx] = id;
 	}
 }
 

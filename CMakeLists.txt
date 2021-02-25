@@ -99,6 +99,7 @@ include_directories(
 	${EXTERNALS_DIR}/include
 	${EXTERNALS_DIR}/include/sdl
 	${EXTERNALS_DIR}/sources
+	${EXTERNALS_DIR}/sources/soa-sort/include
 	${GAME_SRC_DIR}
 )
 

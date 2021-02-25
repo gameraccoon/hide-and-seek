@@ -4,3 +4,6 @@
 [submodule "external/sources/imgui"]
 	path = external/sources/imgui
 	url = git@github.com:ocornut/imgui.git
+[submodule "external/sources/soa-sort"]
+	path = external/sources/soa-sort
+	url = git@github.com:gameraccoon/soa-sort.git
