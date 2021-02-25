@@ -34,24 +34,29 @@ TEST(LazyEvaluatedWrapper, CallStdFunction)
 	EXPECT_EQ(1, runCount);
 }
 
-static int gLazyEvaluationWrapperTestCallsCount = 0;
-
-static int LazyEvaluatedWrapperTestFn()
+namespace TestLazyEvaluatedWrapper
 {
-	++gLazyEvaluationWrapperTestCallsCount;
-	return 10;
+	static int gTestCallsCount = 0;
+
+	static int TestFn()
+	{
+		++gTestCallsCount;
+		return 10;
+	}
 }
 
 TEST(LazyEvaluatedWrapper, CallRawFunction)
 {
-	gLazyEvaluationWrapperTestCallsCount = 0;
-	LazyEvaluated lazyEvaluatedFunction(&LazyEvaluatedWrapperTestFn);
+	using namespace TestLazyEvaluatedWrapper;
 
-	EXPECT_EQ(0, gLazyEvaluationWrapperTestCallsCount);
+	gTestCallsCount = 0;
+	LazyEvaluated lazyEvaluatedFunction(&TestFn);
+
+	EXPECT_EQ(0, gTestCallsCount);
 	EXPECT_EQ(10, lazyEvaluatedFunction());
-	EXPECT_EQ(1, gLazyEvaluationWrapperTestCallsCount);
+	EXPECT_EQ(1, gTestCallsCount);
 	EXPECT_EQ(10, lazyEvaluatedFunction());
-	EXPECT_EQ(1, gLazyEvaluationWrapperTestCallsCount);
+	EXPECT_EQ(1, gTestCallsCount);
 }
 
 static int& LazyEvaluatedWrapperTestFnReturnRef()

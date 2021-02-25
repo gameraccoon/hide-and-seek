@@ -28,20 +28,25 @@ TEST(ScopeFinalizer, CallStdFunction)
 	EXPECT_EQ(1, runCount);
 }
 
-static int gLazyEvaluationWrapperTestCallsCount = 0;
-
-static void LazyEvaluatedWrapperTestFn()
+namespace TestScopeFinalizerInternals
 {
-	++gLazyEvaluationWrapperTestCallsCount;
+	static int gTestCallsCount = 0;
+
+	static void TestFn()
+	{
+		++gTestCallsCount;
+	}
 }
 
 TEST(ScopeFinalizer, CallRawFunction)
 {
-	gLazyEvaluationWrapperTestCallsCount = 0;
+	using namespace TestScopeFinalizerInternals;
+
+	gTestCallsCount = 0;
 	{
-		auto _ = ScopeFinalizer(&LazyEvaluatedWrapperTestFn);
-		EXPECT_EQ(0, gLazyEvaluationWrapperTestCallsCount);
+		auto _ = ScopeFinalizer(&TestFn);
+		EXPECT_EQ(0, gTestCallsCount);
 	}
-	EXPECT_EQ(1, gLazyEvaluationWrapperTestCallsCount);
+	EXPECT_EQ(1, gTestCallsCount);
 }
 
