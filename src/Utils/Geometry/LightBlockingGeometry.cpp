@@ -14,58 +14,13 @@
 
 namespace LightBlockingGeometry
 {
-	static void updateAABBsX(BoundingBox& box, float x)
-	{
-		if (x < box.minX) { box.minX = x; }
-		if (x > box.maxX) { box.maxX = x; }
-	}
-
-	static void updateAABBsY(BoundingBox& box, float y)
-	{
-		if (y < box.minY) { box.minY = y; }
-		if (y > box.maxY) { box.maxY = y; }
-	}
-
 	static bool isPointInsideAABB(const BoundingBox& box, Vector2D a)
 	{
 		return box.minX <= a.x && a.x < box.maxX
 			&& box.minY <= a.y && a.y < box.maxY;
 	}
 
-	struct MergedGeometry
-	{
-		std::vector<SimpleBorder> borders;
-		BoundingBox aabb
-		{
-			std::numeric_limits<float>::max(),
-			std::numeric_limits<float>::max(),
-			std::numeric_limits<float>::lowest(),
-			std::numeric_limits<float>::lowest()
-		};
-	};
-
-	using CellGeometry = std::vector<MergedGeometry>;
-
-	static bool AreShapesIntersect(const MergedGeometry& firstGeometry, const MergedGeometry& secondGeometry)
-	{
-		if (!Collide::AreAABBsIntersectInclusive(firstGeometry.aabb, secondGeometry.aabb))
-		{
-			return false;
-		}
-
-		for (SimpleBorder firstBorder : firstGeometry.borders)
-		{
-			for (SimpleBorder secondBorder : secondGeometry.borders)
-			{
-				if (Collide::AreLinesIntersect(firstBorder.a, firstBorder.b, secondBorder.a, secondBorder.b))
-				{
-					return true;
-				}
-			}
-		}
-
-		return false;
-	}
+	using CellGeometry = std::vector<ShapeOperations::MergedGeometry>;
 
 	static Vector2D GetLeftmostPoint(const SimpleBorder& border)
 	{
@@ -88,37 +43,11 @@ namespace LightBlockingGeometry
 		}
 	}
 
-	static void MergeGeometry(std::vector<SimpleBorder>& inOutResult, CellGeometry& inOutCellGeometry, const BoundingBox& cellAABB)
+	static void FillGeometryInCell(std::vector<SimpleBorder>& inOutResult, const CellGeometry& cellGeometry, const BoundingBox& cellAABB)
 	{
-		if (inOutCellGeometry.empty())
+		for (const ShapeOperations::MergedGeometry& geometry : cellGeometry)
 		{
-			return;
-		}
-
-		for (size_t i = 0; i < inOutCellGeometry.size() - 1; ++i)
-		{
-			MergedGeometry& firstGeometry = inOutCellGeometry[i];
-			for (size_t j = i + 1; j < inOutCellGeometry.size(); ++j)
-			{
-				MergedGeometry& secondGeometry = inOutCellGeometry[j];
-				if (AreShapesIntersect(firstGeometry, secondGeometry))
-				{
-					std::vector<SimpleBorder> newShape = ShapeOperations::GetUnion(firstGeometry.borders, secondGeometry.borders);
-
-					// save the new geometry to the position of the first figure
-					firstGeometry.borders = newShape;
-					// remove the second figure
-					inOutCellGeometry.erase(inOutCellGeometry.begin() + j);
-					// retry all collision tests with the first figure
-					--i;
-					break;
-				}
-			}
-		}
-
-		for (MergedGeometry& geometry : inOutCellGeometry)
-		{
-			for (SimpleBorder& border : geometry.borders)
+			for (const SimpleBorder& border : geometry.borders)
 			{
 				if (isPointInsideAABB(cellAABB, border.a) && isPointInsideAABB(cellAABB, border.b))
 				{
@@ -143,32 +72,21 @@ namespace LightBlockingGeometry
 		for (const auto [cell, collision, transform] : collisionGeometry)
 		{
 			CellGeometry& currentCellGeometry = cellGeometry[cell->getPos()];
-			currentCellGeometry.emplace_back();
-			MergedGeometry& newGeometry = currentCellGeometry.back();
 
-			Vector2D location = transform->getLocation();
-
+			const Vector2D location = transform->getLocation();
 			const Hull& hull = collision->getGeometry();
-			newGeometry.borders.reserve(hull.borders.size());
-			for (const Border& border : hull.borders)
-			{
-				newGeometry.borders.emplace_back(border.getA() + location, border.getB() + location);
-				SimpleBorder& newBorder = newGeometry.borders.back();
-				updateAABBsX(newGeometry.aabb, newBorder.a.x);
-				updateAABBsY(newGeometry.aabb, newBorder.a.y);
-				updateAABBsX(newGeometry.aabb, newBorder.b.x);
-				updateAABBsY(newGeometry.aabb, newBorder.b.y);
-			}
 
-			CellPos currentCellPos = cell->getPos();
-			std::vector<CellPos> secondaryCells;
+			currentCellGeometry.emplace_back(hull.borders, location);
+			const ShapeOperations::MergedGeometry& newGeometry = currentCellGeometry.back();
 
-			BoundingBox cellAABB = SpatialWorldData::GetCellAABB(cell->getPos());
+			const CellPos currentCellPos = cell->getPos();
 
-			bool intersectsMinX = newGeometry.aabb.minX < cellAABB.minX;
-			bool intersectsMaxX = newGeometry.aabb.maxX >= cellAABB.maxX;
-			bool intersectsMinY = newGeometry.aabb.minY < cellAABB.minY;
-			bool intersectsMaxY = newGeometry.aabb.maxY >= cellAABB.maxY;
+			const BoundingBox cellAABB = SpatialWorldData::GetCellAABB(cell->getPos());
+
+			const bool intersectsMinX = newGeometry.aabb.minX < cellAABB.minX;
+			const bool intersectsMaxX = newGeometry.aabb.maxX >= cellAABB.maxX;
+			const bool intersectsMinY = newGeometry.aabb.minY < cellAABB.minY;
+			const bool intersectsMaxY = newGeometry.aabb.maxY >= cellAABB.maxY;
 
 			if (intersectsMinX)
 			{
@@ -207,8 +125,9 @@ namespace LightBlockingGeometry
 		// collect intersections inside cells
 		for (auto& [pos, oneCellGeometry] : cellGeometry)
 		{
-			BoundingBox cellAABB = SpatialWorldData::GetCellAABB(pos);
-			MergeGeometry(outGeometry[pos], oneCellGeometry, cellAABB);
+			const BoundingBox cellAABB = SpatialWorldData::GetCellAABB(pos);
+			ShapeOperations::MergeGeometry(oneCellGeometry);
+			FillGeometryInCell(outGeometry[pos], oneCellGeometry, cellAABB);
 		}
 	}
 }

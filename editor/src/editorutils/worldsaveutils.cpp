@@ -5,9 +5,11 @@
 #include "GameData/Components/CollisionComponent.generated.h"
 #include "GameData/Components/TransformComponent.generated.h"
 #include "GameData/Components/LightBlockingGeometryComponent.generated.h"
+#include "GameData/Components/PathBlockingGeometryComponent.generated.h"
 
 #include "Utils/World/GameDataLoader.h"
 #include "Utils/Geometry/LightBlockingGeometry.h"
+#include "Utils/AI/PathBlockingGeometry.h"
 
 namespace Utils
 {
@@ -54,9 +56,20 @@ namespace Utils
 		}
 	}
 
+	static void RefreshPathBlockingGeometry(World& world)
+	{
+		TupleVector<CollisionComponent*, TransformComponent*> components;
+		world.getSpatialData().getAllCellManagers().getComponents<CollisionComponent, TransformComponent>(components);
+
+		PathBlockingGeometryComponent* pathBlockingGeometry = world.getWorldComponents().getOrAddComponent<PathBlockingGeometryComponent>();
+
+		PathBlockingGeometry::CalculatePathBlockingGeometry(pathBlockingGeometry->getPolygonsRef(), components);
+	}
+
 	void SaveWorld(World& world, const std::string& fileName, const ComponentSerializersHolder& serializationHolder)
 	{
 		RefreshLightBlockingGeometry(world);
+		RefreshPathBlockingGeometry(world);
 		world.packForJsonSaving();
 		world.clearCaches();
 		GameDataLoader::SaveWorld(world, fileName, serializationHolder);

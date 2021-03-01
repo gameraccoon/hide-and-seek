@@ -668,4 +668,94 @@ namespace ShapeOperations
 			inOutShape.erase(inOutShape.begin() + index);
 		}
 	}
+
+	bool AreShapesIntersect(const MergedGeometry& firstGeometry, const MergedGeometry& secondGeometry)
+	{
+		if (!Collide::AreAABBsIntersectInclusive(firstGeometry.aabb, secondGeometry.aabb))
+		{
+			return false;
+		}
+
+		for (SimpleBorder firstBorder : firstGeometry.borders)
+		{
+			for (SimpleBorder secondBorder : secondGeometry.borders)
+			{
+				if (Collide::AreLinesIntersect(firstBorder.a, firstBorder.b, secondBorder.a, secondBorder.b))
+				{
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	void MergeGeometry(std::vector<MergedGeometry>& inOutCellGeometry)
+	{
+		if (inOutCellGeometry.empty())
+		{
+			return;
+		}
+
+		for (size_t i = 0; i < inOutCellGeometry.size() - 1; ++i)
+		{
+			MergedGeometry& firstGeometry = inOutCellGeometry[i];
+			for (size_t j = i + 1; j < inOutCellGeometry.size(); ++j)
+			{
+				MergedGeometry& secondGeometry = inOutCellGeometry[j];
+				if (AreShapesIntersect(firstGeometry, secondGeometry))
+				{
+					std::vector<SimpleBorder> newShape = ShapeOperations::GetUnion(firstGeometry.borders, secondGeometry.borders);
+
+					// save the new geometry to the position of the first figure
+					firstGeometry.borders = std::move(newShape);
+					// remove the second figure
+					inOutCellGeometry.erase(inOutCellGeometry.begin() + j);
+					// retry all collision tests with the first figure
+					--i;
+					break;
+				}
+			}
+		}
+	}
+
+	static void updateAABBsX(BoundingBox& box, float x)
+	{
+		if (x < box.minX) { box.minX = x; }
+		if (x > box.maxX) { box.maxX = x; }
+	}
+
+	static void updateAABBsY(BoundingBox& box, float y)
+	{
+		if (y < box.minY) { box.minY = y; }
+		if (y > box.maxY) { box.maxY = y; }
+	}
+
+	static void updateAABBFromBorder(BoundingBox& aabb, const SimpleBorder& border)
+	{
+		updateAABBsX(aabb, border.a.x);
+		updateAABBsY(aabb, border.a.y);
+		updateAABBsX(aabb, border.b.x);
+		updateAABBsY(aabb, border.b.y);
+	}
+
+	MergedGeometry::MergedGeometry(const std::vector<Border>& inBorders, Vector2D location)
+	{
+		borders.reserve(inBorders.size());
+		for (const Border& border : inBorders)
+		{
+			borders.emplace_back(border.getA() + location, border.getB() + location);
+			updateAABBFromBorder(aabb, borders.back());
+		}
+	}
+
+	MergedGeometry::MergedGeometry(const std::vector<SimpleBorder>& simpleBorders)
+		: borders(simpleBorders)
+	{
+		for (const SimpleBorder& border : borders)
+		{
+			updateAABBFromBorder(aabb, border);
+		}
+	}
+
 }

@@ -9,8 +9,6 @@
 
 #include "Base/Types/TemplateAliases.h"
 
-#include "GameData/Components/CollisionComponent.generated.h"
-#include "GameData/Components/TransformComponent.generated.h"
 #include "GameData/Core/BoundingBox.h"
 
 #include "Utils/Geometry/Collide.h"
@@ -29,7 +27,7 @@ namespace NavMeshGenerator
 	}
 #endif // DEBUG_CHECKS
 
-	void GenerateNavMeshGeometry(NavMesh::Geometry& outGeometry, const TupleVector<CollisionComponent*, TransformComponent*>& collidableComponents, Vector2D start, Vector2D size)
+	void GenerateNavMeshGeometry(NavMesh::Geometry& outGeometry, const std::vector<std::vector<Vector2D>>& pathBlockingGeometry, Vector2D start, Vector2D size)
 	{
 		outGeometry.vertices.clear();
 		outGeometry.indexes.clear();
@@ -55,25 +53,20 @@ namespace NavMeshGenerator
 		borderPolygon[3].y = static_cast<tppl_float>(centerPos.y + halfSize.y);
 		polygons.push_back(borderPolygon);
 
-		for (auto [collision, transform] : collidableComponents)
+		for (const auto& polygon : pathBlockingGeometry)
 		{
-			Vector2D location = transform->getLocation();
-			const Hull& geometry = collision->getGeometry();
-			if (geometry.type == HullType::Angular)
-			{
-				TPPLPoly polygon;
-				polygon.Init(geometry.points.size());
+			TPPLPoly ttplPolygon;
+			const size_t pointsCount = polygon.size();
 
-				size_t pointsSize = geometry.points.size();
-				for (size_t i = 0; i < pointsSize; ++i)
-				{
-					const Vector2D& point = geometry.points[pointsSize - 1 - i];
-					polygon[i].x = point.x + location.x;
-					polygon[i].y = point.y + location.y;
-				}
-				polygon.SetHole(true);
-				polygons.push_back(polygon);
+			ttplPolygon.Init(pointsCount);
+
+			for (size_t i = 0; i < pointsCount; ++i)
+			{
+				ttplPolygon[i].x = polygon[i].x;
+				ttplPolygon[i].y = polygon[i].y;
 			}
+			ttplPolygon.SetHole(true);
+			polygons.push_back(std::move(ttplPolygon));
 		}
 
 		TPPLPartition pp;

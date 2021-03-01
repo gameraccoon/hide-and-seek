@@ -9,6 +9,7 @@
 #include "GameData/Components/MovementComponent.generated.h"
 #include "GameData/Components/CharacterStateComponent.generated.h"
 #include "GameData/Components/TrackedSpatialEntitiesComponent.generated.h"
+#include "GameData/Components/PathBlockingGeometryComponent.generated.h"
 #include "GameData/Components/DebugDrawComponent.generated.h"
 #include "GameData/World.h"
 #include "GameData/GameData.h"
@@ -34,6 +35,13 @@ void AiSystem::update()
 		return;
 	}
 
+	auto [pathBlockingGeometry] = world.getWorldComponents().getComponents<PathBlockingGeometryComponent>();
+
+	if (pathBlockingGeometry == nullptr)
+	{
+		return;
+	}
+
 	TupleVector<CollisionComponent*, TransformComponent*> collisions;
 	world.getSpatialData().getAllCellManagers().getComponents<CollisionComponent, TransformComponent>(collisions);
 
@@ -50,7 +58,7 @@ void AiSystem::update()
 	if (needUpdate)
 	{
 		NavMesh& navMesh = navMeshComponent->getNavMeshRef();
-		NavMeshGenerator::GenerateNavMeshGeometry(navMesh.geometry, collisions, Vector2D(-5000.0f, -5000.0f), Vector2D(10000.0f, 10000.0f));
+		NavMeshGenerator::GenerateNavMeshGeometry(navMesh.geometry, pathBlockingGeometry->getPolygons(), Vector2D(-5000.0f, -5000.0f), Vector2D(10000.0f, 10000.0f));
 		NavMeshGenerator::LinkNavMesh(navMesh.links, navMesh.geometry);
 		NavMeshGenerator::BuildSpatialHash(navMesh.spatialHash, navMesh.geometry, NavMeshGenerator::HashGenerationType::Fast);
 		navMeshComponent->setUpdateTimestamp(timestampNow);
