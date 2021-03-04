@@ -13,7 +13,12 @@
 #include "GameData/GameData.h"
 #include "GameData/Components/LightBlockingGeometryComponent.generated.h"
 #include "GameData/Components/PathBlockingGeometryComponent.generated.h"
+#include "GameData/Components/CollisionComponent.generated.h"
+#include "GameData/Components/TransformComponent.generated.h"
 #include "GameData/Spatial/SpatialWorldData.h"
+
+#include "Utils/Geometry/LightBlockingGeometry.h"
+#include "Utils/AI/PathBlockingGeometry.h"
 
 namespace GameDataLoader
 {
@@ -44,6 +49,22 @@ namespace GameDataLoader
 		geometryFile << std::setw(4) << geometryJson << std::endl;
 	}
 
+	static void GenerateLightBlockingGeometry(World& world)
+	{
+		TupleVector<WorldCell*, CollisionComponent*, TransformComponent*> components;
+		world.getSpatialData().getAllCellManagers().getSpatialComponents<CollisionComponent, TransformComponent>(components);
+		std::unordered_map<CellPos, std::vector<SimpleBorder>> lightBlockingGeometryPieces;
+		LightBlockingGeometry::CalculateLightGeometry(lightBlockingGeometryPieces, components);
+
+		for (auto& [cellPos, borders] : lightBlockingGeometryPieces)
+		{
+			WorldCell& cell = world.getSpatialData().getOrCreateCell(cellPos);
+			ComponentSetHolder& cellComponents = cell.getCellComponents();
+			LightBlockingGeometryComponent* lightBlockingGeometry = cellComponents.getOrAddComponent<LightBlockingGeometryComponent>();
+			lightBlockingGeometry->setBorders(std::move(borders));
+		}
+	}
+
 	static void LoadLightBlockingGeometry(World& world, const std::filesystem::path& levelPath)
 	{
 		namespace fs = std::filesystem;
@@ -53,6 +74,7 @@ namespace GameDataLoader
 
 		if (!fs::exists(geometryPath))
 		{
+			GenerateLightBlockingGeometry(world);
 			return;
 		}
 
@@ -90,6 +112,16 @@ namespace GameDataLoader
 		}
 	}
 
+	static void GeneratePathBlockingGeometry(World& world)
+	{
+		TupleVector<CollisionComponent*, TransformComponent*> components;
+		world.getSpatialData().getAllCellManagers().getComponents<CollisionComponent, TransformComponent>(components);
+
+		PathBlockingGeometryComponent* pathBlockingGeometry = world.getWorldComponents().getOrAddComponent<PathBlockingGeometryComponent>();
+
+		PathBlockingGeometry::CalculatePathBlockingGeometry(pathBlockingGeometry->getPolygonsRef(), components);
+	}
+
 	static void LoadPathBlockingGeometry(World& world, const std::filesystem::path& levelPath)
 	{
 		namespace fs = std::filesystem;
@@ -99,6 +131,7 @@ namespace GameDataLoader
 
 		if (!fs::exists(geometryPath))
 		{
+			GeneratePathBlockingGeometry(world);
 			return;
 		}
 
