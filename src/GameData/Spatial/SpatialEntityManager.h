@@ -78,3 +78,66 @@ public:
 private:
 	std::vector<WorldCell*> mCells;
 };
+
+class ConstSpatialEntityManager
+{
+public:
+	explicit ConstSpatialEntityManager(const std::vector<const WorldCell*>& cells);
+
+	template<typename FirstComponent, typename... Components>
+	void getComponents(TupleVector<FirstComponent*, Components*...>& inOutComponents) const
+	{
+		for (const WorldCell* cell : mCells)
+		{
+			cell->getEntityManager().getComponents<const FirstComponent, const Components...>(inOutComponents);
+		}
+	}
+
+	template<typename FirstComponent, typename... Components>
+	void getSpatialComponents(TupleVector<const WorldCell*, const FirstComponent*, const Components*...>& inOutComponents) const
+	{
+		for (const WorldCell* cell : mCells)
+		{
+			cell->getEntityManager().getComponents<const FirstComponent, const Components...>(inOutComponents, cell);
+		}
+	}
+
+	template<typename FirstComponent, typename... Components>
+	void getSpatialComponentsWithEntities(TupleVector<Entity, const WorldCell*, const FirstComponent*, const Components*...>& inOutComponents) const
+	{
+		for (const WorldCell* cell : mCells)
+		{
+			cell->getEntityManager().getComponentsWithEntities<const FirstComponent, const Components...>(inOutComponents, cell);
+		}
+	}
+
+	template<typename FirstComponent, typename... Components, typename FunctionType>
+	void forEachComponentSet(FunctionType processor) const
+	{
+		for (const WorldCell* cell : mCells)
+		{
+			cell->getEntityManager().forEachComponentSet<const FirstComponent, const Components...>(processor);
+		}
+	}
+
+	template<typename FirstComponent, typename... Components, typename FunctionType>
+	void forEachSpatialComponentSet(FunctionType processor) const
+	{
+		for (const WorldCell* cell : mCells)
+		{
+			cell->getEntityManager().forEachComponentSet<const FirstComponent, const Components...>(processor, cell);
+		}
+	}
+
+	template<typename FirstComponent, typename... Components, typename FunctionType>
+	void forEachSpatialComponentSetWithEntity(FunctionType processor) const
+	{
+		for (const WorldCell* cell : mCells)
+		{
+			cell->getEntityManager().forEachComponentSetWithEntity<const FirstComponent, const Components...>(processor, cell);
+		}
+	}
+
+private:
+	std::vector<const WorldCell*> mCells;
+};

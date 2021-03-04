@@ -59,6 +59,12 @@ public:
 		return std::make_tuple(getSingleComponent<Components>()...);
 	}
 
+	template<typename... Components>
+	std::tuple<const Components*...> getComponents() const
+	{
+		return std::make_tuple(getSingleComponent<Components>()...);
+	}
+
 	nlohmann::json toJson(const ComponentSerializersHolder& componentSerializers) const;
 	void fromJson(const nlohmann::json& json, const ComponentSerializersHolder& componentSerializers);
 
@@ -67,6 +73,20 @@ public:
 private:
 	template<typename Component>
 	Component* getSingleComponent()
+	{
+		auto it = mComponents.find(Component::GetTypeName());
+		if (it != mComponents.end())
+		{
+			return static_cast<Component*>(it->second);
+		}
+		else
+		{
+			return nullptr;
+		}
+	}
+
+	template<typename Component>
+	const Component* getSingleComponent() const
 	{
 		auto it = mComponents.find(Component::GetTypeName());
 		if (it != mComponents.end())

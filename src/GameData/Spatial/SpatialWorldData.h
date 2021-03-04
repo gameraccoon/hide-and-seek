@@ -27,7 +27,10 @@ public:
 	WorldCell& getOrCreateCell(const CellPos& pos);
 
 	std::unordered_map<CellPos, WorldCell>& getAllCells() { return mCells; }
+	const std::unordered_map<CellPos, WorldCell>& getAllCells() const { return mCells; }
+
 	SpatialEntityManager getAllCellManagers();
+	ConstSpatialEntityManager getAllCellManagers() const;
 
 	// returns true if cell changed
 	static bool TransformCellPos(CellPos& inOutCellPos, Vector2D& inOutPos);

@@ -71,6 +71,17 @@ SpatialEntityManager SpatialWorldData::getAllCellManagers()
 	return SpatialEntityManager(cells);
 }
 
+ConstSpatialEntityManager SpatialWorldData::getAllCellManagers() const
+{
+	std::vector<const WorldCell*> cells;
+	cells.reserve(mCells.size());
+	for (const std::pair<const CellPos, WorldCell>& cell : mCells)
+	{
+		cells.push_back(&cell.second);
+	}
+	return ConstSpatialEntityManager(cells);
+}
+
 Vector2D SpatialWorldData::GetRelativeLocation(const CellPos& baseCell, const CellPos& targetCell, const Vector2D& targetPos)
 {
 	return GetCellRealDistance(targetCell - baseCell) + targetPos;

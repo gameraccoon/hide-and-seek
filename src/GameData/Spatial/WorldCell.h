@@ -16,6 +16,7 @@ public:
 	EntityManager& getEntityManager() { return mEntityManager; }
 	const EntityManager& getEntityManager() const { return mEntityManager; }
 	ComponentSetHolder& getCellComponents() { return mCellComponents; }
+	const ComponentSetHolder& getCellComponents() const { return mCellComponents; }
 
 	CellPos getPos() const { return mPos; }
 

@@ -59,3 +59,8 @@ WorldCell* SpatialEntityManager::findEntityCell(Entity entity)
 	}
 	return nullptr;
 }
+
+ConstSpatialEntityManager::ConstSpatialEntityManager(const std::vector<const WorldCell*>& cells)
+	: mCells(cells)
+{
+}

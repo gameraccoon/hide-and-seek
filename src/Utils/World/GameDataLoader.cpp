@@ -11,11 +11,104 @@
 
 #include "GameData/World.h"
 #include "GameData/GameData.h"
+#include "GameData/Components/LightBlockingGeometryComponent.generated.h"
+#include "GameData/Components/PathBlockingGeometryComponent.generated.h"
+#include "GameData/Spatial/SpatialWorldData.h"
 
 namespace GameDataLoader
 {
 	static const std::filesystem::path MAPS_PATH = "./resources/maps";
 	static const std::filesystem::path GAME_DATA_PATH = "./resources/game";
+
+	static void SaveLightBlockingGeometry(const World& world, const std::filesystem::path& levelPath)
+	{
+		namespace fs = std::filesystem;
+
+		fs::path geometryPath(levelPath);
+		geometryPath.replace_extension(".lbg.json");
+
+		std::ofstream geometryFile(geometryPath);
+		nlohmann::json geometryJson;
+
+		const std::unordered_map<CellPos, WorldCell>& cells = world.getSpatialData().getAllCells();
+		for (auto& [cellPos, cell] : cells)
+		{
+			const auto [lightBlockingGeometry] = cell.getCellComponents().getComponents<LightBlockingGeometryComponent>();
+			if (lightBlockingGeometry)
+			{
+				std::string key = std::to_string(cellPos.x) + "," + std::to_string(cellPos.y);
+				geometryJson[key] = lightBlockingGeometry->getBorders();
+			}
+		}
+
+		geometryFile << std::setw(4) << geometryJson << std::endl;
+	}
+
+	static void LoadLightBlockingGeometry(World& world, const std::filesystem::path& levelPath)
+	{
+		namespace fs = std::filesystem;
+
+		fs::path geometryPath(levelPath);
+		geometryPath.replace_extension(".lbg.json");
+
+		if (!fs::exists(geometryPath))
+		{
+			return;
+		}
+
+		std::ifstream geometryFile(geometryPath);
+		nlohmann::json geometryJson;
+		geometryFile >> geometryJson;
+
+		SpatialWorldData& spatialData = world.getSpatialData();
+
+		for (auto& [key, cellData] : geometryJson.items())
+		{
+			const int delimeterPos = key.find(',');
+			const CellPos pos{std::atoi(key.substr(0, delimeterPos).c_str()), std::atoi(key.substr(delimeterPos + 1).c_str())};
+			LightBlockingGeometryComponent* lightBlockingCompontnt = spatialData.getCell(pos)->getCellComponents().getOrAddComponent<LightBlockingGeometryComponent>();
+			cellData.get_to(lightBlockingCompontnt->getBordersRef());
+		}
+	}
+
+	static void SavePathBlockingGeometry(const World& world, const std::filesystem::path& levelPath)
+	{
+		namespace fs = std::filesystem;
+
+		fs::path geometryPath(levelPath);
+		geometryPath.replace_extension(".pbg.json");
+
+		std::ofstream geometryFile(geometryPath);
+		nlohmann::json geometryJson;
+
+		auto [pathBlockingGeometry] = world.getWorldComponents().getComponents<PathBlockingGeometryComponent>();
+
+		if (pathBlockingGeometry)
+		{
+			geometryJson = pathBlockingGeometry->getPolygons();
+			geometryFile << std::setw(4) << geometryJson << std::endl;
+		}
+	}
+
+	static void LoadPathBlockingGeometry(World& world, const std::filesystem::path& levelPath)
+	{
+		namespace fs = std::filesystem;
+
+		fs::path geometryPath(levelPath);
+		geometryPath.replace_extension(".pbg.json");
+
+		if (!fs::exists(geometryPath))
+		{
+			return;
+		}
+
+		std::ifstream geometryFile(geometryPath);
+		nlohmann::json geometryJson;
+		geometryFile >> geometryJson;
+
+		PathBlockingGeometryComponent* pathBlockingCompontnt = world.getWorldComponents().getOrAddComponent<PathBlockingGeometryComponent>();
+		geometryJson.get_to(pathBlockingCompontnt->getPolygonsRef());
+	}
 
 	void SaveWorld(const World& world, const std::string& levelName, const ComponentSerializersHolder& componentSerializers)
 	{
@@ -40,6 +133,9 @@ namespace GameDataLoader
 			nlohmann::json mapJson({{"world", world.toJson(componentSerializers)}});
 
 			mapFile << std::setw(4) << mapJson << std::endl;
+
+			SaveLightBlockingGeometry(world, levelPath);
+			SavePathBlockingGeometry(world, levelPath);
 		} catch (const std::exception& e) {
 			LogError("Can't save world to file '%s': %s", levelPath.c_str(), e.what());
 		}
@@ -56,8 +152,7 @@ namespace GameDataLoader
 			levelPath = MAPS_PATH / (levelName + ".json");
 		}
 
-		try
-		{
+		try {
 			std::ifstream mapFile(levelPath);
 			nlohmann::json mapJson;
 			mapFile >> mapJson;
@@ -66,6 +161,8 @@ namespace GameDataLoader
 			{
 				world.fromJson(worldObject, componentSerializers);
 			}
+			LoadLightBlockingGeometry(world, levelPath);
+			LoadPathBlockingGeometry(world, levelPath);
 		}
 		catch(const nlohmann::detail::exception& e)
 		{
@@ -76,7 +173,6 @@ namespace GameDataLoader
 			LogError("Can't open world '%s': %s", levelPath.c_str(), e.what());
 		}
 	}
-
 
 	void SaveGameData(const GameData& gameData, const std::string& gameDataName, const ComponentSerializersHolder& componentSerializers)
 	{
@@ -101,7 +197,9 @@ namespace GameDataLoader
 			nlohmann::json mapJson({{"gameData", gameData.toJson(componentSerializers)}});
 
 			mapFile << std::setw(4) << mapJson << std::endl;
-		} catch (const std::exception& e) {
+		}
+		catch (const std::exception& e)
+		{
 			LogError("Can't save gameData to file '%s': %s", gameDataPath.c_str(), e.what());
 		}
 	}
@@ -117,8 +215,7 @@ namespace GameDataLoader
 			gameDataPath = GAME_DATA_PATH / (gameDataName + ".json");
 		}
 
-		try
-		{
+		try {
 			std::ifstream mapFile(gameDataPath);
 			nlohmann::json mapJson;
 			mapFile >> mapJson;

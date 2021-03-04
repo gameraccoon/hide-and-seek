@@ -14,8 +14,13 @@ class World
 {
 public:
 	EntityManager& getEntityManager() { return mEntityManager; }
+	const EntityManager& getEntityManager() const { return mEntityManager; }
+
 	ComponentSetHolder& getWorldComponents() { return mWorldComponents; }
+	const ComponentSetHolder& getWorldComponents() const { return mWorldComponents; }
+
 	SpatialWorldData& getSpatialData() { return mSpatialData; }
+	const SpatialWorldData& getSpatialData() const { return mSpatialData; }
 
 	nlohmann::json toJson(const ComponentSerializersHolder& componentSerializers) const;
 	void fromJson(const nlohmann::json& json, const ComponentSerializersHolder& componentSerializers);
