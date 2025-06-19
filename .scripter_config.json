@@ -1,9 +1,10 @@
 {
-  "version": "0.16.2",
+  "version": "0.16.7",
   "rewritable": {
     "window_status_reactions": true,
     "keep_window_size": false,
     "enable_script_filtering": true,
+    "show_working_directory": true,
     "enable_title_editing": true,
     "config_version_update_behavior": "OnManualSave",
     "custom_theme": {
@@ -290,7 +291,10 @@
         "autorerun_count": 0,
         "ignore_previous_failures": false,
         "requires_arguments": true,
-        "arguments_hint": "branch_name"
+        "arguments_hint": "branch_name",
+        "is_hidden": false,
+        "autoclean_on_success": false,
+        "ignore_output": false
       }
     },
     {
@@ -313,7 +317,10 @@
         "autorerun_count": 5,
         "ignore_previous_failures": false,
         "requires_arguments": false,
-        "arguments_hint": "no arguments"
+        "arguments_hint": "no arguments",
+        "is_hidden": false,
+        "autoclean_on_success": false,
+        "ignore_output": false
       }
     },
     {
@@ -336,7 +343,10 @@
         "autorerun_count": 0,
         "ignore_previous_failures": false,
         "requires_arguments": false,
-        "arguments_hint": "no arguments"
+        "arguments_hint": "no arguments",
+        "is_hidden": false,
+        "autoclean_on_success": false,
+        "ignore_output": false
       }
     },
     {
@@ -359,7 +369,10 @@
         "autorerun_count": 0,
         "ignore_previous_failures": false,
         "requires_arguments": false,
-        "arguments_hint": "no arguments"
+        "arguments_hint": "no arguments",
+        "is_hidden": false,
+        "autoclean_on_success": false,
+        "ignore_output": false
       }
     },
     {
@@ -382,7 +395,10 @@
         "autorerun_count": 0,
         "ignore_previous_failures": false,
         "requires_arguments": false,
-        "arguments_hint": "no arguments"
+        "arguments_hint": "no arguments",
+        "is_hidden": false,
+        "autoclean_on_success": false,
+        "ignore_output": false
       }
     },
     {
@@ -405,7 +421,10 @@
         "autorerun_count": 0,
         "ignore_previous_failures": false,
         "requires_arguments": false,
-        "arguments_hint": "\"arg1\" \"arg2\""
+        "arguments_hint": "\"arg1\" \"arg2\"",
+        "is_hidden": false,
+        "autoclean_on_success": false,
+        "ignore_output": false
       }
     },
     {
@@ -428,7 +447,10 @@
         "autorerun_count": 0,
         "ignore_previous_failures": false,
         "requires_arguments": false,
-        "arguments_hint": "no arguments"
+        "arguments_hint": "no arguments",
+        "is_hidden": false,
+        "autoclean_on_success": false,
+        "ignore_output": false
       }
     },
     {
@@ -451,7 +473,10 @@
         "autorerun_count": 0,
         "ignore_previous_failures": false,
         "requires_arguments": true,
-        "arguments_hint": "subcommand"
+        "arguments_hint": "subcommand",
+        "is_hidden": false,
+        "autoclean_on_success": false,
+        "ignore_output": false
       }
     },
     {
@@ -474,7 +499,10 @@
         "autorerun_count": 0,
         "ignore_previous_failures": true,
         "requires_arguments": false,
-        "arguments_hint": "leave the arguments alone"
+        "arguments_hint": "leave the arguments alone",
+        "is_hidden": false,
+        "autoclean_on_success": false,
+        "ignore_output": false
       }
     },
     {
@@ -486,7 +514,7 @@
           "path_type": "WorkingDirRelative"
         },
         "command": {
-          "path": "./Debug/GameMain.exe",
+          "path": "start ./Debug/GameMain.exe",
           "path_type": "WorkingDirRelative"
         },
         "working_directory": {
@@ -497,7 +525,10 @@
         "autorerun_count": 0,
         "ignore_previous_failures": false,
         "requires_arguments": false,
-        "arguments_hint": "--arg1 --arg2"
+        "arguments_hint": "--arg1 --arg2",
+        "is_hidden": false,
+        "autoclean_on_success": false,
+        "ignore_output": true
       }
     }
   ],
